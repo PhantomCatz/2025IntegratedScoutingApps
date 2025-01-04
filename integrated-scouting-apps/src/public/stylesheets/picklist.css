@@ -1,0 +1,21 @@
+.ant-table,
+.ant-table-tbody,
+.ant-table-cell {
+  font-size: 36px !important;
+  background-color: #433D3C !important;
+  color: white !important;
+  font-family: Figtree !important;
+  border: 4px solid white !important;
+  font-weight: bold !important;
+}
+
+.ant-empty-description {
+  font-family: Figtree !important;
+  font-weight: bold !important;
+  font-size: 48px !important;
+
+}
+
+.robotdied {
+  color: red !important
+}

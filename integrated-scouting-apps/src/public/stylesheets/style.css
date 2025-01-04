@@ -1,0 +1,265 @@
+/**
+ * @author Nathan Kwok, Juwon Ha, add more...
+ * @since 2023-10-29
+ * @version 1.0.0
+ * @description CSS for the home page
+ */
+
+@font-face {
+    font-family: Audiowide !important;
+    src: url('../fonts/Audiowide-Regular.woff') format('woff');
+}
+@font-face {
+    font-family: Figtree !important;
+    src: url('../fonts/Figtree-VariableFont_wght.ttf') format('woff');
+}
+h2 {
+    color: white !important;
+    font-family: Figtree !important;
+    font-weight: bold !important;
+    font-size: 60px !important;
+    margin-bottom: 0 !important;
+}
+body {
+    margin: 0 !important;
+    font-family: Audiowide !important;
+    background-color: #433D3C;
+    padding-left: 5% !important;
+    padding-right: 5% !important;
+    color: white !important;
+}
+a {
+    text-decoration: none !important;
+    color: white !important;
+}
+.ant-upload,
+.ant-upload-select {
+    width: 100% !important;
+}
+.ant-upload-list-item-name {
+    font-size: 48px !important;
+    font-family: Figtree !important;
+    color: white !important;
+}
+.ant-upload-list-item-container {
+    height: 120px !important;
+}
+.anticon-paper-clip {
+    height: 0px !important;
+    width: 0px !important;
+}
+.ant-tooltip {
+    display: none !important;
+}
+.ant-upload-list-item-actions {
+    padding-right: 5% !important;
+}
+.ant-layout-footer {
+    background-color: #433D3C;
+    padding: 0 !important;
+    border-top: 4px solid white !important;
+}
+.ant-btn-default:hover,
+.ant-input-outlined:hover {
+    background-color: transparent !important;
+}
+.ant-select-item {
+    height: 120px !important;
+}
+.ant-tabs-ink-bar-animated {
+    transition: 0.25s !important;
+}
+.banner {
+    font-size: 50px !important;
+    vertical-align: top !important;
+}
+input[type="checkbox"],
+.ant-checkbox-inner {
+    height: 0px !important;
+    width: 0px !important;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+.ant-input-number-handler-wrap {
+    opacity: 0.0 !important;
+}
+
+h2 {
+    margin: 0 !important;
+}
+.ant-input {
+    height: 120px !important;
+    min-height: 120px !important;
+    background-color: transparent !important;
+    font-size: 64px !important;
+}
+.ant-form-item-control-input {
+    height: fit-content !important;
+}
+.ant-input-number {
+    height: 120px !important;
+    min-height: 120px !important;
+    background-color: transparent !important;
+    font-family: Figtree !important;
+    font-weight: bold !important;
+    font-size: 500% !important;
+    color: white !important;
+    text-align: center !important;
+}
+.ant-tabs-tab, .ant-tabs-tab-active{
+    font-size: 48px !important;
+    font-family: Figtree !important;
+    font-weight: bold !important;
+    color: white !important;
+    height: 15% !important;
+    padding-top: 5% !important;
+}
+.ant-checkbox-checked,
+.ant-checkbox-wrapper-checked {
+    background-color: #61f761 !important;
+    border-color: #000000 !important;
+    width: 100% !important;
+    border-radius: 20px !important;
+    height: 60px !important;
+    min-height: 60px !important;
+}
+.ant-input-number-input {
+    font-family: Figtree !important;
+    font-weight: bold !important;
+    color: white !important;
+    text-align: center !important;
+    padding: 0px !important;
+}
+.ant-form-item-explain-error {
+    font-size: 48px !important;
+    font-family: Figtree !important;
+    font-weight: bold !important;
+    color: red !important;
+    text-align: center !important;
+}
+.ant-select-item-option-content {
+    font-size: 500% !important;
+    font-family: Figtree !important;
+    font-weight: bold !important;
+    text-align: center !important;
+}
+.ant-select-selection-overflow-item {
+    height: 120px !important;
+}
+.ant-select-selection-placeholder,
+.ant-select-selection-item {
+    min-height: 100% !important;
+    line-height: 120px !important;
+    color: white !important;
+    font-family: Figtree !important;
+    font-weight: bold !important;
+    align-items: center !important;
+    display: inline-flex !important;
+    justify-content: center !important;
+    padding-right: 0px !important;
+}
+.ant-select-selector {
+    width: 100% !important;
+    height: 120px !important;
+    background-color: transparent !important;
+    border: 0px transparent !important;
+    text-align: center !important;
+    font-size: 64px !important;
+}
+.anticon {
+    width: 0px !important;
+    height: 0px !important;
+}
+.rc-virtual-list-holder {
+    max-height: 500% !important;
+}
+.ant-input-number-group-addon {
+    padding: 0px !important;
+}
+.mainbutton,
+.mainbutton:hover {
+    width: 100% !important;
+    min-width: 100% !important;
+    height: 25% !important;
+    min-height: 25% !important;
+    margin-top: 10% !important;
+    border: 4px solid white !important;
+    border-radius: 25px !important;
+    background: transparent !important;
+    background-color: transparent !important;
+    font-size: 500% !important;
+    font-family: Audiowide !important;
+    color: white !important;
+}
+.homebutton,
+.homebutton:hover {
+    width: 100% !important;
+    min-width: 100% !important;
+    height: 33% !important;
+    min-height: 33% !important;
+    margin-top: 10% !important;
+    border: 4px solid white !important;
+    border-radius: 100px !important;
+    background-color: transparent !important;
+    font-family: Audiowide !important;
+    color: white !important;
+    font-size: 500% !important;
+    align-items: center !important;
+    display: flex !important;
+    justify-content: center !important;
+    text-decoration: none !important;
+    transition: none !important;
+}
+.submit {
+    width: 100% !important;
+    max-width: 50% !important;
+    height: 120px !important;
+    min-height: 120px !important;
+    border: 4px solid white !important;
+    border-radius: 25px !important;
+    background-color: transparent !important;
+    font-size: 64px !important;
+    font-family: Figtree !important;
+    color: white !important;
+    text-align: center !important;
+    align-items: center !important;
+    margin-left: 25% !important;
+    font-weight: bold !important;
+}
+.died {
+    color: red !important;
+}
+.input {
+    width: 100% !important;
+    min-width: 100% !important;
+    height: 120px !important;
+    min-height: 120px !important;
+    border: 4px solid white !important;
+    border-radius: 25px !important;
+    background-color: transparent !important;
+    font-size: 500% !important;
+    font-family: Figtree !important;
+    font-weight: bold !important;
+    color: white !important;
+    text-align: center !important;
+}
+.incrementbutton {
+    height: 120px !important;
+    border-top-right-radius: 20px !important;
+    border-bottom-right-radius: 20px !important;
+    background-color: transparent !important;
+    color: white !important;
+    font-size: 48px !important;
+    border-left: 4px solid white !important;
+    width: 150px !important;
+}
+.decrementbutton {
+    height: 120px !important;
+    border-top-left-radius: 20px !important;
+    border-bottom-left-radius: 20px !important;
+    background-color: transparent !important;
+    color: white !important;
+    font-size: 48px !important;
+    border-right: 4px solid white !important;
+    width: 150px !important;
+}
