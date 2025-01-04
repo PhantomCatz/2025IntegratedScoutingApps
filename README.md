@@ -1,5 +1,5 @@
-# 2024 Integrated Scouting Apps
-This repository contains integrated scouting applications developed for the 2024 season.
+# 2025 Integrated Scouting Apps
+This repository contains integrated scouting applications developed for the 2025 season.
 These apps are designed to streamline the scouting process and provide valuable insights for teams participating in robotics competitions.
 ## Features
 - Data Collection: Collect comprehensive data on robot performance, capabilities, and strategies.
@@ -10,7 +10,7 @@ These apps are designed to streamline the scouting process and provide valuable 
 ## Installation
 To install the scouting apps, follow these steps:
 - Clone the repository to your local machine using this command:
-- `git clone https://github.com/PhantomCatz/2024IntegratedScoutingApps.git`
+- `git clone https://github.com/PhantomCatz/2025IntegratedScoutingApps.git`
 - Install the necessary dependencies.
 - Run the apps locally or deploy them to your preferred platform.
 ## Contributing
