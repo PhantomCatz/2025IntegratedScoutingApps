@@ -43,31 +43,37 @@ function LoginPage(props: any) {
 			</div>
 			<Form onFinish={async (event) => {
 				try {
-					setIsLoading(true);
-					await fetch((process.env.REACT_APP_LOGIN_URL as string) + "?user_name=" + event.username.toLowerCase() + "&password=" + event.password, {
-						method: "GET",
-						headers: {
-							"Content-Type": "application/json",
-						}
-					}).then(response => response.json()).then(async data => {
-						let response = data;
-						console.log(response);
-						response = "true"; //REMOVE THIS LINE WHEN DONE TESTING
-						if (response.toString() === "true") {
-							const hash = base64url.decode(process.env.REACT_APP_HASH as string);
-							const signed = await new SignJWT({ username: event.username, password: event.password }).setExpirationTime("5hrs").setProtectedHeader({ alg: 'HS256' }).sign(hash);
-							removeCookies("login");
-							setCookies("login", signed);
-							window.location.href = "/home";
-						}
-						else if (response[process.env.REACT_APP_RESPONSE as string]) {
-							setMsg("Incorrect login");
-						}
-						else {
-							setMsg("Fatal error; tell a WebDev member immediately!");
-						}
-						setIsLoading(false);
-					});
+					// setIsLoading(true);
+					// await fetch((process.env.REACT_APP_LOGIN_URL as string) + "?user_name=" + event.username.toLowerCase() + "&password=" + event.password, {
+					// 	method: "GET",
+					// 	headers: {
+					// 		"Content-Type": "application/json",
+					// 	}
+					// }).then(response => response.json()).then(async data => {
+					// 	let response = data;
+					// 	console.log(response);
+					// 	response = "true"; //REMOVE THIS LINE WHEN DONE TESTING
+					// 	if (response.toString() === "true") {
+					// 		const hash = base64url.decode(process.env.REACT_APP_HASH as string);
+					// 		const signed = await new SignJWT({ username: event.username, password: event.password }).setExpirationTime("5hrs").setProtectedHeader({ alg: 'HS256' }).sign(hash);
+					// 		removeCookies("login");
+					// 		setCookies("login", signed);
+					// 		window.location.href = "/home";
+					// 	}
+					// 	else if (response[process.env.REACT_APP_RESPONSE as string]) {
+					// 		setMsg("Incorrect login");
+					// 	}
+					// 	else {
+					// 		setMsg("Fatal error; tell a WebDev member immediately!");
+					// 	}
+					// 	setIsLoading(false);
+					// });
+
+					//in case of emergency
+					const hash = base64url.decode(process.env.REACT_APP_HASH as string);
+					const signed = await new SignJWT({ username: event.username, password: event.password }).setExpirationTime("5hrs").setProtectedHeader({ alg: 'HS256' }).sign(hash);
+					setCookies("login", signed)
+					window.location.href = "/home"
 				}
 				catch (err) {
 					console.log(err);

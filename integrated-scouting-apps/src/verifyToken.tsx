@@ -68,7 +68,7 @@ async function ChangeTheme(cookie: any) {
       }, Number(cookie.substring(2)));
     }
     else {
-      document.body.style.backgroundColor = "#433D3C";
+      document.body.style.backgroundColor = "#32a7dc";
     }
   }
   catch (err) {
