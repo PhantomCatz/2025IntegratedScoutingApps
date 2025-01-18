@@ -274,7 +274,7 @@ function PitScout(props: any) {
               if (charCode > 31 && (charCode < 48 || charCode > 57)) {
                   event.preventDefault();
               }
-              if (currentValue.length >= 4) {
+              if (currentValue.length >= 5) {
                 event.preventDefault();
               }
             }}
