@@ -106,7 +106,10 @@ function PitScout(props: any) {
       "robot_wheel_type": event.robot_wheel_type,
       "robot_intake_capability": event.robot_intake_capability,
       "robot_shooting_capability": event.robot_shooting_capability,
-      "robot_ability_traversed_stage": event.robot_ability_traversed_stage,
+      "robot_ability_score_l1": event.robot_ability_ability_l1,
+      "robot_ability_score_l2": event.robot_ability_ability_l2,
+      "robot_ability_score_l3": event.robot_ability_ability_l3,
+      "robot_ability_score_l4": event.robot_ability_ability_l4,
       "robot_climbing_capabilities": event.robot_climbing_capabilities,
       "robot_pit_organization": event.robot_pit_organization,
       "robot_team_safety": event.robot_team_safety,
@@ -119,7 +122,10 @@ function PitScout(props: any) {
     const TESTDONOTREMOVE = {
       "images": ["test"],
       "initial": "test",
-      "robot_ability_traversed_stage": false,
+      "robot_ability_score_l1": false,
+      "robot_ability_score_l2": false,
+      "robot_ability_score_l3": false,
+      "robot_ability_score_l4": false,
       "robot_climbing_capabilities": "test",
       "robot_drive_train": "test",
       "robot_events": -1,
@@ -184,7 +190,10 @@ function PitScout(props: any) {
       robot_wheel_type: string;
       robot_intake_capability: string;
       robot_shooting_capability: string;
-      robot_ability_traversed_stage: boolean;
+      robot_ability_score_l1: boolean;
+      robot_ability_score_l2: boolean;
+      robot_ability_score_l3: boolean;
+      robot_ability_score_l4: boolean;
       robot_climbing_capabilities: string;
       robot_pit_organization: number;
       robot_team_safety: number;
@@ -285,8 +294,21 @@ function PitScout(props: any) {
         <Form.Item<FieldType> name="robot_shooting_capability" rules={[{ required: true, message: 'Please input the shooting capability!' }]}>
           <Select options={shootingCap} className="input" />
         </Form.Item>
-        <h2>Under Stage</h2>
-        <Form.Item<FieldType> valuePropName="checked" name="robot_ability_traversed_stage">
+        <h2>Coral Scoring</h2>
+        <h2> L1 </h2>
+        <Form.Item<FieldType> valuePropName="checked" name="robot_ability_score_l1">
+          <Checkbox className='input_checkbox' />
+        </Form.Item>
+        <h2> L2 </h2>
+        <Form.Item<FieldType> valuePropName="checked" name="robot_ability_score_l2">
+          <Checkbox className='input_checkbox' />
+        </Form.Item>
+        <h2> L3 </h2>
+        <Form.Item<FieldType> valuePropName="checked" name="robot_ability_score_l3">
+          <Checkbox className='input_checkbox' />
+        </Form.Item>
+        <h2> L4 </h2>
+        <Form.Item<FieldType> valuePropName="checked" name="robot_ability_score_l4">
           <Checkbox className='input_checkbox' />
         </Form.Item>
         <h2>Climbing Capability</h2>
