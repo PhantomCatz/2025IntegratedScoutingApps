@@ -292,78 +292,107 @@ function PitScout(props: any) {
         <h2>Climbing Capability</h2>
         <Form.Item<FieldType> name="robot_climbing_capabilities" rules={[{ required: true, message: 'Please input the climbing capability!' }]}>
           <Select options={climbingCap} className="input" />
-        </Form.Item>
-        <h2>Pit Organization (0-4)</h2>
-        <Form.Item<FieldType> name="robot_pit_organization" rules={[{ required: true, message: 'Please input the pit organization rating!' }]}>
-          <InputNumber
-            controls
-            disabled
-            min={0}
-            max={4}
-            className="input"
-            addonAfter={<Button onClick={() => {
-              setFormValue({ ...formValue, robot_pit_organization: formValue.robot_pit_organization + 1 });
-            }} className='incrementbutton'>+</Button>}
-            addonBefore={<Button onClick={() => {
-              if (Number(formValue.robot_pit_organization) > 0) {
-                setFormValue({ ...formValue, robot_pit_organization: formValue.robot_pit_organization - 1 });
-              }
-            }} className='decrementbutton'>-</Button>}
-          />
-        </Form.Item>
-        <h2>Team Safety (0-4)</h2>
-        <Form.Item<FieldType> name="robot_team_safety" rules={[{ required: true, message: 'Please input the team safety rating!' }]}>
-          <InputNumber
-            controls
-            disabled
-            min={0}
-            max={4}
-            className="input"
-            addonAfter={<Button onClick={() => {
-              setFormValue({ ...formValue, robot_team_safety: formValue.robot_team_safety + 1 });
-            }} className='incrementbutton'>+</Button>}
-            addonBefore={<Button onClick={() => {
-              if (Number(formValue.robot_team_safety) > 0) {
-                setFormValue({ ...formValue, robot_team_safety: formValue.robot_team_safety - 1 });
-              }
-            }} className='decrementbutton'>-</Button>}
-          />
-        </Form.Item>
-        <h2>Team Workmanship (0-4)</h2>
-        <Form.Item<FieldType> name="robot_team_workmanship" rules={[{ required: true, message: 'Please input the team workmanship rating!' }]}>
-          <InputNumber
-            controls
-            disabled
-            min={0}
-            max={4}
-            className="input"
-            addonAfter={<Button onClick={() => {
-              setFormValue({ ...formValue, robot_team_workmanship: formValue.robot_team_workmanship + 1 });
-            }} className='incrementbutton'>+</Button>}
-            addonBefore={<Button onClick={() => {
-              if (Number(formValue.robot_team_workmanship) > 0) {
-                setFormValue({ ...formValue, robot_team_workmanship: formValue.robot_team_workmanship - 1 });
-              }
-            }} className='decrementbutton'>-</Button>}
-          />
-        </Form.Item>
-        <h2>Gracious Professionalism (0-4)</h2>
-        <Form.Item<FieldType> name="robot_GP" rules={[{ required: true, message: 'Please input the GP rating!' }]}>
-          <InputNumber
-            controls
-            disabled
-            min={0}
-            max={4}
-            className="input"
-            addonAfter={<Button onClick={() => {
-              setFormValue({ ...formValue, robot_GP: formValue.robot_GP + 1 });
-            }} className='incrementbutton'>+</Button>}
-            addonBefore={<Button onClick={() => {
-              if (Number(formValue.robot_GP) > 0) {
-                setFormValue({ ...formValue, robot_GP: formValue.robot_GP - 1 });
-              }
-            }} className='decrementbutton'>-</Button>}
-          />
+       
+        <Form.Item>
+            <h2>Pit Organization(0-4)</h2>
+          <Form.Item<FieldType> name="robot_pit_organization" rules={[{ required: true, message: 'Please input the pit organization rating!' }]}>
+            <InputNumber
+                  controls
+                  disabled
+                  min={0}
+                  max={4}
+                  className="input"
+                addonAfter={<Button onClick={() => {
+                  setFormValue(prevValue => ({
+                    ...prevValue,
+                    robot_pit_organization: Math.min(4, (prevValue.robot_pit_organization || 0) + 1)
+                }));
+              }} className='incrementbutton'>+</Button>}
+              addonBefore={<Button onClick={() => {
+                setFormValue(prevValue => ({
+                    ...prevValue,
+                    robot_pit_organization: Math.max(0, (prevValue.robot_pit_organization || 0) - 1)
+                  }));
+              }} className='decrementbutton'>-</Button>}
+            />
+          </Form.Item>
+          </Form.Item>
+
+          <Form.Item>
+            <h2>Team Safety(0-4)</h2>
+          <Form.Item<FieldType> name="robot_team_safety" rules={[{ required: true, message: 'Please input the team safety rating!' }]}>
+            <InputNumber
+                  controls
+                  disabled
+                  min={0}
+                  max={4}
+                  className="input"
+                addonAfter={<Button onClick={() => {
+                  setFormValue(prevValue => ({
+                    ...prevValue,
+                    robot_team_safety: Math.min(4, (prevValue.robot_team_safety || 0) + 1)
+                }));
+              }} className='incrementbutton'>+</Button>}
+              addonBefore={<Button onClick={() => {
+                setFormValue(prevValue => ({
+                    ...prevValue,
+                    robot_team_safety: Math.max(0, (prevValue.robot_team_safety || 0) - 1)
+                  }));
+              }} className='decrementbutton'>-</Button>}
+            />
+          </Form.Item>
+          </Form.Item>
+        
+          <Form.Item>
+            <h2>Team Workmanship(0-4)</h2>
+          <Form.Item<FieldType> name="robot_team_workmanship" rules={[{ required: true, message: 'Please input the team workmanship rating!' }]}>
+            <InputNumber
+                  controls
+                  disabled
+                  min={0}
+                  max={4}
+                  className="input"
+                addonAfter={<Button onClick={() => {
+                  setFormValue(prevValue => ({
+                    ...prevValue,
+                    robot_team_workmanship: Math.min(4, (prevValue.robot_team_workmanship || 0) + 1)
+                }));
+              }} className='incrementbutton'>+</Button>}
+              addonBefore={<Button onClick={() => {
+                setFormValue(prevValue => ({
+                    ...prevValue,
+                    robot_team_workmanship: Math.max(0, (prevValue.robot_team_workmanship || 0) - 1)
+                  }));
+              }} className='decrementbutton'>-</Button>}
+            />
+          </Form.Item>
+          </Form.Item>
+
+          <Form.Item>
+            <h2>Gracious Professionalism(0-4)</h2>
+          <Form.Item<FieldType> name="robot_GP" rules={[{ required: true, message: 'Please input the GP rating!' }]}>
+            <InputNumber
+                  controls
+                  disabled
+                  min={0}
+                  max={4}
+                  className="input"
+                addonAfter={<Button onClick={() => {
+                  setFormValue(prevValue => ({
+                    ...prevValue,
+                    robot_GP: Math.min(4, (prevValue.robot_GP || 0) + 1)
+                }));
+              }} className='incrementbutton'>+</Button>}
+              addonBefore={<Button onClick={() => {
+                setFormValue(prevValue => ({
+                    ...prevValue,
+                    robot_GP: Math.max(0, (prevValue.robot_GP || 0) - 1)
+                  }));
+              }} className='decrementbutton'>-</Button>}
+            />
+          </Form.Item>
+          </Form.Item>
+
         </Form.Item>
         <h2>Comments</h2>
         <Form.Item<FieldType> name="comments" rules={[{ required: true, message: "Please input some comments!" }]}>
