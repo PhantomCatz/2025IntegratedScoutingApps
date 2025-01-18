@@ -108,7 +108,6 @@ function PitScout(props: any) {
       "robot_shooting_capability": event.robot_shooting_capability,
       "robot_ability_traversed_stage": event.robot_ability_traversed_stage,
       "robot_climbing_capabilities": event.robot_climbing_capabilities,
-      "robot_trap_detail": event.robot_trap_detail,
       "robot_pit_organization": event.robot_pit_organization,
       "robot_team_safety": event.robot_team_safety,
       "robot_team_workmanship": event.robot_team_workmanship,
@@ -135,7 +134,6 @@ function PitScout(props: any) {
       "robot_shooting_capability": "test",
       "robot_team_safety": -1,
       "robot_team_workmanship": -1,
-      "robot_trap_detail": "test",
       "robot_weight": -1,
       "robot_wheel_type": "test",
       "team_number": -1,
@@ -191,7 +189,6 @@ function PitScout(props: any) {
       robot_shooting_capability: string;
       robot_ability_traversed_stage: boolean;
       robot_climbing_capabilities: string;
-      robot_trap_detail: boolean;
       robot_pit_organization: number;
       robot_team_safety: number;
       robot_team_workmanship: number;
@@ -230,16 +227,16 @@ function PitScout(props: any) {
       { label: "None", value: 'none' },
     ];
     const shootingCap = [
-      { label: "Speaker", value: "speaker" },
-      { label: "Amp", value: "amp" },
+      { label: "Algae", value: "algae" },
+      { label: "Coral", value: "coral" },
       { label: "Both", value: 'both' },
       { label: "None", value: 'none' },
     ];
     const climbingCap = [
-      { label: "Solo Climb", value: "solo_climb" },
-      { label: "Harmonize", value: "harmonize" },
-      { label: "Triple Climb", value: 'triple_climb' },
-      { label: "No Climb", value: "no_climb" }
+      { label: "Shallow", value: "shallow" },
+      { label: "Deep", value: "deep" },
+      { label: "Parked", value: 'parked' },
+      { label: "None", value: "none" }
     ];
     return (
       <div>
@@ -299,10 +296,6 @@ function PitScout(props: any) {
         <h2>Climbing Capability</h2>
         <Form.Item<FieldType> name="robot_climbing_capabilities" rules={[{ required: true, message: 'Please input the climbing capability!' }]}>
           <Select options={climbingCap} className="input" />
-        </Form.Item>
-        <h2>Robot Trap</h2>
-        <Form.Item<FieldType> valuePropName="checked" name="robot_trap_detail">
-          <Checkbox className='input_checkbox' />
         </Form.Item>
         <h2>Auton Path</h2>
         <ReactSketchCanvas
@@ -452,9 +445,7 @@ function PitScout(props: any) {
       <Form
         form={form}
         initialValues={{
-          robot_ability_traversed_stage: false,
-          robot_trap_detail: false,
-        }}
+          robot_ability_traversed_stage: false,        }}
         onFinish={async (event) => {
           try {
             setLoading(true);
