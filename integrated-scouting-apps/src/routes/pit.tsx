@@ -262,11 +262,11 @@ function PitScout(props: any) {
           <InputNumber 
             controls 
             min={1} 
-           max={9999} 
+           max={99999} 
            className="input"
            onChange={(value) => {
               if (value !== null) {
-               const limitedValue = Math.min(9999, value);
+               const limitedValue = Math.min(99999, value);
                 getPitScout(limitedValue);
               }
             }}
