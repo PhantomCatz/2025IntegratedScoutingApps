@@ -103,7 +103,7 @@ function PitScout(props: any) {
       "robot_motor_type": event.robot_motor_type,
       "robot_motor_counter": event.robot_motor_counter,
       "robot_wheel_type": event.robot_wheel_type,
-      "robot_intake_capability": event.robot_intake_capability,
+      "robot_coral_intake_capability": event.robot_coral_intake_capability,
       "robot_shooting_capability": event.robot_shooting_capability,
       "robot_ability_score_l1": event.robot_ability_ability_l1,
       "robot_ability_score_l2": event.robot_ability_ability_l2,
@@ -129,7 +129,7 @@ function PitScout(props: any) {
       "robot_drive_train": "test",
       "robot_events": -1,
       "robot_GP": -1,
-      "robot_intake_capability": "test",
+      "robot_coral_intake_capability": "test",
       "robot_motor_counter": -1,
       "robot_motor_type": "test",
       "robot_pit_organization": -1,
@@ -187,7 +187,7 @@ function PitScout(props: any) {
       robot_motor_type: string;
       robot_motor_counter: number;
       robot_wheel_type: string;
-      robot_intake_capability: string;
+      robot_coral_intake_capability: string;
       robot_shooting_capability: string;
       robot_ability_score_l1: boolean;
       robot_ability_score_l2: boolean;
@@ -224,22 +224,27 @@ function PitScout(props: any) {
       { label: "Mechanum", value: 'mechanum' },
       { label: "Other", value: 'other' },
     ];
-    const intakeCap = [
-      { label: "Source", value: "source" },
+    const coralIntakeCap = [
+      { label: "Coral Station", value: "coral_station" },
       { label: "Ground", value: "ground" },
       { label: "Both", value: 'both' },
       { label: "None", value: 'none' },
     ];
+    const algaeIntakeCap = [
+      { label: "Net", value: "net" },
+      { label: "Processor", value: "processor" },
+      { label: "Both", value: 'both' },
+      { label: "None", value: 'none' },
+    ];
     const shootingCap = [
-      { label: "Algae", value: "algae" },
-      { label: "Coral", value: "coral" },
+      { label: "Reef Zone", value: "reef zone" },
+      { label: "Ground", value: "ground" },
       { label: "Both", value: 'both' },
       { label: "None", value: 'none' },
     ];
     const climbingCap = [
       { label: "Shallow", value: "shallow" },
       { label: "Deep", value: "deep" },
-      { label: "Parked", value: 'parked' },
       { label: "None", value: "none" }
     ];
     return (
@@ -275,11 +280,7 @@ function PitScout(props: any) {
             }}
           />
         </Form.Item>
-        <h2>Drive Train Type</h2>
-        <Form.Item<FieldType> name="robot_drive_train" rules={[{ required: true, message: 'Please input the drive train type!' }]}>
-          <Select options={drive_train} className="input" />
-        </Form.Item>
-        <h2>Robot Weight</h2>
+        <h2>Robot Weight (lbs)</h2>
         <Form.Item<FieldType> 
           name="robot_weight" 
           rules={[{ required: true, message: 'Please input the robot weight in lbs!' }]}>
@@ -291,6 +292,10 @@ function PitScout(props: any) {
           className="input" 
           type="number"
         />
+        </Form.Item>
+        <h2>Drive Train Type</h2>
+        <Form.Item<FieldType> name="robot_drive_train" rules={[{ required: true, message: 'Please input the drive train type!' }]}>
+          <Select options={drive_train} className="input" />
         </Form.Item>
         <h2>Motor Type</h2>
         <Form.Item<FieldType> name="robot_motor_type" rules={[{ required: true, message: 'Please input the motor type!' }]}>
@@ -317,13 +322,9 @@ function PitScout(props: any) {
         <Form.Item<FieldType> name="robot_wheel_type" rules={[{ required: true, message: 'Please input the wheel type!' }]}>
           <Select placeholder="" options={wheel_type} className="input" />
         </Form.Item>
-        <h2>Intake Capability</h2>
-        <Form.Item<FieldType> name="robot_intake_capability" rules={[{ required: true, message: 'Please input the intake capability!' }]}>
-          <Select options={intakeCap} className="input" />
-        </Form.Item>
-        <h2>Shooting Capability</h2>
-        <Form.Item<FieldType> name="robot_shooting_capability" rules={[{ required: true, message: 'Please input the shooting capability!' }]}>
-          <Select options={shootingCap} className="input" />
+        <h2>Coral Intake Capability</h2>
+        <Form.Item<FieldType> name="robot_coral_intake_capability" rules={[{ required: true, message: 'Please input the intake capability!' }]}>
+          <Select options={coralIntakeCap} className="input" />
         </Form.Item>
         <h2>Coral Scoring</h2>
         <h2> L1 </h2>
@@ -341,6 +342,14 @@ function PitScout(props: any) {
         <h2> L4 </h2>
         <Form.Item<FieldType> valuePropName="checked" name="robot_ability_score_l4">
           <Checkbox className='input_checkbox' />
+        </Form.Item>
+        <h2>Algae Intake Capability</h2>
+        <Form.Item<FieldType> name="robot_shooting_capability" rules={[{ required: true, message: 'Please input the shooting capability!' }]}>
+          <Select options={shootingCap} className="input" />
+        </Form.Item>
+        <h2>Algae Scoring Capability</h2>
+        <Form.Item<FieldType> name="robot_shooting_capability" rules={[{ required: true, message: 'Please input the shooting capability!' }]}>
+          <Select options={algaeIntakeCap} className="input" />
         </Form.Item>
         <h2>Climbing Capability</h2>
         <Form.Item<FieldType> name="robot_climbing_capabilities" rules={[{ required: true, message: 'Please input the climbing capability!' }]}>
