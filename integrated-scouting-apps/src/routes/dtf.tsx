@@ -19,8 +19,12 @@ function DTF(props: any) {
 		   <a href='/home'>
 					<img src={back} style={{ height: 64 + 'px', paddingTop: '5%' }} alt=''></img>
 				</a>
-			<img src={logo} style={{ height: '256px' }} alt='Logo' />
-			<h1 style={{ display: 'inline-block', textAlign: 'center' }}>Drive Team Feeder</h1>
+				<td>
+                  <img src={logo} style={{ height: 256 + 'px' }} alt=''></img>
+                </td>
+                <td>
+                  <h1 style={{ display: 'inline-block', textAlign: 'center' }}>Drive Team Feeder</h1>
+                </td>
 			</header>
 		  </div>
 			

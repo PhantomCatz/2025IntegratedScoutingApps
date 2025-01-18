@@ -65,7 +65,7 @@ function DTFTeams(props: any) {
                <Input className="input" disabled value={""} />
                <h2>Missed Algae</h2>
                <Input className="input" disabled value={""} />
-               <h2>Climb</h2>
+               <h2> Climb Type</h2>
                <Input className="input" disabled value={""} /> 
                <h2>Avg Climb Time</h2>
                <Input className="input" disabled value={""} /> 
@@ -112,9 +112,9 @@ function DTFTeams(props: any) {
               <div>{/*checkboxes for YES or NO */}
                 <h2>Robot Died (counter: matches)</h2>
                 <Input className="input" disabled value={""}  /> 
-                <h2>Intake Algae</h2>
+                <h2>Intake Algae Type</h2>
                 <Input className="input" disabled value={""}  /> 
-                <h2>Intake Coral</h2>
+                <h2>Intake Coral Type</h2>
                 <Input className="input" disabled value={""}  /> 
                 <h2>Robot Comments</h2>
                 <TextArea disabled className="textbox_input" value={""} /> 
@@ -138,11 +138,11 @@ function DTFTeams(props: any) {
         <div> 
         <h2>Alliance Avg Score</h2> 
         <Input className="input" disabled value={""} />
-        <h2>R1 Avg Score</h2>
+        <h2>Team 1 Avg Score</h2>
         <Input className="input" disabled value={""} /> 
-        <h2>R2 Avg Score</h2>
+        <h2>Team 2 Avg Score</h2>
         <Input className="input" disabled value={""} /> 
-        <h2>R3 Avg Score</h2>
+        <h2>Team 3 Avg Score</h2>
         <Input className="input" disabled value={""} /> 
         <h2>Driver Skill</h2>
         <Flex justify='in-between'>
