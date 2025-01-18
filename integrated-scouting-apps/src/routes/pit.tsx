@@ -7,11 +7,13 @@ import { useRef } from 'react';
 import { Button } from 'antd';
 import React, { useState, useEffect } from 'react';
 import back from '../public/images/back.png';
-import { ReactSketchCanvas, ReactSketchCanvasRef } from 'react-sketch-canvas';
+import { ReactSketchCanvasRef } from 'react-sketch-canvas';
 import VerifyLogin from '../verifyToken';
 import { useCookies } from 'react-cookie';
 import { saveAs } from 'file-saver';
 import TextArea from 'antd/es/input/TextArea';
+
+//Rhys was here//
 
 function PitScout(props: any) {
   const eventname = process.env.REACT_APP_EVENTNAME as string;
