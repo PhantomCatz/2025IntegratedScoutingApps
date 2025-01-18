@@ -250,8 +250,31 @@ function PitScout(props: any) {
           <Input maxLength={2} className="input" />
         </Form.Item>
         <h2>Team #</h2>
-        <Form.Item<FieldType> name="team_number" rules={[{ required: true, message: 'Please input the team number!' }]}>
-          <InputNumber controls min={1} max={9999} className="input" onChange={(event) => {getPitScout(event as number)}} />
+        <Form.Item<FieldType> 
+          name="team_number" 
+          rules={[{ required: true, message: 'Please input the team number!' }]}>
+          <InputNumber 
+            controls 
+            min={1} 
+           max={9999} 
+           className="input"
+           onChange={(value) => {
+              if (value !== null) {
+               const limitedValue = Math.min(9999, value);
+                getPitScout(limitedValue);
+              }
+            }}
+            onKeyPress={(event) => {
+              const currentValue = event.currentTarget.value;
+              const charCode = event.which ? event.which : event.keyCode;
+              if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+                  event.preventDefault();
+              }
+              if (currentValue.length >= 4) {
+                event.preventDefault();
+              }
+            }}
+          />
         </Form.Item>
         <h2>Drive Train Type</h2>
         <Form.Item<FieldType> name="robot_drive_train" rules={[{ required: true, message: 'Please input the drive train type!' }]}>
