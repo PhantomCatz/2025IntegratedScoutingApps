@@ -230,15 +230,15 @@ function PitScout(props: any) {
       { label: "Both", value: 'both' },
       { label: "None", value: 'none' },
     ];
-    const algaeIntakeCap = [
-      { label: "Net", value: "net" },
-      { label: "Processor", value: "processor" },
+    const algaeintakeCap = [
+      { label: "Reef Zone", value: "reef zone" },
+      { label: "Coral", value: "coral" },
       { label: "Both", value: 'both' },
       { label: "None", value: 'none' },
     ];
-    const shootingCap = [
-      { label: "Reef Zone", value: "reef zone" },
-      { label: "Ground", value: "ground" },
+    const algaescoringCap = [
+      { label: "Net", value: "net" },
+      { label: "Processor", value: "processor" },
       { label: "Both", value: 'both' },
       { label: "None", value: 'none' },
     ];
@@ -294,12 +294,22 @@ function PitScout(props: any) {
         />
         </Form.Item>
         <h2>Drive Train Type</h2>
-        <Form.Item<FieldType> name="robot_drive_train" rules={[{ required: true, message: 'Please input the drive train type!' }]}>
-          <Select options={drive_train} className="input" />
+        <Form.Item name="robot_drive_train" rules={[{ required: true, message: 'Please input the drive train type!' }]}>
+        <Select
+          options={drive_train}
+          className="input"
+          dropdownMatchSelectWidth={false}
+          dropdownStyle={{ maxHeight: 'none' }}
+        />
         </Form.Item>
         <h2>Motor Type</h2>
-        <Form.Item<FieldType> name="robot_motor_type" rules={[{ required: true, message: 'Please input the motor type!' }]}>
-          <Select options={motor_type} className="input" />
+        <Form.Item name="robot_motor_type" rules={[{ required: true, message: 'Please input the motor type!' }]}>
+        <Select
+          options={motor_type}
+          className="input"
+          dropdownMatchSelectWidth={false}
+          dropdownStyle={{ maxHeight: 'none' }}
+        />
         </Form.Item>
         <h2># of Motors</h2>
         <Form.Item<FieldType> name="robot_motor_counter" rules={[{ required: true, message: 'Please input the number of motors!' }]}>
@@ -319,12 +329,23 @@ function PitScout(props: any) {
           />
         </Form.Item>
         <h2>Wheel Type</h2>
-        <Form.Item<FieldType> name="robot_wheel_type" rules={[{ required: true, message: 'Please input the wheel type!' }]}>
-          <Select placeholder="" options={wheel_type} className="input" />
+        <Form.Item name="robot_wheel_type" rules={[{ required: true, message: 'Please input the wheel type!' }]}>
+        <Select
+          placeholder=""
+          options={wheel_type}
+          className="input"
+          dropdownMatchSelectWidth={false}
+          dropdownStyle={{ maxHeight: 'none' }}
+        />
         </Form.Item>
         <h2>Coral Intake Capability</h2>
-        <Form.Item<FieldType> name="robot_coral_intake_capability" rules={[{ required: true, message: 'Please input the intake capability!' }]}>
-          <Select options={coralIntakeCap} className="input" />
+          <Form.Item name="robot_coral_intake_capability" rules={[{ required: true, message: 'Please input the intake capability!' }]}>
+          <Select
+            options={coralIntakeCap}
+            className="input"
+            dropdownMatchSelectWidth={false}
+            dropdownStyle={{ maxHeight: 'none' }}
+          />
         </Form.Item>
         <h2>Coral Scoring</h2>
         <h2> L1 </h2>
@@ -344,17 +365,26 @@ function PitScout(props: any) {
           <Checkbox className='input_checkbox' />
         </Form.Item>
         <h2>Algae Intake Capability</h2>
-        <Form.Item<FieldType> name="robot_shooting_capability" rules={[{ required: true, message: 'Please input the shooting capability!' }]}>
-          <Select options={shootingCap} className="input" />
-        </Form.Item>
+              <Form.Item name="robot_shooting_capability" rules={[{ required: true, message: 'Please input the shooting capability!' }]}>
+        <Select
+          options={algaeintakeCap}
+          className="input"
+          dropdownMatchSelectWidth={false}
+          dropdownStyle={{ maxHeight: 'none' }}
+        />
+      </Form.Item>
         <h2>Algae Scoring Capability</h2>
-        <Form.Item<FieldType> name="robot_shooting_capability" rules={[{ required: true, message: 'Please input the shooting capability!' }]}>
-          <Select options={algaeIntakeCap} className="input" />
-        </Form.Item>
+              <Form.Item name="robot_shooting_capability" rules={[{ required: true, message: 'Please input the shooting capability!' }]}>
+        <Select
+          options={algaescoringCap}
+          className="input"
+          dropdownMatchSelectWidth={false}
+          dropdownStyle={{ maxHeight: 'none' }}
+        />
+      </Form.Item>
         <h2>Climbing Capability</h2>
         <Form.Item<FieldType> name="robot_climbing_capabilities" rules={[{ required: true, message: 'Please input the climbing capability!' }]}>
           <Select options={climbingCap} className="input" />
-       
         <Form.Item>
             <h2>Pit Organization(0-4)</h2>
           <Form.Item<FieldType> name="robot_pit_organization" rules={[{ required: true, message: 'Please input the pit organization rating!' }]}>
