@@ -112,7 +112,6 @@ function PitScout(props: any) {
       "robot_team_safety": event.robot_team_safety,
       "robot_team_workmanship": event.robot_team_workmanship,
       "robot_GP": event.robot_GP,
-      "robot_auton_path": imageURI.current,
       "images": robotImageURI,
       "comments": event.comments,
     };
@@ -121,8 +120,6 @@ function PitScout(props: any) {
       "images": ["test"],
       "initial": "test",
       "robot_ability_traversed_stage": false,
-      "robot_auton_path": "test",
-      "robot_auton_path_detail": "test",
       "robot_climbing_capabilities": "test",
       "robot_drive_train": "test",
       "robot_events": -1,
@@ -193,7 +190,6 @@ function PitScout(props: any) {
       robot_team_safety: number;
       robot_team_workmanship: number;
       robot_GP: number;
-      robot_auton_path: string;
       robot_images: string;
       comments: string;
     };
@@ -297,23 +293,7 @@ function PitScout(props: any) {
         <Form.Item<FieldType> name="robot_climbing_capabilities" rules={[{ required: true, message: 'Please input the climbing capability!' }]}>
           <Select options={climbingCap} className="input" />
         </Form.Item>
-        <h2>Auton Path</h2>
-        <ReactSketchCanvas
-          ref={canvasRef}
-          strokeWidth={8}
-          height='882px'
-          strokeColor='#32a7dc'
-          backgroundImage={field_blue}
-          exportWithBackgroundImage
-          svgStyle={{ width: '882px', height: '882px' }}
-          style={{ marginBottom: '5%' }}
-        />
-        <Flex justify='in-between' style={{ marginBottom: '5%' }}>
-          <Button onClick={() => canvasRef.current?.undo()} className='pathbutton'>Undo</Button>
-          <Button onClick={() => canvasRef.current?.redo()} className='pathbutton'>Redo</Button>
-          <Button onClick={() => canvasRef.current?.clearCanvas()} className='pathbutton'>Clear</Button>
-        </Flex>
-        <h2>Pit Organization</h2>
+        <h2>Pit Organization (0-4)</h2>
         <Form.Item<FieldType> name="robot_pit_organization" rules={[{ required: true, message: 'Please input the pit organization rating!' }]}>
           <InputNumber
             controls
@@ -331,7 +311,7 @@ function PitScout(props: any) {
             }} className='decrementbutton'>-</Button>}
           />
         </Form.Item>
-        <h2>Team Safety</h2>
+        <h2>Team Safety (0-4)</h2>
         <Form.Item<FieldType> name="robot_team_safety" rules={[{ required: true, message: 'Please input the team safety rating!' }]}>
           <InputNumber
             controls
@@ -349,7 +329,7 @@ function PitScout(props: any) {
             }} className='decrementbutton'>-</Button>}
           />
         </Form.Item>
-        <h2>Team Workmanship</h2>
+        <h2>Team Workmanship (0-4)</h2>
         <Form.Item<FieldType> name="robot_team_workmanship" rules={[{ required: true, message: 'Please input the team workmanship rating!' }]}>
           <InputNumber
             controls
