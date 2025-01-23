@@ -107,6 +107,8 @@ function PitScout(props: any) {
       "robot_wheel_type": event.robot_wheel_type,
       "robot_coral_intake_capability": event.robot_coral_intake_capability,
       "robot_shooting_capability": event.robot_shooting_capability,
+      "robot_algae_intake_capability": event.robot_algae_intake_capability,
+      "robot_algae_scoring_capability": event.robot_algae_scoring_capability,
       "robot_ability_score_l1": event.robot_ability_ability_l1,
       "robot_ability_score_l2": event.robot_ability_ability_l2,
       "robot_ability_score_l3": event.robot_ability_ability_l3,
@@ -190,7 +192,8 @@ function PitScout(props: any) {
       robot_motor_counter: number;
       robot_wheel_type: string;
       robot_coral_intake_capability: string;
-      robot_shooting_capability: string;
+      robot_algae_intake_capability: string;
+      robot_algae_scoring_capability: string;
       robot_ability_score_l1: boolean;
       robot_ability_score_l2: boolean;
       robot_ability_score_l3: boolean;
@@ -367,7 +370,7 @@ function PitScout(props: any) {
           <Checkbox className='input_checkbox' />
         </Form.Item>
         <h2>Algae Intake Capability</h2>
-              <Form.Item name="robot_shooting_capability" rules={[{ required: true, message: 'Please input the shooting capability!' }]}>
+              <Form.Item name="robot_algae_intake_capability" rules={[{ required: true, message: 'Please input the Algae intake capability!' }]}>
         <Select
           options={algaeintakeCap}
           className="input"
@@ -376,7 +379,7 @@ function PitScout(props: any) {
         />
       </Form.Item>
         <h2>Algae Scoring Capability</h2>
-              <Form.Item name="robot_shooting_capability" rules={[{ required: true, message: 'Please input the shooting capability!' }]}>
+              <Form.Item name="robot_shooting_capability" rules={[{ required: true, message: 'Please input the Algae Scoring capability!' }]}>
         <Select
           options={algaescoringCap}
           className="input"
@@ -391,8 +394,6 @@ function PitScout(props: any) {
             <h2>Pit Organization(0-4)</h2>
           <Form.Item<FieldType> name="robot_pit_organization" rules={[{ required: true, message: 'Please input the pit organization rating!' }]}>
             <InputNumber
-                  controls
-                  disabled
                   min={0}
                   max={4}
                   className="input"
@@ -416,8 +417,6 @@ function PitScout(props: any) {
             <h2>Team Safety(0-4)</h2>
           <Form.Item<FieldType> name="robot_team_safety" rules={[{ required: true, message: 'Please input the team safety rating!' }]}>
             <InputNumber
-                  controls
-                  disabled
                   min={0}
                   max={4}
                   className="input"
@@ -441,8 +440,6 @@ function PitScout(props: any) {
             <h2>Team Workmanship(0-4)</h2>
           <Form.Item<FieldType> name="robot_team_workmanship" rules={[{ required: true, message: 'Please input the team workmanship rating!' }]}>
             <InputNumber
-                  controls
-                  disabled
                   min={0}
                   max={4}
                   className="input"
@@ -466,8 +463,6 @@ function PitScout(props: any) {
             <h2>Gracious Professionalism(0-4)</h2>
           <Form.Item<FieldType> name="robot_GP" rules={[{ required: true, message: 'Please input the GP rating!' }]}>
             <InputNumber
-                  controls
-                  disabled
                   min={0}
                   max={4}
                   className="input"
