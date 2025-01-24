@@ -29,6 +29,8 @@ import Watchlist from './routes/watchlist';
 import WatchlistGet from './routes/watchlistdata';
 import WatchlistUpdate from './routes/watchlistupdate';
 
+import QrCode from './routes/qrCodeViewer';
+
 export default function App() {
   return (
     <BrowserRouter>
@@ -53,6 +55,8 @@ export default function App() {
         <Route path="/watchlist/:team_number" element={<WatchlistGet title="2637 Watch List" />} />
         <Route path="/watchlist/update/:question_info" element={<WatchlistUpdate title="2637 Watch List" />} />
         <Route path="/buh" element={<Buh title="monkey"/>} />
+        
+	<Route path="/qrcode" element={<QrCode title="2637 Strategy App"/>} />
       </Routes>
     </BrowserRouter>
   );
