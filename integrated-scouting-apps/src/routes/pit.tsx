@@ -2,7 +2,7 @@ import '../public/stylesheets/style.css';
 import '../public/stylesheets/pit.css';
 import '../public/stylesheets/match.css';
 import logo from '../public/images/logo.png';
-import { Checkbox, Flex, Form, Input, InputNumber, Select, Upload } from 'antd';
+import { Checkbox, Form, Input, InputNumber, Select, Upload } from 'antd';
 import { useRef } from 'react';
 import { Button } from 'antd';
 import React, { useState, useEffect } from 'react';
@@ -106,7 +106,6 @@ function PitScout(props: any) {
       "robot_motor_counter": event.robot_motor_counter,
       "robot_wheel_type": event.robot_wheel_type,
       "robot_coral_intake_capability": event.robot_coral_intake_capability,
-      "robot_shooting_capability": event.robot_shooting_capability,
       "robot_algae_intake_capability": event.robot_algae_intake_capability,
       "robot_algae_scoring_capability": event.robot_algae_scoring_capability,
       "robot_ability_score_l1": event.robot_ability_ability_l1,
@@ -137,7 +136,6 @@ function PitScout(props: any) {
       "robot_motor_counter": -1,
       "robot_motor_type": "test",
       "robot_pit_organization": -1,
-      "robot_shooting_capability": "test",
       "robot_team_safety": -1,
       "robot_team_workmanship": -1,
       "robot_weight": -1,
@@ -298,6 +296,7 @@ function PitScout(props: any) {
           type="number"
         />
         </Form.Item>
+
         <h2>Drive Train Type</h2>
         <Form.Item name="robot_drive_train" rules={[{ required: true, message: 'Please input the drive train type!' }]}>
         <Select
@@ -379,7 +378,7 @@ function PitScout(props: any) {
         />
       </Form.Item>
         <h2>Algae Scoring Capability</h2>
-              <Form.Item name="robot_shooting_capability" rules={[{ required: true, message: 'Please input the Algae Scoring capability!' }]}>
+              <Form.Item name="robot_algae_scoring_capability" rules={[{ required: true, message: 'Please input the Algae Scoring capability!' }]}>
         <Select
           options={algaescoringCap}
           className="input"
@@ -390,6 +389,8 @@ function PitScout(props: any) {
         <h2>Climbing Capability</h2>
         <Form.Item<FieldType> name="robot_climbing_capabilities" rules={[{ required: true, message: 'Please input the climbing capability!' }]}>
           <Select options={climbingCap} className="input" />
+        </Form.Item>
+
         <Form.Item>
             <h2>Pit Organization(0-4)</h2>
           <Form.Item<FieldType> name="robot_pit_organization" rules={[{ required: true, message: 'Please input the pit organization rating!' }]}>
@@ -410,7 +411,6 @@ function PitScout(props: any) {
                   }));
               }} className='decrementbutton'>-</Button>}
             />
-          </Form.Item>
           </Form.Item>
 
           <Form.Item>
@@ -551,16 +551,16 @@ function PitScout(props: any) {
             const initials = form.getFieldValue("scouter_initial");
             form.resetFields();
             form.setFieldsValue({ "scouter_initial": initials });
-            setFormValue({
-              robot_events: 0,
-              robot_weight: 0,
-              robot_motor_counter: 0,
-              robot_pit_organization: 0,
-              robot_team_safety: 0,
-              robot_team_workmanship: 0,
-              robot_GP: 0,
-              comments: "",
-            });
+            // setFormValue({
+            //   robot_events: 0,
+            //   robot_weight: 0,
+            //   robot_motor_counter: 0,
+            //   robot_pit_organization: 0,
+            //   robot_team_safety: 0,
+            //   robot_team_workmanship: 0,
+            //   robot_GP: 0,
+            //   comments: "",
+            // });
           }
           catch (err) {
             console.log(err);
