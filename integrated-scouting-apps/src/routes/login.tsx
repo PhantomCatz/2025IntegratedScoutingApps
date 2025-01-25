@@ -77,8 +77,8 @@ function LoginPage(props: any) {
 				}
 				catch (err) {
 					console.log(err);
-					window.alert("Error occured, please do not do leave this message and notify a Webdev member immediately.");
-					window.alert(err);
+					// window.alert("Error occured, please do not do leave this message and notify a Webdev member immediately.");
+					// window.alert(err);
 				}
 			}}>
 				<h2 style={{ color: "red" }}>{msg}</h2>
