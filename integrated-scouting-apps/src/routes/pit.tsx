@@ -294,9 +294,11 @@ function PitScout(props: any) {
           controls 
           className="input" 
           type="number"
+          value={formValue.robot_weight}
+          onChange={(value) => setFormValue({
+            ...formValue, robot_weight: value || 0})}
         />
         </Form.Item>
-
         <h2>Drive Train Type</h2>
         <Form.Item name="robot_drive_train" rules={[{ required: true, message: 'Please input the drive train type!' }]}>
         <Select
