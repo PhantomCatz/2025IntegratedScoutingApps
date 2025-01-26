@@ -8,7 +8,9 @@ import { base64url, SignJWT } from 'jose';
 import { useCookies } from 'react-cookie';
 
 function LoginPage(props: any) {
+	// eslint-disable-next-line
 	const [msg, setMsg] = useState("");
+	// eslint-disable-next-line
 	const [isLoading, setIsLoading] = useState(false);
 	// eslint-disable-next-line
 	const [cookies, setCookies, removeCookies] = useCookies(['login', 'theme']);

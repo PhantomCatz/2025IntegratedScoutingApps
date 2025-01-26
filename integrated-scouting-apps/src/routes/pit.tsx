@@ -1,19 +1,24 @@
 import '../public/stylesheets/style.css';
 import '../public/stylesheets/pit.css';
 import '../public/stylesheets/match.css';
-import logo from '../public/images/logo.png';
-import { Checkbox, Flex, Form, Input, InputNumber, Select, Upload } from 'antd';
+import { Checkbox, Form, Input, InputNumber, Select, Upload } from 'antd';
 import { useRef } from 'react';
 import { Button } from 'antd';
 import React, { useState, useEffect } from 'react';
-import back from '../public/images/back.png';
 import { ReactSketchCanvasRef } from 'react-sketch-canvas';
 import VerifyLogin from '../verifyToken';
 import { useCookies } from 'react-cookie';
 import { saveAs } from 'file-saver';
 import TextArea from 'antd/es/input/TextArea';
+import Header from './header';
 
 //Rhys was here//
+
+//* TESTING
+window.alert = (args) => {
+	console.log("ALERTING: " + args);
+};
+// TESTING */
 
 function PitScout(props: any) {
   const eventname = process.env.REACT_APP_EVENTNAME as string;
@@ -273,7 +278,7 @@ function PitScout(props: any) {
             onKeyPress={(event) => {
               const currentValue = event.currentTarget.value;
               const charCode = event.which ? event.which : event.keyCode;
-              if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+              if (charCode > 31 && (charCode < '0'.charCodeAt(0) || charCode > '9'.charCodeAt(0))) {
                   event.preventDefault();
               }
               if (currentValue.length >= 5) {
@@ -320,10 +325,10 @@ function PitScout(props: any) {
             disabled
             min={1}
             className="input"
-            addonAfter={<Button onClick={() => {
+            addonAfter={<Button onClick={prevValue => {
               setFormValue({ ...formValue, robot_motor_counter: formValue.robot_motor_counter + 1 });
             }} className='incrementbutton'>+</Button>}
-            addonBefore={<Button onClick={() => {
+            addonBefore={<Button onClick={prevValue => {
               if (Number(formValue.robot_motor_counter) > 0) {
                 setFormValue({ ...formValue, robot_motor_counter: formValue.robot_motor_counter - 1 });
               }
@@ -526,29 +531,12 @@ function PitScout(props: any) {
   }
   return (
     <div>
-      <div className='banner'>
-        <header>
-          <a href='/scoutingapp'>
-            <img src={back} style={{ height: 64 + 'px', paddingTop: '5%' }} alt=''></img>
-          </a>
-          <table>
-            <tbody>
-              <tr>
-                <td>
-                  <img src={logo} style={{ height: 256 + 'px' }} alt=''></img>
-                </td>
-                <td>
-                  <h1 style={{ display: 'inline-block', textAlign: 'center' }}>Pit Scout</h1>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </header>
-      </div>
+	<Header name={"Pit Scout"} back={"/scoutingapp"}/>
       <Form
         form={form}
         initialValues={{
-          robot_ability_traversed_stage: false,        }}
+          robot_ability_traversed_stage: false,
+	}}
         onFinish={async (event) => {
           try {
             setLoading(true);
