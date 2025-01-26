@@ -3,11 +3,10 @@ import '../public/stylesheets/dtf.css';
 import { useEffect, useState } from "react";
 import VerifyLogin from '../verifyToken';
 import { useCookies } from "react-cookie";
-import logo from '../public/images/logo.png';
-import back from '../public/images/back.png';
 import { useParams } from "react-router-dom";
 import { Checkbox, Flex, Input, Tabs } from "antd";
 import TextArea from 'antd/es/input/TextArea';
+import Header from "./header";
 
 function DTFTeams(props: any) {
   const { team_number } = useParams();
@@ -269,25 +268,9 @@ function DTFTeams(props: any) {
   }
   return (
     <div>
-      <div className='banner'>
-        <header>
-          <a href='/dtf'><img src={back} style={{ height: 64 + 'px', paddingTop: '5%' }} alt=''></img></a>
-          <table>
-            <tbody>
-              <tr>
-                <td>
-                  <img src={logo} style={{ height: 256 + 'px' }} alt=''></img>
-                </td>
-                <td>
-                  <h1 style={{ display: 'inline-block', textAlign: 'center' }}>Drive Team Feeder</h1>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </header>
-        <h2 style={{ display: loading ? 'inherit' : 'none' }}>Loading data...</h2>
-        <Tabs defaultActiveKey="1" items={items} centered className='tabs' />
-      </div>
+	<Header name={"Drive Team Feeder"} back={"/home"} />
+	<h2 style={{ display: loading ? 'inherit' : 'none' }}>Loading data...</h2>
+	<Tabs defaultActiveKey="1" items={items} centered className='tabs' />
     </div>
   );
 }

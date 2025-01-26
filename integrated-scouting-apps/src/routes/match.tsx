@@ -1,7 +1,5 @@
 import '../public/stylesheets/style.css';
 import '../public/stylesheets/match.css';
-import logo from '../public/images/logo.png';
-import back from '../public/images/back.png';
 import field_blue from '../public/images/field_blue.png';
 import field_red from '../public/images/field_red.png';
 
@@ -12,6 +10,7 @@ import TextArea from 'antd/es/input/TextArea';
 import VerifyLogin from '../verifyToken';
 import { useCookies } from 'react-cookie';
 import { Footer } from 'antd/es/layout/layout';
+import Header from "./header";
 
 function MatchScout(props: any) {
 	const [form] = Form.useForm();
@@ -885,102 +884,86 @@ function MatchScout(props: any) {
 	];
 	return (
 		<div>
-		<div className='banner'>
-		<header>
-		<a href='/scoutingapp'><img src={back} style={{ height: 64 + 'px', paddingTop: '5%' }} alt=''></img></a>
-		<table>
-		<tbody>
-		<tr>
-		<td>
-		<img src={logo} style={{ height: 256 + 'px' }} alt=''></img>
-		</td>
-		<td>
-		<h1 style={{ display: 'inline-block', textAlign: 'center' }}>Match Scout</h1>
-		</td>
-		</tr>
-		</tbody>
-		</table>
-		</header>
-		</div>
-		<Form
-		form={form}
-		initialValues={{
-			leavespawn: false,
-			amplifyscored: false,
-			traversedstage: false,
-			climbed: false,
-			harmony: false,
-			climbingaffected: false,
-			parked: false,
-			trapscored: false,
-			robotdied: false,
-			defended: false,
-			wasdefended: false,
-			wasdefendedteam: [],
-			defendedteam: [],
-			piecespicked: [],
-			shootingloc: [],
-			penaltiesincurred: "",
-			comments: "",
-		}}
-		onFinish={async (event) => {
-			try {
-				setLoading(true);
-				await setNewMatchScout(event);
-				setFormValue({
-					autonSpeakerScored: 0,
-					autonAmpScored: 0,
-					autonMissedAmpPieces: 0,
-					autonMissedSpeakerPieces: 0,
-					teleopSpeakerScored: 0,
-					teleopAmpScored: 0,
-					teleopMissedAmpPieces: 0,
-					teleopMissedSpeakerPieces: 0,
-					teleopHoardedPieces: 0,
-					numPenalties: 0,
-					counterDefenseRating: 0,
-					driverSkillRating: 0,
-					pushingRating: 0,
-				});
-				const initials = form.getFieldValue("initials");
-				const matchnum = form.getFieldValue("matchnum");
-				const matchlevel = form.getFieldValue("matchlevel");
-				const robotpos = form.getFieldValue("robotpos");
-				form.resetFields();
-				form.setFieldValue("initials", initials);
-				form.setFieldValue("matchnum", matchnum + 1);
-				form.setFieldValue("matchlevel", matchlevel);
-				form.setFieldValue("robotpos", robotpos);
-				setWasDefendedIsVisible(false);
-				setDefendedIsVisible(false);
-				await calculateMatchLevel();
-				await updateTeamNumber();
-				await updateDefendedList();
-			}
-			catch (err) {
-				console.log(err);
-			}
-			finally {
-				setLoading(false);
-			}
-		}}
-		>
-		<Tabs defaultActiveKey="1" activeKey={tabNum} items={items} className='tabs' centered onChange={async (key) => { setTabNum(key) }} />
-		<Footer style={{ position: "sticky", bottom: "0" }}>
-		<Flex justify='in-between' id={"footer"} style={{ paddingBottom: '5%', backgroundColor: document.body.style.backgroundColor.toString() }}>
-		{Number(tabNum) !== 1 && (
-			<Button onClick={async () => { setTabNum((Number(tabNum) - 1).toString()) }} className='tabbutton'>Back</Button>
-		)}
-		{Number(tabNum) !== items.length && (
-			<Button onClick={async () => { setTabNum((Number(tabNum) + 1).toString()) }} className='tabbutton'>Next</Button>
-		)}
-		{Number(tabNum) === items.length && (
-			<Input type="submit" value="Submit" className='match_submit' />
-		)}
-		</Flex>
-		<h2 style={{ display: isLoading ? 'inherit' : 'none' }}>Submitting data...</h2>
-		</Footer>
-		</Form>
+			<Header name={"Data Lookup"} back={"/scoutingapp"} />
+			<Form
+			form={form}
+			initialValues={{
+				leavespawn: false,
+				amplifyscored: false,
+				traversedstage: false,
+				climbed: false,
+				harmony: false,
+				climbingaffected: false,
+				parked: false,
+				trapscored: false,
+				robotdied: false,
+				defended: false,
+				wasdefended: false,
+				wasdefendedteam: [],
+				defendedteam: [],
+				piecespicked: [],
+				shootingloc: [],
+				penaltiesincurred: "",
+				comments: "",
+			}}
+			onFinish={async (event) => {
+				try {
+					setLoading(true);
+					await setNewMatchScout(event);
+					setFormValue({
+						autonSpeakerScored: 0,
+						autonAmpScored: 0,
+						autonMissedAmpPieces: 0,
+						autonMissedSpeakerPieces: 0,
+						teleopSpeakerScored: 0,
+						teleopAmpScored: 0,
+						teleopMissedAmpPieces: 0,
+						teleopMissedSpeakerPieces: 0,
+						teleopHoardedPieces: 0,
+						numPenalties: 0,
+						counterDefenseRating: 0,
+						driverSkillRating: 0,
+						pushingRating: 0,
+					});
+					const initials = form.getFieldValue("initials");
+					const matchnum = form.getFieldValue("matchnum");
+					const matchlevel = form.getFieldValue("matchlevel");
+					const robotpos = form.getFieldValue("robotpos");
+					form.resetFields();
+					form.setFieldValue("initials", initials);
+					form.setFieldValue("matchnum", matchnum + 1);
+					form.setFieldValue("matchlevel", matchlevel);
+					form.setFieldValue("robotpos", robotpos);
+					setWasDefendedIsVisible(false);
+					setDefendedIsVisible(false);
+					await calculateMatchLevel();
+					await updateTeamNumber();
+					await updateDefendedList();
+				}
+				catch (err) {
+					console.log(err);
+				}
+				finally {
+					setLoading(false);
+				}
+			}}
+			>
+				<Tabs defaultActiveKey="1" activeKey={tabNum} items={items} className='tabs' centered onChange={async (key) => { setTabNum(key) }} />
+					<Footer style={{ position: "sticky", bottom: "0" }}>
+						<Flex justify='in-between' id={"footer"} style={{ paddingBottom: '5%', backgroundColor: document.body.style.backgroundColor.toString() }}>
+							{Number(tabNum) !== 1 && (
+								<Button onClick={async () => { setTabNum((Number(tabNum) - 1).toString()) }} className='tabbutton'>Back</Button>
+							)}
+							{Number(tabNum) !== items.length && (
+								<Button onClick={async () => { setTabNum((Number(tabNum) + 1).toString()) }} className='tabbutton'>Next</Button>
+							)}
+							{Number(tabNum) === items.length && (
+								<Input type="submit" value="Submit" className='match_submit' />
+							)}
+						</Flex>
+					<h2 style={{ display: isLoading ? 'inherit' : 'none' }}>Submitting data...</h2>
+				</Footer>
+			</Form>
 		</div>
 	);
 }

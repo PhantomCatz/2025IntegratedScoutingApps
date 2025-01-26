@@ -30,6 +30,9 @@ body {
     padding-right: 5% !important;
     color: white !important;
     background-color: var(--pc-blue) !important;
+/*
+    background-color: hsl(0 0% 0%)  !important;
+    */
 }
 a {
     text-decoration: none !important;

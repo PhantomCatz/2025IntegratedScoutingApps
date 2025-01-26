@@ -11,6 +11,8 @@ import { useCookies } from 'react-cookie';
 import { saveAs } from 'file-saver';
 import TextArea from 'antd/es/input/TextArea';
 import Header from './header';
+import QrCode from './qrCodeViewer';
+
 
 //Rhys was here//
 
@@ -38,6 +40,8 @@ function PitScout(props: any) {
     robot_GP: 0,
     comments: "",
   });
+  const [qrValue, setQrValue] = useState<any>();
+
   useEffect(() => { document.title = props.title; return () => { } }, [props.title]);
   useEffect(() => { VerifyLogin.VerifyLogin(cookies.login); return () => { } }, [cookies.login]);
   useEffect(() => { VerifyLogin.ChangeTheme(cookies.theme); return () => { } }, [cookies.theme]);
@@ -125,53 +129,7 @@ function PitScout(props: any) {
       "images": robotImageURI,
       "comments": event.comments,
     };
-     // eslint-disable-next-line
-    const TESTDONOTREMOVE = {
-      "images": ["test"],
-      "initial": "test",
-      "robot_ability_score_l1": false,
-      "robot_ability_score_l2": false,
-      "robot_ability_score_l3": false,
-      "robot_ability_score_l4": false,
-      "robot_climbing_capabilities": "test",
-      "robot_drive_train": "test",
-      "robot_events": -1,
-      "robot_GP": -1,
-      "robot_coral_intake_capability": "test",
-      "robot_motor_counter": -1,
-      "robot_motor_type": "test",
-      "robot_pit_organization": -1,
-      "robot_team_safety": -1,
-      "robot_team_workmanship": -1,
-      "robot_weight": -1,
-      "robot_wheel_type": "test",
-      "team_number": -1,
-      "comments": ""
-  };
-    try {
-      if (!window.navigator.onLine) {
-        window.alert("Your device is offline; please download the following .json file and give it to a Webdev member.");
-        saveAs(new Blob([JSON.stringify(body)], { type: "text/json" }), event.scouter_initial + event.team_mumber + ".json");
-      }
-      else {
-        await fetch(process.env.REACT_APP_PIT_URL as string, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(body),
-        }).then(async (response) => await response.json()).then(async (data) => {
-          window.alert(data.match.insertedId);
-        });
-      }
-    }
-    catch (err) {
-      console.log(err);
-      window.alert("Error occured, please do not do leave this message and notify a Webdev member immediately.");
-      window.alert(err);
-      window.alert("Please download the following .json file and give it to a Webdev member.");
-      saveAs(new Blob([JSON.stringify(body)], { type: "text/json" }), event.scouter_initial + event.team_number + ".json");
-    }
+      setQrValue(body);
   };
   async function getPitScout(team_number: number) {
     try {
@@ -564,6 +522,7 @@ function PitScout(props: any) {
       >
         {Pit()}
       </Form>
+      <QrCode value={qrValue} />
     </div>
   );
 }

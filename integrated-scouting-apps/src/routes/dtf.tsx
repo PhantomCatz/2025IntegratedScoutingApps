@@ -1,10 +1,10 @@
 import '../public/stylesheets/dtf.css';
-import logo from '../public/images/logo.png';
-import back from '../public/images/back.png';
 import { useEffect } from 'react';
 import { Input, Form, InputNumber } from 'antd';
 import VerifyLogin from '../verifyToken';
 import { useCookies } from 'react-cookie';
+import Header from "./header";
+
 function DTF(props: any) {
 	const [form] = Form.useForm();
 	useEffect(() => { document.title = props.title; return () => { } }, [props.title]);
@@ -15,27 +15,7 @@ function DTF(props: any) {
 	return (
 		<div>
 			<meta name="viewport" content="maximum-scale=1.0" />
-			<div className='banner'>
-				<header>
-					<a href='/home'>
-						<img src={back} style={{ height: 64 + 'px', paddingTop: '5%' }} alt=''></img>
-					</a>
-					<table>
-						<tbody>
-							<tr>
-								<td>
-									<img src={logo} style={{ height: 256 + 'px' }} alt=''></img>
-								</td>
-								<td>
-									<h1 style={{ display: 'inline-block', textAlign: 'center' }}>Drive Team Feeder</h1>
-								</td>
-							</tr>
-
-						</tbody>
-
-					</table>
-				</header>
-			</div>
+			<Header name={"Drive Team Feeder"} back={"/home"} />
 			<Form
 				form={form}
 				onFinish={async event => {

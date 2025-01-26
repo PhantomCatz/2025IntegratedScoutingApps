@@ -1,13 +1,12 @@
 import '../public/stylesheets/style.css';
 import '../public/stylesheets/watchlist.css';
 import '../public/stylesheets/match.css';
-import logo from '../public/images/logo.png';
 import { Button, Flex, Form, Input, InputNumber, Select, Tabs, TabsProps } from 'antd';
 import React, { useState, useEffect } from 'react';
-import back from '../public/images/back.png';
 import { useCookies } from 'react-cookie';
 import VerifyLogin from '../verifyToken';
 import TextArea from 'antd/es/input/TextArea';
+import Header from "./header";
 
 function Watchlist(props: any) {
   type FieldType = {
@@ -136,23 +135,7 @@ function Watchlist(props: any) {
   ];
   return (
     <div>
-      <div>
-        <header className='banner'>
-          <a href='/home'><img src={back} style={{ height: 64 + 'px', paddingTop: '5%' }} alt=''></img></a>
-          <table>
-            <tbody>
-              <tr>
-                <td>
-                  <img src={logo} style={{ height: 256 + 'px' }} alt=''></img>
-                </td>
-                <td>
-                  <h1 style={{ display: 'inline-block', textAlign: 'center' }}>2637 Watchlist</h1>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </header>
-      </div>
+      <Header name={"2637 Watchlist"} back={"/home"} />
       <Tabs defaultActiveKey="1" activeKey={tabNum} items={items} className='tabs' centered onChange={async (key) => { setTabNum(key); }} />
     </div>
   );

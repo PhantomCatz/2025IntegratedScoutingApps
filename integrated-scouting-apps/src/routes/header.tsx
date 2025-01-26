@@ -10,11 +10,15 @@ import '../public/stylesheets/header.css';
  * props.name = name of current page
  */
 function Header(props : any) {
+	const isRootPage = props.rootPage || false;
+	const name = props.name || "No name set";
+	const backLink = props.back || "No back link set";
+
 	return (
 	<header className="header">
-			<a href={props.back}> <img className={"backImg"} src={back} alt=''></img> </a>
-			<img className={"logoImg"} src={logo} alt=''></img>
-			<h1 className={"pageTitle"}>{props.name}</h1>
+		{!isRootPage && <a href={backLink}> <img className={"backImg"} src={back} alt=''></img> </a>}
+		<img className={"logoImg"} src={logo} alt=''></img>
+		<h1 className={"pageTitle"}>{name}</h1>
 	</header>
 	);
 }
