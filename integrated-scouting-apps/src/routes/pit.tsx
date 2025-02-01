@@ -22,7 +22,7 @@ function PitScout(props: any) {
   const [form] = Form.useForm();
   const [cookies] = useCookies(['login', 'theme']);
   const [loading, setLoading] = useState(false);
-  const [robotImageURI, setRobotImageURI] = useState([""]);
+  const [robotImageURI] = useState([""]);
   const [formValue, setFormValue] = useState({
     robot_events: 0,
     robot_weight: 0,
@@ -86,9 +86,9 @@ function PitScout(props: any) {
         window.alert(message);
 			}
 			catch (err) {
-				console.log(err);
-				window.alert("Error occured, please do not do leave this message and notify a Webdev member immediately.");
-				window.alert(err);
+				// console.log(err);
+				// window.alert("Error occured, please do not do leave this message and notify a Webdev member immediately.");
+				// window.alert(err);
 			}
 		};
 		getTeams();
@@ -161,11 +161,11 @@ function PitScout(props: any) {
       }
     }
     catch (err) {
-      console.log(err);
-      window.alert("Error occured, please do not do leave this message and notify a Webdev member immediately.");
-      window.alert(err);
-      window.alert("Please download the following .json file and give it to a Webdev member.");
-      saveAs(new Blob([JSON.stringify(body)], { type: "text/json" }), event.scouter_initial + event.team_number + ".json");
+      // console.log(err);
+      // window.alert("Error occured, please do not do leave this message and notify a Webdev member immediately.");
+      // window.alert(err);
+      // window.alert("Please download the following .json file and give it to a Webdev member.");
+      // saveAs(new Blob([JSON.stringify(body)], { type: "text/json" }), event.scouter_initial + event.team_number + ".json");
     }
   };
   async function getPitScout(team_number: number) {
@@ -489,33 +489,6 @@ function PitScout(props: any) {
         <Form.Item<FieldType> name="comments" rules={[{ required: true, message: "Please input some comments!" }]}>
           <TextArea style={{ verticalAlign: 'center' }} className='textbox_input' />
         </Form.Item>
-        <h2>Robot Images</h2>
-        <Form.Item<FieldType> name="robot_images">
-          <Upload
-            beforeUpload={(file) => {
-              const isImage = file.type === 'image/png' || file.type === 'image/jpeg' || file.type === 'image/jpg';
-              if (!isImage) {
-                window.alert(`${file.name} is not an image`);
-              }
-              return isImage || Upload.LIST_IGNORE;
-            }}
-            onChange={(info) => {
-              if (info.file?.originFileObj) {
-                const reader = new FileReader();
-                reader.readAsDataURL(info.file.originFileObj);
-                reader.onload = () => {
-                  const base64Image = reader.result as string;
-                  setRobotImageURI([base64Image]);
-                  console.log(robotImageURI)
-                };
-              }
-            }}
-            style={{ width: '100%' }}
-            name='robot_images'
-          >
-            <Button className='input' style={{ marginBottom: '5%' }}>Upload Images</Button>
-          </Upload>
-        </Form.Item>
         <h2 style={{ display: loading ? 'inherit' : 'none' }}>Submitting data...</h2>
         <Input type="submit" value="Submit" className='submit' style={{ marginBottom: '5%' }} />
       </div>
@@ -565,9 +538,9 @@ function PitScout(props: any) {
             // });
           }
           catch (err) {
-            console.log(err);
-            window.alert("Error occured, please do not do leave this message and notify a Webdev member immediately.");
-            window.alert(err);
+            // console.log(err);
+            // window.alert("Error occured, please do not do leave this message and notify a Webdev member immediately.");
+            // window.alert(err);
           }
           finally {
             setLoading(false);
