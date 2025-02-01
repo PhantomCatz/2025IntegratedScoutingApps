@@ -8,7 +8,6 @@ import React, { useState, useEffect } from 'react';
 import { ReactSketchCanvasRef } from 'react-sketch-canvas';
 import VerifyLogin from '../verifyToken';
 import { useCookies } from 'react-cookie';
-import { saveAs } from 'file-saver';
 import TextArea from 'antd/es/input/TextArea';
 import Header from './header';
 import QrCode from './qrCodeViewer';
@@ -117,10 +116,10 @@ function PitScout(props: any) {
       "robot_coral_intake_capability": event.robot_coral_intake_capability,
       "robot_algae_intake_capability": event.robot_algae_intake_capability,
       "robot_algae_scoring_capability": event.robot_algae_scoring_capability,
-      "robot_ability_score_l1": event.robot_ability_ability_l1,
-      "robot_ability_score_l2": event.robot_ability_ability_l2,
-      "robot_ability_score_l3": event.robot_ability_ability_l3,
-      "robot_ability_score_l4": event.robot_ability_ability_l4,
+      "robot_ability_score_l1": event.robot_ability_score_l1 || false,
+      "robot_ability_score_l2": event.robot_ability_score_l2 || false,
+      "robot_ability_score_l3": event.robot_ability_score_l3 || false,
+      "robot_ability_score_l4": event.robot_ability_score_l4 || false,
       "robot_climbing_capabilities": event.robot_climbing_capabilities,
       "robot_pit_organization": event.robot_pit_organization,
       "robot_team_safety": event.robot_team_safety,
@@ -499,16 +498,16 @@ function PitScout(props: any) {
             const initials = form.getFieldValue("scouter_initial");
             form.resetFields();
             form.setFieldsValue({ "scouter_initial": initials });
-            // setFormValue({
-            //   robot_events: 0,
-            //   robot_weight: 0,
-            //   robot_motor_counter: 0,
-            //   robot_pit_organization: 0,
-            //   robot_team_safety: 0,
-            //   robot_team_workmanship: 0,
-            //   robot_GP: 0,
-            //   comments: "",
-            // });
+            setFormValue({
+              robot_events: 0,
+              robot_weight: 0,
+              robot_motor_counter: 0,
+              robot_pit_organization: 0,
+              robot_team_safety: 0,
+              robot_team_workmanship: 0,
+              robot_GP: 0,
+              comments: "",
+            });
           }
           catch (err) {
             console.log(err);
