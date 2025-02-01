@@ -22,7 +22,7 @@ function PitScout(props: any) {
   const [form] = Form.useForm();
   const [cookies] = useCookies(['login', 'theme']);
   const [loading, setLoading] = useState(false);
-  const [robotImageURI, setRobotImageURI] = useState([""]);
+  const [robotImageURI] = useState([""]);
   const [formValue, setFormValue] = useState({
     robot_events: 0,
     robot_weight: 0,
