@@ -1,13 +1,12 @@
 import '../public/stylesheets/style.css';
 import '../public/stylesheets/strategic.css';
-import logo from '../public/images/logo.png';
-import back from '../public/images/back.png';
 import { useEffect, useState } from 'react';
 import { Tabs, Input, Form, Select, InputNumber, Button, Flex } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import VerifyLogin from '../verifyToken';
 import { useCookies } from 'react-cookie';
 import { saveAs } from 'file-saver';
+import Header from "./header";
 
 function Strategic(props: any) {
   const [form] = Form.useForm();
@@ -217,25 +216,7 @@ function Strategic(props: any) {
   return (
     <div>
       <meta name="viewport" content="maximum-scale=1.0" />
-      <div className='banner'>
-        <header>
-          <a href='/scoutingapp/'>
-            <img src={back} style={{ height: 64 + 'px', paddingTop: '5%' }} alt='' />
-          </a>
-          <table>
-            <tbody>
-              <tr>
-                <td>
-                  <img src={logo} style={{ height: 256 + 'px' }} alt='' />
-                </td>
-                <td>
-                  <h1 style={{ display: 'inline-block', textAlign: 'center' }}>Strategic Scout</h1>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </header>
-      </div>
+      <Header name={"Strategic Scout"} back="/scoutingapp/" />
       <Form
         form={form}
         onFinish={async event => {

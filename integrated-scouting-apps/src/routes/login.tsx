@@ -1,14 +1,15 @@
 import '../public/stylesheets/login.css';
-import logo from '../public/images/logo.png';
 import VerifyLogin from '../verifyToken';
-import no_image from '../public/images/no_image.png';
 import { useEffect, useState } from 'react';
 import { Form, Input } from 'antd';
 import { base64url, SignJWT } from 'jose';
 import { useCookies } from 'react-cookie';
+import Header from "./header";
 
 function LoginPage(props: any) {
+	// eslint-disable-next-line
 	const [msg, setMsg] = useState("");
+	// eslint-disable-next-line
 	const [isLoading, setIsLoading] = useState(false);
 	// eslint-disable-next-line
 	const [cookies, setCookies, removeCookies] = useCookies(['login', 'theme']);
@@ -22,25 +23,7 @@ function LoginPage(props: any) {
 	};
 	return (
 		<div>
-			<div className='banner'>
-				<header>
-					<a href='/'>
-						<img src={no_image} style={{ height: 64 + 'px', paddingTop: '5%' }} alt='' />
-					</a>
-					<table>
-						<tbody>
-							<tr>
-								<td>
-									<img src={logo} style={{ height: 256 + 'px' }} alt='' />
-								</td>
-								<td>
-									<h1 style={{ display: 'inline-block', textAlign: 'center' }}>Login</h1>
-								</td>
-							</tr>
-						</tbody>
-					</table>
-				</header>
-			</div>
+			<Header name={"Login"} rootPage={true} />
 			<Form onFinish={async (event) => {
 				try {
 					// setIsLoading(true);

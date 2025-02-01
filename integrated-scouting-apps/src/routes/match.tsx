@@ -1,7 +1,5 @@
 import '../public/stylesheets/style.css';
 import '../public/stylesheets/match.css';
-import logo from '../public/images/logo.png';
-import back from '../public/images/back.png';
 import field_blue from '../public/images/field_blue.png';
 import field_red from '../public/images/field_red.png';
 
@@ -12,6 +10,7 @@ import TextArea from 'antd/es/input/TextArea';
 import VerifyLogin from '../verifyToken';
 import { useCookies } from 'react-cookie';
 import { Footer } from 'antd/es/layout/layout';
+import Header from "./header";
 import { Radio } from 'antd';
 
 interface SpacerProps {
@@ -497,26 +496,6 @@ function MatchScout(props: any) {
           <Form.Item<FieldType> name="leavespawn" valuePropName="checked">
             <Checkbox className='input_checkbox' />
           </Form.Item>
-          {/*
-          <div style={{position: 'relative', width: 'min-content'}}>
-            <img src={color ? field_red : field_blue} alt="" />
-            <Checkbox id="us" onChange={(event) => {event.target.checked ? setUSChecked(true) : setUSChecked(false); setCSChecked(false); setLSChecked(false); setLChecked(false);}} checked={usChecked} style={color ? {position: 'absolute', right: '3.5%', top: '6%'} : {position: 'absolute', left: '3.5%', top: '6%'}} className='map_checkbox' />
-            <Checkbox id="cs" onChange={(event) => {event.target.checked ? setCSChecked(true) : setCSChecked(false); setUSChecked(false); setLSChecked(false); setLChecked(false);}} checked={csChecked} style={color ? {position: 'absolute', right: '13.5%', top: '35%'} : {position: 'absolute', left: '13.5%', top: '35%'}} className='map_checkbox' />
-            <Checkbox id="ls" onChange={(event) => {event.target.checked ? setLSChecked(true) : setLSChecked(false); setCSChecked(false); setUSChecked(false); setLChecked(false);}} checked={lsChecked} style={color ? {position: 'absolute', right: '3.5%', top: '50%'} : {position: 'absolute', left: '3.5%', top: '50%'}} className='map_checkbox' />
-            <Checkbox id="l" onChange={(event) => {event.target.checked ? setLChecked(true) : setLChecked(false); setCSChecked(false); setLSChecked(false); setUSChecked(false);}} checked={lChecked} style={color ? {position: 'absolute', right: '3.5%', top: '70.5%'} : {position: 'absolute', left: '3.5%', top: '70.5%'}} className='map_checkbox' />
-
-            <Checkbox style={color ? {position: 'absolute', right: '30.75%', top: '12.5%'} : {position: 'absolute', left: '30.75%', top: '12.5%'}} className='map_checkbox' />
-            <Checkbox style={color ? {position: 'absolute', right: '30.75%', top: '30%'} : {position: 'absolute', left: '30.75%', top: '30%'}} className='map_checkbox' />
-            <Checkbox style={color ? {position: 'absolute', right: '30.75%', top: '47.5%'} : {position: 'absolute', left: '30.75%', top: '47.5%'}} className='map_checkbox' />
-
-            <Checkbox style={color ? {position: 'absolute', left: '0.05%', top: '7.5%'} : {position: 'absolute', right: '0.05%', top: '7.5%'}} className='map_checkbox' />
-            <Checkbox style={color ? {position: 'absolute', left: '0.05%', top: '27.5%'} : {position: 'absolute', right: '0.05%', top: '27.5%'}} className='map_checkbox' />
-            <Checkbox style={color ? {position: 'absolute', left: '0.05%', top: '47.5%'} : {position: 'absolute', right: '0.05%', top: '47.5%'}} className='map_checkbox' />
-            <Checkbox style={color ? {position: 'absolute', left: '0.05%', top: '67.5%'} : {position: 'absolute', right: '0.05%', top: '67.5%'}} className='map_checkbox' />
-            <Checkbox style={color ? {position: 'absolute', left: '0.05%', top: '87.5%'} : {position: 'absolute', right: '0.05%', top: '87.5%'}} className='map_checkbox' />
-          </div>
-          */} 
-          
         <div className = 'radioRColumn'> 
           <div className = 'radioRow'>
           <Flex vertical align='flex-start'>

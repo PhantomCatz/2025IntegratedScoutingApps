@@ -20,7 +20,6 @@ import PitLookup from './routes/pitLookup';
 import PitScout from './routes/pit';
 import PitPictureLookup from './routes/pitImageLookup';
 
-import Buh from './routes/buh';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import DataLookup from './routes/matchLookup';
 import TeamData from './routes/matchData';
@@ -28,6 +27,8 @@ import Picklist from './routes/picklists';
 import Watchlist from './routes/watchlist';
 import WatchlistGet from './routes/watchlistdata';
 import WatchlistUpdate from './routes/watchlistupdate';
+
+import QrCode from './routes/qrCodeViewer';
 
 export default function App() {
   return (
@@ -52,7 +53,8 @@ export default function App() {
         <Route path="/watchlist" element={<Watchlist title="2637 Watch List" />} />
         <Route path="/watchlist/:team_number" element={<WatchlistGet title="2637 Watch List" />} />
         <Route path="/watchlist/update/:question_info" element={<WatchlistUpdate title="2637 Watch List" />} />
-        <Route path="/buh" element={<Buh title="monkey"/>} />
+        
+	<Route path="/qrcode" element={<QrCode title="Qr Code test"/>} />
       </Routes>
     </BrowserRouter>
   );

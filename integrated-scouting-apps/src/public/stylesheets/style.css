@@ -4,7 +4,9 @@
  * @version 1.0.0
  * @description CSS for the home page
  */
-
+:root {
+	--pc-blue: #32a7dc;
+}
 @font-face {
     font-family: Audiowide;
     src: url('../fonts/Audiowide-Regular.woff') format('woff');
@@ -23,17 +25,20 @@ h2 {
 body {
     margin: 0 !important;
     font-family: Audiowide !important;
-    background-color: #32A7DC;
     padding-left: 5% !important;
     padding-right: 5% !important;
     color: white !important;
+    background-color: var(--pc-blue) !important;
+/*
+    background-color: #433d3c  !important;
+    background-color: hsl(0 0% 0%)  !important;
+    */
 }
 a {
     text-decoration: none !important;
     color: white !important;
 }
-.ant-upload,
-.ant-upload-select {
+.ant-upload, .ant-upload-select {
     width: 100% !important;
 }
 .ant-upload-list-item-name {
@@ -55,12 +60,11 @@ a {
     padding-right: 5% !important;
 }
 .ant-layout-footer {
-    background-color: #433D3C;
+    background-color: #ffffff;
     padding: 0 !important;
     border-top: 4px solid white !important;
 }
-.ant-btn-default:hover,
-.ant-input-outlined:hover {
+.ant-btn-default:hover, .ant-input-outlined:hover {
     background-color: transparent !important;
 }
 .ant-select-item {
@@ -69,18 +73,12 @@ a {
 .ant-tabs-ink-bar-animated {
     transition: 0.25s !important;
 }
-.banner {
-    font-size: 50px !important;
-    vertical-align: top !important;
-}
-input[type="checkbox"],
-.ant-checkbox-inner {
+input[type="checkbox"], .ant-checkbox-inner {
     height: 0px !important;
     width: 0px !important;
 }
 
-input[type="number"]::-webkit-inner-spin-button,
-.ant-input-number-handler-wrap {
+input[type="number"]::-webkit-inner-spin-button, .ant-input-number-handler-wrap {
     opacity: 0.0 !important;
 }
 
@@ -114,8 +112,7 @@ h2 {
     height: 15% !important;
     padding-top: 5% !important;
 }
-.ant-checkbox-checked,
-.ant-checkbox-wrapper-checked {
+.ant-checkbox-checked, .ant-checkbox-wrapper-checked {
     background-color: #61f761 !important;
     border-color: #000000 !important;
     width: 100% !important;
@@ -146,8 +143,7 @@ h2 {
 .ant-select-selection-overflow-item {
     height: 120px !important;
 }
-.ant-select-selection-placeholder,
-.ant-select-selection-item {
+.ant-select-selection-placeholder, .ant-select-selection-item {
     min-height: 100% !important;
     line-height: 120px !important;
     color: white !important;
@@ -176,8 +172,7 @@ h2 {
 .ant-input-number-group-addon {
     padding: 0px !important;
 }
-.mainbutton,
-.mainbutton:hover {
+.mainbutton, .mainbutton:hover {
     width: 100% !important;
     min-width: 100% !important;
     height: 25% !important;
@@ -191,8 +186,7 @@ h2 {
     font-family: Audiowide !important;
     color: white !important;
 }
-.homebutton,
-.homebutton:hover {
+.homebutton, .homebutton:hover {
     width: 100% !important;
     min-width: 100% !important;
     height: 33% !important;
@@ -262,4 +256,29 @@ h2 {
     font-size: 48px !important;
     border-right: 4px solid white !important;
     width: 150px !important;
+}
+
+.logo {
+	background-color: var(--pc-blue);
+}
+.header {
+    font-size: 50px !important;
+    vertical-align: top !important;
+    display: flex;
+}
+.header .backImg {
+	height: 10vw;
+	margin: auto 5vw auto auto;
+}
+.header .logoImg {
+	width: 10vw;
+	height: 10vw;
+}
+.header .pageTitle {
+	margin: auto;
+	font-size: 80px;
+	text-align: center;
+}
+.qrCodeHolder {
+	background-color: white;
 }

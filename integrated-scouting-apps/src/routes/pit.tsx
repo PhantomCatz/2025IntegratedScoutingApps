@@ -2,17 +2,17 @@ import '../public/stylesheets/style.css';
 import '../public/stylesheets/pit.css';
 import '../public/stylesheets/match.css';
 import '../public/stylesheets/robot_weight.css';
-import logo from '../public/images/logo.png';
 import { Checkbox, Form, Input, InputNumber, Select, Upload } from 'antd';
 import { useRef } from 'react';
 import { Button } from 'antd';
 import React, { useState, useEffect } from 'react';
-import back from '../public/images/back.png';
 import { ReactSketchCanvasRef } from 'react-sketch-canvas';
 import VerifyLogin from '../verifyToken';
 import { useCookies } from 'react-cookie';
-import { saveAs } from 'file-saver';
 import TextArea from 'antd/es/input/TextArea';
+import Header from './header';
+import QrCode from './qrCodeViewer';
+
 
 //Rhys was here//
 
@@ -34,6 +34,8 @@ function PitScout(props: any) {
     robot_GP: 0,
     comments: "",
   });
+  const [qrValue, setQrValue] = useState<any>();
+
   useEffect(() => { document.title = props.title; return () => { } }, [props.title]);
   useEffect(() => { VerifyLogin.VerifyLogin(cookies.login); return () => { } }, [cookies.login]);
   useEffect(() => { VerifyLogin.ChangeTheme(cookies.theme); return () => { } }, [cookies.theme]);
@@ -109,10 +111,10 @@ function PitScout(props: any) {
       "robot_coral_intake_capability": event.robot_coral_intake_capability,
       "robot_algae_intake_capability": event.robot_algae_intake_capability,
       "robot_algae_scoring_capability": event.robot_algae_scoring_capability,
-      "robot_ability_score_l1": event.robot_ability_ability_l1,
-      "robot_ability_score_l2": event.robot_ability_ability_l2,
-      "robot_ability_score_l3": event.robot_ability_ability_l3,
-      "robot_ability_score_l4": event.robot_ability_ability_l4,
+      "robot_ability_score_l1": event.robot_ability_score_l1 || false,
+      "robot_ability_score_l2": event.robot_ability_score_l2 || false,
+      "robot_ability_score_l3": event.robot_ability_score_l3 || false,
+      "robot_ability_score_l4": event.robot_ability_score_l4 || false,
       "robot_climbing_capabilities": event.robot_climbing_capabilities,
       "robot_pit_organization": event.robot_pit_organization,
       "robot_team_safety": event.robot_team_safety,
@@ -121,53 +123,7 @@ function PitScout(props: any) {
       "images": robotImageURI,
       "comments": event.comments,
     };
-     // eslint-disable-next-line
-    const TESTDONOTREMOVE = {
-      "images": ["test"],
-      "initial": "test",
-      "robot_ability_score_l1": false,
-      "robot_ability_score_l2": false,
-      "robot_ability_score_l3": false,
-      "robot_ability_score_l4": false,
-      "robot_climbing_capabilities": "test",
-      "robot_drive_train": "test",
-      "robot_events": -1,
-      "robot_GP": -1,
-      "robot_coral_intake_capability": "test",
-      "robot_motor_counter": -1,
-      "robot_motor_type": "test",
-      "robot_pit_organization": -1,
-      "robot_team_safety": -1,
-      "robot_team_workmanship": -1,
-      "robot_weight": -1,
-      "robot_wheel_type": "test",
-      "team_number": -1,
-      "comments": ""
-  };
-    try {
-      if (!window.navigator.onLine) {
-        window.alert("Your device is offline; please download the following .json file and give it to a Webdev member.");
-        saveAs(new Blob([JSON.stringify(body)], { type: "text/json" }), event.scouter_initial + event.team_mumber + ".json");
-      }
-      else {
-        await fetch(process.env.REACT_APP_PIT_URL as string, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(body),
-        }).then(async (response) => await response.json()).then(async (data) => {
-          window.alert(data.match.insertedId);
-        });
-      }
-    }
-    catch (err) {
-      // console.log(err);
-      // window.alert("Error occured, please do not do leave this message and notify a Webdev member immediately.");
-      // window.alert(err);
-      // window.alert("Please download the following .json file and give it to a Webdev member.");
-      // saveAs(new Blob([JSON.stringify(body)], { type: "text/json" }), event.scouter_initial + event.team_number + ".json");
-    }
+      setQrValue(body);
   };
   async function getPitScout(team_number: number) {
     try {
@@ -275,7 +231,7 @@ function PitScout(props: any) {
             onKeyPress={(event) => {
               const currentValue = event.currentTarget.value;
               const charCode = event.which ? event.which : event.keyCode;
-              if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+              if (charCode > 31 && (charCode < '0'.charCodeAt(0) || charCode > '9'.charCodeAt(0))) {
                   event.preventDefault();
               }
               if (currentValue.length >= 5) {
@@ -323,10 +279,10 @@ function PitScout(props: any) {
             disabled
             min={1}
             className="input"
-            addonAfter={<Button onClick={() => {
+            addonAfter={<Button onClick={prevValue => {
               setFormValue({ ...formValue, robot_motor_counter: formValue.robot_motor_counter + 1 });
             }} className='incrementbutton'>+</Button>}
-            addonBefore={<Button onClick={() => {
+            addonBefore={<Button onClick={prevValue => {
               if (Number(formValue.robot_motor_counter) > 0) {
                 setFormValue({ ...formValue, robot_motor_counter: formValue.robot_motor_counter - 1 });
               }
@@ -495,29 +451,12 @@ function PitScout(props: any) {
   }
   return (
     <div>
-      <div className='banner'>
-        <header>
-          <a href='/scoutingapp'>
-            <img src={back} style={{ height: 64 + 'px', paddingTop: '5%' }} alt=''></img>
-          </a>
-          <table>
-            <tbody>
-              <tr>
-                <td>
-                  <img src={logo} style={{ height: 256 + 'px' }} alt=''></img>
-                </td>
-                <td>
-                  <h1 style={{ display: 'inline-block', textAlign: 'center' }}>Pit Scout</h1>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </header>
-      </div>
+	<Header name={"Pit Scout"} back={"/scoutingapp"}/>
       <Form
         form={form}
         initialValues={{
-          robot_ability_traversed_stage: false,        }}
+          robot_ability_traversed_stage: false,
+	}}
         onFinish={async (event) => {
           try {
             setLoading(true);
@@ -548,6 +487,7 @@ function PitScout(props: any) {
       >
         {Pit()}
       </Form>
+      <QrCode value={qrValue} />
     </div>
   );
 }
