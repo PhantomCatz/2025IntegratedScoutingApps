@@ -1,7 +1,6 @@
 import '../public/stylesheets/style.css';
 import '../public/stylesheets/strategic.css';
 import { useEffect, useState } from 'react';
-import VerifyLogin from '../verifyToken';
 import { useCookies } from 'react-cookie';
 import { Input, InputNumber, Tabs } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
@@ -9,7 +8,6 @@ import Header from "./header";
 
 function TeamData(props: any) {
 
-  const [cookies] = useCookies(['login', 'theme']);
   const [tabNum, setTabNum] = useState("1");
   //const [fetchedData, setFetchedData] = useState([]);
   const [items, setItems] = useState([
@@ -20,8 +18,6 @@ function TeamData(props: any) {
     },
   ]);
   useEffect(() => { document.title = props.title }, [props.title]);
-  useEffect(() => { VerifyLogin.VerifyLogin(cookies.login); return () => { } }, [cookies.login]);
-  useEffect(() => { VerifyLogin.ChangeTheme(cookies.theme); return () => { } }, [cookies.theme]);
   // useEffect(() => {
 	// 	async function getTeams() {
 	// 		try {

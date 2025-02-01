@@ -7,7 +7,6 @@ import { useParams } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 import back from '../public/images/back.png';
 import { useCookies } from 'react-cookie';
-import VerifyLogin from '../verifyToken';
 
 function WatchlistUpdate(props: any) {
 
@@ -44,9 +43,6 @@ function WatchlistUpdate(props: any) {
   const [tabNum, setTabNum] = useState("1");
   useEffect(() => {document.title = props.title}, [props.title]);
 
-  const [cookies] = useCookies(['login', 'theme']);
-  useEffect(() => { VerifyLogin.VerifyLogin(cookies.login); }, []);
-  useEffect(() => { VerifyLogin.ChangeTheme(cookies.theme); return () => {}}, [cookies.theme]);
   async function update(answer: string) {
     let updatingStuff = {
           OwO : {
@@ -236,7 +232,6 @@ export default WatchlistUpdate;
 // import React, { useState, useEffect } from 'react';
 // import back from '../public/images/back.png';
 // import { useCookies } from 'react-cookie';
-// import VerifyLogin from '../verifyToken';
 
 // function WatchlistUpdate(props: any) {
 
@@ -273,9 +268,6 @@ export default WatchlistUpdate;
 //   const [tabNum, setTabNum] = useState("1");
 //   useEffect(() => {document.title = props.title}, [props.title]);
 
-//   const [cookies] = useCookies(['login', 'theme']);
-//   useEffect(() => { VerifyLogin.VerifyLogin(cookies.login); }, []);
-//   useEffect(() => { VerifyLogin.ChangeTheme(cookies.theme); return () => {}}, [cookies.theme]);
 //   const handleSubmit = async function watchListUpdate(answer: string) {
 //     let requestBody = {
 //           team_number: team_number,

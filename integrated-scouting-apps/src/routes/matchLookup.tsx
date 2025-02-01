@@ -4,17 +4,13 @@ import logo from '../public/images/logo.png';
 import back from '../public/images/back.png';
 import { useEffect, useState } from 'react';
 import { Input, Form, InputNumber } from 'antd';
-import VerifyLogin from '../verifyToken';
 import { useCookies } from 'react-cookie';
 
 function DataLookup(props: any) {
 	const eventname = process.env.REACT_APP_EVENTNAME as string;
 	const [form] = Form.useForm();
-	const [cookies] = useCookies(['login', 'theme']);
 	const [fetchedData, setFetchedData] = useState([]);
 	useEffect(() => { document.title = props.title; return () => { } }, [props.title]);
-	useEffect(() => { VerifyLogin.VerifyLogin(cookies.login); return () => { } }, [cookies.login]);
-	useEffect(() => { VerifyLogin.ChangeTheme(cookies.theme); return () => { } }, [cookies.theme]);
 	useEffect(() => {
 		async function getTeams() {
 			try {
