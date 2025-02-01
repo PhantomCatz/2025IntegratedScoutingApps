@@ -6,16 +6,16 @@
  */
 
 @font-face {
-    font-family: Audiowide !important;
+    font-family: Audiowide;
     src: url('../fonts/Audiowide-Regular.woff') format('woff');
 }
 @font-face {
-    font-family: Figtree !important;
+    font-family: Figtree;
     src: url('../fonts/Figtree-VariableFont_wght.ttf') format('woff');
 }
 h2 {
     color: white !important;
-    font-family: Figtree !important;
+    font-family: Audiowide !important;
     font-weight: bold !important;
     font-size: 60px !important;
     margin-bottom: 0 !important;
@@ -23,7 +23,7 @@ h2 {
 body {
     margin: 0 !important;
     font-family: Audiowide !important;
-    background-color: #433D3C;
+    background-color: #32A7DC;
     padding-left: 5% !important;
     padding-right: 5% !important;
     color: white !important;
@@ -38,7 +38,7 @@ a {
 }
 .ant-upload-list-item-name {
     font-size: 48px !important;
-    font-family: Figtree !important;
+    font-family: Audiowide !important;
     color: white !important;
 }
 .ant-upload-list-item-container {
@@ -100,7 +100,7 @@ h2 {
     height: 120px !important;
     min-height: 120px !important;
     background-color: transparent !important;
-    font-family: Figtree !important;
+    font-family: Audiowide !important;
     font-weight: bold !important;
     font-size: 500% !important;
     color: white !important;
@@ -108,7 +108,7 @@ h2 {
 }
 .ant-tabs-tab, .ant-tabs-tab-active{
     font-size: 48px !important;
-    font-family: Figtree !important;
+    font-family: Audiowide !important;
     font-weight: bold !important;
     color: white !important;
     height: 15% !important;
@@ -124,7 +124,7 @@ h2 {
     min-height: 60px !important;
 }
 .ant-input-number-input {
-    font-family: Figtree !important;
+    font-family: Audiowide !important;
     font-weight: bold !important;
     color: white !important;
     text-align: center !important;
@@ -132,14 +132,14 @@ h2 {
 }
 .ant-form-item-explain-error {
     font-size: 48px !important;
-    font-family: Figtree !important;
+    font-family: Audiowide !important;
     font-weight: bold !important;
     color: red !important;
     text-align: center !important;
 }
 .ant-select-item-option-content {
     font-size: 500% !important;
-    font-family: Figtree !important;
+    font-family: Audiowide !important;
     font-weight: bold !important;
     text-align: center !important;
 }
@@ -151,7 +151,7 @@ h2 {
     min-height: 100% !important;
     line-height: 120px !important;
     color: white !important;
-    font-family: Figtree !important;
+    font-family: Audiowide !important;
     font-weight: bold !important;
     align-items: center !important;
     display: inline-flex !important;
@@ -219,7 +219,7 @@ h2 {
     border-radius: 25px !important;
     background-color: transparent !important;
     font-size: 64px !important;
-    font-family: Figtree !important;
+    font-family: Audiowide !important;
     color: white !important;
     text-align: center !important;
     align-items: center !important;
@@ -238,7 +238,7 @@ h2 {
     border-radius: 25px !important;
     background-color: transparent !important;
     font-size: 500% !important;
-    font-family: Figtree !important;
+    font-family: Audiowide !important;
     font-weight: bold !important;
     color: white !important;
     text-align: center !important;
