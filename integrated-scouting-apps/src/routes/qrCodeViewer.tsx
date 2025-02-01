@@ -7,11 +7,11 @@ const sep = "\t";
 
 function QrCode(props : any) {
 	const qrValue = props.value;
-	const hasValue = !!qrValue;
+	let shouldShow = !!qrValue;
 
 	const keys = [];
 	const vals = [];
-	if(hasValue) {
+	if(shouldShow) {
 		console.log(qrValue);
 
 		for(const [k,v] of Object.entries(qrValue)) {
@@ -24,14 +24,18 @@ function QrCode(props : any) {
 	const shownValue = vals.join(sep);
 	console.log("Current key map: " + keys);
 
+	//shouldShow = true;
+
 	return (
 		<div>
-	{hasValue && (
+	{shouldShow && (
 			<div>
 		<div className={"qrCodeHolder"}>
+		<div>
 		<AntQr value={
 			/*Limit: 2324 chars*/
-			/*"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" + 
+			/*
+			"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" + 
 			"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" + 
 			"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" + 
 			"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" + 
@@ -47,9 +51,11 @@ function QrCode(props : any) {
 			"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" + 
 			"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" + 
 			"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" +
-			"aaaaaaaaaaaaaaaaaaaaaaaa"*/
+			"aaaaaaaaaaaaaaaaaaaaaaaa"
+			*/
 			shownValue
 		} size={500} type={"svg"} />
+		</div>
 		</div>
 		<h2>Please take a screenshot of this and show it to WebDev</h2>
 		</div>

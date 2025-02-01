@@ -961,23 +961,7 @@ function MatchScout(props: any) {
   ];
   return (
     <div>
-      <div className='banner'>
-        <header>
-          <a href='/scoutingapp'><img src={back} style={{ height: 64 + 'px', paddingTop: '5%' }} alt=''></img></a>
-          <table>
-            <tbody>
-              <tr>
-                <td>
-                  <img src={logo} style={{ height: 256 + 'px' }} alt=''></img>
-                </td>
-                <td>
-                  <h1 style={{ display: 'inline-block', textAlign: 'center' }}>Match Scout</h1>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </header>
-      </div>
+	  <Header name="Match Scout" back="/scoutingapp"/>
       <Form
         form={form}
         initialValues={{
