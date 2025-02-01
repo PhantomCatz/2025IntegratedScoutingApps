@@ -1,7 +1,6 @@
 import '../public/stylesheets/style.css';
 import '../public/stylesheets/dtf.css';
 import { useEffect, useState } from "react";
-import VerifyLogin from '../verifyToken';
 import { useCookies } from "react-cookie";
 import { useParams } from "react-router-dom";
 import { Checkbox, Flex, Input, Tabs } from "antd";
@@ -10,12 +9,9 @@ import Header from "./header";
 
 function DTFTeams(props: any) {
   const { team_number } = useParams();
-  const [cookies] = useCookies(['login', 'theme']);
   const [loading, setLoading] = useState(false);
   const [items, setItems] = useState<{ key: string; label: string; children: JSX.Element; }[]>([]);
   useEffect(() => { document.title = props.title; return () => { }; }, [props.title]);
-  useEffect(() => { VerifyLogin.VerifyLogin(cookies.login); return () => { } }, [cookies.login]);
-  useEffect(() => { VerifyLogin.ChangeTheme(cookies.theme); return () => { } }, [cookies.theme]);
   useEffect(() => {
     const teams = team_number?.split(",");
     if (teams) {

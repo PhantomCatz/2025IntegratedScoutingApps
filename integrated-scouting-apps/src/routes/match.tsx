@@ -7,7 +7,6 @@ import { useEffect, useState } from 'react';
 import { Tabs, Input, Form, Select, Checkbox, InputNumber, Flex, Button, QRCode } from 'antd';
 import type { TabsProps } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
-import VerifyLogin from '../verifyToken';
 import { useCookies } from 'react-cookie';
 import { Footer } from 'antd/es/layout/layout';
 import Header from "./header";
@@ -58,10 +57,7 @@ function MatchScout(props: any) {
     driverSkillRating: 0,
   });
   const eventname = process.env.REACT_APP_EVENTNAME;
-  const [cookies] = useCookies(['login', 'theme']);
   useEffect(() => { document.title = props.title; return () => { }; }, [props.title]);
-  useEffect(() => { VerifyLogin.VerifyLogin(cookies.login); return () => { } }, [cookies.login]);
-  useEffect(() => { VerifyLogin.ChangeTheme(cookies.theme); return () => { } }, [cookies.theme]);
   useEffect(() => {
     if ((document.getElementById("auton_L4scored") as HTMLInputElement) !== null) {
       (document.getElementById("auton_L4scored") as HTMLInputElement).value = formValue.autonL4Scored.toString();
@@ -961,23 +957,7 @@ function MatchScout(props: any) {
   ];
   return (
     <div>
-      <div className='banner'>
-        <header>
-          <a href='/scoutingapp'><img src={back} style={{ height: 64 + 'px', paddingTop: '5%' }} alt=''></img></a>
-          <table>
-            <tbody>
-              <tr>
-                <td>
-                  <img src={logo} style={{ height: 256 + 'px' }} alt=''></img>
-                </td>
-                <td>
-                  <h1 style={{ display: 'inline-block', textAlign: 'center' }}>Match Scout</h1>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </header>
-      </div>
+		<Header name="Match Scout" back="/scoutingapp" />
       <Form
         form={form}
         initialValues={{

@@ -1,16 +1,12 @@
 import '../public/stylesheets/dtf.css';
 import { useEffect } from 'react';
 import { Input, Form, InputNumber } from 'antd';
-import VerifyLogin from '../verifyToken';
 import { useCookies } from 'react-cookie';
 import Header from "./header";
 
 function DTF(props: any) {
 	const [form] = Form.useForm();
 	useEffect(() => { document.title = props.title; return () => { } }, [props.title]);
-	const [cookies] = useCookies(['login', 'theme']);
-	useEffect(() => { VerifyLogin.VerifyLogin(cookies.login); return () => { } }, [cookies.login]);
-	useEffect(() => { VerifyLogin.ChangeTheme(cookies.theme); return () => { } }, [cookies.theme]);
 
 	return (
 		<div>

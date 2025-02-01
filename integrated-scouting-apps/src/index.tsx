@@ -6,7 +6,6 @@
  */
 import ReactDOM from 'react-dom/client';
 import HomePage from './routes/home';
-import LoginPage from './routes/login';
 import ScoutingApp from './routes/scoutingapp';
 import MatchScout from './routes/match';
 import DTF from './routes/dtf';
@@ -54,7 +53,7 @@ export default function App() {
         <Route path="/watchlist/:team_number" element={<WatchlistGet title="2637 Watch List" />} />
         <Route path="/watchlist/update/:question_info" element={<WatchlistUpdate title="2637 Watch List" />} />
         
-	<Route path="/qrcode" element={<QrCode title="Qr Code test"/>} />
+		<Route path="/qrcode" element={<QrCode title="Qr Code test"/>} />
       </Routes>
     </BrowserRouter>
   );

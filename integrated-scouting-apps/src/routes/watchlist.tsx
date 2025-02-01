@@ -4,7 +4,6 @@ import '../public/stylesheets/match.css';
 import { Button, Flex, Form, Input, InputNumber, Select, Tabs, TabsProps } from 'antd';
 import React, { useState, useEffect } from 'react';
 import { useCookies } from 'react-cookie';
-import VerifyLogin from '../verifyToken';
 import TextArea from 'antd/es/input/TextArea';
 import Header from "./header";
 
@@ -16,10 +15,7 @@ function Watchlist(props: any) {
     isPit: boolean;
   };
   const [tabNum, setTabNum] = useState("1");
-  const [cookies] = useCookies(['login', 'theme']);
   useEffect(() => { document.title = props.title }, [props.title]);
-  useEffect(() => { VerifyLogin.VerifyLogin(cookies.login); }, [cookies.login]);
-  useEffect(() => { VerifyLogin.ChangeTheme(cookies.theme); return () => { } }, [cookies.theme]);
 
   async function sendNewWatchlistData(event: FieldType) {
     try {

@@ -7,7 +7,6 @@ import { useParams } from 'react-router-dom';
 import { Table } from 'antd';
 import Column from 'antd/es/table/Column';
 import ColumnGroup from 'antd/es/table/ColumnGroup';
-import VerifyLogin from '../verifyToken';
 import { useCookies } from 'react-cookie';
 function TeamData(props: any) {
   const { team_number } = useParams();
@@ -15,9 +14,6 @@ function TeamData(props: any) {
   const [fetchedData, setFetchedData] = useState<{ [x: string]: any; }[]>([]);
 
   useEffect(() => { document.title = props.title }, [props.title]);
-  const [cookies] = useCookies(['login', 'theme']);
-  useEffect(() => { VerifyLogin.VerifyLogin(cookies.login); return () => { } }, [cookies.login]);
-  useEffect(() => { VerifyLogin.ChangeTheme(cookies.theme); return () => { } }, [cookies.theme]);
   useEffect(() => {
     async function fetchData(team_number: number) {
       try {
