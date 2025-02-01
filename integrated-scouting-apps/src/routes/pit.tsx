@@ -1,6 +1,7 @@
 import '../public/stylesheets/style.css';
 import '../public/stylesheets/pit.css';
 import '../public/stylesheets/match.css';
+import '../public/stylesheets/robot_weight.css';
 import logo from '../public/images/logo.png';
 import { Checkbox, Form, Input, InputNumber, Select, Upload } from 'antd';
 import { useRef } from 'react';
@@ -284,21 +285,19 @@ function PitScout(props: any) {
           />
         </Form.Item>
         <h2>Robot Weight (lbs)</h2>
-        <Form.Item<FieldType> 
-          name="robot_weight" 
-          rules={[{ required: true, message: 'Please input the robot weight in lbs!' }]}>
-        <InputNumber 
-          min={0} 
+      <Form.Item
+        name="robot_weight"
+        rules={[{ required: true, message: 'Please input the robot weight in lbs!' }]}
+      >
+        <InputNumber
+          min={0}
           max={1000}
-          step={1} 
-          controls 
-          className="input" 
-          type="number"
-          value={formValue.robot_weight}
-          onChange={(value) => setFormValue({
-            ...formValue, robot_weight: value || 0})}
+          precision={0}
+          placeholder="0"
+          className="input robot-weight-input"
+          formatter={(value) => `${value}`.replace(/^0+/, '')}
         />
-        </Form.Item>
+      </Form.Item>
         <h2>Drive Train Type</h2>
         <Form.Item name="robot_drive_train" rules={[{ required: true, message: 'Please input the drive train type!' }]}>
         <Select
