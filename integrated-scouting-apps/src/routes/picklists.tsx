@@ -1,18 +1,14 @@
 import '../public/stylesheets/style.css';
 import '../public/stylesheets/picklist.css';
 import { useEffect, useState } from 'react';
-import VerifyLogin from '../verifyToken';
 import { useCookies } from 'react-cookie';
 import Column from 'antd/es/table/Column';
 import { Table } from 'antd';
 import Header from "./header";
 
 function Picklists(props: any) {
-	const [cookies] = useCookies(['login', 'theme']);
 	const [loading, setLoading] = useState(false);
 	const [fetchedData, setFetchedData] = useState<{ [x: string]: any; }[]>([]);
-	useEffect(() => { VerifyLogin.VerifyLogin(cookies.login); return () => { } }, [cookies.login]);
-	useEffect(() => { VerifyLogin.ChangeTheme(cookies.theme); return () => { } }, [cookies.theme]);
 	useEffect(() => { document.title = props.title }, [props.title]);
 	useEffect(() => {
 		async function fetchData() {

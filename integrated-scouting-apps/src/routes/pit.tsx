@@ -7,7 +7,6 @@ import { useRef } from 'react';
 import { Button } from 'antd';
 import React, { useState, useEffect } from 'react';
 import { ReactSketchCanvasRef } from 'react-sketch-canvas';
-import VerifyLogin from '../verifyToken';
 import { useCookies } from 'react-cookie';
 import TextArea from 'antd/es/input/TextArea';
 import Header from './header';
@@ -21,7 +20,6 @@ function PitScout(props: any) {
   const imageURI = useRef<string>();
   const canvasRef = useRef<ReactSketchCanvasRef>(null);
   const [form] = Form.useForm();
-  const [cookies] = useCookies(['login', 'theme']);
   const [loading, setLoading] = useState(false);
   const [robotImageURI] = useState([""]);
   const [formValue, setFormValue] = useState({
@@ -37,8 +35,6 @@ function PitScout(props: any) {
   const [qrValue, setQrValue] = useState<any>();
 
   useEffect(() => { document.title = props.title; return () => { } }, [props.title]);
-  useEffect(() => { VerifyLogin.VerifyLogin(cookies.login); return () => { } }, [cookies.login]);
-  useEffect(() => { VerifyLogin.ChangeTheme(cookies.theme); return () => { } }, [cookies.theme]);
   useEffect(() => {
     if ((document.getElementById("robot_events") as HTMLInputElement) !== null) {
       (document.getElementById("robot_events") as HTMLInputElement).value = formValue.robot_events.toString();

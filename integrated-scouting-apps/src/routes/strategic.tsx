@@ -3,7 +3,6 @@ import '../public/stylesheets/strategic.css';
 import { useEffect, useState } from 'react';
 import { Tabs, Input, Form, Select, InputNumber, Button, Flex } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
-import VerifyLogin from '../verifyToken';
 import { useCookies } from 'react-cookie';
 import { saveAs } from 'file-saver';
 import Header from "./header";
@@ -15,9 +14,6 @@ function Strategic(props: any) {
   const [isLoading, setLoading] = useState(false);
   const [roundIsVisible, setRoundIsVisible] = useState(false);
   useEffect(() => { document.title = props.title; return () => { } }, [props.title]);
-  const [cookies] = useCookies(['login', 'theme']);
-  useEffect(() => { VerifyLogin.VerifyLogin(cookies.login); return () => { } }, [cookies.login]);
-  useEffect(() => { VerifyLogin.ChangeTheme(cookies.theme); return () => { } }, [cookies.theme]);
   // useEffect(() => { getComments(teamNum); return () => {}}, [teamNum]);
   // useEffect(() => { calculateMatchLevel(); return () => {}}, [form, calculateMatchLevel()]);
   const eventname = process.env.REACT_APP_EVENTNAME;

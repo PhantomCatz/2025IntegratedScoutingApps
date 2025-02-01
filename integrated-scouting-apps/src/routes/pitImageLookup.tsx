@@ -2,16 +2,12 @@ import '../public/stylesheets/style.css';
 import logo from '../public/images/logo.png';
 import back from '../public/images/back.png';
 import { useEffect, useState } from 'react';
-import VerifyLogin from '../verifyToken';
 import { useCookies } from 'react-cookie';
 import { InputNumber } from 'antd';
 
 function Teamresponse(props: any) {
-  const [cookies] = useCookies(['login', 'theme']);
   const [fetchedData, setFetchedData] = useState([]);
   useEffect(() => { document.title = props.title }, [props.title]);
-  useEffect(() => { VerifyLogin.VerifyLogin(cookies.login); return () => { } }, [cookies.login]);
-  useEffect(() => { VerifyLogin.ChangeTheme(cookies.theme); return () => { } }, [cookies.theme]);
 
   async function getPictures(team_number: number) {
     try {
