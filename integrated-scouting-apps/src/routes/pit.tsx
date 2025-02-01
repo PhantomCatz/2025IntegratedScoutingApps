@@ -86,9 +86,9 @@ function PitScout(props: any) {
         window.alert(message);
 			}
 			catch (err) {
-				console.log(err);
-				window.alert("Error occured, please do not do leave this message and notify a Webdev member immediately.");
-				window.alert(err);
+				// console.log(err);
+				// window.alert("Error occured, please do not do leave this message and notify a Webdev member immediately.");
+				// window.alert(err);
 			}
 		};
 		getTeams();
@@ -161,11 +161,11 @@ function PitScout(props: any) {
       }
     }
     catch (err) {
-      console.log(err);
-      window.alert("Error occured, please do not do leave this message and notify a Webdev member immediately.");
-      window.alert(err);
-      window.alert("Please download the following .json file and give it to a Webdev member.");
-      saveAs(new Blob([JSON.stringify(body)], { type: "text/json" }), event.scouter_initial + event.team_number + ".json");
+      // console.log(err);
+      // window.alert("Error occured, please do not do leave this message and notify a Webdev member immediately.");
+      // window.alert(err);
+      // window.alert("Please download the following .json file and give it to a Webdev member.");
+      // saveAs(new Blob([JSON.stringify(body)], { type: "text/json" }), event.scouter_initial + event.team_number + ".json");
     }
   };
   async function getPitScout(team_number: number) {
@@ -538,9 +538,9 @@ function PitScout(props: any) {
             // });
           }
           catch (err) {
-            console.log(err);
-            window.alert("Error occured, please do not do leave this message and notify a Webdev member immediately.");
-            window.alert(err);
+            // console.log(err);
+            // window.alert("Error occured, please do not do leave this message and notify a Webdev member immediately.");
+            // window.alert(err);
           }
           finally {
             setLoading(false);
