@@ -489,33 +489,6 @@ function PitScout(props: any) {
         <Form.Item<FieldType> name="comments" rules={[{ required: true, message: "Please input some comments!" }]}>
           <TextArea style={{ verticalAlign: 'center' }} className='textbox_input' />
         </Form.Item>
-        <h2>Robot Images</h2>
-        <Form.Item<FieldType> name="robot_images">
-          <Upload
-            beforeUpload={(file) => {
-              const isImage = file.type === 'image/png' || file.type === 'image/jpeg' || file.type === 'image/jpg';
-              if (!isImage) {
-                window.alert(`${file.name} is not an image`);
-              }
-              return isImage || Upload.LIST_IGNORE;
-            }}
-            onChange={(info) => {
-              if (info.file?.originFileObj) {
-                const reader = new FileReader();
-                reader.readAsDataURL(info.file.originFileObj);
-                reader.onload = () => {
-                  const base64Image = reader.result as string;
-                  setRobotImageURI([base64Image]);
-                  console.log(robotImageURI)
-                };
-              }
-            }}
-            style={{ width: '100%' }}
-            name='robot_images'
-          >
-            <Button className='input' style={{ marginBottom: '5%' }}>Upload Images</Button>
-          </Upload>
-        </Form.Item>
         <h2 style={{ display: loading ? 'inherit' : 'none' }}>Submitting data...</h2>
         <Input type="submit" value="Submit" className='submit' style={{ marginBottom: '5%' }} />
       </div>
