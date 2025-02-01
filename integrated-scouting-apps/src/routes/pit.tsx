@@ -1,6 +1,7 @@
 import '../public/stylesheets/style.css';
 import '../public/stylesheets/pit.css';
 import '../public/stylesheets/match.css';
+import '../public/stylesheets/robot_weight.css';
 import { Checkbox, Form, Input, InputNumber, Select, Upload } from 'antd';
 import { useRef } from 'react';
 import { Button } from 'antd';
@@ -14,12 +15,6 @@ import QrCode from './qrCodeViewer';
 
 
 //Rhys was here//
-
-//* TESTING
-window.alert = (args) => {
-	console.log("ALERTING: " + args);
-};
-// TESTING */
 
 function PitScout(props: any) {
   const eventname = process.env.REACT_APP_EVENTNAME as string;
@@ -246,21 +241,19 @@ function PitScout(props: any) {
           />
         </Form.Item>
         <h2>Robot Weight (lbs)</h2>
-        <Form.Item<FieldType> 
-          name="robot_weight" 
-          rules={[{ required: true, message: 'Please input the robot weight in lbs!' }]}>
-        <InputNumber 
-          min={0} 
+      <Form.Item
+        name="robot_weight"
+        rules={[{ required: true, message: 'Please input the robot weight in lbs!' }]}
+      >
+        <InputNumber
+          min={0}
           max={1000}
-          step={1} 
-          controls 
-          className="input" 
-          type="number"
-          value={formValue.robot_weight}
-          onChange={(value) => setFormValue({
-            ...formValue, robot_weight: value || 0})}
+          precision={0}
+          placeholder="0"
+          className="input robot-weight-input"
+          formatter={(value) => `${value}`.replace(/^0+/, '')}
         />
-        </Form.Item>
+      </Form.Item>
         <h2>Drive Train Type</h2>
         <Form.Item name="robot_drive_train" rules={[{ required: true, message: 'Please input the drive train type!' }]}>
         <Select
@@ -471,16 +464,16 @@ function PitScout(props: any) {
             const initials = form.getFieldValue("scouter_initial");
             form.resetFields();
             form.setFieldsValue({ "scouter_initial": initials });
-            setFormValue({
-              robot_events: 0,
-              robot_weight: 0,
-              robot_motor_counter: 0,
-              robot_pit_organization: 0,
-              robot_team_safety: 0,
-              robot_team_workmanship: 0,
-              robot_GP: 0,
-              comments: "",
-            });
+            // setFormValue({
+            //   robot_events: 0,
+            //   robot_weight: 0,
+            //   robot_motor_counter: 0,
+            //   robot_pit_organization: 0,
+            //   robot_team_safety: 0,
+            //   robot_team_workmanship: 0,
+            //   robot_GP: 0,
+            //   comments: "",
+            // });
           }
           catch (err) {
             // console.log(err);
