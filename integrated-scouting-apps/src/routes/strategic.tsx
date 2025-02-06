@@ -3,7 +3,6 @@ import '../public/stylesheets/strategic.css';
 import { useEffect, useState } from 'react';
 import { Tabs, Input, Form, Select, InputNumber, Button, Flex } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
-import { useCookies } from 'react-cookie';
 import { saveAs } from 'file-saver';
 import Header from "./header";
 

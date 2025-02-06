@@ -7,7 +7,6 @@ import { useRef } from 'react';
 import { Button } from 'antd';
 import React, { useState, useEffect } from 'react';
 import { ReactSketchCanvasRef } from 'react-sketch-canvas';
-import { useCookies } from 'react-cookie';
 import TextArea from 'antd/es/input/TextArea';
 import Header from './header';
 import QrCode from './qrCodeViewer';

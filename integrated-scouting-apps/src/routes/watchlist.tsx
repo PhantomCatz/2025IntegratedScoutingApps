@@ -3,7 +3,6 @@ import '../public/stylesheets/watchlist.css';
 import '../public/stylesheets/match.css';
 import { Button, Flex, Form, Input, InputNumber, Select, Tabs, TabsProps } from 'antd';
 import React, { useState, useEffect } from 'react';
-import { useCookies } from 'react-cookie';
 import TextArea from 'antd/es/input/TextArea';
 import Header from "./header";
 

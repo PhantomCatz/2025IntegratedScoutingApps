@@ -6,7 +6,6 @@ import { Flex, Form, Input, InputNumber, Select, Tabs, TabsProps } from 'antd';
 import { useParams } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 import back from '../public/images/back.png';
-import { useCookies } from 'react-cookie';
 
 function WatchlistUpdate(props: any) {
 
@@ -231,7 +230,6 @@ export default WatchlistUpdate;
 // import { useParams } from 'react-router-dom';
 // import React, { useState, useEffect } from 'react';
 // import back from '../public/images/back.png';
-// import { useCookies } from 'react-cookie';
 
 // function WatchlistUpdate(props: any) {
 

@@ -4,7 +4,6 @@ import back from '../public/images/back.png';
 import { useState, useEffect } from 'react';
 import { Button, Tabs, TabsProps } from 'antd';
 import { useParams } from 'react-router-dom';
-import { useCookies } from 'react-cookie';
 
 const owo='tOwOt'
 const arrarr: any[] = [];
