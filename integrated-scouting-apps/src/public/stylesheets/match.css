@@ -18,13 +18,61 @@
     height: 60px !important;
     min-height: 60px !important;
     border: 4px solid white !important;
-    border-radius: 25px;
+    border-radius: 50%;
     background-color: red;
     font-size: 500% !important;
     font-family: Figtree !important;
     font-weight: bold;
     color: white !important;
     text-align: center !important;
+}
+.startPos {
+    width: 60px;
+    min-width: 60px;
+    height: 60px !important;
+    min-height: 60px !important;
+    border: 4px solid white !important;
+    background-color: red;
+    font-size: 500% !important;
+    font-family: Figtree !important;
+    font-weight: bold;
+    color: white !important;
+    text-align: center !important;
+}
+.radioColumn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.radioRow {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.divdivdiv {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.radioLabel{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    font-size: 30px;
+    color: white;
+}
+.redBox {
+    width: 100px;
+    height: 170px;
+    background-color: red;
+}
+.blueBox {
+    width: 100px;
+    height: 170px;
+    background-color: blue;
+}
+.boxes {
+    height: 200px;
 }
 .tabbutton {
     width: 50%;

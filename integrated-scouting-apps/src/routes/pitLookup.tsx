@@ -2,11 +2,9 @@ import '../public/stylesheets/style.css';
 import logo from '../public/images/logo.png';
 import back from '../public/images/back.png';
 import { useEffect, useState } from 'react';
-import VerifyLogin from '../verifyToken';
 import { useCookies } from 'react-cookie';
 import { Checkbox, Input, InputNumber, Tabs, Image } from 'antd';
 function Teamresponse(props: any) {
-  const [cookies] = useCookies(['login', 'theme']);
   const [tabNum, setTabNum] = useState("1");
   const [items, setItems] = useState([
     {
@@ -16,8 +14,6 @@ function Teamresponse(props: any) {
     },
   ]);
   useEffect(() => { document.title = props.title }, [props.title]);
-  useEffect(() => { VerifyLogin.VerifyLogin(cookies.login); return () => { } }, [cookies.login]);
-  useEffect(() => { VerifyLogin.ChangeTheme(cookies.theme); return () => { } }, [cookies.theme]);
 
   async function getComments(team_number: number) {
     try {

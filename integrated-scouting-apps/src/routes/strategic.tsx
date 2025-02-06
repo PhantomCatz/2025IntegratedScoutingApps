@@ -5,9 +5,9 @@ import back from '../public/images/back.png';
 import { useEffect, useState} from 'react';
 import { Tabs, Input, Form, Select, InputNumber, Button, Flex } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
-import VerifyLogin from '../verifyToken';
 import { useCookies } from 'react-cookie';
 import { saveAs } from 'file-saver';
+import Header from "./header";
 
 function Strategic(props: any, text:any) {
   const [form] = Form.useForm();
@@ -16,9 +16,6 @@ function Strategic(props: any, text:any) {
   const [isLoading, setLoading] = useState(false);
   const [roundIsVisible, setRoundIsVisible] = useState(false);
   useEffect(() => { document.title = props.title; return () => { } }, [props.title]);
-  const [cookies] = useCookies(['login', 'theme']);
-  useEffect(() => { VerifyLogin.VerifyLogin(cookies.login); return () => { } }, [cookies.login]);
-  useEffect(() => { VerifyLogin.ChangeTheme(cookies.theme); return () => { } }, [cookies.theme]);
   // useEffect(() => { getComments(teamNum); return () => {}}, [teamNum]);
   // useEffect(() => { calculateMatchLevel(); return () => {}}, [form, calculateMatchLevel()]);
   const eventname = process.env.REACT_APP_EVENTNAME;
@@ -215,25 +212,7 @@ function Strategic(props: any, text:any) {
   return (
     <div>
       <meta name="viewport" content="maximum-scale=1.0" />
-      <div className='banner'>
-        <header>
-          <a href='/scoutingapp/'>
-            <img src={back} style={{ height: 64 + 'px', paddingTop: '5%' }} alt='' />
-          </a>
-          <table>
-            <tbody>
-              <tr>
-                <td>
-                  <img src={logo} style={{ height: 256 + 'px' }} alt='' />
-                </td>
-                <td>
-                  <h1 style={{ display: 'inline-block', textAlign: 'center' }}>Strategic Scout</h1>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </header>
-      </div>
+      <Header name={"Strategic Scout"} back="/scoutingapp/" />
       <Form
         form={form}
         onFinish={async event => {
@@ -270,4 +249,4 @@ function Strategic(props: any, text:any) {
   );
 } 
 
-export default Strategic; 
+export default Strategic;
