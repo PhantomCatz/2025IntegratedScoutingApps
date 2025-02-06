@@ -485,7 +485,7 @@ function PitScout(props: any) {
 
         </Form.Item>
         <h2>Comments</h2>
-        <Form.Item<FieldType> name="comments" rules={[{ required: true, message: "Please input some comments!" }]}>
+        <Form.Item<FieldType> name="comments">
           <TextArea style={{ verticalAlign: 'center' }} className='textbox_input' />
         </Form.Item>
         <h2 style={{ display: loading ? 'inherit' : 'none' }}>Submitting data...</h2>

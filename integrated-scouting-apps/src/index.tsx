@@ -33,7 +33,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<HomePage title="2637 Strategy App" />} />
+        <Route path="/" element={<LoginPage title="2637 Strategy App" />} />
         <Route path="/home" element={<HomePage title="2637 Strategy App" />} />
         <Route path="/scoutingapp" element={<ScoutingApp title="2637 Scouting App" />} />
         <Route path="/scoutingapp/match" element={<MatchScout title="2637 Match Scout" />} />
