@@ -52,3 +52,17 @@
     margin-top: 5%;
     padding-top: 0 !important;
 }
+
+.canvas {
+height: 300px;
+width: 300px;
+border: 2px solid black;
+margin-left: 535px;
+margin-right: 535px;
+}
+
+.input-num {
+
+input-mode: numeric 
+
+}
