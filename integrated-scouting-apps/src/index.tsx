@@ -33,7 +33,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<LoginPage title="2637 Strategy App" />} />
+        <Route path="/" element={<HomePage title="2637 Strategy App" />} />
         <Route path="/home" element={<HomePage title="2637 Strategy App" />} />
         <Route path="/scoutingapp" element={<ScoutingApp title="2637 Scouting App" />} />
         <Route path="/scoutingapp/match" element={<MatchScout title="2637 Match Scout" />} />
@@ -52,8 +52,6 @@ export default function App() {
         <Route path="/watchlist" element={<Watchlist title="2637 Watch List" />} />
         <Route path="/watchlist/:team_number" element={<WatchlistGet title="2637 Watch List" />} />
         <Route path="/watchlist/update/:question_info" element={<WatchlistUpdate title="2637 Watch List" />} />
-        
-	    <Route path="/qrcode" element={<QrCode title="Qr Code test"/>} />
       </Routes>
     </BrowserRouter>
   );
