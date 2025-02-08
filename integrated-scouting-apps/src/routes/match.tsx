@@ -417,18 +417,18 @@ function MatchScout(props: any) {
       roundnum: number,
     };
     const rounds = [
-      { label: "Qualifications", value: "qm" },
-      { label: "Semi-Finals", value: "sf" },
-      { label: "Quarter-Finals", value: "qf" },
-      { label: "Finals", value: "f" },
+      { label: "Qualifications", value: "Qualifications" },
+      { label: "Semi-Finals", value: "Semi-Finals" },
+      { label: "Quarter-Finals", value: "Quarter-Finals" },
+      { label: "Finals", value: "Finals" },
     ];
     const robotpos = [
-      { label: "R1", value: "red_1" },
-      { label: "R2", value: "red_2" },
-      { label: "R3", value: 'red_3' },
-      { label: "B1", value: "blue_1" },
-      { label: "B2", value: "blue_2" },
-      { label: "B3", value: 'blue_3' },
+      { label: "R1", value: "Red_1" },
+      { label: "R2", value: "Red_2" },
+      { label: "R3", value: 'Red_3' },
+      { label: "B1", value: "Blue_1" },
+      { label: "B2", value: "Blue_2" },
+      { label: "B3", value: 'Blue_3' },
     ];
     return (
       <div>
@@ -493,7 +493,7 @@ function MatchScout(props: any) {
             
           <Spacer height = "125px"/>
             <div className = 'radioLabel'>
-              <input type = "radio" name = "startPos" value = "R&Sigma;1" className = "startPos"/>
+              <input type = "radio" name = "startPos" value = "R&Sigma;3" className = "startPos"/>
               <h3>R&Sigma;3</h3>
             </div>
 
@@ -503,7 +503,7 @@ function MatchScout(props: any) {
             </div>
 
             <div className = 'radioLabel'>
-              <input type = "radio" name = "startPos" value = "R&Sigma;3" className = "startPos"/>
+              <input type = "radio" name = "startPos" value = "R&Sigma;1" className = "startPos"/>
               <h3>R&Sigma;1</h3>
             </div>
             
@@ -568,8 +568,8 @@ function MatchScout(props: any) {
         <div className = 'radioRColumn'> 
           <div className = 'radioRow'>
           <Flex vertical align='flex-start'>
-              <h2>#Coral L4</h2>
-              <Form.Item<FieldType> name="auton_L4scored" rules={[{ required: true, message: 'Enter # of scored speaker pieces' }]}>
+              <h2>#Coral Scored L4</h2>
+              <Form.Item<FieldType> name="auton_L4scored" rules={[{ required: true, message: 'Enter # of Coral Score L4' }]}>
                 <InputNumber
                   id="auton_L4scored"
                   type='number'
@@ -592,7 +592,7 @@ function MatchScout(props: any) {
             
           <Flex vertical align='flex-start'>
               <h2>#Coral Missed L4</h2>
-              <Form.Item<FieldType> name="auton_L4missed" rules={[{ required: true, message: 'Enter # of scored speaker pieces' }]}>
+              <Form.Item<FieldType> name="auton_L4missed" rules={[{ required: true, message: 'Enter # of Coral Missed L4' }]}>
                 <InputNumber
                   id="auton_L4missed"
                   type='number'
@@ -618,8 +618,8 @@ function MatchScout(props: any) {
         <div className = 'radioRColumn'> 
           <div className = 'radioRow'>
           <Flex vertical align='flex-start'>
-              <h2>#Coral L3</h2>
-              <Form.Item<FieldType> name="auton_L3scored" rules={[{ required: true, message: 'Enter # of scored speaker pieces' }]}>
+              <h2>#Coral Scored L3</h2>
+              <Form.Item<FieldType> name="auton_L3scored" rules={[{ required: true, message: 'Enter # of Coral Scored L3' }]}>
                 <InputNumber
                   id="auton_L3scored"
                   type='number'
@@ -642,7 +642,7 @@ function MatchScout(props: any) {
             
           <Flex vertical align='flex-start'>
               <h2>#Coral Missed L3</h2>
-              <Form.Item<FieldType> name="auton_L3missed" rules={[{ required: true, message: 'Enter # of scored speaker pieces' }]}>
+              <Form.Item<FieldType> name="auton_L3missed" rules={[{ required: true, message: 'Enter # of Coral Missed L3' }]}>
                 <InputNumber
                   id="auton_L3missed"
                   type='number'
@@ -668,8 +668,8 @@ function MatchScout(props: any) {
         <div className = 'radioRColumn'> 
           <div className = 'radioRow'>
           <Flex vertical align='flex-start'>
-              <h2>#Coral L2</h2>
-              <Form.Item<FieldType> name="auton_L2scored" rules={[{ required: true, message: 'Enter # of scored speaker pieces' }]}>
+              <h2>#Coral Scored L2</h2>
+              <Form.Item<FieldType> name="auton_L2scored" rules={[{ required: true, message: 'Enter # of Coral Scored L2' }]}>
                 <InputNumber
                   id="auton_L2scored"
                   type='number'
@@ -692,7 +692,7 @@ function MatchScout(props: any) {
             
           <Flex vertical align='flex-start'>
               <h2>#Coral Missed L2</h2>
-              <Form.Item<FieldType> name="auton_L2missed" rules={[{ required: true, message: 'Enter # of scored speaker pieces' }]}>
+              <Form.Item<FieldType> name="auton_L2missed" rules={[{ required: true, message: 'Enter # of Coral Missed L2' }]}>
                 <InputNumber
                   id="auton_L2missed"
                   type='number'
@@ -718,8 +718,8 @@ function MatchScout(props: any) {
         <div className = 'radioRColumn'> 
           <div className = 'radioRow'>
           <Flex vertical align='flex-start'>
-              <h2>#Coral L1</h2>
-              <Form.Item<FieldType> name="auton_L1scored" rules={[{ required: true, message: 'Enter # of scored speaker pieces' }]}>
+              <h2>#Coral Scored L1</h2>
+              <Form.Item<FieldType> name="auton_L1scored" rules={[{ required: true, message: 'Enter # of Coral Scored L1' }]}>
                 <InputNumber
                   id="auton_L1scored"
                   type='number'
@@ -742,7 +742,7 @@ function MatchScout(props: any) {
             
           <Flex vertical align='flex-start'>
               <h2>#Coral Missed L1</h2>
-              <Form.Item<FieldType> name="auton_L1missed" rules={[{ required: true, message: 'Enter # of scored speaker pieces' }]}>
+              <Form.Item<FieldType> name="auton_L1missed" rules={[{ required: true, message: 'Enter # of Coral Missed L1' }]}>
                 <InputNumber
                   id="auton_L1missed"
                   type='number'
@@ -768,8 +768,8 @@ function MatchScout(props: any) {
         <div className = 'radioRColumn'> 
           <div className = 'radioRow'>
           <Flex vertical align='flex-start'>
-              <h2>#Algae Net</h2>
-              <Form.Item<FieldType> name="auton_netscored" rules={[{ required: true, message: 'Enter # of scored speaker pieces' }]}>
+              <h2>#Algae Scored in Net</h2>
+              <Form.Item<FieldType> name="auton_netscored" rules={[{ required: true, message: 'Enter # of Algae Scored in Net' }]}>
                 <InputNumber
                   id="auton_netscored"
                   type='number'
@@ -791,8 +791,8 @@ function MatchScout(props: any) {
             </Flex>
             
           <Flex vertical align='flex-start'>
-              <h2>#Net Missed</h2>
-              <Form.Item<FieldType> name="auton_netmissed" rules={[{ required: true, message: 'Enter # of scored speaker pieces' }]}>
+              <h2>#Net Missed in Net</h2>
+              <Form.Item<FieldType> name="auton_netmissed" rules={[{ required: true, message: 'Enter # of Net Missed in Net' }]}>
                 <InputNumber
                   id="auton_netmissed"
                   type='number'
@@ -819,7 +819,7 @@ function MatchScout(props: any) {
           <div className = 'radioRow'>
           <Flex vertical align='flex-start'>
               <h2>#Algae Processor</h2>
-              <Form.Item<FieldType> name="auton_processorscored" rules={[{ required: true, message: 'Enter # of scored speaker pieces' }]}>
+              <Form.Item<FieldType> name="auton_processorscored" rules={[{ required: true, message: 'Enter # of Algae Processor' }]}>
                 <InputNumber
                   id="auton_processorscored"
                   type='number'
@@ -894,8 +894,8 @@ function MatchScout(props: any) {
                 <div className = 'radioRColumn'> 
           <div className = 'radioRow'>
           <Flex vertical align='flex-start'>
-              <h2>#Coral L4</h2>
-              <Form.Item<FieldType> name="tele_L4scored" rules={[{ required: true, message: 'Enter # of scored speaker pieces' }]}>
+              <h2>#Coral Score L4</h2>
+              <Form.Item<FieldType> name="tele_L4scored" rules={[{ required: true, message: 'Enter # of Coral Scored L4' }]}>
                 <InputNumber
                   id="tele_L4scored"
                   type='number'
@@ -918,7 +918,7 @@ function MatchScout(props: any) {
             
           <Flex vertical align='flex-start'>
               <h2>#Coral Missed L4</h2>
-              <Form.Item<FieldType> name="tele_L4missed" rules={[{ required: true, message: 'Enter # of scored speaker pieces' }]}>
+              <Form.Item<FieldType> name="tele_L4missed" rules={[{ required: true, message: 'Enter # of Coral Missed L4' }]}>
                 <InputNumber
                   id="tele_L4missed"
                   type='number'
@@ -944,8 +944,8 @@ function MatchScout(props: any) {
         <div className = 'radioRColumn'> 
           <div className = 'radioRow'>
           <Flex vertical align='flex-start'>
-              <h2>#Coral L3</h2>
-              <Form.Item<FieldType> name="tele_L3scored" rules={[{ required: true, message: 'Enter # of scored speaker pieces' }]}>
+              <h2>#Coral Scored L3</h2>
+              <Form.Item<FieldType> name="tele_L3scored" rules={[{ required: true, message: 'Enter # of Coral Scored L3' }]}>
                 <InputNumber
                   id="tele_L3scored"
                   type='number'
@@ -968,7 +968,7 @@ function MatchScout(props: any) {
             
           <Flex vertical align='flex-start'>
               <h2>#Coral Missed L3</h2>
-              <Form.Item<FieldType> name="tele_L3missed" rules={[{ required: true, message: 'Enter # of scored speaker pieces' }]}>
+              <Form.Item<FieldType> name="tele_L3missed" rules={[{ required: true, message: 'Enter # of Coral Missed L3' }]}>
                 <InputNumber
                   id="tele_L3missed"
                   type='number'
@@ -994,8 +994,8 @@ function MatchScout(props: any) {
         <div className = 'radioRColumn'> 
           <div className = 'radioRow'>
           <Flex vertical align='flex-start'>
-              <h2>#Coral L2</h2>
-              <Form.Item<FieldType> name="tele_L2scored" rules={[{ required: true, message: 'Enter # of scored speaker pieces' }]}>
+              <h2>#Coral Scored L2</h2>
+              <Form.Item<FieldType> name="tele_L2scored" rules={[{ required: true, message: 'Enter # of Coral Scored L2' }]}>
                 <InputNumber
                   id="tele_L2scored"
                   type='number'
@@ -1018,7 +1018,7 @@ function MatchScout(props: any) {
             
           <Flex vertical align='flex-start'>
               <h2>#Coral Missed L2</h2>
-              <Form.Item<FieldType> name="tele_L2missed" rules={[{ required: true, message: 'Enter # of scored speaker pieces' }]}>
+              <Form.Item<FieldType> name="tele_L2missed" rules={[{ required: true, message: 'Enter # of Coral Missed L2' }]}>
                 <InputNumber
                   id="tele_L2missed"
                   type='number'
@@ -1044,8 +1044,8 @@ function MatchScout(props: any) {
         <div className = 'radioRColumn'> 
           <div className = 'radioRow'>
           <Flex vertical align='flex-start'>
-              <h2>#Coral L1</h2>
-              <Form.Item<FieldType> name="tele_L1scored" rules={[{ required: true, message: 'Enter # of scored speaker pieces' }]}>
+              <h2>#Coral Scored L1</h2>
+              <Form.Item<FieldType> name="tele_L1scored" rules={[{ required: true, message: 'Enter # of Coral Scored L1' }]}>
                 <InputNumber
                   id="tele_L1scored"
                   type='number'
@@ -1068,7 +1068,7 @@ function MatchScout(props: any) {
             
           <Flex vertical align='flex-start'>
               <h2>#Coral Missed L1</h2>
-              <Form.Item<FieldType> name="tele_L1missed" rules={[{ required: true, message: 'Enter # of scored speaker pieces' }]}>
+              <Form.Item<FieldType> name="tele_L1missed" rules={[{ required: true, message: 'Enter # of Coral Missed L1' }]}>
                 <InputNumber
                   id="tele_L1missed"
                   type='number'
@@ -1094,8 +1094,8 @@ function MatchScout(props: any) {
         <div className = 'radioRColumn'> 
           <div className = 'radioRow'>
           <Flex vertical align='flex-start'>
-              <h2>#Algae Net</h2>
-              <Form.Item<FieldType> name="tele_netscored" rules={[{ required: true, message: 'Enter # of scored speaker pieces' }]}>
+              <h2>#Algae Scored in Net</h2>
+              <Form.Item<FieldType> name="tele_netscored" rules={[{ required: true, message: 'Enter # of Algae Scored in Net' }]}>
                 <InputNumber
                   id="tele_netscored"
                   type='number'
@@ -1117,8 +1117,8 @@ function MatchScout(props: any) {
             </Flex>
             
           <Flex vertical align='flex-start'>
-              <h2>#Net Missed</h2>
-              <Form.Item<FieldType> name="tele_netmissed" rules={[{ required: true, message: 'Enter # of scored speaker pieces' }]}>
+              <h2>#Net Missed in Net</h2>
+              <Form.Item<FieldType> name="tele_netmissed" rules={[{ required: true, message: 'Enter # of Net Missed in Net' }]}>
                 <InputNumber
                   id="tele_netmissed"
                   type='number'
@@ -1145,7 +1145,7 @@ function MatchScout(props: any) {
           <div className = 'radioRow'>
           <Flex vertical align='flex-start'>
               <h2>#Algae Processor</h2>
-              <Form.Item<FieldType> name="tele_processorscored" rules={[{ required: true, message: 'Enter # of scored speaker pieces' }]}>
+              <Form.Item<FieldType> name="tele_processorscored" rules={[{ required: true, message: 'Enter # of Algae Processor' }]}>
                 <InputNumber
                   id="tele_processorscored"
                   type='number'
@@ -1168,10 +1168,6 @@ function MatchScout(props: any) {
 
           </div>
         </div>
-
-       
-        
-        
       </div>
     );
   }
@@ -1181,25 +1177,26 @@ function MatchScout(props: any) {
       climbTime: number,
     };
     const coralIntakeCap = [
-      { label: "Ground", value: "g" },
-      { label: "Station", value: "s" },
-      { label: "Neither", value: "n" },
+      { label: "Ground", value: "Ground" },
+      { label: "Station", value: "Station" },
+      { label: "Both", value: "Both" },
+      { label: "Neither", value: "Neither" },
     ];
     const coralStation = [
-      { label: "Top Station", value: "ts" },
-      { label: "Botton Station", value: "bs" },
-      { label: "Both", value: "b" },
-      { label: "Neither", value: "n"}
+      { label: "Top Station", value: "Top Station" },
+      { label: "Bottom Station", value: "Bottom Station" },
+      { label: "Both", value: "Both" },
+      { label: "Neither", value: "Neither"}
     ];
     const algaeIntakeCap = [
-      { label: "Reef", value: "r" },
-      { label: "Ground", value: "g" },
+      { label: "Reef Zone", value: "Reef Zone" },
+      { label: "Ground", value: "Ground" },
     ];
     const climbType = [
-      { label: "Deep Hang", value: "dh" },
-      { label: "Shallow Hang", value: "sh" },
-      { label: "Park", value: "p" },
-      { label: "None", value: "n" },
+      { label: "Deep Hang", value: "Deep Hang" },
+      { label: "Shallow Hang", value: "Shallow Hang" },
+      { label: "Park", value: "Park" },
+      { label: "None", value: "None" },
     ];
     return (
       <>
@@ -1225,8 +1222,8 @@ function MatchScout(props: any) {
   <Form.Item name="climbType" rules={[{ required: true, message: 'Enter Climb Type' }]}>
     <Select options={climbType} onChange={updateTeamNumber} className="input" />
   </Form.Item>
-  <h2>Climb Time (seconds):</h2>
-        <Form.Item<FieldType> name="climbTime" rules={[{ required: true, message: 'Enter Climb Time' }]}>
+  <h2>Climb Time (Seconds):</h2>
+        <Form.Item<FieldType> name="climbTime" rules={[{ required: true, message: 'Enter Climb Time (Seconds)' }]}>
           <InputNumber min={1} onChange={updateTeamNumber} className="input" type='number' pattern="\d*" onWheel={(event) => (event.target as HTMLElement).blur()} />
         </Form.Item>
 </>
