@@ -211,9 +211,12 @@ function MatchScout(props: any) {
           "teleop_hoarded_pieces": event.tele_hoardedpieces,
         },
         "engGame": {
-          "EG_climbed": event.climbed,
-          "EG_parked": event.parked,
-          "EG_trapScored": event.trapscored,
+          "coralIntakeCap": event.coralIntakeCap,
+          "coralStation": event.coralStation,
+          "algaeIntakeCap": event.algaeIntakeCap,
+          "climbType": event.climbType,
+          "climbResult": event.climbResult,
+          "climbTime": event.climbTime,
         },
         "overAll": {
           "OA_robot_died": event.robotdied,
@@ -265,15 +268,6 @@ function MatchScout(props: any) {
           "teleop_shooting_location": [],
           "teleop_hoarded_pieces": -1,
           "teleop_path": "test",
-        },
-        "engGame": {
-          "EG_climbed": false,
-          "EG_timeLeft_when_climb": -1,
-          "EG_parked": false,
-          "EG_trapScored": false,
-          "EG_harmony": false,
-          "EG_mic_score": false,
-          "EG_climbing_affect": false,
         },
         "overAll": {
           "OA_hoarded": false,
@@ -1181,7 +1175,62 @@ function MatchScout(props: any) {
       </div>
     );
   }
+  function endgame() {
+    type FieldType = {
+      climbResult: boolean,
+      climbTime: number,
+    };
+    const coralIntakeCap = [
+      { label: "Ground", value: "g" },
+      { label: "Station", value: "s" },
+      { label: "Neither", value: "n" },
+    ];
+    const coralStation = [
+      { label: "Top Station", value: "ts" },
+      { label: "Botton Station", value: "bs" },
+      { label: "Both", value: "b" },
+      { label: "Neither", value: "n"}
+    ];
+    const algaeIntakeCap = [
+      { label: "Reef", value: "r" },
+      { label: "Ground", value: "g" },
+    ];
+    const climbType = [
+      { label: "Deep Hang", value: "dh" },
+      { label: "Shallow Hang", value: "sh" },
+      { label: "Park", value: "p" },
+      { label: "None", value: "n" },
+    ];
+    return (
+      <>
+  <h2>Coral Intake Capability:</h2>
+  <Form.Item name="coralIntakeCap" rules={[{ required: true, message: 'Enter Coral Intake Capability' }]}>
+    <Select options={coralIntakeCap} onChange={updateTeamNumber} className="input" />
+  </Form.Item>
 
+  <h2>Coral Station:</h2>
+  <Form.Item name="coralStation" rules={[{ required: true, message: 'Enter Coral Station' }]}>
+    <Select options={coralStation} onChange={updateTeamNumber} className="input" />
+  </Form.Item>
+
+  <h2>Algae Intake Capability:</h2>
+  <Form.Item name="algaeIntakeCap" rules={[{ required: true, message: 'Enter Algae Intake Capability' }]}>
+    <Select options={algaeIntakeCap} onChange={updateTeamNumber} className="input" />
+  </Form.Item>
+  <h2>Leave Starting Line?</h2>
+          <Form.Item<FieldType> name ="climbResult" valuePropName="checked">
+            <Checkbox className='input_checkbox' />
+          </Form.Item>
+  <h2>Climb Type:</h2>
+  <Form.Item name="climbType" rules={[{ required: true, message: 'Enter Climb Type' }]}>
+    <Select options={climbType} onChange={updateTeamNumber} className="input" />
+  </Form.Item>
+  <h2>Climb Time (seconds):</h2>
+        <Form.Item<FieldType> name="climbTime" rules={[{ required: true, message: 'Enter Climb Time' }]}>
+          <InputNumber min={1} onChange={updateTeamNumber} className="input" type='number' pattern="\d*" onWheel={(event) => (event.target as HTMLElement).blur()} />
+        </Form.Item>
+</>
+  )}
   function overall() {
     type FieldType = {
       robotdied: boolean;
@@ -1373,6 +1422,11 @@ function MatchScout(props: any) {
     },
     {
       key: '4',
+      label: 'Endgame',
+      children: endgame(),
+    },
+    {
+      key: '5',
       label: 'Overall',
       children: overall(),
     },
@@ -1384,6 +1438,7 @@ function MatchScout(props: any) {
         form={form}
         initialValues={{
           leavespawn: false,
+          climbResult: false,
           amplifyscored: false,
           traversedstage: false,
           climbed: false,
@@ -1435,13 +1490,23 @@ function MatchScout(props: any) {
             });
             const initials = form.getFieldValue("initials");
             const matchnum = form.getFieldValue("matchnum");
+            const climbTime = form.getFieldValue("climbTime");
             const matchlevel = form.getFieldValue("matchlevel");
             const robotpos = form.getFieldValue("robotpos");
+            const coralIntakeCap = form.getFieldValue("coralIntakeCap");
+            const coralStation = form.getFieldValue("coralStation");
+            const algaeIntakeCap = form.getFieldValue("algaeIntakeCap");
+            const climbType = form.getFieldValue("climbType");
             form.resetFields();
             form.setFieldValue("initials", initials);
             form.setFieldValue("matchnum", matchnum + 1);
+            form.setFieldValue("climbTime", climbTime + 1);
             form.setFieldValue("matchlevel", matchlevel);
             form.setFieldValue("robotpos", robotpos);
+            form.setFieldValue("coralIntakeCap", coralIntakeCap);
+            form.setFieldValue("coralStation", coralStation);
+            form.setFieldValue("algaeIntakeCap", algaeIntakeCap);
+            form.setFieldValue("climbType", climbType);
             setWasDefendedIsVisible(false);
             setDefendedIsVisible(false);
             await calculateMatchLevel();
