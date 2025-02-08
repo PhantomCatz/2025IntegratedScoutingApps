@@ -1217,7 +1217,7 @@ function MatchScout(props: any) {
   <Form.Item name="algaeIntakeCap" rules={[{ required: true, message: 'Enter Algae Intake Capability' }]}>
     <Select options={algaeIntakeCap} onChange={updateTeamNumber} className="input" />
   </Form.Item>
-  <h2>Leave Starting Line?</h2>
+  <h2>Climb Succeed/Fail?</h2>
           <Form.Item<FieldType> name ="climbResult" valuePropName="checked">
             <Checkbox className='input_checkbox' />
           </Form.Item>
@@ -1225,8 +1225,8 @@ function MatchScout(props: any) {
   <Form.Item name="climbType" rules={[{ required: true, message: 'Enter Climb Type' }]}>
     <Select options={climbType} onChange={updateTeamNumber} className="input" />
   </Form.Item>
-  <h2>Climb Time (seconds):</h2>
-        <Form.Item<FieldType> name="climbTime" rules={[{ required: true, message: 'Enter Climb Time' }]}>
+  <h2>Climb Time (Seconds):</h2>
+        <Form.Item<FieldType> name="climbTime" rules={[{ required: true, message: 'Enter Climb Time (Seconds)' }]}>
           <InputNumber min={1} onChange={updateTeamNumber} className="input" type='number' pattern="\d*" onWheel={(event) => (event.target as HTMLElement).blur()} />
         </Form.Item>
 </>
