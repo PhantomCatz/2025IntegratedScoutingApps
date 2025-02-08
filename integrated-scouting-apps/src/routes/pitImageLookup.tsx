@@ -2,7 +2,6 @@ import '../public/stylesheets/style.css';
 import logo from '../public/images/logo.png';
 import back from '../public/images/back.png';
 import { useEffect, useState } from 'react';
-import { useCookies } from 'react-cookie';
 import { InputNumber } from 'antd';
 
 function Teamresponse(props: any) {

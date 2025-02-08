@@ -1,7 +1,6 @@
 import '../public/stylesheets/style.css';
 import '../public/stylesheets/picklist.css';
 import { useEffect, useState } from 'react';
-import { useCookies } from 'react-cookie';
 import Column from 'antd/es/table/Column';
 import { Table } from 'antd';
 import Header from "./header";

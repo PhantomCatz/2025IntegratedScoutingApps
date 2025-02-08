@@ -1,7 +1,6 @@
 import '../public/stylesheets/dtf.css';
 import { useEffect } from 'react';
 import { Input, Form, InputNumber } from 'antd';
-import { useCookies } from 'react-cookie';
 import Header from "./header";
 
 function DTF(props: any) {

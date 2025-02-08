@@ -1,26 +1,46 @@
 import '../public/stylesheets/style.css';
 import '../public/stylesheets/dtf.css';
 import { useEffect, useState } from "react";
-import { useCookies } from "react-cookie";
 import { useParams } from "react-router-dom";
 import { Checkbox, Flex, Input, Tabs } from "antd";
 import TextArea from 'antd/es/input/TextArea';
 import Header from "./header";
 
 function DTFTeams(props: any) {
-  const { team_number } = useParams();
+  const { teamParams } = useParams();
   const [loading, setLoading] = useState(false);
   const [items, setItems] = useState<{ key: string; label: string; children: JSX.Element; }[]>([]);
-  useEffect(() => { document.title = props.title; return () => { }; }, [props.title]);
+  const [teamList, setTeamList] = useState<string[]>([]);
+  const [teamData, setTeamData] = useState<any>(null);
+  
   useEffect(() => {
-    const teams = team_number?.split(",");
-    if (teams) {
-
-      getDTF(teams);
-      setLoading(true);
+    document.title = props.title;
+  }, [props.title]);
+  useEffect(() => {
+    const teams = teamParams?.split(",") || [];
+    setTeamList(teams);
+  }, [teamParams]);
+  useEffect(() => {
+    if (!(teamList?.length)) {
+      return;
     }
-    return () => { };
-  }, [team_number]);
+    getDTF(teamList);
+    setLoading(true);
+  }, [teamList]);
+  useEffect(() => {
+    if (!(teamList?.length)) {
+      return;
+    }
+    fetch(`/api?${teamList[0] ? `team1=${teamList[0]}` : ""}${teamList[1] ? `&team2=${teamList[1]}` : ""}${teamList[2] ? `&team3=${teamList[2]}` : ""}`)
+      .then((res) => {
+        const value = res.json();
+        return value;
+      })
+      .then((data) => {
+        setTeamData(data)
+        console.log(data)
+      });
+  }, [teamList]);
 
   async function getDTF(teams: string[]) {
     try {
@@ -169,9 +189,9 @@ function DTFTeams(props: any) {
   }
   return (
     <div>
-	<Header name={"Drive Team Feeder"} back={"/home"} />
-	<h2 style={{ display: loading ? 'inherit' : 'none' }}>Loading data...</h2>
-	<Tabs defaultActiveKey="1" items={items} centered className='tabs' />
+    <Header name={"Drive Team Feeder"} back={"/home"} />
+    <h2 style={{ display: loading ? 'inherit' : 'none' }}>Loading data...</h2>
+    <Tabs defaultActiveKey="1" items={items} centered className='tabs' />
     </div>
   );
 }

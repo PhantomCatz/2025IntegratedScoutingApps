@@ -4,7 +4,6 @@ import logo from '../public/images/logo.png';
 import back from '../public/images/back.png';
 import { useEffect, useState } from 'react';
 import { Input, Form, InputNumber } from 'antd';
-import { useCookies } from 'react-cookie';
 
 function DataLookup(props: any) {
 	const eventname = process.env.REACT_APP_EVENTNAME as string;

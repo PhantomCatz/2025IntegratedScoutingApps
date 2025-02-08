@@ -5,7 +5,6 @@ import back from '../public/images/back.png';
 import { useEffect, useState } from 'react';
 import { Tabs, Input, Form, Select, InputNumber, Button, Flex } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
-import { useCookies } from 'react-cookie';
 import { saveAs } from 'file-saver';
 
 function DriverSkill(props: any) {

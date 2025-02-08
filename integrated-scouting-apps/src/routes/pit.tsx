@@ -7,7 +7,6 @@ import { useRef } from 'react';
 import { Button } from 'antd';
 import React, { useState, useEffect } from 'react';
 import { ReactSketchCanvasRef } from 'react-sketch-canvas';
-import { useCookies } from 'react-cookie';
 import TextArea from 'antd/es/input/TextArea';
 import Header from './header';
 import QrCode from './qrCodeViewer';
@@ -33,6 +32,7 @@ function PitScout(props: any) {
     comments: "",
   });
   const [qrValue, setQrValue] = useState<any>();
+  const [robotWeight, setRobotWeight] = useState(0); // Add this line
 
   useEffect(() => { document.title = props.title; return () => { } }, [props.title]);
   useEffect(() => {
@@ -41,8 +41,8 @@ function PitScout(props: any) {
       form.setFieldValue('robot_events', formValue.robot_events);
     }
     if ((document.getElementById("robot_weight") as HTMLInputElement) !== null) {
-      (document.getElementById("robot_weight") as HTMLInputElement).value = formValue.robot_weight.toString();
-      form.setFieldValue('robot_weight', formValue.robot_weight);
+      (document.getElementById("robot_weight") as HTMLInputElement).value = robotWeight.toString(); // changed
+      form.setFieldValue('robot_weight', robotWeight); // changed
     }
     if ((document.getElementById("robot_motor_counter") as HTMLInputElement) !== null) {
       (document.getElementById("robot_motor_counter") as HTMLInputElement).value = formValue.robot_motor_counter.toString();
@@ -65,7 +65,7 @@ function PitScout(props: any) {
       form.setFieldValue('robot_GP', formValue.robot_GP);
     }
     return () => { };
-  }, [formValue, form]);
+  }, [formValue, form, robotWeight]);
   useEffect(() => {
 		async function getTeams() {
 			try {
@@ -206,8 +206,27 @@ function PitScout(props: any) {
     return (
       <div>
         <h2>Scouter Initials</h2>
-        <Form.Item<FieldType> name="scouter_initial" rules={[{ required: true, message: 'Please input your initials!' }]}>
-          <Input maxLength={2} className="input" />
+        <Form.Item<FieldType>
+          name="scouter_initial"
+          rules={[
+            { required: true, message: 'Please input your initials!' },
+            {
+              pattern: /^[A-Za-z]{1,2}$/,
+              message: 'Please enter only letters (max 2)',
+            },
+          ]}
+        >
+          <Input
+            maxLength={2}
+            className="input"
+            onKeyPress={(event) => {
+              const keyCode = event.keyCode || event.which;
+              const keyValue = String.fromCharCode(keyCode);
+              if (!/^[A-Za-z]+$/.test(keyValue)) {
+                event.preventDefault();
+              }
+            }}
+          />
         </Form.Item>
         <h2>Team #</h2>
         <Form.Item<FieldType> 
@@ -237,19 +256,31 @@ function PitScout(props: any) {
           />
         </Form.Item>
         <h2>Robot Weight (lbs)</h2>
-      <Form.Item
-        name="robot_weight"
-        rules={[{ required: true, message: 'Please input the robot weight in lbs!' }]}
-      >
-        <InputNumber
-          min={0}
-          max={1000}
-          precision={0}
-          placeholder="0"
-          className="input robot-weight-input"
-          formatter={(value) => `${value}`.replace(/^0+/, '')}
-        />
-      </Form.Item>
+        <Form.Item
+          name="robot_weight"
+          rules={[{ required: true, message: 'Please input the robot weight in lbs!' }]}
+        >
+          <InputNumber
+            min={0}
+            max={1000}
+            precision={0}
+            placeholder="0"
+            className="input robot-weight-input"
+            value={robotWeight}
+            onChange={(value) => {
+              const numValue = typeof value === 'number' ? value : 0;
+              setRobotWeight(numValue);
+            }}
+            onKeyPress={(event) => {
+              const charCode = event.which ? event.which : event.keyCode;
+              if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+                event.preventDefault();
+              }
+            }}
+            formatter={(value) => `${value}`.replace(/^0+/, '')}
+            parser={(value) => value ? Math.round(parseFloat(value)) : 0}
+          />
+        </Form.Item>
         <h2>Drive Train Type</h2>
         <Form.Item name="robot_drive_train" rules={[{ required: true, message: 'Please input the drive train type!' }]}>
         <Select
@@ -272,16 +303,17 @@ function PitScout(props: any) {
         <Form.Item<FieldType> name="robot_motor_counter" rules={[{ required: true, message: 'Please input the number of motors!' }]}>
           <InputNumber
             controls
-            disabled
-            min={1}
+            min={0} // Modified: can start from 0
             className="input"
-            addonAfter={<Button onClick={prevValue => {
-              setFormValue({ ...formValue, robot_motor_counter: formValue.robot_motor_counter + 1 });
+            value={formValue.robot_motor_counter}
+            onChange={(value) => {
+              setFormValue({ ...formValue, robot_motor_counter: value ? value : 0 });
+            }}
+            addonAfter={<Button onClick={() => {
+              setFormValue(prevFormValue => ({ ...prevFormValue, robot_motor_counter: prevFormValue.robot_motor_counter + 1 }));
             }} className='incrementbutton'>+</Button>}
-            addonBefore={<Button onClick={prevValue => {
-              if (Number(formValue.robot_motor_counter) > 0) {
-                setFormValue({ ...formValue, robot_motor_counter: formValue.robot_motor_counter - 1 });
-              }
+            addonBefore={<Button onClick={() => {
+              setFormValue(prevFormValue => ({ ...prevFormValue, robot_motor_counter: Math.max(0, prevFormValue.robot_motor_counter - 1) })); //Modified
             }} className='decrementbutton'>-</Button>}
           />
         </Form.Item>
@@ -437,7 +469,7 @@ function PitScout(props: any) {
 
         </Form.Item>
         <h2>Comments</h2>
-        <Form.Item<FieldType> name="comments" rules={[{ required: true, message: "Please input some comments!" }]}>
+        <Form.Item<FieldType> name="comments">
           <TextArea style={{ verticalAlign: 'center' }} className='textbox_input' />
         </Form.Item>
         <h2 style={{ display: loading ? 'inherit' : 'none' }}>Submitting data...</h2>
@@ -459,17 +491,18 @@ function PitScout(props: any) {
             await submitData(event);
             const initials = form.getFieldValue("scouter_initial");
             form.resetFields();
+            setRobotWeight(0);
             form.setFieldsValue({ "scouter_initial": initials });
-            // setFormValue({
-            //   robot_events: 0,
-            //   robot_weight: 0,
-            //   robot_motor_counter: 0,
-            //   robot_pit_organization: 0,
-            //   robot_team_safety: 0,
-            //   robot_team_workmanship: 0,
-            //   robot_GP: 0,
-            //   comments: "",
-            // });
+            setFormValue({
+              robot_events: 0,
+              robot_weight: 0,
+              robot_motor_counter: 0,
+              robot_pit_organization: 0,
+              robot_team_safety: 0,
+              robot_team_workmanship: 0,
+              robot_GP: 0,
+              comments: "",
+            });
           }
           catch (err) {
             // console.log(err);

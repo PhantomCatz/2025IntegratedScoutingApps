@@ -7,7 +7,6 @@ import { useEffect, useState } from 'react';
 import { Tabs, Input, Form, Select, Checkbox, InputNumber, Flex, Button, QRCode } from 'antd';
 import type { TabsProps } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
-import { useCookies } from 'react-cookie';
 import { Footer } from 'antd/es/layout/layout';
 import Header from "./header";
 import { Radio } from 'antd';

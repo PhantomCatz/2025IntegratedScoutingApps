@@ -1,7 +1,6 @@
 import '../public/stylesheets/style.css';
 import { Button } from 'antd';
 import { useEffect } from 'react';
-import { useCookies } from 'react-cookie';
 import Header from "./header";
 
 function ScoutingPage(props: any) {

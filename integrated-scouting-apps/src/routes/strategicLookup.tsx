@@ -1,7 +1,6 @@
 import '../public/stylesheets/style.css';
 import '../public/stylesheets/strategic.css';
 import { useEffect, useState } from 'react';
-import { useCookies } from 'react-cookie';
 import { Input, InputNumber, Tabs } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import Header from "./header";

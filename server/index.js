@@ -1,0 +1,29 @@
+import { requestDatabase, getTeamInfo } from "./database.cjs";
+//const requestDatabase = require("database").requestDatabase
+import express from "express";
+//const express = require("express");
+
+const PORT = process.env.PORT || 3001;
+
+const app = express();
+
+
+
+app.get("/api", async (req, res) => {
+	const query = req.sqlQuery || "show databases";
+	
+	const queryString = req.url.split("?")[1];
+	const queries = Object.fromEntries(new URLSearchParams(queryString));
+
+	//const result = await getTeamInfo(queries);
+	const result = await requestDatabase(query);
+
+	console.log(result);
+
+	await res.json(result);
+	return res;
+});
+
+app.listen(PORT, () => {
+	console.log(`Server listening on ${PORT}`);
+});
