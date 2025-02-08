@@ -58,10 +58,8 @@ function MatchScout(props: any) {
     teleopL2Missed: 0,
     teleopL1Missed: 0,
     teleopNetScored: 0,
+    teleopNetMissed: 0,
     teleopProcessorScored: 0,
-    teleopMissedAmpPieces: 0,
-    teleopCoralMissed: 0,
-    teleopAlgaeMissed: 0,
     numPenalties: 0,
     pushingRating: 0,
     counterDefenseRating: 0,
@@ -130,21 +128,33 @@ function MatchScout(props: any) {
       (document.getElementById("tele_L1scored") as HTMLInputElement).value = formValue.teleopL1Scored.toString();
       form.setFieldValue('tele_L1scored', formValue.teleopL1Scored);
     }
+    if ((document.getElementById("tele_L4missed") as HTMLInputElement) !== null) {
+      (document.getElementById("tele_L4missed") as HTMLInputElement).value = formValue.teleopL4Missed.toString();
+      form.setFieldValue('tele_L4missed', formValue.teleopL4Missed);
+    }
+    if ((document.getElementById("tele_L3missed") as HTMLInputElement) !== null) {
+      (document.getElementById("tele_L3missed") as HTMLInputElement).value = formValue.teleopL3Missed.toString();
+      form.setFieldValue('tele_L3missed', formValue.teleopL3Missed);
+    }
+    if ((document.getElementById("tele_L2missed") as HTMLInputElement) !== null) {
+      (document.getElementById("tele_L2missed") as HTMLInputElement).value = formValue.teleopL2Missed.toString();
+      form.setFieldValue('tele_L2missed', formValue.teleopL2Missed);
+    }
+    if ((document.getElementById("tele_L1missed") as HTMLInputElement) !== null) {
+      (document.getElementById("tele_L1missed") as HTMLInputElement).value = formValue.teleopL1Missed.toString();
+      form.setFieldValue('tele_L1missed', formValue.teleopL1Missed);
+    }
     if ((document.getElementById("tele_netscored") as HTMLInputElement) !== null) {
       (document.getElementById("tele_netscored") as HTMLInputElement).value = formValue.teleopNetScored.toString();
       form.setFieldValue('tele_netscored', formValue.teleopNetScored);
     }
+    if ((document.getElementById("tele_netmissed") as HTMLInputElement) !== null) {
+      (document.getElementById("tele_netmissed") as HTMLInputElement).value = formValue.teleopNetMissed.toString();
+      form.setFieldValue('tele_netmissed', formValue.teleopNetMissed);
+    }
     if ((document.getElementById("tele_processorscored") as HTMLInputElement) !== null) {
       (document.getElementById("tele_processorscored") as HTMLInputElement).value = formValue.teleopProcessorScored.toString();
       form.setFieldValue('tele_processorscored', formValue.teleopProcessorScored);
-    }
-    if ((document.getElementById("tele_coralmissed") as HTMLInputElement) !== null) {
-      (document.getElementById("tele_coralmissed") as HTMLInputElement).value = formValue.teleopCoralMissed.toString();
-      form.setFieldValue('tele_coralmissed', formValue.teleopCoralMissed);
-    }
-    if ((document.getElementById("tele_algaemissed") as HTMLInputElement) !== null) {
-      (document.getElementById("tele_algaemissed") as HTMLInputElement).value = formValue.teleopAlgaeMissed.toString();
-      form.setFieldValue('tele_algaemissed', formValue.teleopAlgaeMissed);
     }
     if ((document.getElementById("numpenalties") as HTMLElement) !== null) {
       (document.getElementById("numpenalties") as HTMLInputElement).value = formValue.numPenalties.toString();
@@ -428,27 +438,34 @@ function MatchScout(props: any) {
     ];
     return (
       <div>
+
         <h2>Team: {teamNum}</h2>
+
         <h2>Scouter Initials</h2>
         <Form.Item<FieldType> name="initials" rules={[{ required: true, message: 'Enter initials' }]}>
           <Input maxLength={2} className="input" />
         </Form.Item>
+
         <h2>Match #</h2>
         <Form.Item<FieldType> name="matchnum" rules={[{ required: true, message: 'Enter match #' }]}>
           <InputNumber min={1} onChange={updateTeamNumber} className="input" type='number' pattern="\d*" onWheel={(event) => (event.target as HTMLElement).blur()} />
         </Form.Item>
+
         <h2>Match Level:</h2>
         <Form.Item<FieldType> name="matchlevel" rules={[{ required: true, message: 'Enter match level' }]}>
           <Select options={rounds} onChange={() => { calculateMatchLevel(); updateTeamNumber(); }} className="input" />
         </Form.Item>
+
         <h2 style={{ display: roundIsVisible ? 'inherit' : 'none' }}>Round #</h2>
         <Form.Item<FieldType> name="roundnum" rules={[{ required: roundIsVisible ? true : false, message: 'Enter round #' }]} style={{ display: roundIsVisible ? 'inherit' : 'none' }}>
           <InputNumber min={1} onChange={updateTeamNumber} style={{ display: roundIsVisible ? 'inherit' : 'none' }} className="input" type='number' pattern="\d*" onWheel={(event) => (event.target as HTMLElement).blur()} />
         </Form.Item>
+
         <h2>Robot Position:</h2>
         <Form.Item<FieldType> name="robotpos" rules={[{ required: true, message: 'Enter robot position' }]}>
-          <Select options={robotpos} onChange={updateTeamNumber} className="input" />
+          <Select options={robotpos} onChange={updateTeamNumber} className="input" dropdownMatchSelectWidth={false}/>
         </Form.Item>
+
         <div className = 'divdivdiv'> 
         <div className = 'radioRow'> 
           <div className = 'radioColumn'>
@@ -844,9 +861,12 @@ function MatchScout(props: any) {
       tele_L2scored: number,
       tele_L1scored: number,
       tele_netscored: number,
+      tele_L4missed: number,
+      tele_L3missed: number,
+      tele_L2missed: number,
+      tele_L1missed: number,
+      tele_netmissed: number,
       tele_processorscored: number,
-      tele_coralmissed: number,
-      tele_algaemissed: number,
       intake: string,
       shootingloc: string,
       cooppressed: boolean,
@@ -877,7 +897,7 @@ function MatchScout(props: any) {
             <Checkbox style={color ? {position: 'absolute', left: '0.05%', top: '67.5%'} : {position: 'absolute', right: '0.05%', top: '67.5%'}} className='map_checkbox' />
             <Checkbox style={color ? {position: 'absolute', left: '0.05%', top: '87.5%'} : {position: 'absolute', right: '0.05%', top: '87.5%'}} className='map_checkbox' />
         </div> */}
-        <div className = 'radioRColumn'> 
+                <div className = 'radioRColumn'> 
           <div className = 'radioRow'>
           <Flex vertical align='flex-start'>
               <h2>#Coral L4</h2>
@@ -903,6 +923,33 @@ function MatchScout(props: any) {
             </Flex>
             
           <Flex vertical align='flex-start'>
+              <h2>#Coral Missed L4</h2>
+              <Form.Item<FieldType> name="tele_L4missed" rules={[{ required: true, message: 'Enter # of scored speaker pieces' }]}>
+                <InputNumber
+                  id="tele_L4missed"
+                  type='number'
+                  pattern="\d*"
+                  disabled
+                  onWheel={(event) => (event.target as HTMLInputElement).blur()}
+                  min={0}
+                  className="input"
+                  addonAfter={<Button onClick={() => {
+                    setFormValue({ ...formValue, teleopL4Missed: formValue.teleopL4Missed + 1 });
+                  }} className='incrementbutton'>+</Button>}
+                  addonBefore={<Button onClick={() => {
+                    if (Number(formValue.teleopL4Missed) > 0) {
+                      setFormValue({ ...formValue, teleopL4Missed: formValue.teleopL4Missed - 1 });
+                    }
+                  }} className='decrementbutton'>-</Button>}
+                />
+              </Form.Item>
+            </Flex>
+          </div>
+        </div>
+            
+        <div className = 'radioRColumn'> 
+          <div className = 'radioRow'>
+          <Flex vertical align='flex-start'>
               <h2>#Coral L3</h2>
               <Form.Item<FieldType> name="tele_L3scored" rules={[{ required: true, message: 'Enter # of scored speaker pieces' }]}>
                 <InputNumber
@@ -924,9 +971,32 @@ function MatchScout(props: any) {
                 />
               </Form.Item>
             </Flex>
+            
+          <Flex vertical align='flex-start'>
+              <h2>#Coral Missed L3</h2>
+              <Form.Item<FieldType> name="tele_L3missed" rules={[{ required: true, message: 'Enter # of scored speaker pieces' }]}>
+                <InputNumber
+                  id="tele_L3missed"
+                  type='number'
+                  pattern="\d*"
+                  disabled
+                  onWheel={(event) => (event.target as HTMLInputElement).blur()}
+                  min={0}
+                  className="input"
+                  addonAfter={<Button onClick={() => {
+                    setFormValue({ ...formValue, teleopL3Missed: formValue.teleopL3Missed + 1 });
+                  }} className='incrementbutton'>+</Button>}
+                  addonBefore={<Button onClick={() => {
+                    if (Number(formValue.teleopL3Missed) > 0) {
+                      setFormValue({ ...formValue, teleopL3Missed: formValue.teleopL3Missed - 1 });
+                    }
+                  }} className='decrementbutton'>-</Button>}
+                />
+              </Form.Item>
+            </Flex>
           </div>
         </div>
-            
+        
         <div className = 'radioRColumn'> 
           <div className = 'radioRow'>
           <Flex vertical align='flex-start'>
@@ -953,6 +1023,33 @@ function MatchScout(props: any) {
             </Flex>
             
           <Flex vertical align='flex-start'>
+              <h2>#Coral Missed L2</h2>
+              <Form.Item<FieldType> name="tele_L2missed" rules={[{ required: true, message: 'Enter # of scored speaker pieces' }]}>
+                <InputNumber
+                  id="tele_L2missed"
+                  type='number'
+                  pattern="\d*"
+                  disabled
+                  onWheel={(event) => (event.target as HTMLInputElement).blur()}
+                  min={0}
+                  className="input"
+                  addonAfter={<Button onClick={() => {
+                    setFormValue({ ...formValue, teleopL2Missed: formValue.teleopL2Missed + 1 });
+                  }} className='incrementbutton'>+</Button>}
+                  addonBefore={<Button onClick={() => {
+                    if (Number(formValue.teleopL2Missed) > 0) {
+                      setFormValue({ ...formValue, teleopL2Missed: formValue.teleopL2Missed - 1 });
+                    }
+                  }} className='decrementbutton'>-</Button>}
+                />
+              </Form.Item>
+            </Flex>
+          </div>
+        </div>
+
+        <div className = 'radioRColumn'> 
+          <div className = 'radioRow'>
+          <Flex vertical align='flex-start'>
               <h2>#Coral L1</h2>
               <Form.Item<FieldType> name="tele_L1scored" rules={[{ required: true, message: 'Enter # of scored speaker pieces' }]}>
                 <InputNumber
@@ -974,59 +1071,32 @@ function MatchScout(props: any) {
                 />
               </Form.Item>
             </Flex>
+            
+          <Flex vertical align='flex-start'>
+              <h2>#Coral Missed L1</h2>
+              <Form.Item<FieldType> name="tele_L1missed" rules={[{ required: true, message: 'Enter # of scored speaker pieces' }]}>
+                <InputNumber
+                  id="tele_L1missed"
+                  type='number'
+                  pattern="\d*"
+                  disabled
+                  onWheel={(event) => (event.target as HTMLInputElement).blur()}
+                  min={0}
+                  className="input"
+                  addonAfter={<Button onClick={() => {
+                    setFormValue({ ...formValue, teleopL1Missed: formValue.teleopL1Missed + 1 });
+                  }} className='incrementbutton'>+</Button>}
+                  addonBefore={<Button onClick={() => {
+                    if (Number(formValue.teleopL1Missed) > 0) {
+                      setFormValue({ ...formValue, teleopL1Missed: formValue.teleopL1Missed - 1 });
+                    }
+                  }} className='decrementbutton'>-</Button>}
+                />
+              </Form.Item>
+            </Flex>
           </div>
         </div>
 
-        <div className = 'radioRColumn'> 
-          <div className = 'radioRow'>
-          <Flex vertical align='flex-start'>
-              <h2>Coral Missed</h2>
-              <Form.Item<FieldType> name="tele_coralmissed" rules={[{ required: true, message: 'Enter # of scored speaker pieces' }]}>
-                <InputNumber
-                  id="tele_coralmissed"
-                  type='number'
-                  pattern="\d*"
-                  disabled
-                  onWheel={(event) => (event.target as HTMLInputElement).blur()}
-                  min={0}
-                  className="input"
-                  addonAfter={<Button onClick={() => {
-                    setFormValue({ ...formValue, teleopCoralMissed: formValue.teleopCoralMissed + 1 });
-                  }} className='incrementbutton'>+</Button>}
-                  addonBefore={<Button onClick={() => {
-                    if (Number(formValue.teleopCoralMissed) > 0) {
-                      setFormValue({ ...formValue, teleopCoralMissed: formValue.teleopCoralMissed - 1 });
-                    }
-                  }} className='decrementbutton'>-</Button>}
-                />
-              </Form.Item>
-            </Flex>
-            
-          <Flex vertical align='flex-start'>
-              <h2>Algae Missed</h2>
-              <Form.Item<FieldType> name="tele_algaemissed" rules={[{ required: true, message: 'Enter # of scored speaker pieces' }]}>
-                <InputNumber
-                  id="tele_algaemissed"
-                  type='number'
-                  pattern="\d*"
-                  disabled
-                  onWheel={(event) => (event.target as HTMLInputElement).blur()}
-                  min={0}
-                  className="input"
-                  addonAfter={<Button onClick={() => {
-                    setFormValue({ ...formValue, teleopAlgaeMissed: formValue.teleopAlgaeMissed + 1 });
-                  }} className='incrementbutton'>+</Button>}
-                  addonBefore={<Button onClick={() => {
-                    if (Number(formValue.teleopAlgaeMissed) > 0) {
-                      setFormValue({ ...formValue, teleopAlgaeMissed: formValue.teleopAlgaeMissed - 1 });
-                    }
-                  }} className='decrementbutton'>-</Button>}
-                />
-              </Form.Item>
-            </Flex>
-          </div>
-        </div>
-            
         <div className = 'radioRColumn'> 
           <div className = 'radioRow'>
           <Flex vertical align='flex-start'>
@@ -1053,6 +1123,33 @@ function MatchScout(props: any) {
             </Flex>
             
           <Flex vertical align='flex-start'>
+              <h2>#Net Missed</h2>
+              <Form.Item<FieldType> name="tele_netmissed" rules={[{ required: true, message: 'Enter # of scored speaker pieces' }]}>
+                <InputNumber
+                  id="tele_netmissed"
+                  type='number'
+                  pattern="\d*"
+                  disabled
+                  onWheel={(event) => (event.target as HTMLInputElement).blur()}
+                  min={0}
+                  className="input"
+                  addonAfter={<Button onClick={() => {
+                    setFormValue({ ...formValue, teleopNetMissed: formValue.teleopNetMissed + 1 });
+                  }} className='incrementbutton'>+</Button>}
+                  addonBefore={<Button onClick={() => {
+                    if (Number(formValue.teleopNetMissed) > 0) {
+                      setFormValue({ ...formValue, teleopNetMissed: formValue.teleopNetMissed - 1 });
+                    }
+                  }} className='decrementbutton'>-</Button>}
+                />
+              </Form.Item>
+            </Flex>
+          </div>
+        </div>
+
+        <div className = 'radioRColumn'> 
+          <div className = 'radioRow'>
+          <Flex vertical align='flex-start'>
               <h2>#Algae Processor</h2>
               <Form.Item<FieldType> name="tele_processorscored" rules={[{ required: true, message: 'Enter # of scored speaker pieces' }]}>
                 <InputNumber
@@ -1074,6 +1171,7 @@ function MatchScout(props: any) {
                 />
               </Form.Item>
             </Flex>
+
           </div>
         </div>
 
@@ -1123,6 +1221,16 @@ function MatchScout(props: any) {
             </Form.Item>
           </Flex>
         </Flex>
+
+        <h2 style={{ display: defendedIsVisible ? 'inherit' : 'none' }}>Defended:</h2>
+        <Form.Item<FieldType> name="defendedteam" valuePropName="checked" style={{ display: defendedIsVisible ? 'inherit' : 'none' }}>
+          <Select mode='multiple' options={opposingTeamNum.map((team) => ({ label: team, value: team }))} className="input" showSearch={false} style={{ display: defendedIsVisible ? 'inherit' : 'none' }} />
+        </Form.Item>
+        <h2 style={{ display: wasDefendedIsVisible ? 'inherit' : 'none' }}>Defended By:</h2>
+        <Form.Item<FieldType> name="wasdefendedteam" valuePropName="checked" style={{ display: wasDefendedIsVisible ? 'inherit' : 'none' }}>
+          <Select mode='multiple' options={opposingTeamNum.map((team) => ({ label: team, value: team }))} className="input" showSearch={false} style={{ display: wasDefendedIsVisible ? 'inherit' : 'none' }} />
+        </Form.Item>
+
         <Flex justify='in-between'>
             <Flex vertical align='flex-start'>
               <h2>Pushing (1-4) (0 if N/A)</h2>
@@ -1232,14 +1340,7 @@ function MatchScout(props: any) {
             </Form.Item>
           </Flex>
         </Flex>
-        <h2 style={{ display: defendedIsVisible ? 'inherit' : 'none' }}>Defended:</h2>
-        <Form.Item<FieldType> name="defendedteam" valuePropName="checked" style={{ display: defendedIsVisible ? 'inherit' : 'none' }}>
-          <Select mode='multiple' options={opposingTeamNum.map((team) => ({ label: team, value: team }))} className="input" showSearch={false} style={{ display: defendedIsVisible ? 'inherit' : 'none' }} />
-        </Form.Item>
-        <h2 style={{ display: wasDefendedIsVisible ? 'inherit' : 'none' }}>Defended By:</h2>
-        <Form.Item<FieldType> name="wasdefendedteam" valuePropName="checked" style={{ display: wasDefendedIsVisible ? 'inherit' : 'none' }}>
-          <Select mode='multiple' options={opposingTeamNum.map((team) => ({ label: team, value: team }))} className="input" showSearch={false} style={{ display: wasDefendedIsVisible ? 'inherit' : 'none' }} />
-        </Form.Item>
+        
         <h2>Penalties Incurred</h2>
         <Form.Item<FieldType> name="penaltiesincurred">
           <TextArea style={{ verticalAlign: 'center' }} className='textbox_input' />
@@ -1325,10 +1426,8 @@ function MatchScout(props: any) {
               teleopL2Missed: 0,
               teleopL1Missed: 0,
               teleopNetScored: 0,
+              teleopNetMissed: 0,
               teleopProcessorScored: 0,
-              teleopMissedAmpPieces: 0,
-              teleopCoralMissed: 0,
-              teleopAlgaeMissed: 0,
               numPenalties: 0,
               pushingRating: 0,
               counterDefenseRating: 0,
