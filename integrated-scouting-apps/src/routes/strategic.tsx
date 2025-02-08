@@ -1,12 +1,11 @@
 import '../public/stylesheets/style.css';
 import '../public/stylesheets/strategic.css';
-import logo from '../public/images/logo.png';
-import back from '../public/images/back.png';
 import { useEffect, useState} from 'react';
 import { Tabs, Input, Form, Select, InputNumber, Button, Flex } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import { saveAs } from 'file-saver';
 import Header from "./header";
+import QrCode from "./qrCodeViewer";
 
 function Strategic(props: any, text:any) {
   const [form] = Form.useForm();
@@ -14,6 +13,8 @@ function Strategic(props: any, text:any) {
   const [teamNum, setTeamNum] = useState(0);
   const [isLoading, setLoading] = useState(false);
   const [roundIsVisible, setRoundIsVisible] = useState(false);
+  const [qrValue, setQrValue] = useState<any>();
+
   useEffect(() => { document.title = props.title; return () => { } }, [props.title]);
   // useEffect(() => { getComments(teamNum); return () => {}}, [teamNum]);
   // useEffect(() => { calculateMatchLevel(); return () => {}}, [form, calculateMatchLevel()]);
@@ -21,96 +22,69 @@ function Strategic(props: any, text:any) {
   
   async function setNewStrategicScout(event: any) {
     console.log(teamNum)
+    const body = {
+      "matchIdentifier": {
+        "Initials": event.initials,
+        "match_event": eventname,
+        "match_level": event.matchlevel,
+        "match_number": event.matchnum,
+        "team_number": teamNum,
+      },
+      "comment": event.comments,
+      "timesAmplified": event.timesamplified,
+    };
+    console.log(body);
     if (teamNum === 0) {
       window.alert("Team number is 0, please check in Pre.");
+      throw new Error("bad team number");
     }
-    else {
-      const body = {
-        "matchIdentifier": {
-          "Initials": event.initials,
-          "match_event": eventname,
-          "match_level": event.matchlevel,
-          "match_number": event.matchnum,
-          "team_number": teamNum,
-        },
-        "comment": event.comments,
-        "timesAmplified": event.timesamplified,
-      };
-      // eslint-disable-next-line
-      const WORKING_TEST_DO_NOT_REMOVE_OR_YOU_WILL_BE_FIRED = {
-        "matchIdentifier": {
-          "Initials": "LL",
-          "match_event": "2024CALA",
-          "team_number": 2637,
-          "match_level": "Qual",
-          "match_number": 4
-        },
-        "comment": {
-          "comment": "asdfasdfasdf"
-        }
-      };
-      try {
-        if (!window.navigator.onLine) {
-          window.alert("Your device is offline; please download the following .json file and give it to a Webdev member.");
-          saveAs(new Blob([JSON.stringify(body)], { type: "text/json" }), event.initials + event.matchnum + ".json");
-        }
-        else {
-          console.log(body)
-          await fetch(process.env.REACT_APP_STRATEGIC_URL as string, {
-            method: "POST",
-            body: JSON.stringify(body),
-            headers: {
-              "Content-Type": "application/json",
-            }
-          })
-            .then(async (response) => await response.json()).then(async (data) => {
-              window.alert(data.insertedId);
-            });
-        }
+    
+
+    // eslint-disable-next-line
+    const WORKING_TEST_DO_NOT_REMOVE_OR_YOU_WILL_BE_FIRED = {
+      "matchIdentifier": {
+        "team_number": 2637,
+        "Initials": "LL",
+        "match_level": "Qual",
+        "match_number": 5,
+        "match_event": "2024CALA",
+      },
+      "comment": {
+        "comment": "asdfasdfasdf"
       }
-      catch (err) {
-        console.log(err);
-        window.alert("Error occured, please do not do leave this message and notify a Webdev member!");
-        window.alert(err);
-      }
-    }
-  };
+    };
+    
+    setQrValue(body);
+  }
   async function updateTeamNumber() {
     try {
-      if (roundIsVisible) {
-        const matchID = eventname + "_" + form.getFieldValue('matchlevel') + form.getFieldValue('matchnum') + "m" + form.getFieldValue('roundnum');
-        const response = await fetch('https://www.thebluealliance.com/api/v3/match/' + matchID,
-          {
-            method: "GET",
-            headers: {
-              'X-TBA-Auth-Key': process.env.REACT_APP_TBA_AUTH_KEY as string,
-            }
-          });
-        const data = await response.json();
-        const team_color = form.getFieldValue('robotpos').substring(0, form.getFieldValue('robotpos').indexOf('_'));
-        const team_num = form.getFieldValue('robotpos').substring(form.getFieldValue('robotpos').indexOf('_') + 1) - 1;
-        const fullTeam = (data.alliances[team_color].team_keys[team_num] !== null ? data.alliances[team_color].team_keys[team_num] : 0);
-        setTeamNum(parseInt(fullTeam.substring(3)));
-        console.log(fullTeam)
-        console.log(Number(fullTeam.substring(3)))
+      const matchLevel = form.getFieldValue('matchlevel');
+      const matchNumber = form.getFieldValue('matchnum');
+      const roundNumber = form.getFieldValue('roundnum');
+      
+      if (!matchLevel ||
+          !matchNumber ||
+          roundIsVisible && !roundNumber) {
+        return;
       }
-      else {
-        const matchID = eventname + "_" + form.getFieldValue('matchlevel') + form.getFieldValue('matchnum');
-        const response = await fetch('https://www.thebluealliance.com/api/v3/match/' + matchID,
-          {
-            method: "GET",
-            headers: {
-              'X-TBA-Auth-Key': process.env.REACT_APP_TBA_AUTH_KEY as string,
-            }
-          });
-        const data = await response.json();
-        const team_color = form.getFieldValue('robotpos').substring(0, form.getFieldValue('robotpos').indexOf('_'));
-        const team_num = form.getFieldValue('robotpos').substring(form.getFieldValue('robotpos').indexOf('_') + 1) - 1;
-        const fullTeam = (data.alliances[team_color].team_keys[team_num] !== null ? data.alliances[team_color].team_keys[team_num] : 0);
-        setTeamNum(parseInt(fullTeam.substring(3)));
-        console.log(fullTeam)
-        console.log(Number(fullTeam.substring(3)))
-      }
+
+      const matchID = roundIsVisible ?
+        `${eventname}_${matchLevel}${matchNumber}m${roundNumber}` :
+        `${eventname}_${matchLevel}${matchNumber}`;
+
+      const response = await fetch('https://www.thebluealliance.com/api/v3/match/' + matchID, {
+        method: "GET",
+        headers: {
+          'X-TBA-Auth-Key': process.env.REACT_APP_TBA_AUTH_KEY as string,
+        }
+      });
+      const data = await response.json();
+      const robotPosition = form.getFieldValue('robotpos');
+      const team_color = robotPosition.substring(0, robotPosition.indexOf('_'));
+      const team_num = robotPosition.substring(robotPosition.indexOf('_') + 1) - 1;
+      const fullTeam = data.alliances[team_color].team_keys[team_num];
+      setTeamNum(parseInt(fullTeam.substring(3)));
+      console.log("Reading team " + Number(fullTeam.substring(3)))
     }
     catch (err) {
     }
@@ -244,6 +218,7 @@ function Strategic(props: any, text:any) {
       >
         <Tabs defaultActiveKey="1" activeKey={tabNum} items={items} centered className='tabs' onChange={async (key) => { setTabNum(key); }} />
       </Form>
+      <QrCode value={qrValue} />
     </div>
   );
 } 

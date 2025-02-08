@@ -31,7 +31,24 @@ function DTFTeams(props: any) {
     if (!(teamList?.length)) {
       return;
     }
-    fetch(`/api?${teamList[0] ? `team1=${teamList[0]}` : ""}${teamList[1] ? `&team2=${teamList[1]}` : ""}${teamList[2] ? `&team3=${teamList[2]}` : ""}`)
+	let fetchLink = process.env.SERVER_ADDRESS;
+	
+	if(fetchLink === undefined) {
+		console.error("Could not fetch data");
+		return;
+	}
+
+	if(teamList.length >= 1) {
+		fetchLink += `team1=${teamList[0]}`;
+	}
+	if(teamList.length >= 2) {
+		fetchLink += `&team2=${teamList[1]}`;
+	}
+	if(teamList.length >= 3) {
+		fetchLink += `&team3=${teamList[2]}`;
+	}
+
+    fetch(fetchLink)
       .then((res) => {
         const value = res.json();
         return value;
