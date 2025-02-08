@@ -1203,19 +1203,19 @@ function MatchScout(props: any) {
       <div className='matchbody'>
         <Flex justify='in-between'>
           <Flex vertical align='flex-start'>
-            <h2>Robot died?</h2>
+            <h3>Robot died?</h3>
             <Form.Item<FieldType> name="robotdied" valuePropName="checked">
               <Checkbox className='input_checkbox' />
             </Form.Item>
           </Flex>
           <Flex vertical align='flex-start'>
-            <h2>Defended others?</h2>
+            <h3>Defended others?</h3>
             <Form.Item<FieldType> name="defended" valuePropName="checked">
               <Checkbox className='input_checkbox' onChange={() => { updateDefendedList(); setDefendedIsVisible(!defendedIsVisible); }} />
             </Form.Item>
           </Flex>
           <Flex vertical align='flex-start'>
-            <h2>Was defended?</h2>
+            <h3>Was defended?</h3>
             <Form.Item<FieldType> name="wasdefended" valuePropName="checked">
               <Checkbox className='input_checkbox' onChange={() => { updateDefendedList(); setWasDefendedIsVisible(!wasDefendedIsVisible); }} />
             </Form.Item>
