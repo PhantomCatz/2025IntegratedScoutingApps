@@ -91,7 +91,7 @@ function Strategic(props: any, text:any) {
   }
   async function calculateMatchLevel() {
     const matchlevel = form.getFieldValue('matchlevel');
-    if (matchlevel !== "qm") {
+    if (matchlevel !== "Qualifications") {
       setRoundIsVisible(true);
     }
     else {
@@ -108,17 +108,17 @@ function Strategic(props: any, text:any) {
       robotpos: string;
     };
     const rounds = [
-      { label: "Qualifications", value: "qm" },
-      { label: "Elimination", value: "sf" },
-      { label: "Finals", value: "f" },
+      { label: "Qualifications", value: "Qualifications" },
+      { label: "Elimination", value: "Elimination" },
+      { label: "Finals", value: "Finals" },
     ];
     const robotpos = [
-      { label: "R1", value: "red_1" },
-      { label: "R2", value: "red_2" },
-      { label: "R3", value: 'red_3' },
-      { label: "B1", value: "blue_1" },
-      { label: "B2", value: "blue_2" },
-      { label: "B3", value: 'blue_3' },
+      { label: "R1", value: "R1" },
+      { label: "R2", value: "R2" },
+      { label: "R3", value: 'R3' },
+      { label: "B1", value: "B1" },
+      { label: "B2", value: "B2" },
+      { label: "B3", value: 'B3' },
     ];
     return (
       <div>
