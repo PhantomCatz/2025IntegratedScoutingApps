@@ -6,7 +6,6 @@ import { Table } from 'antd';
 import Header from "./header";
 
 function Picklists(props: any) {
-  const [cookies] = useCookies(['login', 'theme']);
   const [loading, setLoading] = useState(false);
   const [fetchedData, setFetchedData] = useState<{ [x: string]: any; }[]>([]);
   // useEffect(() => { VerifyLogin.VerifyLogin(cookies.login); return () => { } }, [cookies.login]);
@@ -110,24 +109,7 @@ function Picklists(props: any) {
   }, []);
   return (
     <div>
-      <div className='banner'>
-        <header>
-          <a href="/scoutingapp/">
-            <img src={back} style={{ height: 64 + 'px', paddingTop: '5%' }} alt=''></img>
-          </a>
-          <table>
-            <tbody>
-              <tr>
-                <td>
-                  <img src={logo} style={{ height: 256 + 'px' }} alt='' ></img>
-                </td>
-                <td>
-                  <h1 style={{ display: 'inline-block', textAlign: 'center' }}>Picklists</h1>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </header>
+      <Header name="PickList" back="/scoutingapp" />
         <h2 style={{ whiteSpace: 'pre-line' }}>{loading ? 'Loading Data...' : ''}</h2>
         <Table dataSource={fetchedData} pagination={{ pageSize: 500 }}>
           <Column title="Rank #" dataIndex="rank" sorter={(a: any, b: any) => a.rank - b.rank} defaultSortOrder={"ascend"} fixed="left" />
@@ -142,7 +124,6 @@ function Picklists(props: any) {
           <Column title="Watchlist Reason" dataIndex="watchlist_reason" sorter={(a: any, b: any) => a.teleop_speaker_scored - b.teleop_speaker_scored} />
         </Table>
       </div>
-    </div>
   );
 
 }
