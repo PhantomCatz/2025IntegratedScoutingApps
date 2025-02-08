@@ -20,6 +20,8 @@ const Spacer: React.FC<SpacerProps> = ({ height = '0px', width = '0px' }) => {
   return <div style={{ height, width }} />;
 };
 
+
+
 function MatchScout(props: any) {
   const [form] = Form.useForm();
   const [color, setColor] = useState(true);
@@ -362,7 +364,7 @@ function MatchScout(props: any) {
   }
   async function calculateMatchLevel() {
     const matchlevel = form.getFieldValue('matchlevel');
-    if (matchlevel !== "qm") {
+    if (matchlevel !== "Qualifications") {
       setRoundIsVisible(true);
     }
     else {
@@ -407,6 +409,7 @@ function MatchScout(props: any) {
     catch (err) {
     }
   }
+  
   function preMatch() {
     type FieldType = {
       initials: string,
@@ -423,12 +426,12 @@ function MatchScout(props: any) {
       { label: "Finals", value: "Finals" },
     ];
     const robotpos = [
-      { label: "R1", value: "Red_1" },
-      { label: "R2", value: "Red_2" },
-      { label: "R3", value: 'Red_3' },
-      { label: "B1", value: "Blue_1" },
-      { label: "B2", value: "Blue_2" },
-      { label: "B3", value: 'Blue_3' },
+      { label: "R1", value: "R1" },
+      { label: "R2", value: "R2" },
+      { label: "R3", value: 'R3' },
+      { label: "B1", value: "B1" },
+      { label: "B2", value: "B2" },
+      { label: "B3", value: 'B3' },
     ];
     return (
       <div>

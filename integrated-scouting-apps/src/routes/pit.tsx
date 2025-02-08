@@ -158,50 +158,50 @@ function PitScout(props: any) {
       comments: string;
     };
     const drive_train = [
-      { label: "Tank", value: "tank" },
-      { label: "Swerve", value: "swerve" },
-      { label: "H-Drive", value: 'hdrive' },
-      { label: "Other", value: 'other' },
+      { label: "Tank", value: "Tank" },
+      { label: "Swerve", value: "Swerve" },
+      { label: "H-Drive", value: "H-Drive" },
+      { label: "Other", value: "Other" },
     ];
     const motor_type = [
-      { label: "Falcon 500", value: "falcon500" },
-      { label: "Kraken", value: "kraken" },
-      { label: "NEO", value: "neo" },
-      { label: "CIM", value: 'cim' },
-      { label: "Other", value: 'other' },
+      { label: "Falcon 500", value: "Falcon 500" },
+      { label: "Kraken", value: "Kraken" },
+      { label: "NEO", value: "NEO" },
+      { label: "CIM", value: "CIM" },
+      { label: "Other", value: "Other" },
     ];
     const wheel_type = [
-      { label: "Nitrile / Neoprene / Plaction", value: "nnp" },
-      { label: "HiGrip", value: "hgrip" },
-      { label: "Colson", value: 'colson' },
-      { label: "Stealth / Smooth grip", value: 'ss' },
-      { label: "Pneumatasic", value: 'pneumatasic' },
-      { label: "Omni", value: 'omni' },
-      { label: "Mechanum", value: 'mechanum' },
-      { label: "Other", value: 'other' },
+      { label: "Nitrile / Neoprene / Plaction", value: "Nitrile_Neoprene_Plaction" },
+      { label: "HiGrip", value: "HiGrip" },
+      { label: "Colson", value: 'Colson' },
+      { label: "Stealth / Smooth grip", value: "Stealth_Smooth grip" },
+      { label: "Pneumatasic", value: "Pneumatasic" },
+      { label: "Omni", value: "Omni" },
+      { label: "Mechanum", value: "Mechanum" },
+      { label: "Other", value: "Other" },
     ];
     const coralIntakeCap = [
-      { label: "Coral Station", value: "coral_station" },
-      { label: "Ground", value: "ground" },
-      { label: "Both", value: 'both' },
-      { label: "None", value: 'none' },
+      { label: "Coral Station", value: "Coral Station" },
+      { label: "Ground", value: "Ground" },
+      { label: "Both", value: "Both" },
+      { label: "None", value: "None" },
     ];
     const algaeintakeCap = [
-      { label: "Reef Zone", value: "reef zone" },
-      { label: "Coral", value: "coral" },
-      { label: "Both", value: 'both' },
-      { label: "None", value: 'none' },
+      { label: "Reef Zone", value: "Reef Zone" },
+      { label: "Coral", value: "Coral" },
+      { label: "Both", value: "Both" },
+      { label: "None", value: "None" },
     ];
     const algaescoringCap = [
-      { label: "Net", value: "net" },
-      { label: "Processor", value: "processor" },
-      { label: "Both", value: 'both' },
-      { label: "None", value: 'none' },
+      { label: "Net", value: "Net" },
+      { label: "Processor", value: "Processor" },
+      { label: "Both", value: "Both" },
+      { label: "None", value: "None" },
     ];
     const climbingCap = [
-      { label: "Shallow", value: "shallow" },
-      { label: "Deep", value: "deep" },
-      { label: "None", value: "none" }
+      { label: "Shallow", value: "Shallow" },
+      { label: "Deep", value: "Deep" },
+      { label: "None", value: "None" }
     ];
     return (
       <div>
