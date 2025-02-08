@@ -20,7 +20,7 @@
     min-height: 1000px !important;
     border: 4px solid white !important;
     border-radius: 25px;
-    background-color: #A9A9A9;
+    background-color: #32A7DC;
     font-size: 500% !important;
     font-family: Figtree !important;
     font-weight: bold;
@@ -51,4 +51,18 @@
     text-align: center !important;
     margin-top: 5%;
     padding-top: 0 !important;
+}
+
+.canvas {
+height: 300px;
+width: 300px;
+border: 2px solid black;
+margin-left: 535px;
+margin-right: 535px;
+}
+
+.input-num {
+
+input-mode: numeric 
+
 }

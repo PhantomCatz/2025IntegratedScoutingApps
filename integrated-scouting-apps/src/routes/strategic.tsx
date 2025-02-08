@@ -2,23 +2,19 @@ import '../public/stylesheets/style.css';
 import '../public/stylesheets/strategic.css';
 import logo from '../public/images/logo.png';
 import back from '../public/images/back.png';
-import { useEffect, useState } from 'react';
+import { useEffect, useState} from 'react';
 import { Tabs, Input, Form, Select, InputNumber, Button, Flex } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
-import VerifyLogin from '../verifyToken';
-import { useCookies } from 'react-cookie';
 import { saveAs } from 'file-saver';
+import Header from "./header";
 
-function Strategic(props: any) {
+function Strategic(props: any, text:any) {
   const [form] = Form.useForm();
   const [tabNum, setTabNum] = useState("1");
   const [teamNum, setTeamNum] = useState(0);
   const [isLoading, setLoading] = useState(false);
   const [roundIsVisible, setRoundIsVisible] = useState(false);
   useEffect(() => { document.title = props.title; return () => { } }, [props.title]);
-  const [cookies] = useCookies(['login', 'theme']);
-  useEffect(() => { VerifyLogin.VerifyLogin(cookies.login); return () => { } }, [cookies.login]);
-  useEffect(() => { VerifyLogin.ChangeTheme(cookies.theme); return () => { } }, [cookies.theme]);
   // useEffect(() => { getComments(teamNum); return () => {}}, [teamNum]);
   // useEffect(() => { calculateMatchLevel(); return () => {}}, [form, calculateMatchLevel()]);
   const eventname = process.env.REACT_APP_EVENTNAME;
@@ -162,8 +158,8 @@ function Strategic(props: any) {
           <Select options={rounds} className="input" onChange={() => { calculateMatchLevel(); updateTeamNumber(); }} />
         </Form.Item>
         <h2>Match #</h2>
-        <Form.Item<FieldType> name="matchnum" rules={[{ required: true, message: 'Please input the match number!' }]}>
-          <InputNumber min={1} className="input" onChange={() => { updateTeamNumber(); }} />
+        <Form.Item<FieldType> name="matchnum" rules={[{ required: true, message: 'Please input the match number!',  }]}>
+          <InputNumber min={1} className = "input" onChange={() => { updateTeamNumber(); }} type='number' /> 
         </Form.Item>
         <h2 style={{ display: roundIsVisible ? 'inherit' : 'none' }}>Round #</h2>
         <Form.Item<FieldType> name="roundnum" rules={[{ required: roundIsVisible ? true : false, message: 'Please input the round number!' }]} style={{ display: roundIsVisible ? 'inherit' : 'none' }}>
@@ -171,28 +167,26 @@ function Strategic(props: any) {
         </Form.Item>
         <h2>Robot Position</h2>
         <Form.Item<FieldType> name="robotpos" rules={[{ required: true, message: 'Please input the robot position!' }]}>
-          <Select options={robotpos} onChange={() => { updateTeamNumber(); }} className="input" />
+          <Select options={robotpos} onChange={() => { updateTeamNumber(); }} className='input' listItemHeight={10} listHeight={500} placement='bottomLeft'/>
         </Form.Item>
         <Flex justify='in-between' style={{ paddingBottom : '5%' }}>
           <Button onClick={() => setTabNum("2")} className='tabbutton'>Next</Button>
         </Flex>
       </div>
     );
-  }
+  } 
+
+  
   function comment() {
     type FieldType = {
       comments: string;
-      timesamplified: number;
+    
     };
     return (
       <div>
         <h2>Comments</h2>
         <Form.Item<FieldType> name="comments" rules={[{ required: true, message: "Please input some comments!" }]}>
           <TextArea style={{ verticalAlign: 'center' }} className='strategic-input' />
-        </Form.Item>
-        <h2>Times Amplified</h2>
-        <Form.Item<FieldType> name="timesamplified" rules={[{ required: true, message: 'Please input the number of times the speaker was amplified!' }]}>
-          <InputNumber type='number' pattern="\d*" onWheel={(event) => (event.target as HTMLInputElement).blur()} min={0} className="input" />
         </Form.Item>
         <h2 style={{ display: isLoading ? 'inherit' : 'none' }}>Submitting data...</h2>
         <Flex justify='in-between' style={{ paddingBottom : '5%' }}>
@@ -217,25 +211,7 @@ function Strategic(props: any) {
   return (
     <div>
       <meta name="viewport" content="maximum-scale=1.0" />
-      <div className='banner'>
-        <header>
-          <a href='/scoutingapp/'>
-            <img src={back} style={{ height: 64 + 'px', paddingTop: '5%' }} alt='' />
-          </a>
-          <table>
-            <tbody>
-              <tr>
-                <td>
-                  <img src={logo} style={{ height: 256 + 'px' }} alt='' />
-                </td>
-                <td>
-                  <h1 style={{ display: 'inline-block', textAlign: 'center' }}>Strategic Scout</h1>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </header>
-      </div>
+      <Header name={"Strategic Scout"} back="/scoutingapp/" />
       <Form
         form={form}
         onFinish={async event => {
@@ -270,6 +246,6 @@ function Strategic(props: any) {
       </Form>
     </div>
   );
-}
+} 
 
 export default Strategic;

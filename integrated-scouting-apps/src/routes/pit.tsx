@@ -1,17 +1,16 @@
 import '../public/stylesheets/style.css';
 import '../public/stylesheets/pit.css';
 import '../public/stylesheets/match.css';
-import logo from '../public/images/logo.png';
+import '../public/stylesheets/robot_weight.css';
 import { Checkbox, Form, Input, InputNumber, Select, Upload } from 'antd';
 import { useRef } from 'react';
 import { Button } from 'antd';
 import React, { useState, useEffect } from 'react';
-import back from '../public/images/back.png';
 import { ReactSketchCanvasRef } from 'react-sketch-canvas';
-import VerifyLogin from '../verifyToken';
-import { useCookies } from 'react-cookie';
-import { saveAs } from 'file-saver';
 import TextArea from 'antd/es/input/TextArea';
+import Header from './header';
+import QrCode from './qrCodeViewer';
+
 
 //Rhys was here//
 
@@ -20,9 +19,8 @@ function PitScout(props: any) {
   const imageURI = useRef<string>();
   const canvasRef = useRef<ReactSketchCanvasRef>(null);
   const [form] = Form.useForm();
-  const [cookies] = useCookies(['login', 'theme']);
   const [loading, setLoading] = useState(false);
-  const [robotImageURI, setRobotImageURI] = useState([""]);
+  const [robotImageURI] = useState([""]);
   const [formValue, setFormValue] = useState({
     robot_events: 0,
     robot_weight: 0,
@@ -33,17 +31,18 @@ function PitScout(props: any) {
     robot_GP: 0,
     comments: "",
   });
+  const [qrValue, setQrValue] = useState<any>();
+  const [robotWeight, setRobotWeight] = useState(0); // Add this line
+
   useEffect(() => { document.title = props.title; return () => { } }, [props.title]);
-  useEffect(() => { VerifyLogin.VerifyLogin(cookies.login); return () => { } }, [cookies.login]);
-  useEffect(() => { VerifyLogin.ChangeTheme(cookies.theme); return () => { } }, [cookies.theme]);
   useEffect(() => {
     if ((document.getElementById("robot_events") as HTMLInputElement) !== null) {
       (document.getElementById("robot_events") as HTMLInputElement).value = formValue.robot_events.toString();
       form.setFieldValue('robot_events', formValue.robot_events);
     }
     if ((document.getElementById("robot_weight") as HTMLInputElement) !== null) {
-      (document.getElementById("robot_weight") as HTMLInputElement).value = formValue.robot_weight.toString();
-      form.setFieldValue('robot_weight', formValue.robot_weight);
+      (document.getElementById("robot_weight") as HTMLInputElement).value = robotWeight.toString(); // changed
+      form.setFieldValue('robot_weight', robotWeight); // changed
     }
     if ((document.getElementById("robot_motor_counter") as HTMLInputElement) !== null) {
       (document.getElementById("robot_motor_counter") as HTMLInputElement).value = formValue.robot_motor_counter.toString();
@@ -66,7 +65,7 @@ function PitScout(props: any) {
       form.setFieldValue('robot_GP', formValue.robot_GP);
     }
     return () => { };
-  }, [formValue, form]);
+  }, [formValue, form, robotWeight]);
   useEffect(() => {
 		async function getTeams() {
 			try {
@@ -86,9 +85,9 @@ function PitScout(props: any) {
         window.alert(message);
 			}
 			catch (err) {
-				console.log(err);
-				window.alert("Error occured, please do not do leave this message and notify a Webdev member immediately.");
-				window.alert(err);
+				// console.log(err);
+				// window.alert("Error occured, please do not do leave this message and notify a Webdev member immediately.");
+				// window.alert(err);
 			}
 		};
 		getTeams();
@@ -108,10 +107,10 @@ function PitScout(props: any) {
       "robot_coral_intake_capability": event.robot_coral_intake_capability,
       "robot_algae_intake_capability": event.robot_algae_intake_capability,
       "robot_algae_scoring_capability": event.robot_algae_scoring_capability,
-      "robot_ability_score_l1": event.robot_ability_ability_l1,
-      "robot_ability_score_l2": event.robot_ability_ability_l2,
-      "robot_ability_score_l3": event.robot_ability_ability_l3,
-      "robot_ability_score_l4": event.robot_ability_ability_l4,
+      "robot_ability_score_l1": event.robot_ability_score_l1 || false,
+      "robot_ability_score_l2": event.robot_ability_score_l2 || false,
+      "robot_ability_score_l3": event.robot_ability_score_l3 || false,
+      "robot_ability_score_l4": event.robot_ability_score_l4 || false,
       "robot_climbing_capabilities": event.robot_climbing_capabilities,
       "robot_pit_organization": event.robot_pit_organization,
       "robot_team_safety": event.robot_team_safety,
@@ -120,53 +119,7 @@ function PitScout(props: any) {
       "images": robotImageURI,
       "comments": event.comments,
     };
-     // eslint-disable-next-line
-    const TESTDONOTREMOVE = {
-      "images": ["test"],
-      "initial": "test",
-      "robot_ability_score_l1": false,
-      "robot_ability_score_l2": false,
-      "robot_ability_score_l3": false,
-      "robot_ability_score_l4": false,
-      "robot_climbing_capabilities": "test",
-      "robot_drive_train": "test",
-      "robot_events": -1,
-      "robot_GP": -1,
-      "robot_coral_intake_capability": "test",
-      "robot_motor_counter": -1,
-      "robot_motor_type": "test",
-      "robot_pit_organization": -1,
-      "robot_team_safety": -1,
-      "robot_team_workmanship": -1,
-      "robot_weight": -1,
-      "robot_wheel_type": "test",
-      "team_number": -1,
-      "comments": ""
-  };
-    try {
-      if (!window.navigator.onLine) {
-        window.alert("Your device is offline; please download the following .json file and give it to a Webdev member.");
-        saveAs(new Blob([JSON.stringify(body)], { type: "text/json" }), event.scouter_initial + event.team_mumber + ".json");
-      }
-      else {
-        await fetch(process.env.REACT_APP_PIT_URL as string, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(body),
-        }).then(async (response) => await response.json()).then(async (data) => {
-          window.alert(data.match.insertedId);
-        });
-      }
-    }
-    catch (err) {
-      console.log(err);
-      window.alert("Error occured, please do not do leave this message and notify a Webdev member immediately.");
-      window.alert(err);
-      window.alert("Please download the following .json file and give it to a Webdev member.");
-      saveAs(new Blob([JSON.stringify(body)], { type: "text/json" }), event.scouter_initial + event.team_number + ".json");
-    }
+      setQrValue(body);
   };
   async function getPitScout(team_number: number) {
     try {
@@ -253,8 +206,27 @@ function PitScout(props: any) {
     return (
       <div>
         <h2>Scouter Initials</h2>
-        <Form.Item<FieldType> name="scouter_initial" rules={[{ required: true, message: 'Please input your initials!' }]}>
-          <Input maxLength={2} className="input" />
+        <Form.Item<FieldType>
+          name="scouter_initial"
+          rules={[
+            { required: true, message: 'Please input your initials!' },
+            {
+              pattern: /^[A-Za-z]{1,2}$/,
+              message: 'Please enter only letters (max 2)',
+            },
+          ]}
+        >
+          <Input
+            maxLength={2}
+            className="input"
+            onKeyPress={(event) => {
+              const keyCode = event.keyCode || event.which;
+              const keyValue = String.fromCharCode(keyCode);
+              if (!/^[A-Za-z]+$/.test(keyValue)) {
+                event.preventDefault();
+              }
+            }}
+          />
         </Form.Item>
         <h2>Team #</h2>
         <Form.Item<FieldType> 
@@ -274,7 +246,7 @@ function PitScout(props: any) {
             onKeyPress={(event) => {
               const currentValue = event.currentTarget.value;
               const charCode = event.which ? event.which : event.keyCode;
-              if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+              if (charCode > 31 && (charCode < '0'.charCodeAt(0) || charCode > '9'.charCodeAt(0))) {
                   event.preventDefault();
               }
               if (currentValue.length >= 5) {
@@ -284,20 +256,30 @@ function PitScout(props: any) {
           />
         </Form.Item>
         <h2>Robot Weight (lbs)</h2>
-        <Form.Item<FieldType> 
-          name="robot_weight" 
-          rules={[{ required: true, message: 'Please input the robot weight in lbs!' }]}>
-        <InputNumber 
-          min={0} 
-          max={1000}
-          step={1} 
-          controls 
-          className="input" 
-          type="number"
-          value={formValue.robot_weight}
-          onChange={(value) => setFormValue({
-            ...formValue, robot_weight: value || 0})}
-        />
+        <Form.Item
+          name="robot_weight"
+          rules={[{ required: true, message: 'Please input the robot weight in lbs!' }]}
+        >
+          <InputNumber
+            min={0}
+            max={1000}
+            precision={0}
+            placeholder="0"
+            className="input robot-weight-input"
+            value={robotWeight}
+            onChange={(value) => {
+              const numValue = typeof value === 'number' ? value : 0;
+              setRobotWeight(numValue);
+            }}
+            onKeyPress={(event) => {
+              const charCode = event.which ? event.which : event.keyCode;
+              if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+                event.preventDefault();
+              }
+            }}
+            formatter={(value) => `${value}`.replace(/^0+/, '')}
+            parser={(value) => value ? Math.round(parseFloat(value)) : 0}
+          />
         </Form.Item>
         <h2>Drive Train Type</h2>
         <Form.Item name="robot_drive_train" rules={[{ required: true, message: 'Please input the drive train type!' }]}>
@@ -321,16 +303,17 @@ function PitScout(props: any) {
         <Form.Item<FieldType> name="robot_motor_counter" rules={[{ required: true, message: 'Please input the number of motors!' }]}>
           <InputNumber
             controls
-            disabled
-            min={1}
+            min={0} // Modified: can start from 0
             className="input"
+            value={formValue.robot_motor_counter}
+            onChange={(value) => {
+              setFormValue({ ...formValue, robot_motor_counter: value ? value : 0 });
+            }}
             addonAfter={<Button onClick={() => {
-              setFormValue({ ...formValue, robot_motor_counter: formValue.robot_motor_counter + 1 });
+              setFormValue(prevFormValue => ({ ...prevFormValue, robot_motor_counter: prevFormValue.robot_motor_counter + 1 }));
             }} className='incrementbutton'>+</Button>}
             addonBefore={<Button onClick={() => {
-              if (Number(formValue.robot_motor_counter) > 0) {
-                setFormValue({ ...formValue, robot_motor_counter: formValue.robot_motor_counter - 1 });
-              }
+              setFormValue(prevFormValue => ({ ...prevFormValue, robot_motor_counter: Math.max(0, prevFormValue.robot_motor_counter - 1) })); //Modified
             }} className='decrementbutton'>-</Button>}
           />
         </Form.Item>
@@ -486,35 +469,8 @@ function PitScout(props: any) {
 
         </Form.Item>
         <h2>Comments</h2>
-        <Form.Item<FieldType> name="comments" rules={[{ required: true, message: "Please input some comments!" }]}>
+        <Form.Item<FieldType> name="comments">
           <TextArea style={{ verticalAlign: 'center' }} className='textbox_input' />
-        </Form.Item>
-        <h2>Robot Images</h2>
-        <Form.Item<FieldType> name="robot_images">
-          <Upload
-            beforeUpload={(file) => {
-              const isImage = file.type === 'image/png' || file.type === 'image/jpeg' || file.type === 'image/jpg';
-              if (!isImage) {
-                window.alert(`${file.name} is not an image`);
-              }
-              return isImage || Upload.LIST_IGNORE;
-            }}
-            onChange={(info) => {
-              if (info.file?.originFileObj) {
-                const reader = new FileReader();
-                reader.readAsDataURL(info.file.originFileObj);
-                reader.onload = () => {
-                  const base64Image = reader.result as string;
-                  setRobotImageURI([base64Image]);
-                  console.log(robotImageURI)
-                };
-              }
-            }}
-            style={{ width: '100%' }}
-            name='robot_images'
-          >
-            <Button className='input' style={{ marginBottom: '5%' }}>Upload Images</Button>
-          </Upload>
         </Form.Item>
         <h2 style={{ display: loading ? 'inherit' : 'none' }}>Submitting data...</h2>
         <Input type="submit" value="Submit" className='submit' style={{ marginBottom: '5%' }} />
@@ -523,51 +479,35 @@ function PitScout(props: any) {
   }
   return (
     <div>
-      <div className='banner'>
-        <header>
-          <a href='/scoutingapp'>
-            <img src={back} style={{ height: 64 + 'px', paddingTop: '5%' }} alt=''></img>
-          </a>
-          <table>
-            <tbody>
-              <tr>
-                <td>
-                  <img src={logo} style={{ height: 256 + 'px' }} alt=''></img>
-                </td>
-                <td>
-                  <h1 style={{ display: 'inline-block', textAlign: 'center' }}>Pit Scout</h1>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </header>
-      </div>
+	<Header name={"Pit Scout"} back={"/scoutingapp"}/>
       <Form
         form={form}
         initialValues={{
-          robot_ability_traversed_stage: false,        }}
+          robot_ability_traversed_stage: false,
+	}}
         onFinish={async (event) => {
           try {
             setLoading(true);
             await submitData(event);
             const initials = form.getFieldValue("scouter_initial");
             form.resetFields();
+            setRobotWeight(0);
             form.setFieldsValue({ "scouter_initial": initials });
-            // setFormValue({
-            //   robot_events: 0,
-            //   robot_weight: 0,
-            //   robot_motor_counter: 0,
-            //   robot_pit_organization: 0,
-            //   robot_team_safety: 0,
-            //   robot_team_workmanship: 0,
-            //   robot_GP: 0,
-            //   comments: "",
-            // });
+            setFormValue({
+              robot_events: 0,
+              robot_weight: 0,
+              robot_motor_counter: 0,
+              robot_pit_organization: 0,
+              robot_team_safety: 0,
+              robot_team_workmanship: 0,
+              robot_GP: 0,
+              comments: "",
+            });
           }
           catch (err) {
-            console.log(err);
-            window.alert("Error occured, please do not do leave this message and notify a Webdev member immediately.");
-            window.alert(err);
+            // console.log(err);
+            // window.alert("Error occured, please do not do leave this message and notify a Webdev member immediately.");
+            // window.alert(err);
           }
           finally {
             setLoading(false);
@@ -576,6 +516,7 @@ function PitScout(props: any) {
       >
         {Pit()}
       </Form>
+      <QrCode value={qrValue} />
     </div>
   );
 }

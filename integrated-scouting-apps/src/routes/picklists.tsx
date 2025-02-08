@@ -1,12 +1,9 @@
 import '../public/stylesheets/style.css';
 import '../public/stylesheets/picklist.css';
-import logo from '../public/images/logo.png';
-import back from '../public/images/back.png';
 import { useEffect, useState } from 'react';
-import VerifyLogin from '../verifyToken';
-import { useCookies } from 'react-cookie';
 import Column from 'antd/es/table/Column';
 import { Table } from 'antd';
+import Header from "./header";
 
 function Picklists(props: any) {
   const [cookies] = useCookies(['login', 'theme']);
@@ -63,36 +60,36 @@ function Picklists(props: any) {
             teams[data[team].team_number].teleop_amps_scored += data[team].teleop_amps_scored;
             teams[data[team].team_number].teleop_speaker_scored += data[team].teleop_speaker_scored;
 
-            teams[data[team].team_number].auto_missed_pieces += data[team].auto_missed_pieces;
-            teams[data[team].team_number].teleop_missed_amps += data[team].teleop_missed_amps;
-            teams[data[team].team_number].teleop_missed_speaker += data[team].teleop_missed_speaker;
 
-            teams[data[team].team_number].match_numbers++;
-            // console.log(teams[data[team].team_number].team_number + ": first_score: " + teams[data[team].team_number].first_score);
-            // console.log(teams[data[team].team_number].team_number + ": second_score: " + teams[data[team].team_number].second_score);
-            // console.log(teams[data[team].team_number].team_number + ": third_score: " + teams[data[team].team_number].third_score);
-            // console.log(teams[data[team].team_number].team_number + ": match_numbers: " + teams[data[team].team_number].match_numbers);
-            // console.log(teams[data[team].team_number].team_number + ": score: " + teams[data[team].team_number].score);
-          }
-          if (data[team].robot_died) {
-            teams[data[team].team_number].robot_died++;
-          }
-        }
-        for (const team in teams) {
-          teams[teams[team].team_number].avg_score = Math.round(teams[teams[team].team_number].score / teams[teams[team].team_number].match_numbers * 100) / 100;
-          teams[teams[team].team_number].iegr = Math.round(((teams[teams[team].team_number].first_score + teams[teams[team].team_number].second_score + teams[teams[team].team_number].third_score) / 3) * 100) / 100;
+						teams[data[team].team_number].auto_missed_pieces += data[team].auto_missed_pieces;
+						teams[data[team].team_number].teleop_missed_amps += data[team].teleop_missed_amps;
+						teams[data[team].team_number].teleop_missed_speaker += data[team].teleop_missed_speaker;
 
-          teams[teams[team].team_number].auto_score_ratio = teams[teams[team].team_number].auto_scored_pieces + "/" + (teams[teams[team].team_number].auto_scored_pieces + teams[teams[team].team_number].auto_missed_pieces);
-          teams[teams[team].team_number].auto_scored_pieces = Math.round(teams[teams[team].team_number].auto_scored_pieces / teams[teams[team].team_number].match_numbers * 100) / 100;
+						teams[data[team].team_number].match_numbers++;
+						// console.log(teams[data[team].team_number].team_number + ": first_score: " + teams[data[team].team_number].first_score);
+						// console.log(teams[data[team].team_number].team_number + ": second_score: " + teams[data[team].team_number].second_score);
+						// console.log(teams[data[team].team_number].team_number + ": third_score: " + teams[data[team].team_number].third_score);
+						// console.log(teams[data[team].team_number].team_number + ": match_numbers: " + teams[data[team].team_number].match_numbers);
+						// console.log(teams[data[team].team_number].team_number + ": score: " + teams[data[team].team_number].score);
+					}
+					if (data[team].robot_died) {
+						teams[data[team].team_number].robot_died++;
+					}
+				}
+				for (const team in teams) {
+					teams[teams[team].team_number].avg_score = Math.round(teams[teams[team].team_number].score / teams[teams[team].team_number].match_numbers * 100) / 100;
+					teams[teams[team].team_number].iegr = Math.round(((teams[teams[team].team_number].first_score + teams[teams[team].team_number].second_score + teams[teams[team].team_number].third_score) / 3) * 100) / 100;
 
-          teams[teams[team].team_number].amp_score_ratio = teams[teams[team].team_number].teleop_amps_scored + "/" + (teams[teams[team].team_number].teleop_amps_scored + teams[teams[team].team_number].teleop_missed_amps);
-          teams[teams[team].team_number].speaker_score_ratio = teams[teams[team].team_number].teleop_speaker_scored + "/" + (teams[teams[team].team_number].teleop_speaker_scored + teams[teams[team].team_number].teleop_missed_speaker);
-          teams[teams[team].team_number].teleop_amps_scored = Math.round(teams[teams[team].team_number].teleop_amps_scored / teams[teams[team].team_number].match_numbers * 100) / 100;
-          teams[teams[team].team_number].teleop_speaker_scored = Math.round(teams[teams[team].team_number].teleop_speaker_scored / teams[teams[team].team_number].match_numbers * 100) / 100;
-        }
-        for (const team in teams) {
-          kv.push(teams[team]);
+					teams[teams[team].team_number].auto_score_ratio = teams[teams[team].team_number].auto_scored_pieces + "/" + (teams[teams[team].team_number].auto_scored_pieces + teams[teams[team].team_number].auto_missed_pieces);
+					teams[teams[team].team_number].auto_scored_pieces = Math.round(teams[teams[team].team_number].auto_scored_pieces / teams[teams[team].team_number].match_numbers * 100) / 100;
 
+					teams[teams[team].team_number].amp_score_ratio = teams[teams[team].team_number].teleop_amps_scored + "/" + (teams[teams[team].team_number].teleop_amps_scored + teams[teams[team].team_number].teleop_missed_amps);
+					teams[teams[team].team_number].speaker_score_ratio = teams[teams[team].team_number].teleop_speaker_scored + "/" + (teams[teams[team].team_number].teleop_speaker_scored + teams[teams[team].team_number].teleop_missed_speaker);
+					teams[teams[team].team_number].teleop_amps_scored = Math.round(teams[teams[team].team_number].teleop_amps_scored / teams[teams[team].team_number].match_numbers * 100) / 100;
+					teams[teams[team].team_number].teleop_speaker_scored = Math.round(teams[teams[team].team_number].teleop_speaker_scored / teams[teams[team].team_number].match_numbers * 100) / 100;
+				}
+				for (const team in teams) {
+					kv.push(teams[team]);
         }
         kv.sort((a, b) => {return (b.avg_score - a.avg_score);});
         for (const team in kv) {
@@ -147,6 +144,7 @@ function Picklists(props: any) {
       </div>
     </div>
   );
+
 }
 
 export default Picklists;

@@ -4,8 +4,6 @@ import back from '../public/images/back.png';
 import { useState, useEffect } from 'react';
 import { Button, Tabs, TabsProps } from 'antd';
 import { useParams } from 'react-router-dom';
-import VerifyLogin from '../verifyToken';
-import { useCookies } from 'react-cookie';
 
 const owo='tOwOt'
 const arrarr: any[] = [];
@@ -42,9 +40,7 @@ function WatchlistGet(props: any) {
   const { team_number } = useParams();
   const [loading, setLoading] = useState(true);
   const [tabNum, setTabNum] = useState("1");
-  const [cookies] = useCookies(['login', 'theme']);
   let customArr: any[] = new Array(21);
-  useEffect(() => { VerifyLogin.ChangeTheme(cookies.theme); return () => {}}, [cookies.theme]);
 
   useEffect(() => {
     async function fetchData() {

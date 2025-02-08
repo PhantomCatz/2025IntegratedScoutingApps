@@ -1,15 +1,12 @@
 import '../public/stylesheets/style.css';
 import '../public/stylesheets/strategic.css';
-import logo from '../public/images/logo.png';
-import back from '../public/images/back.png';
 import { useEffect, useState } from 'react';
-import VerifyLogin from '../verifyToken';
-import { useCookies } from 'react-cookie';
 import { Input, InputNumber, Tabs } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
+import Header from "./header";
+
 function TeamData(props: any) {
 
-  const [cookies] = useCookies(['login', 'theme']);
   const [tabNum, setTabNum] = useState("1");
   //const [fetchedData, setFetchedData] = useState([]);
   const [items, setItems] = useState([
@@ -20,8 +17,6 @@ function TeamData(props: any) {
     },
   ]);
   useEffect(() => { document.title = props.title }, [props.title]);
-  useEffect(() => { VerifyLogin.VerifyLogin(cookies.login); return () => { } }, [cookies.login]);
-  useEffect(() => { VerifyLogin.ChangeTheme(cookies.theme); return () => { } }, [cookies.theme]);
   // useEffect(() => {
 	// 	async function getTeams() {
 	// 		try {
@@ -145,25 +140,7 @@ function TeamData(props: any) {
   return (
     <div>
       <meta name="viewport" content="maximum-scale=1.0" />
-      <div className='banner'>
-        <header>
-          <a href='/scoutingapp/lookup/'>
-            <img src={back} style={{ height: 64 + 'px', paddingTop: '5%' }} alt='' />
-          </a>
-          <table>
-            <tbody>
-              <tr>
-                <td>
-                  <img src={logo} style={{ height: 256 + 'px' }} alt='' />
-                </td>
-                <td>
-                  <h1 style={{ display: 'inline-block', textAlign: 'center' }}>Strategic Lookup</h1>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </header>
-      </div>
+      <Header name={"Strategic Lookup"} back={"/scoutingapp/lookup/"} />
       <Tabs defaultActiveKey="1" activeKey={tabNum} items={items} centered className='tabs' onChange={async (key) => { setTabNum(key); }} />
     </div>
   );
