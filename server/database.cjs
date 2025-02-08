@@ -24,6 +24,7 @@ async function requestDatabase(query) {
 		const mysql = getMysql();
 		const conn = await mysql.createConnection(connectionData);
 		// do await conn.query(QUERY) for each sql command, below line would give results of query
+		await conn.query("show tables");
 		const [res, fields] = await conn.query(sqlQuery);
 
 		await conn.end();

@@ -15,8 +15,8 @@ app.get("/api", async (req, res) => {
 	const queryString = req.url.split("?")[1];
 	const queries = Object.fromEntries(new URLSearchParams(queryString));
 
-	//const result = await getTeamInfo(queries);
-	const result = await requestDatabase(query);
+	const result = await getTeamInfo(queries);
+	//const result = await requestDatabase(query);
 
 	console.log(result);
 

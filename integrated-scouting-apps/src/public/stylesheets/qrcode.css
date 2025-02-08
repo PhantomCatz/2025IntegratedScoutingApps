@@ -1,0 +1,10 @@
+.qrCodeHolder {
+	display: flex;
+}
+.qrCodeHolder > div {
+	margin: auto;
+	background-color: white;
+}
+.qrTitle {
+	text-align: center;
+}
