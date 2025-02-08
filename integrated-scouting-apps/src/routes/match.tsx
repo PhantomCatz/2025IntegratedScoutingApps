@@ -417,18 +417,18 @@ function MatchScout(props: any) {
       roundnum: number,
     };
     const rounds = [
-      { label: "Qualifications", value: "qm" },
-      { label: "Semi-Finals", value: "sf" },
-      { label: "Quarter-Finals", value: "qf" },
-      { label: "Finals", value: "f" },
+      { label: "Qualifications", value: "Qualifications" },
+      { label: "Semi-Finals", value: "Semi-Finals" },
+      { label: "Quarter-Finals", value: "Quarter-Finals" },
+      { label: "Finals", value: "Finals" },
     ];
     const robotpos = [
-      { label: "R1", value: "red_1" },
-      { label: "R2", value: "red_2" },
-      { label: "R3", value: 'red_3' },
-      { label: "B1", value: "blue_1" },
-      { label: "B2", value: "blue_2" },
-      { label: "B3", value: 'blue_3' },
+      { label: "R1", value: "Red_1" },
+      { label: "R2", value: "Red_2" },
+      { label: "R3", value: 'Red_3' },
+      { label: "B1", value: "Blue_1" },
+      { label: "B2", value: "Blue_2" },
+      { label: "B3", value: 'Blue_3' },
     ];
     return (
       <div>
@@ -1177,25 +1177,26 @@ function MatchScout(props: any) {
       climbTime: number,
     };
     const coralIntakeCap = [
-      { label: "Ground", value: "g" },
-      { label: "Station", value: "s" },
-      { label: "Neither", value: "n" },
+      { label: "Ground", value: "Ground" },
+      { label: "Station", value: "Station" },
+      { label: "Both", value: "Both" },
+      { label: "Neither", value: "Neither" },
     ];
     const coralStation = [
-      { label: "Top Station", value: "ts" },
-      { label: "Botton Station", value: "bs" },
-      { label: "Both", value: "b" },
-      { label: "Neither", value: "n"}
+      { label: "Top Station", value: "Top Station" },
+      { label: "Bottom Station", value: "Bottom Station" },
+      { label: "Both", value: "Both" },
+      { label: "Neither", value: "Neither"}
     ];
     const algaeIntakeCap = [
-      { label: "Reef", value: "r" },
-      { label: "Ground", value: "g" },
+      { label: "Reef Zone", value: "Reef Zone" },
+      { label: "Ground", value: "Ground" },
     ];
     const climbType = [
-      { label: "Deep Hang", value: "dh" },
-      { label: "Shallow Hang", value: "sh" },
-      { label: "Park", value: "p" },
-      { label: "None", value: "n" },
+      { label: "Deep Hang", value: "Deep Hang" },
+      { label: "Shallow Hang", value: "Shallow Hang" },
+      { label: "Park", value: "Park" },
+      { label: "None", value: "None" },
     ];
     return (
       <>
