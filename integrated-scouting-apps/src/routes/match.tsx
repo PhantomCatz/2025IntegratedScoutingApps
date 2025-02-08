@@ -484,7 +484,7 @@ function MatchScout(props: any) {
           <Spacer height = "125px"/>
             <div className = 'radioLabel'>
               <input type = "radio" name = "startPos" value = "R&Sigma;1" className = "startPos"/>
-              <h3>R&Sigma;1</h3>
+              <h3>R&Sigma;3</h3>
             </div>
 
             <div className = 'radioLabel'>
@@ -494,7 +494,7 @@ function MatchScout(props: any) {
 
             <div className = 'radioLabel'>
               <input type = "radio" name = "startPos" value = "R&Sigma;3" className = "startPos"/>
-              <h3>R&Sigma;3</h3>
+              <h3>R&Sigma;1</h3>
             </div>
             
           </div>
@@ -1360,7 +1360,7 @@ function MatchScout(props: any) {
       >
         <Tabs defaultActiveKey="1" activeKey={tabNum} items={items} className='tabs' centered onChange={async (key) => { setTabNum(key) }} />
         <Footer style={{ position: "sticky", bottom: "0" }}>
-          <Flex justify='in-between' id={"footer"} style={{ paddingBottom: '5%', backgroundColor: document.body.style.backgroundColor.toString() }}>
+          <Flex justify='in-between' id={"footer"} style={{ paddingBottom: '5%', backgroundColor:'#32A7DC' }}>
             {Number(tabNum) !== 1 && (
               <Button onClick={async () => { setTabNum((Number(tabNum) - 1).toString()) }} className='tabbutton'>Back</Button>
             )}
