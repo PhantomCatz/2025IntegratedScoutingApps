@@ -42,11 +42,24 @@ function DTFTeams(props: any) {
       });
   }, [teamList]);
 
+  const data: any = { L1: 0, L2: 0, L3: 0, L4: 0 }; // Initialize storage for aggregated values
+
+  if (teamData && teamData[team1]) {
+    for (const m of teamData[team1]) { // Loop through each match entry for team1
+      for (const [k, v] of Object.entries(m)) { // Loop through each field in the match entry
+        if (k === "L1") data.L1 += v as number;
+        if (k === "L2") data.L2 += v as number;
+        if (k === "L3") data.L3 += v as number;
+        if (k === "L4") data.L4 += v as number;
+      }
+    }
+  
   async function getDTF(teams: string[]) {
     try {
       let index = 2;
       const match: { key: string; label: string; children: JSX.Element }[] = [];
-      {/*buttons for sprk avg, max, min (images for other te*/}
+      
+      console.log(teamData)
       for (const team of teams) {
         const teamTabs = [
           { key: "1", label: "Auton", children: ( <div>
@@ -70,8 +83,7 @@ function DTFTeams(props: any) {
                    <Input className="dtf-input" disabled value={""} />
                  </Flex>
                </Flex>
-               <h2>Can they leave?</h2>
-                <Checkbox className={true ? "input_checkbox_filled" : "input_checkbox"} disabled checked={true ? true : false} /> 
+
                <h2>Avg Algae Processed</h2>
                <Input className="input" disabled value={""} /> 
                <h2>Avg Algae Net</h2>
@@ -123,8 +135,8 @@ function DTFTeams(props: any) {
          </div> 
          )
         },
-             { key: "3", label: "OA", children: (
-              <div>{/*checkboxes for YES or NO */}
+          { key: "3", label: "OA", children: (
+              <div>
                 <h2>Robot Died (counter: matches)</h2>
                 <Input className="input" disabled value={""}  /> 
                 <h2>Intake Algae Type</h2>
