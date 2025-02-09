@@ -4,12 +4,14 @@ import field_blue from '../public/images/field_blue.png';
 import field_red from '../public/images/field_red.png';
 
 import { useEffect, useState } from 'react';
-import { Tabs, Input, Form, Select, Checkbox, InputNumber, Flex, Button, QRCode } from 'antd';
+import { Tabs, Input, Form, Select, Checkbox, InputNumber, Flex, Button} from 'antd';
 import type { TabsProps } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import { Footer } from 'antd/es/layout/layout';
 import Header from "./header";
 import { Radio } from 'antd';
+import QrCode from './qrCodeViewer';
+import {getTeamNumber, isMatchVisible} from './utils/tbaRequest';
 
 interface SpacerProps {
   height?: string;
@@ -31,7 +33,7 @@ function MatchScout(props: any) {
   const [lChecked, setLChecked] = useState(false);
   const [tabNum, setTabNum] = useState("1");
   const [teamNum, setTeamNum] = useState(0);
-  const [qrValue, setQrValue] = useState({}); //placeholder
+  const [qrValue, setQrValue] = useState<any>();
   const [defendedIsVisible, setDefendedIsVisible] = useState(false);
   const [wasDefendedIsVisible, setWasDefendedIsVisible] = useState(false);
   const [penaltiesIsVisible, setPenaltiesIsVisible] = useState(false);
@@ -280,90 +282,35 @@ function MatchScout(props: any) {
           "OA_comments": "test",
         }
       };
-      const qrBody = [];
-      const bodyArray = Object.values(body);
-      for (const tabBody in bodyArray) {
-        const value = Object.values(bodyArray[tabBody]);
-        for (const data in value) {
-          qrBody.push(value[data]);
+      const qrBody : any = {};
+      for (const [type, entries] of Object.entries(body)) {
+        for (const [field, value] of Object.entries(entries)) {
+			qrBody[field] = value;
         }
       }
-      try {
-        // if (!window.navigator.onLine) {
-        //   window.alert("Your device is offline; please download the following .json file and give it to a Webdev member.");
-        //   saveAs(new Blob([JSON.stringify(body)], { type: "text/json" }), event.initials + event.matchnum + ".json");
-        // }
-        // else {
-        //   await fetch(process.env.REACT_APP_MATCH_URL as string, {
-        //     method: "POST",
-        //     body: JSON.stringify(body),
-        //     headers: {
-        //       "Content-Type": "application/json",
-        //     }
-        //   })
-        //     .then(async (response) => await response.json()).then(async (data) => {
-        //       window.alert("Successfully submitted with ID: " + data.match.insertedId);
-        //       // saveAs(new Blob([JSON.stringify(body)], { type: "text/json" }), event.initials + event.matchnum + ".json");
-        //     });
-        // }
-        setQrValue(qrBody);
-      }
-      catch (err) {
-        console.log(err);
-        window.alert("Error occured, please do not do leave this message, download the file (not a virus), and notify a Webdev member!");
-        window.alert(err);
-        // saveAs(new Blob([JSON.stringify(body)], { type: "text/json" }), event.initials + event.matchnum + ".json");
-      }
+      setQrValue(qrBody);
     }
   };
   async function updateTeamNumber() {
     try {
-      if (roundIsVisible) {
-        const matchID = eventname + "_" + form.getFieldValue('matchlevel') + form.getFieldValue('matchnum') + "m" + form.getFieldValue('roundnum');
-        const response = await fetch('https://www.thebluealliance.com/api/v3/match/' + matchID,
-          {
-            method: "GET",
-            headers: {
-              'X-TBA-Auth-Key': process.env.REACT_APP_TBA_AUTH_KEY as string,
-            }
-          });
-        const data = await response.json();
-        const team_color = form.getFieldValue('robotpos').substring(0, form.getFieldValue('robotpos').indexOf('_'));
-        setColor((team_color === "red" ? true : false));
-        const team_num = form.getFieldValue('robotpos').substring(form.getFieldValue('robotpos').indexOf('_') + 1) - 1;
-        const fullTeam = (data.alliances[team_color].team_keys[team_num] !== null ? data.alliances[team_color].team_keys[team_num] : 0);
-        setTeamNum(Number(fullTeam.substring(3)));
-        await updateDefendedList();
-      }
-      else {
-        const matchID = eventname + "_" + form.getFieldValue('matchlevel') + form.getFieldValue('matchnum');
-        const response = await fetch('https://www.thebluealliance.com/api/v3/match/' + matchID,
-          {
-            method: "GET",
-            headers: {
-              'X-TBA-Auth-Key': process.env.REACT_APP_TBA_AUTH_KEY as string,
-            }
-          });
-        const data = await response.json();
-        const team_color = form.getFieldValue('robotpos').substring(0, form.getFieldValue('robotpos').indexOf('_'));
-        setColor((team_color === "red" ? true : false));
-        const team_num = form.getFieldValue('robotpos').substring(form.getFieldValue('robotpos').indexOf('_') + 1) - 1;
-        const fullTeam = (data.alliances[team_color].team_keys[team_num] !== null ? data.alliances[team_color].team_keys[team_num] : 0);
-        setTeamNum(Number(fullTeam.substring(3)));
-        await updateDefendedList();
-      }
+      const matchLevel = form.getFieldValue('matchlevel');
+      const matchNumber = form.getFieldValue('matchnum');
+      const roundNumber = form.getFieldValue('roundnum');
+      const robotPosition = form.getFieldValue('robotpos');
+
+	  const teamNumber = await getTeamNumber(roundIsVisible, matchLevel, matchNumber, roundNumber, robotPosition);
+
+	  setTeamNum(teamNumber);
+
+	  await updateDefendedList();
     }
     catch (err) {
+		console.error("Failed to request TBA data");
     }
   }
-  async function calculateMatchLevel() {
-    const matchlevel = form.getFieldValue('matchlevel');
-    if (matchlevel !== "qm") {
-      setRoundIsVisible(true);
-    }
-    else {
-      setRoundIsVisible(false);
-    }
+  function calculateMatchLevel() {
+    const isVisible = isMatchVisible(form.getFieldValue('matchlevel'));
+    setRoundIsVisible(isVisible);
   }
   async function updateDefendedList() {
     try {
@@ -447,7 +394,7 @@ function MatchScout(props: any) {
         </Form.Item>
         <h2>Robot Position:</h2>
         <Form.Item<FieldType> name="robotpos" rules={[{ required: true, message: 'Enter robot position' }]}>
-          <Select options={robotpos} onChange={updateTeamNumber} className="input" />
+          <Select options={robotpos} onChange={updateTeamNumber} className="input"  listItemHeight={10} listHeight={500} placement='bottomLeft'/>
         </Form.Item>
         <div className = 'divdivdiv'> 
         <div className = 'radioRow'> 
@@ -1248,9 +1195,6 @@ function MatchScout(props: any) {
         <Form.Item<FieldType> name="comments">
           <TextArea style={{ verticalAlign: 'center' }} className='textbox_input' />
         </Form.Item>
-        {JSON.stringify(qrValue) !== "{}" && (
-          <QRCode value={JSON.stringify(qrValue)} bgColor="transparent" color='black' style={{ width: '100%', height: '100%', marginBottom: '5%' }} />
-        )} 
       </div>
     )
   }
@@ -1373,6 +1317,7 @@ function MatchScout(props: any) {
           <h2 style={{ display: isLoading ? 'inherit' : 'none' }}>Submitting data...</h2>
         </Footer>
       </Form>
+	  <QrCode value={qrValue} />
     </div>
   );
 }

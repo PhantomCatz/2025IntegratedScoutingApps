@@ -45,6 +45,8 @@ async function getTeamInfo(teams) {
 	try {
 		const mysql = getMysql();
 		const conn = await mysql.createConnection(connectionData);
+		const [r1, f1] = await conn.query("show tables");
+		console.log(r1);
 		const [res, fields] = await conn.query(sqlQuery);
 
 		await conn.end();

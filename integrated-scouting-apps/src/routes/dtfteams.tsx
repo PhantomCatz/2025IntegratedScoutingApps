@@ -33,7 +33,7 @@ function DTFTeams(props: any) {
     }
 	let fetchLink = process.env.SERVER_ADDRESS;
 	
-	if(fetchLink === undefined) {
+	if(!fetchLink) {
 		console.error("Could not fetch data");
 		return;
 	}
@@ -64,7 +64,9 @@ function DTFTeams(props: any) {
       let index = 2;
       const match: { key: string; label: string; children: JSX.Element }[] = [];
       {/*buttons for sprk avg, max, min (images for other te*/}
+	let i = 0;
       for (const team of teams) {
+		  const data = [];
         const teamTabs = [
           { key: "1", label: "Auton", children: ( <div>
           <Flex justify='in-between'>

@@ -54,7 +54,7 @@ function DriverSkill(props: any) {
             "Content-Type": "application/json",
           }
         }).then(async (response) => response.json()).then(async (data) => {
-          window.alert(data.insertedId === undefined ? "Error occured, please do not do anything and go immediately to a Webdev member!" : data.insertedId);
+          window.alert(!data.insertedId ? "Error occured, please do not do anything and go immediately to a Webdev member!" : data.insertedId);
           saveAs(new Blob([JSON.stringify(body)], { type: "text/json" }), event.initials + event.matchnum + ".json");
         });
       }
