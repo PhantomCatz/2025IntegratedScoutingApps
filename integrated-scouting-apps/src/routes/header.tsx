@@ -12,7 +12,7 @@ import '../public/stylesheets/header.css';
 function Header(props : any) {
 	const isRootPage = props.rootPage || false;
 	const name = props.name || "No name set";
-	const backLink = props.back || "No back link set";
+	const backLink = props.back || "/";
 
 	return (
 	<header className="header">

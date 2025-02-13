@@ -85,7 +85,8 @@ function Strategic(props: any, text:any) {
     };
     const rounds = [
       { label: "Qualifications", value: "qm" },
-      { label: "Elimination", value: "sf" },
+      { label: "Quarter-Finals", value: "qf" },
+      { label: "Semi-Finals", value: "sf" },
       { label: "Finals", value: "f" },
     ];
     const robotpos = [

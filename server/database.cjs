@@ -40,11 +40,12 @@ async function requestDatabase(query) {
 // Not implemented
 async function getTeamInfo(teams) {
 	let result = {};
-	const sqlQuery = query;
+	const sqlQuery = "select * from match_data;";
 
 	try {
 		const mysql = getMysql();
 		const conn = await mysql.createConnection(connectionData);
+		await conn.query("use testdb;");
 		const [r1, f1] = await conn.query("show tables");
 		console.log(r1);
 		const [res, fields] = await conn.query(sqlQuery);

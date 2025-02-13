@@ -71,9 +71,6 @@
     height: 170px;
     background-color: blue;
 }
-.boxes {
-    height: 200px;
-}
 .tabbutton {
     width: 50%;
     min-width: 50%;
@@ -103,4 +100,7 @@
     text-align: center !important;
     margin-top: 5%;
     padding-top: 0 !important;
+}
+h3 {
+	margin: 20px !important;
 }
