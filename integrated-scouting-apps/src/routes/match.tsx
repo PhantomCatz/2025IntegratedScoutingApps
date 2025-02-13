@@ -436,6 +436,7 @@ function MatchScout(props: any) {
         <h2>Team: {teamNum}</h2>
 
         <h2>Scouter Initials</h2>
+        
         <Form.Item<FieldType>
                   name="initials"
                   rules={[
