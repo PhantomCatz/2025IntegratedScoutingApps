@@ -14,8 +14,21 @@ app.get("/api", async (req, res) => {
 	
 	const queryString = req.url.split("?")[1];
 	const queries = Object.fromEntries(new URLSearchParams(queryString));
+	
+	let result = undefined;
 
-	const result = await getTeamInfo(queries);
+	console.log(queries);
+
+	switch(queries.reqType) {
+	case "hasTeam":
+		result = await hasTeam(queries);
+		break;
+	case "getTeam":
+	default:
+		result = await getTeamInfo(queries);
+		break;
+	}
+
 	//const result = await requestDatabase(query);
 
 	console.log(result);

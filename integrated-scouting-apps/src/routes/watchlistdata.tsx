@@ -66,27 +66,27 @@ function WatchlistGet(props: any) {
         // setFetchedData(teamsArr_temp);
         // console.log(teamsArr_temp)
         console.log(customArr)
-        custom0 = customArr[0] === undefined ? {question: 'tOwOt', question_type: 'tOwOt'} : customArr[0];
-        custom1 = customArr[1] === undefined ? {question: 'tOwOt', question_type: 'tOwOt'} : customArr[1];
-        custom2 = customArr[2] === undefined ? {question: 'tOwOt', question_type: 'tOwOt'} : customArr[2];
-        custom3 = customArr[3] === undefined ? {question: 'tOwOt', question_type: 'tOwOt'} : customArr[3];
-        custom4 = customArr[4] === undefined ? {question: 'tOwOt', question_type: 'tOwOt'} : customArr[4];
-        custom5 = customArr[5] === undefined ? {question: 'tOwOt', question_type: 'tOwOt'} : customArr[5];
-        custom6 = customArr[6] === undefined ? {question: 'tOwOt', question_type: 'tOwOt'} : customArr[6];
-        custom7 = customArr[7] === undefined ? {question: 'tOwOt', question_type: 'tOwOt'} : customArr[7];
-        custom8 = customArr[8] === undefined ? {question: 'tOwOt', question_type: 'tOwOt'} : customArr[8];
-        custom9 = customArr[9] === undefined ? {question: 'tOwOt', question_type: 'tOwOt'} : customArr[9];
-        custom10 = customArr[10] === undefined ? {question: 'tOwOt', question_type: 'tOwOt'} : customArr[10];
-        custom11 = customArr[11] === undefined ? {question: 'tOwOt', question_type: 'tOwOt'} : customArr[11];
-        custom12 = customArr[12] === undefined ? {question: 'tOwOt', question_type: 'tOwOt'} : customArr[12];
-        custom13 = customArr[13] === undefined ? {question: 'tOwOt', question_type: 'tOwOt'} : customArr[13];
-        custom14 = customArr[14] === undefined ? {question: 'tOwOt', question_type: 'tOwOt'} : customArr[14];
-        custom15 = customArr[15] === undefined ? {question: 'tOwOt', question_type: 'tOwOt'} : customArr[15];
-        custom16 = customArr[16] === undefined ? {question: 'tOwOt', question_type: 'tOwOt'} : customArr[16];
-        custom17 = customArr[17] === undefined ? {question: 'tOwOt', question_type: 'tOwOt'} : customArr[17];
-        custom18 = customArr[18] === undefined ? {question: 'tOwOt', question_type: 'tOwOt'} : customArr[18];
-        custom19 = customArr[19] === undefined ? {question: 'tOwOt', question_type: 'tOwOt'} : customArr[19];
-        custom20 = customArr[20] === undefined ? {question: 'tOwOt', question_type: 'tOwOt'} : customArr[20];
+        custom0 = !customArr[0] ? {question: 'tOwOt', question_type: 'tOwOt'} : customArr[0];
+        custom1 = !customArr[1] ? {question: 'tOwOt', question_type: 'tOwOt'} : customArr[1];
+        custom2 = !customArr[2] ? {question: 'tOwOt', question_type: 'tOwOt'} : customArr[2];
+        custom3 = !customArr[3] ? {question: 'tOwOt', question_type: 'tOwOt'} : customArr[3];
+        custom4 = !customArr[4] ? {question: 'tOwOt', question_type: 'tOwOt'} : customArr[4];
+        custom5 = !customArr[5] ? {question: 'tOwOt', question_type: 'tOwOt'} : customArr[5];
+        custom6 = !customArr[6] ? {question: 'tOwOt', question_type: 'tOwOt'} : customArr[6];
+        custom7 = !customArr[7] ? {question: 'tOwOt', question_type: 'tOwOt'} : customArr[7];
+        custom8 = !customArr[8] ? {question: 'tOwOt', question_type: 'tOwOt'} : customArr[8];
+        custom9 = !customArr[9] ? {question: 'tOwOt', question_type: 'tOwOt'} : customArr[9];
+        custom10 = !customArr[10] ? {question: 'tOwOt', question_type: 'tOwOt'} : customArr[10];
+        custom11 = !customArr[11] ? {question: 'tOwOt', question_type: 'tOwOt'} : customArr[11];
+        custom12 = !customArr[12] ? {question: 'tOwOt', question_type: 'tOwOt'} : customArr[12];
+        custom13 = !customArr[13] ? {question: 'tOwOt', question_type: 'tOwOt'} : customArr[13];
+        custom14 = !customArr[14] ? {question: 'tOwOt', question_type: 'tOwOt'} : customArr[14];
+        custom15 = !customArr[15] ? {question: 'tOwOt', question_type: 'tOwOt'} : customArr[15];
+        custom16 = !customArr[16] ? {question: 'tOwOt', question_type: 'tOwOt'} : customArr[16];
+        custom17 = !customArr[17] ? {question: 'tOwOt', question_type: 'tOwOt'} : customArr[17];
+        custom18 = !customArr[18] ? {question: 'tOwOt', question_type: 'tOwOt'} : customArr[18];
+        custom19 = !customArr[19] ? {question: 'tOwOt', question_type: 'tOwOt'} : customArr[19];
+        custom20 = !customArr[20] ? {question: 'tOwOt', question_type: 'tOwOt'} : customArr[20];
         arrarr.push(custom0, custom1, custom2, custom3, custom4, custom5, custom6, custom7, custom8, custom9, custom10, custom11, custom12, custom13, custom14, custom15, custom16, custom17, custom18, custom19, custom20)
         console.log(arrarr)
 

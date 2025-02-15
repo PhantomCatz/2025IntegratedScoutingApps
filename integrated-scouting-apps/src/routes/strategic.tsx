@@ -6,6 +6,7 @@ import TextArea from 'antd/es/input/TextArea';
 import { saveAs } from 'file-saver';
 import Header from "./header";
 import QrCode from "./qrCodeViewer";
+import {getTeamNumber, isMatchVisible} from './utils/tbaRequest';
 
 function Strategic(props: any, text:any) {
   const [form] = Form.useForm();
@@ -21,7 +22,6 @@ function Strategic(props: any, text:any) {
   const eventname = process.env.REACT_APP_EVENTNAME;
   
   async function setNewStrategicScout(event: any) {
-    console.log(teamNum)
     const body = {
       "matchIdentifier": {
         "Initials": event.initials,
@@ -33,8 +33,7 @@ function Strategic(props: any, text:any) {
       "comment": event.comments,
       "timesAmplified": event.timesamplified,
     };
-    console.log(body);
-    if (teamNum === 0) {
+    if (!teamNum) {
       window.alert("Team number is 0, please check in Pre.");
       throw new Error("bad team number");
     }
@@ -61,42 +60,19 @@ function Strategic(props: any, text:any) {
       const matchLevel = form.getFieldValue('matchlevel');
       const matchNumber = form.getFieldValue('matchnum');
       const roundNumber = form.getFieldValue('roundnum');
-      
-      if (!matchLevel ||
-          !matchNumber ||
-          roundIsVisible && !roundNumber) {
-        return;
-      }
-
-      const matchID = roundIsVisible ?
-        `${eventname}_${matchLevel}${matchNumber}m${roundNumber}` :
-        `${eventname}_${matchLevel}${matchNumber}`;
-
-      const response = await fetch('https://www.thebluealliance.com/api/v3/match/' + matchID, {
-        method: "GET",
-        headers: {
-          'X-TBA-Auth-Key': process.env.REACT_APP_TBA_AUTH_KEY as string,
-        }
-      });
-      const data = await response.json();
       const robotPosition = form.getFieldValue('robotpos');
-      const team_color = robotPosition.substring(0, robotPosition.indexOf('_'));
-      const team_num = robotPosition.substring(robotPosition.indexOf('_') + 1) - 1;
-      const fullTeam = data.alliances[team_color].team_keys[team_num];
-      setTeamNum(parseInt(fullTeam.substring(3)));
-      console.log("Reading team " + Number(fullTeam.substring(3)))
+
+      const teamNumber = await getTeamNumber(roundIsVisible, matchLevel, matchNumber, robotPosition, roundNumber);
+
+      setTeamNum(teamNumber);
     }
     catch (err) {
+      console.log(err)
     }
   }
-  async function calculateMatchLevel() {
-    const matchlevel = form.getFieldValue('matchlevel');
-    if (matchlevel !== "Qualifications") {
-      setRoundIsVisible(true);
-    }
-    else {
-      setRoundIsVisible(false);
-    }
+  function calculateMatchLevel() {
+    const isVisible = isMatchVisible(form.getFieldValue('matchlevel'));
+    setRoundIsVisible(isVisible);
   }
   function preMatch() {
     type FieldType = {
@@ -108,17 +84,18 @@ function Strategic(props: any, text:any) {
       robotpos: string;
     };
     const rounds = [
-      { label: "Qualifications", value: "Qualifications" },
-      { label: "Elimination", value: "Elimination" },
-      { label: "Finals", value: "Finals" },
+      { label: "Qualifications", value: "qm" },
+      { label: "Quarter-Finals", value: "qf" },
+      { label: "Semi-Finals", value: "sf" },
+      { label: "Finals", value: "f" },
     ];
     const robotpos = [
-      { label: "R1", value: "R1" },
-      { label: "R2", value: "R2" },
-      { label: "R3", value: 'R3' },
-      { label: "B1", value: "B1" },
-      { label: "B2", value: "B2" },
-      { label: "B3", value: 'B3' },
+      { label: "R1", value: "red_1" },
+      { label: "R2", value: "red_2" },
+      { label: "R3", value: 'red_3' },
+      { label: "B1", value: "blue_1" },
+      { label: "B2", value: "blue_2" },
+      { label: "B3", value: 'blue_3' },
     ];
     return (
       <div>

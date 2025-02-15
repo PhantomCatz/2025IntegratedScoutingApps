@@ -20,24 +20,24 @@ function Picklists(props: any) {
         const response = await fetch(process.env.REACT_APP_PICKLIST_URL as string);
         const data = await response.json();
         for (const team in data) {
-          if (teams[data[team].team_number] === undefined) {
+          if (!teams[data[team].team_number]) {
             teams[data[team].team_number] = (data[team]);
-            if (teams[data[team].team_number].first_score === undefined) {
+            if (!teams[data[team].team_number].first_score) {
               teams[data[team].team_number].first_score = data[team].score;
             }
-            if (teams[data[team].team_number].second_score === undefined) {
+            if (!teams[data[team].team_number].second_score) {
               teams[data[team].team_number].second_score = 0;
             }
-            if (teams[data[team].team_number].third_score === undefined) {
+            if (!teams[data[team].team_number].third_score) {
               teams[data[team].team_number].third_score = 0;
             }
-            if (teams[data[team].team_number].robot_died === undefined) {
+            if (!teams[data[team].team_number].robot_died) {
               teams[data[team].team_number].robot_died = 0;
             }
-            if (teams[data[team].team_number].match_numbers === undefined) {
+            if (!teams[data[team].team_number].match_numbers) {
               teams[data[team].team_number].match_numbers = 1;
             }
-            if (teams[data[team].team_number].rank === undefined) {
+            if (!teams[data[team].team_number].rank) {
               teams[data[team].team_number].rank = 1;
             }
           }

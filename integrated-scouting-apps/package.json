@@ -1,6 +1,6 @@
 {
   "name": "2025integrated-scouting-apps",
-    "cookie": "^0.6.0",
+  "cookie": "^0.6.0",
   "version": "1.0",
   "proxy": "http://localhost:3001",
   "private": true,
@@ -13,6 +13,7 @@
     "assert": "^2.1.0",
     "browserify-zlib": "^0.2.0",
     "buffer": "^6.0.3",
+    "chart.js": "^4.4.7",
     "crypto": "^1.0.1",
     "crypto-browserify": "^3.12.1",
     "dotenv": "^16.4.7",

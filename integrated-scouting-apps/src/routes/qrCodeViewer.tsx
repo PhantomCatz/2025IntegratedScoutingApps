@@ -5,21 +5,23 @@ import {QRCode as AntQr} from 'antd';
 import {useState, useEffect} from 'react';
 
 const sep = "\t";
+const defualtValue = <></>;
 
 function QrCode(props : any) {
 	const [qrValue, setQrValue] = useState<string>("");
 	const [timestamp, setTimestamp] = useState<Date>(new Date());
 
-	useEffect(() => {
-		setTimestamp(new Date());
-	}, [qrValue]);
+	let shouldShow = !!qrValue;
 
 	const newQrValue = props.value;
+
 	if(!Object.is(qrValue, newQrValue)) {
+		console.log("setting", qrValue, "from", newQrValue);
 		setQrValue(newQrValue);
+		setTimestamp(new Date());
+		return defualtValue;
 	}
 
-	let shouldShow = !!qrValue;
 
 	const keys = [];
 	const vals = [];
@@ -30,12 +32,16 @@ function QrCode(props : any) {
 			//console.log(k + "," + v);
 			keys.push(k);
 			vals.push(v);
+			if(v === undefined) {
+				console.log(`${k} is undefined`);
+			}
 		}
 	}
 
 	const shownValue = vals.join(sep);
 	if (shouldShow) {
 		console.log("Current key map: " + keys);
+		console.log("Current values: " + vals);
 	}
 
 	//shouldShow = true;

@@ -1,0 +1,18 @@
+.header {
+	font-size: 50px;
+	vertical-align: top;
+	display: flex;
+}
+.header .backImg {
+	height: 10vw;
+	margin: auto 5vw auto auto;
+}
+.header .logoImg {
+	width: 10vw;
+	height: 10vw;
+}
+.header .pageTitle {
+	margin: auto;
+	font-size: 80px;
+	text-align: center;
+}
