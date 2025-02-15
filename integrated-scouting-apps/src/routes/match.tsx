@@ -23,6 +23,62 @@ const Spacer: React.FC<SpacerProps> = ({ height = '0px', width = '0px' }) => {
   return <div style={{ height, width }} />;
 };
 
+const formDefaultValues = {
+  /*
+  // Pre-match
+  "match_event": match_event,
+  "team_number": team_number,
+  "scouter_initials": event.scouter_initials.toLowerCase(),
+  "match_level": event.match_level + (event.round_number !== undefined ? event.round_number : ""),
+  "match_number": event.match_number,
+  "robot_position": event.robot_position,
+  "robot_starting_position": event.robot_starting_position,
+  */
+  // Auton
+  "auton_leave_starting_line": false,
+  "auton_coral_scored_l4": 0,
+  "auton_coral_missed_l4": 0,
+  "auton_coral_scored_l3": 0,
+  "auton_coral_missed_l3": 0,
+  "auton_coral_scored_l2": 0,
+  "auton_coral_missed_l2": 0,
+  "auton_coral_scored_l1": 0,
+  "auton_coral_missed_l1": 0,
+  "auton_algae_scored_net": 0,
+  "auton_algae_missed_net": 0,
+  "auton_algae_scored_processor": 0,
+  // Teleop
+  "teleop_coral_scored_l4": 0,
+  "teleop_coral_missed_l4": 0,
+  "teleop_coral_scored_l3": 0,
+  "teleop_coral_missed_l3": 0,
+  "teleop_coral_scored_l2": 0,
+  "teleop_coral_missed_l2": 0,
+  "teleop_coral_scored_l1": 0,
+  "teleop_coral_missed_l1": 0,
+  "teleop_algae_scored_net": 0,
+  "teleop_algae_missed_net": 0,
+  "teleop_algae_scored_processor": 0,
+  // Endgame
+  "endgame_coral_intake_capability": null,
+  "endgame_coral_station": null,
+  "endgame_algae_intake_capability": null,
+  "endgame_climb_successful": false,
+  "endgame_climb_type": null,
+  "endgame_climb_time": 0,
+  // Overall
+  "overall_robot_died": false,
+  "overall_defended_others": false,
+  "overall_was_defended": false,
+  "overall_defended": [],
+  "overall_defended_by": [],
+  "overall_pushing": 0,
+  "overall_counter_defense": 0,
+  "overall_driver_skill": 0,
+  "overall_num_penalties": 0,
+  "overall_penalties_incurred": "",
+  "overall_comments": "",
+};
 
 function MatchScout(props: any) {
   const [form] = Form.useForm();
@@ -40,66 +96,11 @@ function MatchScout(props: any) {
   const [wasDefendedIsVisible, setWasDefendedIsVisible] = useState(false);
   const [penaltiesIsVisible, setPenaltiesIsVisible] = useState(false);
   const [opposingTeamNum, setOpposingTeamNum] = useState([""]);
-  const [startPos, setStartPos] = useState("");
-  const [formValue, setFormValue] = useState<any>({
-    /*
-    // Pre-match
-    "match_event": match_event,
-    "team_number": team_number,
-    "scouter_initials": event.scouter_initials.toLowerCase(),
-    "match_level": event.match_level + (event.round_number !== undefined ? event.round_number : ""),
-    "match_number": event.match_number,
-    "robot_position": event.robot_position,
-    "robot_starting_position": event.robot_starting_position,
-    */
-    // Auton
-    "auton_leave_starting_line": false,
-    "auton_coral_scored_l4": 0,
-    "auton_coral_missed_l4": 0,
-    "auton_coral_scored_l3": 0,
-    "auton_coral_missed_l3": 0,
-    "auton_coral_scored_l2": 0,
-    "auton_coral_missed_l2": 0,
-    "auton_coral_scored_l1": 0,
-    "auton_coral_missed_l1": 0,
-    "auton_algae_scored_net": 0,
-    "auton_algae_missed_net": 0,
-    "auton_algae_scored_processor": 0,
-    // Teleop
-    "teleop_coral_scored_l4": 0,
-    "teleop_coral_missed_l4": 0,
-    "teleop_coral_scored_l3": 0,
-    "teleop_coral_missed_l3": 0,
-    "teleop_coral_scored_l2": 0,
-    "teleop_coral_missed_l2": 0,
-    "teleop_coral_scored_l1": 0,
-    "teleop_coral_missed_l1": 0,
-    "teleop_algae_scored_net": 0,
-    "teleop_algae_missed_net": 0,
-    "teleop_algae_scored_processor": 0,
-    // Endgame
-    "endgame_coral_intake_capability": null,
-    "endgame_coral_station": null,
-    "endgame_algae_intake_capability": null,
-    "endgame_climb_successful": null,
-    "endgame_climb_type": null,
-    "endgame_climb_time": 0,
-    // Overall
-    "overall_robot_died": false,
-    "overall_defended_others": false,
-    "overall_was_defended": false,
-    "overall_defended": [],
-    "overall_defended_by": [],
-    "overall_pushing": 0,
-    "overall_counter_defense": 0,
-    "overall_driver_skill": 0,
-    "overall_num_penalties": 0,
-    "overall_penalties_incurred": "",
-    "overall_comments": "",
-  });
+  const [robot_starting_position, setRobot_starting_position] = useState("")
+  const [formValue, setFormValue] = useState<any>(formDefaultValues);
 
   const handleStartPosChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setStartPos(event.target.value);
+    setRobot_starting_position(event.target.value);
   };
   
   const match_event = process.env.REACT_APP_EVENTNAME;
@@ -226,7 +227,7 @@ function MatchScout(props: any) {
         "match_level": event.match_level + (event.round_number !== undefined ? event.round_number : ""),
         "match_number": event.match_number,
         "robot_position": event.robot_position,
-        "robot_starting_position": event.robot_starting_position,
+        "robot_starting_position": robot_starting_position,
         // Auton
         "auton_leave_starting_line": event.auton_leave_starting_line,
         "auton_coral_scored_l4": event.auton_coral_scored_l4,
@@ -256,7 +257,7 @@ function MatchScout(props: any) {
         "endgame_coral_intake_capability": event.endgame_coral_intake_capability,
         "endgame_coral_station": event.endgame_coral_intake_capability,
         "endgame_algae_intake_capability": event.endgame_algae_intake_capability,
-        "endgame_climb_successful": event.endgame_coral_intake_capability,
+        "endgame_climb_successful": event.endgame_climb_successful,
         "endgame_climb_type": event.endgame_climb_type,
         "endgame_climb_time": event.endgame_climb_time,
         // Overall
@@ -370,7 +371,7 @@ function MatchScout(props: any) {
         </Form.Item>
         <h2>Match #</h2>
         <Form.Item<FieldType> name="match_number" rules={[{ required: true, message: 'Enter match #' }]}>
-          <InputNumber min={1} onChange={updateTeamNumber} onWheel={(e) => e.currentTarget.blur()} className="input" type='number' pattern="\d*" />
+          <InputNumber min={1} onChange={updateTeamNumber} className="input" type='number' pattern="\d*" onWheel={(e) => (e.target as HTMLElement).blur()}/>
         </Form.Item>
 
         <h2>Match Level:</h2>
@@ -380,7 +381,7 @@ function MatchScout(props: any) {
 
         <h2 style={{ display: roundIsVisible ? 'inherit' : 'none' }}>Round #</h2>
         <Form.Item<FieldType> name="round_number" rules={[{ required: roundIsVisible ? true : false, message: 'Enter round #' }]} style={{ display: roundIsVisible ? 'inherit' : 'none' }}>
-          <InputNumber min={1} onChange={updateTeamNumber} style={{ display: roundIsVisible ? 'inherit' : 'none' }} className="input" type='number' pattern="\d*" />
+          <InputNumber min={1} onChange={updateTeamNumber} style={{ display: roundIsVisible ? 'inherit' : 'none' }} className="input" type='number' pattern="\d*" onWheel={(e) => (e.target as HTMLElement).blur()}/>
         </Form.Item>
 
         <h2>Robot Position:</h2>
@@ -388,71 +389,69 @@ function MatchScout(props: any) {
           <Select options={robot_position} onChange={updateTeamNumber} className="input"  listItemHeight={10} listHeight={500} placement='bottomLeft'/>
         </Form.Item>
 
-        <div className = 'divdivdiv'> 
+        <div className='divdivdiv'> 
         <h2>Robot Starting Position</h2>
-        <div className = 'radioRow'> 
-          <div className = 'radioColumn'>
+        <div className='radioRow'> 
+          <div className='radioColumn'>
 
-          <Form.Item name="startPos">
-          <div className = 'radioLabel'> 
+          <Form.Item name="robot_starting_position">
+          <div className='radioLabel'> 
             <h3>B&Sigma;1</h3> 
-            <input type = "radio" name = "startPos" value = "B&Sigma;1" className = "startPos" onChange = {handleStartPosChange}/> 
+            <input type="radio" name="robot_starting_position" value="B&Sigma;1" className="robot_starting_position" onChange={handleStartPosChange}/> 
           </div> 
           </Form.Item>
 
-          <Form.Item name="startPos">
-          <div className = 'radioLabel'> 
+          <Form.Item name="robot_starting_position">
+          <div className='radioLabel'> 
             <h3>B&Sigma;2</h3> 
-            <input type = "radio" name = "startPos" value = "B&Sigma;2" className = "startPos" onChange = {handleStartPosChange}/> 
+            <input type="radio" name="robot_starting_position" value="B&Sigma;2" className="robot_starting_position" onChange={handleStartPosChange}/> 
           </div> 
           </Form.Item>
 
-          <Form.Item name="startPos">
-          <div className = 'radioLabel'> 
-            <h3>B&Sigma;3
-              </h3> 
-            <input type = "radio" name = "startPos" value = "B&Sigma;3" className = "startPos" onChange = {handleStartPosChange}/> 
+          <Form.Item name="robot_starting_position">
+          <div className='radioLabel'> 
+            <h3>B&Sigma;3</h3> 
+            <input type="radio" name="robot_starting_position" value="B&Sigma;3" className="robot_starting_position" onChange={handleStartPosChange}/> 
           </div> 
           </Form.Item>
 
 
         </div> 
 
-        <Spacer width = "30px"/> 
-        <div className = "boxes"> 
-          <div className = 'blueBox'></div> 
-          <div className = 'redBox'></div>
+        <Spacer width="30px"/> 
+        <div className="boxes"> 
+          <div className='blueBox'></div> 
+          <div className='redBox'></div>
         </div> 
 
       
-        <Spacer width = "30px"/>
-        <div className = 'radioColumn'> 
+        <Spacer width="30px"/>
+        <div className='radioColumn'> 
 
-        <Form.Item name="startPos">
-          <div className = 'radioLabel'> 
-            <input type = "radio" name = "startPos" value = "R&Sigma;3" className = "startPos" onChange = {handleStartPosChange}/> 
+        <Form.Item name="robot_starting_position">
+          <div className='radioLabel'> 
+            <input type="radio" name="robot_starting_position" value="R&Sigma;3" className="robot_starting_position" onChange={handleStartPosChange}/> 
             <h3>R&Sigma;3</h3> 
           </div> 
-          </Form.Item>
+        </Form.Item>
 
-          <Form.Item name="startPos">
-          <div className = 'radioLabel'> 
-            <input type = "radio" name = "startPos" value = "R&Sigma;2" className = "startPos" onChange={handleStartPosChange}/> 
+        <Form.Item name="robot_starting_position">
+          <div className='radioLabel'> 
+            <input type="radio" name="robot_starting_position" value="R&Sigma;2" className="robot_starting_position" onChange={handleStartPosChange}/> 
             <h3>R&Sigma;2</h3>
           </div> 
-          </Form.Item>
+        </Form.Item>
 
-          <Form.Item name="startPos">
-          <div className = 'radioLabel'> 
-            <input type = "radio" name = "startPos" value = "R&Sigma;1" className = "startPos" onChange={handleStartPosChange}/> 
+        <Form.Item name="robot_starting_position">
+          <div className='radioLabel'> 
+            <input type="radio" name="robot_starting_position" value="R&Sigma;1" className="robot_starting_position" onChange={handleStartPosChange}/> 
             <h3>R&Sigma;1</h3> 
           </div>
-            </Form.Item>
+        </Form.Item>
 
         </div>
-      </div>
-      <p>Selected Start Position: {startPos}</p>
-        <Spacer height = "30px"/>
+        </div>
+        <Spacer height="30px"/>
         </div>
         
         
@@ -493,6 +492,7 @@ function MatchScout(props: any) {
                   type='number'
                   pattern="\d*"
                   min={0}
+                  onWheel={(e) => (e.target as HTMLElement).blur()}
                   className="input"
                   addonAfter={<Button onMouseDown={() => {
                     setFormValue({ ...formValue, auton_coral_scored_l4: formValue.auton_coral_scored_l4 + 1 });
@@ -514,6 +514,7 @@ function MatchScout(props: any) {
                   type='number'
                   pattern="\d*"
                   min={0}
+                  onWheel={(e) => (e.target as HTMLElement).blur()}
                   className="input"
                   addonAfter={<Button onMouseDown={() => {
                     setFormValue({ ...formValue, auton_coral_missed_l4: formValue.auton_coral_missed_l4 + 1 });
@@ -539,6 +540,7 @@ function MatchScout(props: any) {
                   type='number'
                   pattern="\d*"
                   min={0}
+                  onWheel={(e) => (e.target as HTMLElement).blur()}
                   className="input"
                   addonAfter={<Button onMouseDown={() => {
                     setFormValue({ ...formValue, auton_coral_scored_l3: formValue.auton_coral_scored_l3 + 1 });
@@ -560,6 +562,7 @@ function MatchScout(props: any) {
                   type='number'
                   pattern="\d*"
                   min={0}
+                  onWheel={(e) => (e.target as HTMLElement).blur()}
                   className="input"
                   addonAfter={<Button onMouseDown={() => {
                     setFormValue({ ...formValue, auton_coral_missed_l3: formValue.auton_coral_missed_l3 + 1 });
@@ -585,6 +588,7 @@ function MatchScout(props: any) {
                   type='number'
                   pattern="\d*"
                   min={0}
+                  onWheel={(e) => (e.target as HTMLElement).blur()}
                   className="input"
                   addonAfter={<Button onMouseDown={() => {
                     setFormValue({ ...formValue, auton_coral_scored_l2: formValue.auton_coral_scored_l2 + 1 });
@@ -606,6 +610,7 @@ function MatchScout(props: any) {
                   type='number'
                   pattern="\d*"
                   min={0}
+                  onWheel={(e) => (e.target as HTMLElement).blur()}
                   className="input"
                   addonAfter={<Button onMouseDown={() => {
                     setFormValue({ ...formValue, auton_coral_missed_l2: formValue.auton_coral_missed_l2 + 1 });
@@ -631,6 +636,7 @@ function MatchScout(props: any) {
                   type='number'
                   pattern="\d*"
                   min={0}
+                  onWheel={(e) => (e.target as HTMLElement).blur()}
                   className="input"
                   addonAfter={<Button onMouseDown={() => {
                     setFormValue({ ...formValue, auton_coral_scored_l1: formValue.auton_coral_scored_l1 + 1 });
@@ -652,6 +658,7 @@ function MatchScout(props: any) {
                   type='number'
                   pattern="\d*"
                   min={0}
+                  onWheel={(e) => (e.target as HTMLElement).blur()}
                   className="input"
                   addonAfter={<Button onMouseDown={() => {
                     setFormValue({ ...formValue, auton_coral_missed_l1: formValue.auton_coral_missed_l1 + 1 });
@@ -677,6 +684,7 @@ function MatchScout(props: any) {
                   type='number'
                   pattern="\d*"
                   min={0}
+                  onWheel={(e) => (e.target as HTMLElement).blur()}
                   className="input"
                   addonAfter={<Button onMouseDown={() => {
                     setFormValue({ ...formValue, auton_algae_scored_net: formValue.auton_algae_scored_net + 1 });
@@ -698,6 +706,7 @@ function MatchScout(props: any) {
                   type='number'
                   pattern="\d*"
                   min={0}
+                  onWheel={(e) => (e.target as HTMLElement).blur()}
                   className="input"
                   addonAfter={<Button onMouseDown={() => {
                     setFormValue({ ...formValue, auton_algae_missed_net: formValue.auton_algae_missed_net + 1 });
@@ -723,6 +732,7 @@ function MatchScout(props: any) {
                   type='number'
                   pattern="\d*"
                   min={0}
+                  onWheel={(e) => (e.target as HTMLElement).blur()}
                   className="input"
                   addonAfter={<Button onMouseDown={() => {
                     setFormValue({ ...formValue, auton_algae_scored_processor: formValue.auton_algae_scored_processor + 1 });
@@ -771,6 +781,7 @@ function MatchScout(props: any) {
                   type='number'
                   pattern="\d*"
                   min={0}
+                  onWheel={(e) => (e.target as HTMLElement).blur()}
                   className="input"
                   addonAfter={<Button onMouseDown={() => {
                     setFormValue({ ...formValue, teleop_coral_scored_l4: formValue.teleop_coral_scored_l4 + 1 });
@@ -792,6 +803,7 @@ function MatchScout(props: any) {
                   type='number'
                   pattern="\d*"
                   min={0}
+                  onWheel={(e) => (e.target as HTMLElement).blur()}
                   className="input"
                   addonAfter={<Button onMouseDown={() => {
                     setFormValue({ ...formValue, teleop_coral_missed_l4: formValue.teleop_coral_missed_l4 + 1 });
@@ -817,6 +829,7 @@ function MatchScout(props: any) {
                   type='number'
                   pattern="\d*"
                   min={0}
+                  onWheel={(e) => (e.target as HTMLElement).blur()}
                   className="input"
                   addonAfter={<Button onMouseDown={() => {
                     setFormValue({ ...formValue, teleop_coral_scored_l3: formValue.teleop_coral_scored_l3 + 1 });
@@ -838,6 +851,7 @@ function MatchScout(props: any) {
                   type='number'
                   pattern="\d*"
                   min={0}
+                  onWheel={(e) => (e.target as HTMLElement).blur()}
                   className="input"
                   addonAfter={<Button onMouseDown={() => {
                     setFormValue({ ...formValue, teleop_coral_missed_l3: formValue.teleop_coral_missed_l3 + 1 });
@@ -863,6 +877,7 @@ function MatchScout(props: any) {
                   type='number'
                   pattern="\d*"
                   min={0}
+                  onWheel={(e) => (e.target as HTMLElement).blur()}
                   className="input"
                   addonAfter={<Button onMouseDown={() => {
                     setFormValue({ ...formValue, teleop_coral_scored_l2: formValue.teleop_coral_scored_l2 + 1 });
@@ -884,6 +899,7 @@ function MatchScout(props: any) {
                   type='number'
                   pattern="\d*"
                   min={0}
+                  onWheel={(e) => (e.target as HTMLElement).blur()}
                   className="input"
                   addonAfter={<Button onMouseDown={() => {
                     setFormValue({ ...formValue, teleop_coral_missed_l2: formValue.teleop_coral_missed_l2 + 1 });
@@ -909,6 +925,7 @@ function MatchScout(props: any) {
                   type='number'
                   pattern="\d*"
                   min={0}
+                  onWheel={(e) => (e.target as HTMLElement).blur()}
                   className="input"
                   addonAfter={<Button onMouseDown={() => {
                     setFormValue({ ...formValue, teleop_coral_scored_l1: formValue.teleop_coral_scored_l1 + 1 });
@@ -930,6 +947,7 @@ function MatchScout(props: any) {
                   type='number'
                   pattern="\d*"
                   min={0}
+                  onWheel={(e) => (e.target as HTMLElement).blur()}
                   className="input"
                   addonAfter={<Button onMouseDown={() => {
                     setFormValue({ ...formValue, teleop_coral_missed_l1: formValue.teleop_coral_missed_l1 + 1 });
@@ -955,6 +973,7 @@ function MatchScout(props: any) {
                   type='number'
                   pattern="\d*"
                   min={0}
+                  onWheel={(e) => (e.target as HTMLElement).blur()}
                   className="input"
                   addonAfter={<Button onMouseDown={() => {
                     setFormValue({ ...formValue, teleop_algae_scored_net: formValue.teleop_algae_scored_net + 1 });
@@ -976,6 +995,7 @@ function MatchScout(props: any) {
                   type='number'
                   pattern="\d*"
                   min={0}
+                  onWheel={(e) => (e.target as HTMLElement).blur()}
                   className="input"
                   addonAfter={<Button onMouseDown={() => {
                     setFormValue({ ...formValue, teleop_algae_missed_net: formValue.teleop_algae_missed_net + 1 });
@@ -1001,6 +1021,7 @@ function MatchScout(props: any) {
                   type='number'
                   pattern="\d*"
                   min={0}
+                  onWheel={(e) => (e.target as HTMLElement).blur()}
                   className="input"
                   addonAfter={<Button onMouseDown={() => {
                     setFormValue({ ...formValue, teleop_algae_scored_processor: formValue.teleop_algae_scored_processor + 1 });
@@ -1073,7 +1094,7 @@ function MatchScout(props: any) {
         </Form.Item>
         <h2>Climb Time (Seconds):</h2>
         <Form.Item<FieldType> name="endgame_climb_time" rules={[{ required: true, message: 'Enter Climb Time (Seconds)' }]}>
-          <InputNumber min={1} className="input" type='number' pattern="\d*" />
+        <InputNumber min={1} className="input" type='number' pattern="\d*" onWheel={(e) => (e.target as HTMLElement).blur()}/>
         </Form.Item>
       </>
   )}
@@ -1135,6 +1156,7 @@ function MatchScout(props: any) {
                   type='number'
                   pattern="\d*"
                   min={0} max={4}
+                  onWheel={(e) => (e.target as HTMLElement).blur()}
                   className="input"
                   addonAfter={<Button onMouseDown={() => {
                     if (Number(formValue.overall_pushing) < 4) {
@@ -1157,6 +1179,7 @@ function MatchScout(props: any) {
                   type='number'
                   pattern="\d*"
                   min={0} max={4}
+                  onWheel={(e) => (e.target as HTMLElement).blur()}
                   className="input"
                   addonAfter={<Button onMouseDown={() => {
                     if (Number(formValue.overall_counter_defense) < 4) {
@@ -1181,6 +1204,7 @@ function MatchScout(props: any) {
                   type='number'
                   pattern="\d*"
                   min={0} max={4}
+                  onWheel={(e) => (e.target as HTMLElement).blur()}
                   className="input"
                   addonAfter={<Button onMouseDown={() => {
                     if (Number(formValue.overall_driver_skill) < 4) {
@@ -1203,14 +1227,19 @@ function MatchScout(props: any) {
                   type='number'
                   pattern="\d*"
                   min={0}
+                  onWheel={(e) => (e.target as HTMLElement).blur()}
                   className="input"
                   addonAfter={<Button onMouseDown={() => {
                     setFormValue({ ...formValue, overall_num_penalties: formValue.overall_num_penalties + 1 });
                     setPenaltiesIsVisible(true);
                   }} className='incrementbutton'>+</Button>}
                   addonBefore={<Button onMouseDown={() => {
-                    if (Number(formValue.overall_num_penalties) > 0) {
+                    if (Number(formValue.overall_num_penalties) > 1) {
                       setFormValue({ ...formValue, overall_num_penalties: formValue.overall_num_penalties - 1 });
+                    }
+                    else if (Number(formValue.overall_num_penalties) <= 1 && Number(formValue.overall_num_penalties) > 0) {
+                      setFormValue({ ...formValue, overall_num_penalties: formValue.overall_num_penalties - 1 });
+                      setPenaltiesIsVisible(false);
                     }
                     else {
                       setPenaltiesIsVisible(false);
@@ -1278,62 +1307,7 @@ function MatchScout(props: any) {
     <Header name="Match Scout" back="/scoutingapp" />
       <Form
         form={form}
-        initialValues={{
-          /*
-            // Pre-match
-            "match_event": match_event,
-          "team_number": team_number,
-          "scouter_initials": event.scouter_initials.toLowerCase(),
-          "match_level": event.match_level + (event.round_number !== undefined ? event.round_number : ""),
-          "match_number": event.match_number,
-          "robot_position": event.robot_position,
-          "robot_starting_position": event.robot_starting_position,
-          */
-          // Auton
-          "auton_leave_starting_line": false,
-          "auton_coral_scored_l4": 0,
-          "auton_coral_missed_l4": 0,
-          "auton_coral_scored_l3": 0,
-          "auton_coral_missed_l3": 0,
-          "auton_coral_scored_l2": 0,
-          "auton_coral_missed_l2": 0,
-          "auton_coral_scored_l1": 0,
-          "auton_coral_missed_l1": 0,
-          "auton_algae_scored_net": 0,
-          "auton_algae_missed_net": 0,
-          "auton_algae_scored_processor": 0,
-          // Teleop
-          "teleop_coral_scored_l4": 0,
-          "teleop_coral_missed_l4": 0,
-          "teleop_coral_scored_l3": 0,
-          "teleop_coral_missed_l3": 0,
-          "teleop_coral_scored_l2": 0,
-          "teleop_coral_missed_l2": 0,
-          "teleop_coral_scored_l1": 0,
-          "teleop_coral_missed_l1": 0,
-          "teleop_algae_scored_net": 0,
-          "teleop_algae_missed_net": 0,
-          "teleop_algae_scored_processor": 0,
-          // Endgame
-          "endgame_coral_intake_capability": null,
-          "endgame_coral_station": null,
-          "endgame_algae_intake_capability": null,
-          "endgame_climb_successful": null,
-          "endgame_climb_type": 0,
-          "endgame_climb_time": 0,
-          // Overall
-          "overall_robot_died": false,
-          "overall_defended_others": false,
-          "overall_was_defended": false,
-          "overall_defended": [],
-          "overall_defended_by": [],
-          "overall_pushing": 0,
-          "overall_counter_defense": 0,
-          "overall_driver_skill": 0,
-          "overall_num_penalties": 0,
-          "overall_penalties_incurred": "",
-          "overall_comments": "",
-        }}
+        initialValues={formDefaultValues}
         onFinish={async (event) => {
           console.log(isLoading);
           console.log("starting");
