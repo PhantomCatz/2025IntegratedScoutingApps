@@ -340,10 +340,28 @@ function MatchScout(props: any) {
         <h2>Team: {team_number}</h2>
 
         <h2>Scouter Initials</h2>
-        <Form.Item<FieldType> name="scouter_initials" rules={[{ required: true, message: 'Enter initials' }]}>
-          <Input maxLength={2} className="input" />
+        <Form.Item<FieldType>
+                  name="scouter_initials"
+                  rules={[
+                    { required: true, message: 'Please input your initials!' },
+                    {
+                      pattern: /^[A-Za-z]{1,2}$/,
+                      message: 'Please enter only letters (max 2)',
+                    },
+                  ]}
+                >
+            <Input
+            maxLength={2}
+            className="input"
+            onKeyPress={(event) => {
+              const keyCode = event.keyCode || event.which;
+              const keyValue = String.fromCharCode(keyCode);
+              if (!/^[A-Za-z]*$/.test(keyValue)) {
+                event.preventDefault();
+              }
+            }}
+          /> 
         </Form.Item>
-
         <h2>Match #</h2>
         <Form.Item<FieldType> name="match_number" rules={[{ required: true, message: 'Enter match #' }]}>
           <InputNumber min={1} onChange={updateTeamNumber} className="input" type='number' pattern="\d*" />
@@ -434,7 +452,6 @@ function MatchScout(props: any) {
       auton_algae_missed_net: number,
       auton_algae_scored_processor: number,
       auton_leave_starting_line: boolean,
-      auton_scoringloc: string,
     };
     return (
       <div>
