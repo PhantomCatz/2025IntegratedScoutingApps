@@ -1,4 +1,4 @@
-//import '../public/stylesheets/style.css';
+import '../public/stylesheets/style.css';
 import '../public/stylesheets/pit.css';
 import '../public/stylesheets/match.css';
 import '../public/stylesheets/robot_weight.css';

@@ -1175,6 +1175,7 @@ function MatchScout(props: any) {
             </Flex>
             <Flex vertical align='flex-start'>
             <h2>Num Penalties</h2>
+            <h2>&nbsp;</h2>
               <Form.Item<FieldType> name="overall_num_penalties" rules={[{ required: true, message: 'Enter # of incurred penalties' }]}>
                 <InputNumber
                   type='number'
