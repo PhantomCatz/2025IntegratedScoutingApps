@@ -6,7 +6,7 @@ const connectionData = {
 	"password" : process.env.DB_PASSWORD,
 	"host" : process.env.DB_HOST, 
 	"port" : process.env.DB_PORT, 
-	"database" : process.env.DB_DATABASE, 
+	//"database" : process.env.DB_DATABASE, 
 	//"ssl" : {
 	//	"rejectUnauthorized" : false,
 	//},
@@ -40,13 +40,13 @@ async function requestDatabase(query) {
 // Not implemented
 async function getTeamInfo(teams) {
 	let result = {};
-	const sqlQuery = "select * from match_data;";
+	const sqlQuery = "SELECT * FROM match_data;";
 
 	try {
 		const mysql = getMysql();
 		const conn = await mysql.createConnection(connectionData);
-		await conn.query("use testdb;");
-		const [r1, f1] = await conn.query("show tables");
+		await conn.query("USE testdb;");
+		const [r1, f1] = await conn.query("SHOW TABLES");
 		console.log(r1);
 		const [res, fields] = await conn.query(sqlQuery);
 
@@ -59,7 +59,28 @@ async function getTeamInfo(teams) {
 		console.dir(err);
 	}
 	return result;
+}
+async function hasTeam() {
+	let result = {};
+	const sqlQuery = "SELECT * FROM pit_data WHERE ";
 
+	try {
+		const mysql = getMysql();
+		const conn = await mysql.createConnection(connectionData);
+		await conn.query("USE testdb");
+		const [r1, f1] = await conn.query("SHOW TABLES");
+		console.log(r1);
+		const [res, fields] = await conn.query(sqlQuery);
+
+		await conn.end();
+
+		result = res
+		return result;
+	} catch(err) {
+		console.log("Failed to resolve request:");
+		console.dir(err);
+	}
+	return result;
 }
 
 function getMysql() {

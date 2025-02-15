@@ -80,7 +80,7 @@ function MatchScout(props: any) {
     "endgame_coral_station": null,
     "endgame_algae_intake_capability": null,
     "endgame_climb_successful": null,
-    "endgame_climb_type": 0,
+    "endgame_climb_type": null,
     "endgame_climb_time": 0,
     // Overall
     "overall_robot_died": false,
@@ -132,17 +132,17 @@ function MatchScout(props: any) {
       (document.getElementById("auton_coral_missed_l1") as HTMLInputElement).value = formValue.auton_coral_missed_l1.toString();
       form.setFieldValue('auton_coral_missed_l1', formValue.auton_coral_missed_l1);
     }
-    if ((document.getElementById("auton_netscored") as HTMLInputElement) !== null) {
-      (document.getElementById("auton_netscored") as HTMLInputElement).value = formValue.auton_algae_scored_net.toString();
-      form.setFieldValue('auton_netscored', formValue.auton_algae_scored_net);
+    if ((document.getElementById("auton_algae_scored_net") as HTMLInputElement) !== null) {
+      (document.getElementById("auton_algae_scored_net") as HTMLInputElement).value = formValue.auton_algae_scored_net.toString();
+      form.setFieldValue('auton_algae_scored_net', formValue.auton_algae_scored_net);
+    }
+    if ((document.getElementById("auton_algae_missed_net") as HTMLInputElement) !== null) {
+      (document.getElementById("auton_algae_missed_net") as HTMLInputElement).value = formValue.auton_algae_missed_net.toString();
+      form.setFieldValue('auton_algae_missed_net', formValue.auton_algae_missed_net);
     }
     if ((document.getElementById("auton_algae_scored_processor") as HTMLInputElement) !== null) {
       (document.getElementById("auton_algae_scored_processor") as HTMLInputElement).value = formValue.auton_algae_scored_processor.toString();
       form.setFieldValue('auton_algae_scored_processor', formValue.auton_algae_scored_processor);
-    }
-    if ((document.getElementById("auton_netmissed") as HTMLInputElement) !== null) {
-      (document.getElementById("auton_netmissed") as HTMLInputElement).value = formValue.auton_algae_missed_net.toString();
-      form.setFieldValue('auton_netmissed', formValue.auton_algae_missed_net);
     }
     if ((document.getElementById("teleop_coral_scored_l4") as HTMLInputElement) !== null) {
       (document.getElementById("teleop_coral_scored_l4") as HTMLInputElement).value = formValue.teleop_coral_scored_l4.toString();
@@ -346,7 +346,7 @@ function MatchScout(props: any) {
 
         <h2>Match #</h2>
         <Form.Item<FieldType> name="match_number" rules={[{ required: true, message: 'Enter match #' }]}>
-          <InputNumber min={1} onChange={updateTeamNumber} className="input" type='number' pattern="\d*" onWheel={(event) => (event.target as HTMLElement).blur()} />
+          <InputNumber min={1} onChange={updateTeamNumber} className="input" type='number' pattern="\d*" />
         </Form.Item>
 
         <h2>Match Level:</h2>
@@ -356,7 +356,7 @@ function MatchScout(props: any) {
 
         <h2 style={{ display: roundIsVisible ? 'inherit' : 'none' }}>Round #</h2>
         <Form.Item<FieldType> name="round_number" rules={[{ required: roundIsVisible ? true : false, message: 'Enter round #' }]} style={{ display: roundIsVisible ? 'inherit' : 'none' }}>
-          <InputNumber min={1} onChange={updateTeamNumber} style={{ display: roundIsVisible ? 'inherit' : 'none' }} className="input" type='number' pattern="\d*" onWheel={(event) => (event.target as HTMLElement).blur()} />
+          <InputNumber min={1} onChange={updateTeamNumber} style={{ display: roundIsVisible ? 'inherit' : 'none' }} className="input" type='number' pattern="\d*" />
         </Form.Item>
 
         <h2>Robot Position:</h2>
@@ -430,16 +430,11 @@ function MatchScout(props: any) {
       auton_coral_missed_l3: number,
       auton_coral_missed_l2: number,
       auton_coral_missed_l1: number,
-      auton_netscored: number,
+      auton_algae_scored_net: number,
+      auton_algae_missed_net: number,
       auton_algae_scored_processor: number,
-      auton_netmissed: number,
       auton_leave_starting_line: boolean,
       auton_scoringloc: string,
-      preloadscored: boolean,
-      piecespicked?: string,
-      auton_comments: string,
-      imagepath: string,
-      robot_starting_position: string,
     };
     return (
       <div>
@@ -458,14 +453,12 @@ function MatchScout(props: any) {
                   id="auton_coral_scored_l4"
                   type='number'
                   pattern="\d*"
-                  disabled
-                  onWheel={(event) => (event.target as HTMLInputElement).blur()}
                   min={0}
                   className="input"
-                  addonAfter={<Button onClick={() => {
+                  addonAfter={<Button onMouseDown={() => {
                     setFormValue({ ...formValue, auton_coral_scored_l4: formValue.auton_coral_scored_l4 + 1 });
                   }} className='incrementbutton'>+</Button>}
-                  addonBefore={<Button onClick={() => {
+                  addonBefore={<Button onMouseDown={() => {
                     if (Number(formValue.auton_coral_scored_l4) > 0) {
                       setFormValue({ ...formValue, auton_coral_scored_l4: formValue.auton_coral_scored_l4 - 1 });
                     }
@@ -481,13 +474,12 @@ function MatchScout(props: any) {
                   id="auton_coral_missed_l4"
                   type='number'
                   pattern="\d*"
-                  disabled
                   min={0}
                   className="input"
-                  addonAfter={<Button onClick={() => {
+                  addonAfter={<Button onMouseDown={() => {
                     setFormValue({ ...formValue, auton_coral_missed_l4: formValue.auton_coral_missed_l4 + 1 });
                   }} className='incrementbutton'>+</Button>}
-                  addonBefore={<Button onClick={() => {
+                  addonBefore={<Button onMouseDown={() => {
                     if (Number(formValue.auton_coral_missed_l4) > 0) {
                       setFormValue({ ...formValue, auton_coral_missed_l4: formValue.auton_coral_missed_l4 - 1 });
                     }
@@ -507,14 +499,12 @@ function MatchScout(props: any) {
                   id="auton_coral_scored_l3"
                   type='number'
                   pattern="\d*"
-                  disabled
-                  onWheel={(event) => (event.target as HTMLInputElement).blur()}
                   min={0}
                   className="input"
-                  addonAfter={<Button onClick={() => {
+                  addonAfter={<Button onMouseDown={() => {
                     setFormValue({ ...formValue, auton_coral_scored_l3: formValue.auton_coral_scored_l3 + 1 });
                   }} className='incrementbutton'>+</Button>}
-                  addonBefore={<Button onClick={() => {
+                  addonBefore={<Button onMouseDown={() => {
                     if (Number(formValue.auton_coral_scored_l3) > 0) {
                       setFormValue({ ...formValue, auton_coral_scored_l3: formValue.auton_coral_scored_l3 - 1 });
                     }
@@ -530,14 +520,12 @@ function MatchScout(props: any) {
                   id="auton_coral_missed_l3"
                   type='number'
                   pattern="\d*"
-                  disabled
-                  onWheel={(event) => (event.target as HTMLInputElement).blur()}
                   min={0}
                   className="input"
-                  addonAfter={<Button onClick={() => {
+                  addonAfter={<Button onMouseDown={() => {
                     setFormValue({ ...formValue, auton_coral_missed_l3: formValue.auton_coral_missed_l3 + 1 });
                   }} className='incrementbutton'>+</Button>}
-                  addonBefore={<Button onClick={() => {
+                  addonBefore={<Button onMouseDown={() => {
                     if (Number(formValue.auton_coral_missed_l3) > 0) {
                       setFormValue({ ...formValue, auton_coral_missed_l3: formValue.auton_coral_missed_l3 - 1 });
                     }
@@ -557,14 +545,12 @@ function MatchScout(props: any) {
                   id="auton_coral_scored_l2"
                   type='number'
                   pattern="\d*"
-                  disabled
-                  onWheel={(event) => (event.target as HTMLInputElement).blur()}
                   min={0}
                   className="input"
-                  addonAfter={<Button onClick={() => {
+                  addonAfter={<Button onMouseDown={() => {
                     setFormValue({ ...formValue, auton_coral_scored_l2: formValue.auton_coral_scored_l2 + 1 });
                   }} className='incrementbutton'>+</Button>}
-                  addonBefore={<Button onClick={() => {
+                  addonBefore={<Button onMouseDown={() => {
                     if (Number(formValue.auton_coral_scored_l2) > 0) {
                       setFormValue({ ...formValue, auton_coral_scored_l2: formValue.auton_coral_scored_l2 - 1 });
                     }
@@ -580,14 +566,12 @@ function MatchScout(props: any) {
                   id="auton_coral_missed_l2"
                   type='number'
                   pattern="\d*"
-                  disabled
-                  onWheel={(event) => (event.target as HTMLInputElement).blur()}
                   min={0}
                   className="input"
-                  addonAfter={<Button onClick={() => {
+                  addonAfter={<Button onMouseDown={() => {
                     setFormValue({ ...formValue, auton_coral_missed_l2: formValue.auton_coral_missed_l2 + 1 });
                   }} className='incrementbutton'>+</Button>}
-                  addonBefore={<Button onClick={() => {
+                  addonBefore={<Button onMouseDown={() => {
                     if (Number(formValue.auton_coral_missed_l2) > 0) {
                       setFormValue({ ...formValue, auton_coral_missed_l2: formValue.auton_coral_missed_l2 - 1 });
                     }
@@ -607,14 +591,12 @@ function MatchScout(props: any) {
                   id="auton_coral_scored_l1"
                   type='number'
                   pattern="\d*"
-                  disabled
-                  onWheel={(event) => (event.target as HTMLInputElement).blur()}
                   min={0}
                   className="input"
-                  addonAfter={<Button onClick={() => {
+                  addonAfter={<Button onMouseDown={() => {
                     setFormValue({ ...formValue, auton_coral_scored_l1: formValue.auton_coral_scored_l1 + 1 });
                   }} className='incrementbutton'>+</Button>}
-                  addonBefore={<Button onClick={() => {
+                  addonBefore={<Button onMouseDown={() => {
                     if (Number(formValue.auton_coral_scored_l1) > 0) {
                       setFormValue({ ...formValue, auton_coral_scored_l1: formValue.auton_coral_scored_l1 - 1 });
                     }
@@ -630,14 +612,12 @@ function MatchScout(props: any) {
                   id="auton_coral_missed_l1"
                   type='number'
                   pattern="\d*"
-                  disabled
-                  onWheel={(event) => (event.target as HTMLInputElement).blur()}
                   min={0}
                   className="input"
-                  addonAfter={<Button onClick={() => {
+                  addonAfter={<Button onMouseDown={() => {
                     setFormValue({ ...formValue, auton_coral_missed_l1: formValue.auton_coral_missed_l1 + 1 });
                   }} className='incrementbutton'>+</Button>}
-                  addonBefore={<Button onClick={() => {
+                  addonBefore={<Button onMouseDown={() => {
                     if (Number(formValue.auton_coral_missed_l1) > 0) {
                       setFormValue({ ...formValue, auton_coral_missed_l1: formValue.auton_coral_missed_l1 - 1 });
                     }
@@ -652,19 +632,17 @@ function MatchScout(props: any) {
           <div className = 'radioRow'>
           <Flex vertical align='flex-start'>
               <h2>#Algae Scored in Net</h2>
-              <Form.Item<FieldType> name="auton_netscored" rules={[{ required: true, message: 'Enter # of Algae Scored in Net' }]}>
+              <Form.Item<FieldType> name="auton_algae_scored_net" rules={[{ required: true, message: 'Enter # of Algae Scored in Net' }]}>
                 <InputNumber
-                  id="auton_netscored"
+                  id="auton_algae_scored_net"
                   type='number'
                   pattern="\d*"
-                  disabled
-                  onWheel={(event) => (event.target as HTMLInputElement).blur()}
                   min={0}
                   className="input"
-                  addonAfter={<Button onClick={() => {
+                  addonAfter={<Button onMouseDown={() => {
                     setFormValue({ ...formValue, auton_algae_scored_net: formValue.auton_algae_scored_net + 1 });
                   }} className='incrementbutton'>+</Button>}
-                  addonBefore={<Button onClick={() => {
+                  addonBefore={<Button onMouseDown={() => {
                     if (Number(formValue.auton_algae_scored_net) > 0) {
                       setFormValue({ ...formValue, auton_algae_scored_net: formValue.auton_algae_scored_net - 1 });
                     }
@@ -675,19 +653,17 @@ function MatchScout(props: any) {
             
           <Flex vertical align='flex-start'>
               <h2>#Algae Missed in Net</h2>
-              <Form.Item<FieldType> name="auton_netmissed" rules={[{ required: true, message: 'Enter # of Net Missed in Net' }]}>
+              <Form.Item<FieldType> name="auton_algae_missed_net" rules={[{ required: true, message: 'Enter # of Net Missed in Net' }]}>
                 <InputNumber
-                  id="auton_netmissed"
+                  id="auton_algae_missed_net"
                   type='number'
                   pattern="\d*"
-                  disabled
-                  onWheel={(event) => (event.target as HTMLInputElement).blur()}
                   min={0}
                   className="input"
-                  addonAfter={<Button onClick={() => {
+                  addonAfter={<Button onMouseDown={() => {
                     setFormValue({ ...formValue, auton_algae_missed_net: formValue.auton_algae_missed_net + 1 });
                   }} className='incrementbutton'>+</Button>}
-                  addonBefore={<Button onClick={() => {
+                  addonBefore={<Button onMouseDown={() => {
                     if (Number(formValue.auton_algae_missed_net) > 0) {
                       setFormValue({ ...formValue, auton_algae_missed_net: formValue.auton_algae_missed_net - 1 });
                     }
@@ -707,14 +683,12 @@ function MatchScout(props: any) {
                   id="auton_algae_scored_processor"
                   type='number'
                   pattern="\d*"
-                  disabled
-                  onWheel={(event) => (event.target as HTMLInputElement).blur()}
                   min={0}
                   className="input"
-                  addonAfter={<Button onClick={() => {
+                  addonAfter={<Button onMouseDown={() => {
                     setFormValue({ ...formValue, auton_algae_scored_processor: formValue.auton_algae_scored_processor + 1 });
                   }} className='incrementbutton'>+</Button>}
-                  addonBefore={<Button onClick={() => {
+                  addonBefore={<Button onMouseDown={() => {
                     if (Number(formValue.auton_algae_scored_processor) > 0) {
                       setFormValue({ ...formValue, auton_algae_scored_processor: formValue.auton_algae_scored_processor - 1 });
                     }
@@ -734,25 +708,16 @@ function MatchScout(props: any) {
   function teleopMatch() {
     type FieldType = {
       teleop_coral_scored_l4: number,
-      teleop_coral_scored_l3: number,
-      teleop_coral_scored_l2: number,
-      teleop_coral_scored_l1: number,
-      teleop_algae_scored_net: number,
       teleop_coral_missed_l4: number,
+      teleop_coral_scored_l3: number,
       teleop_coral_missed_l3: number,
+      teleop_coral_scored_l2: number,
       teleop_coral_missed_l2: number,
+      teleop_coral_scored_l1: number,
       teleop_coral_missed_l1: number,
+      teleop_algae_scored_net: number,
       teleop_algae_missed_net: number,
       teleop_algae_scored_processor: number,
-      intake: string,
-      shootingloc: string,
-      cooppressed: boolean,
-      cooppressed1st: boolean,
-      traversedstage: boolean,
-      tele_missedpiecesamp: number,
-      tele_missedpiecesspeaker: number,
-      tele_hoardedpieces: number,
-      timesamplified: number,
     };
 
     return (
@@ -766,14 +731,12 @@ function MatchScout(props: any) {
                   id="teleop_coral_scored_l4"
                   type='number'
                   pattern="\d*"
-                  disabled
-                  onWheel={(event) => (event.target as HTMLInputElement).blur()}
                   min={0}
                   className="input"
-                  addonAfter={<Button onClick={() => {
+                  addonAfter={<Button onMouseDown={() => {
                     setFormValue({ ...formValue, teleop_coral_scored_l4: formValue.teleop_coral_scored_l4 + 1 });
                   }} className='incrementbutton'>+</Button>}
-                  addonBefore={<Button onClick={() => {
+                  addonBefore={<Button onMouseDown={() => {
                     if (Number(formValue.teleop_coral_scored_l4) > 0) {
                       setFormValue({ ...formValue, teleop_coral_scored_l4: formValue.teleop_coral_scored_l4 - 1 });
                     }
@@ -789,14 +752,12 @@ function MatchScout(props: any) {
                   id="teleop_coral_missed_l4"
                   type='number'
                   pattern="\d*"
-                  disabled
-                  onWheel={(event) => (event.target as HTMLInputElement).blur()}
                   min={0}
                   className="input"
-                  addonAfter={<Button onClick={() => {
+                  addonAfter={<Button onMouseDown={() => {
                     setFormValue({ ...formValue, teleop_coral_missed_l4: formValue.teleop_coral_missed_l4 + 1 });
                   }} className='incrementbutton'>+</Button>}
-                  addonBefore={<Button onClick={() => {
+                  addonBefore={<Button onMouseDown={() => {
                     if (Number(formValue.teleop_coral_missed_l4) > 0) {
                       setFormValue({ ...formValue, teleop_coral_missed_l4: formValue.teleop_coral_missed_l4 - 1 });
                     }
@@ -816,14 +777,12 @@ function MatchScout(props: any) {
                   id="teleop_coral_scored_l3"
                   type='number'
                   pattern="\d*"
-                  disabled
-                  onWheel={(event) => (event.target as HTMLInputElement).blur()}
                   min={0}
                   className="input"
-                  addonAfter={<Button onClick={() => {
+                  addonAfter={<Button onMouseDown={() => {
                     setFormValue({ ...formValue, teleop_coral_scored_l3: formValue.teleop_coral_scored_l3 + 1 });
                   }} className='incrementbutton'>+</Button>}
-                  addonBefore={<Button onClick={() => {
+                  addonBefore={<Button onMouseDown={() => {
                     if (Number(formValue.teleop_coral_scored_l3) > 0) {
                       setFormValue({ ...formValue, teleop_coral_scored_l3: formValue.teleop_coral_scored_l3 - 1 });
                     }
@@ -839,14 +798,12 @@ function MatchScout(props: any) {
                   id="teleop_coral_missed_l3"
                   type='number'
                   pattern="\d*"
-                  disabled
-                  onWheel={(event) => (event.target as HTMLInputElement).blur()}
                   min={0}
                   className="input"
-                  addonAfter={<Button onClick={() => {
+                  addonAfter={<Button onMouseDown={() => {
                     setFormValue({ ...formValue, teleop_coral_missed_l3: formValue.teleop_coral_missed_l3 + 1 });
                   }} className='incrementbutton'>+</Button>}
-                  addonBefore={<Button onClick={() => {
+                  addonBefore={<Button onMouseDown={() => {
                     if (Number(formValue.teleop_coral_missed_l3) > 0) {
                       setFormValue({ ...formValue, teleop_coral_missed_l3: formValue.teleop_coral_missed_l3 - 1 });
                     }
@@ -866,14 +823,12 @@ function MatchScout(props: any) {
                   id="teleop_coral_scored_l2"
                   type='number'
                   pattern="\d*"
-                  disabled
-                  onWheel={(event) => (event.target as HTMLInputElement).blur()}
                   min={0}
                   className="input"
-                  addonAfter={<Button onClick={() => {
+                  addonAfter={<Button onMouseDown={() => {
                     setFormValue({ ...formValue, teleop_coral_scored_l2: formValue.teleop_coral_scored_l2 + 1 });
                   }} className='incrementbutton'>+</Button>}
-                  addonBefore={<Button onClick={() => {
+                  addonBefore={<Button onMouseDown={() => {
                     if (Number(formValue.teleop_coral_scored_l2) > 0) {
                       setFormValue({ ...formValue, teleop_coral_scored_l2: formValue.teleop_coral_scored_l2 - 1 });
                     }
@@ -889,14 +844,12 @@ function MatchScout(props: any) {
                   id="teleop_coral_missed_l2"
                   type='number'
                   pattern="\d*"
-                  disabled
-                  onWheel={(event) => (event.target as HTMLInputElement).blur()}
                   min={0}
                   className="input"
-                  addonAfter={<Button onClick={() => {
+                  addonAfter={<Button onMouseDown={() => {
                     setFormValue({ ...formValue, teleop_coral_missed_l2: formValue.teleop_coral_missed_l2 + 1 });
                   }} className='incrementbutton'>+</Button>}
-                  addonBefore={<Button onClick={() => {
+                  addonBefore={<Button onMouseDown={() => {
                     if (Number(formValue.teleop_coral_missed_l2) > 0) {
                       setFormValue({ ...formValue, teleop_coral_missed_l2: formValue.teleop_coral_missed_l2 - 1 });
                     }
@@ -916,14 +869,12 @@ function MatchScout(props: any) {
                   id="teleop_coral_scored_l1"
                   type='number'
                   pattern="\d*"
-                  disabled
-                  onWheel={(event) => (event.target as HTMLInputElement).blur()}
                   min={0}
                   className="input"
-                  addonAfter={<Button onClick={() => {
+                  addonAfter={<Button onMouseDown={() => {
                     setFormValue({ ...formValue, teleop_coral_scored_l1: formValue.teleop_coral_scored_l1 + 1 });
                   }} className='incrementbutton'>+</Button>}
-                  addonBefore={<Button onClick={() => {
+                  addonBefore={<Button onMouseDown={() => {
                     if (Number(formValue.teleop_coral_scored_l1) > 0) {
                       setFormValue({ ...formValue, teleop_coral_scored_l1: formValue.teleop_coral_scored_l1 - 1 });
                     }
@@ -939,14 +890,12 @@ function MatchScout(props: any) {
                   id="teleop_coral_missed_l1"
                   type='number'
                   pattern="\d*"
-                  disabled
-                  onWheel={(event) => (event.target as HTMLInputElement).blur()}
                   min={0}
                   className="input"
-                  addonAfter={<Button onClick={() => {
+                  addonAfter={<Button onMouseDown={() => {
                     setFormValue({ ...formValue, teleop_coral_missed_l1: formValue.teleop_coral_missed_l1 + 1 });
                   }} className='incrementbutton'>+</Button>}
-                  addonBefore={<Button onClick={() => {
+                  addonBefore={<Button onMouseDown={() => {
                     if (Number(formValue.teleop_coral_missed_l1) > 0) {
                       setFormValue({ ...formValue, teleop_coral_missed_l1: formValue.teleop_coral_missed_l1 - 1 });
                     }
@@ -966,14 +915,12 @@ function MatchScout(props: any) {
                   id="teleop_algae_scored_net"
                   type='number'
                   pattern="\d*"
-                  disabled
-                  onWheel={(event) => (event.target as HTMLInputElement).blur()}
                   min={0}
                   className="input"
-                  addonAfter={<Button onClick={() => {
+                  addonAfter={<Button onMouseDown={() => {
                     setFormValue({ ...formValue, teleop_algae_scored_net: formValue.teleop_algae_scored_net + 1 });
                   }} className='incrementbutton'>+</Button>}
-                  addonBefore={<Button onClick={() => {
+                  addonBefore={<Button onMouseDown={() => {
                     if (Number(formValue.teleop_algae_scored_net) > 0) {
                       setFormValue({ ...formValue, teleop_algae_scored_net: formValue.teleop_algae_scored_net - 1 });
                     }
@@ -989,14 +936,12 @@ function MatchScout(props: any) {
                   id="teleop_algae_missed_net"
                   type='number'
                   pattern="\d*"
-                  disabled
-                  onWheel={(event) => (event.target as HTMLInputElement).blur()}
                   min={0}
                   className="input"
-                  addonAfter={<Button onClick={() => {
+                  addonAfter={<Button onMouseDown={() => {
                     setFormValue({ ...formValue, teleop_algae_missed_net: formValue.teleop_algae_missed_net + 1 });
                   }} className='incrementbutton'>+</Button>}
-                  addonBefore={<Button onClick={() => {
+                  addonBefore={<Button onMouseDown={() => {
                     if (Number(formValue.teleop_algae_missed_net) > 0) {
                       setFormValue({ ...formValue, teleop_algae_missed_net: formValue.teleop_algae_missed_net - 1 });
                     }
@@ -1016,14 +961,12 @@ function MatchScout(props: any) {
                   id="teleop_algae_scored_processor"
                   type='number'
                   pattern="\d*"
-                  disabled
-                  onWheel={(event) => (event.target as HTMLInputElement).blur()}
                   min={0}
                   className="input"
-                  addonAfter={<Button onClick={() => {
+                  addonAfter={<Button onMouseDown={() => {
                     setFormValue({ ...formValue, teleop_algae_scored_processor: formValue.teleop_algae_scored_processor + 1 });
                   }} className='incrementbutton'>+</Button>}
-                  addonBefore={<Button onClick={() => {
+                  addonBefore={<Button onMouseDown={() => {
                     if (Number(formValue.teleop_algae_scored_processor) > 0) {
                       setFormValue({ ...formValue, teleop_algae_scored_processor: formValue.teleop_algae_scored_processor - 1 });
                     }
@@ -1069,17 +1012,17 @@ function MatchScout(props: any) {
       <>
         <h2>Coral Intake Capability:</h2>
         <Form.Item name="endgame_coral_intake_capability" rules={[{ required: true, message: 'Enter Coral Intake Capability' }]}>
-        <Select options={endgame_coral_intake_capability} onChange={updateTeamNumber} className="input" />
+        <Select options={endgame_coral_intake_capability} className="input" />
         </Form.Item>
 
         <h2>Coral Station:</h2>
         <Form.Item name="endgame_coral_station" rules={[{ required: true, message: 'Enter Coral Station' }]}>
-        <Select options={endgame_coral_station} onChange={updateTeamNumber} className="input" />
+        <Select options={endgame_coral_station} className="input" />
         </Form.Item>
 
         <h2>Algae Intake Capability:</h2>
         <Form.Item name="endgame_algae_intake_capability" rules={[{ required: true, message: 'Enter Algae Intake Capability' }]}>
-        <Select options={endgame_algae_intake_capability} onChange={updateTeamNumber} className="input" />
+        <Select options={endgame_algae_intake_capability} className="input" />
         </Form.Item>
         <h2>Climb Successful?</h2>
         <Form.Item<FieldType> name ="endgame_climb_successful" valuePropName="checked">
@@ -1087,13 +1030,13 @@ function MatchScout(props: any) {
         </Form.Item>
         <h2>Climb Type:</h2>
         <Form.Item name="endgame_climb_type" rules={[{ required: true, message: 'Enter Climb Type' }]}>
-        <Select options={endgame_climb_type} onChange={updateTeamNumber} className="input" />
+        <Select options={endgame_climb_type} className="input" />
         </Form.Item>
         <h2>Climb Time (Seconds):</h2>
         <Form.Item<FieldType> name="endgame_climb_time" rules={[{ required: true, message: 'Enter Climb Time (Seconds)' }]}>
-          <InputNumber min={1} onChange={updateTeamNumber} className="input" type='number' pattern="\d*" onWheel={(event) => (event.target as HTMLElement).blur()} />
+          <InputNumber min={1} className="input" type='number' pattern="\d*" />
         </Form.Item>
-</>
+      </>
   )}
   function overall() {
     type FieldType = {
@@ -1124,13 +1067,13 @@ function MatchScout(props: any) {
           <Flex vertical align='flex-start'>
             <h3>Defended others?</h3>
             <Form.Item<FieldType> name="overall_defended_others" valuePropName="checked">
-              <Checkbox className='input_checkbox' onChange={() => { updateDefendedList(); setDefendedIsVisible(!defendedIsVisible); }} />
+              <Checkbox className='input_checkbox' onChange={() => { setDefendedIsVisible(!defendedIsVisible); }} />
             </Form.Item>
           </Flex>
           <Flex vertical align='flex-start'>
             <h3>Was Defended?</h3>
             <Form.Item<FieldType> name="overall_was_defended" valuePropName="checked">
-              <Checkbox className='input_checkbox' onChange={() => { updateDefendedList(); setWasDefendedIsVisible(!wasDefendedIsVisible); }} />
+              <Checkbox className='input_checkbox' onChange={() => { setWasDefendedIsVisible(!wasDefendedIsVisible); }} />
             </Form.Item>
           </Flex>
         </Flex>
@@ -1151,15 +1094,14 @@ function MatchScout(props: any) {
                 <InputNumber
                   type='number'
                   pattern="\d*"
-                  onWheel={(event) => (event.target as HTMLElement).blur()}
                   min={0} max={4}
                   className="input"
-                  addonAfter={<Button onClick={() => {
+                  addonAfter={<Button onMouseDown={() => {
                     if (Number(formValue.overall_pushing) < 4) {
                       setFormValue({ ...formValue, overall_pushing: formValue.overall_pushing + 1 });
                     }
                   }} className='incrementbutton'>+</Button>}
-                  addonBefore={<Button onClick={() => {
+                  addonBefore={<Button onMouseDown={() => {
                     if (Number(formValue.overall_pushing) > 0) {
                       setFormValue({ ...formValue, overall_pushing: formValue.overall_pushing - 1 });
                     }
@@ -1168,20 +1110,19 @@ function MatchScout(props: any) {
               </Form.Item>
             </Flex>
             <Flex vertical align='flex-start'>
-              <h2>Counter Defense (1-4)</h2>
+              <h2>Counterdefense (1-4)</h2>
               <Form.Item<FieldType> name="overall_counter_defense" rules={[{ required: true, message: 'Please input the counter-defense rating!' }]}>
                 <InputNumber
                   type='number'
                   pattern="\d*"
-                  onWheel={(event) => (event.target as HTMLElement).blur()}
                   min={0} max={4}
                   className="input"
-                  addonAfter={<Button onClick={() => {
+                  addonAfter={<Button onMouseDown={() => {
                     if (Number(formValue.overall_counter_defense) < 4) {
                       setFormValue({ ...formValue, overall_counter_defense: formValue.overall_counter_defense + 1 });
                     }
                   }} className='incrementbutton'>+</Button>}
-                  addonBefore={<Button onClick={() => {
+                  addonBefore={<Button onMouseDown={() => {
                     if (Number(formValue.overall_counter_defense) > 0) {
                       setFormValue({ ...formValue, overall_counter_defense: formValue.overall_counter_defense - 1 });
                     }
@@ -1197,15 +1138,14 @@ function MatchScout(props: any) {
                 <InputNumber
                   type='number'
                   pattern="\d*"
-                  onWheel={(event) => (event.target as HTMLElement).blur()}
                   min={0} max={4}
                   className="input"
-                  addonAfter={<Button onClick={() => {
+                  addonAfter={<Button onMouseDown={() => {
                     if (Number(formValue.overall_driver_skill) < 4) {
                       setFormValue({ ...formValue, overall_driver_skill: formValue.overall_driver_skill + 1 });
                     }
                   }} className='incrementbutton'>+</Button>}
-                  addonBefore={<Button onClick={() => {
+                  addonBefore={<Button onMouseDown={() => {
                     if (Number(formValue.overall_driver_skill) > 0) {
                       setFormValue({ ...formValue, overall_driver_skill: formValue.overall_driver_skill - 1 });
                     }
@@ -1214,20 +1154,18 @@ function MatchScout(props: any) {
               </Form.Item>
             </Flex>
             <Flex vertical align='flex-start'>
-            <h2>Number of Penalties</h2>
+            <h2>Num Penalties</h2>
               <Form.Item<FieldType> name="overall_num_penalties" rules={[{ required: true, message: 'Enter # of incurred penalties' }]}>
                 <InputNumber
                   type='number'
                   pattern="\d*"
-                  disabled
-                  onWheel={(event) => (event.target as HTMLElement).blur()}
                   min={0}
                   className="input"
-                  addonAfter={<Button onClick={() => {
+                  addonAfter={<Button onMouseDown={() => {
                     setFormValue({ ...formValue, overall_num_penalties: formValue.overall_num_penalties + 1 });
                     setPenaltiesIsVisible(true);
                   }} className='incrementbutton'>+</Button>}
-                  addonBefore={<Button onClick={() => {
+                  addonBefore={<Button onMouseDown={() => {
                     if (Number(formValue.overall_num_penalties) > 0) {
                       setFormValue({ ...formValue, overall_num_penalties: formValue.overall_num_penalties - 1 });
                     }
@@ -1294,7 +1232,7 @@ function MatchScout(props: any) {
   ];
   return (
     <div>
-		<Header name="Match Scout" back="/scoutingapp" />
+    <Header name="Match Scout" back="/scoutingapp" />
       <Form
         form={form}
         initialValues={{
@@ -1388,12 +1326,12 @@ function MatchScout(props: any) {
       >
         <Tabs defaultActiveKey="1" activeKey={tabNum} items={items} className='tabs' centered onChange={async (key) => { setTabNum(key) }} />
         <Footer style={{ position: "sticky", bottom: "0" }}>
-          <Flex justify='in-between' id={"footer"} style={{ paddingBottom: '5%', backgroundColor:'#32A7DC' }}>
+          <Flex justify='in-between' id={"footer"} >
             {Number(tabNum) !== 1 && (
-              <Button onClick={async () => { setTabNum((Number(tabNum) - 1).toString()) }} className='tabbutton'>Back</Button>
+              <Button onMouseDown={async () => { setTabNum((Number(tabNum) - 1).toString()) }} className='tabbutton'>Back</Button>
             )}
             {Number(tabNum) !== items.length && (
-              <Button onClick={async () => { setTabNum((Number(tabNum) + 1).toString()) }} className='tabbutton'>Next</Button>
+              <Button onMouseDown={async () => { setTabNum((Number(tabNum) + 1).toString()) }} className='tabbutton'>Next</Button>
             )}
             {Number(tabNum) === items.length && (
               <Input type="submit" value="Submit" className='match_submit' />
@@ -1402,7 +1340,7 @@ function MatchScout(props: any) {
           <h2 style={{ display: isLoading ? 'inherit' : 'none' }}>Submitting data...</h2>
         </Footer>
       </Form>
-	  <QrCode value={qrValue} />
+      <QrCode value={qrValue} />
     </div>
   );
 }

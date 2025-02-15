@@ -104,3 +104,12 @@
 h3 {
 	margin: 20px !important;
 }
+#footer {
+	padding-bottom: 5% !important;
+	background-color: var(--pc-blue) !important;
+}
+#footer button {
+	float: left !important;
+	background-color: var(--pc-blue) !important;
+	margin-left: auto !important;
+}

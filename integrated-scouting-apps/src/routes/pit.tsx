@@ -1,4 +1,4 @@
-import '../public/stylesheets/style.css';
+//import '../public/stylesheets/style.css';
 import '../public/stylesheets/pit.css';
 import '../public/stylesheets/match.css';
 import '../public/stylesheets/robot_weight.css';
@@ -10,7 +10,7 @@ import { ReactSketchCanvasRef } from 'react-sketch-canvas';
 import TextArea from 'antd/es/input/TextArea';
 import Header from './header';
 import QrCode from './qrCodeViewer';
-
+import {getAllTeams} from './utils/tbaRequest';
 
 //Rhys was here//
 
@@ -67,31 +67,26 @@ function PitScout(props: any) {
     return () => { };
   }, [formValue, form, robotWeight]);
   useEffect(() => {
-		async function getTeams() {
-			try {
-				const response = await (await fetch('https://www.thebluealliance.com/api/v3/event/' + eventname + "/teams", {
-					method: "GET",
-					headers: {
-						'X-TBA-Auth-Key': process.env.REACT_APP_TBA_AUTH_KEY as string,
-					}
-				})).json();
+    async function getTeams() {
+      try {
+        const teams = getAllTeams();
         let message = "Teams not yet scouted:\n";
-        for (const index in response) {
-          const pitResponse = await (await fetch(process.env.REACT_APP_PIT_LOOKUP_URL as string + "?team_number=" + response[index].team_number)).json();
+        for (const team in teams) {
+          const pitResponse = await (await fetch(process.env.REACT_APP_PIT_LOOKUP_URL as string + "?team_number=" + team)).json();
           if (pitResponse.documents.length === 0) {
-            message += response[index].team_number + "\n";
+            message += team + "\n";
           }
         }
         window.alert(message);
-			}
-			catch (err) {
-				// console.log(err);
-				// window.alert("Error occured, please do not do leave this message and notify a Webdev member immediately.");
-				// window.alert(err);
-			}
-		};
-		getTeams();
-	}, [eventname]);
+      }
+      catch (err) {
+        // console.log(err);
+        // window.alert("Error occured, please do not do leave this message and notify a Webdev member immediately.");
+        // window.alert(err);
+      }
+    };
+    getTeams();
+  }, [eventname]);
 
   async function submitData(event: any) {
     await canvasRef.current?.exportImage('png').then((data) => { imageURI.current = data; });
