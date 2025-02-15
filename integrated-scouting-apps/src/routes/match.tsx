@@ -1089,7 +1089,8 @@ function MatchScout(props: any) {
 
         <Flex justify='in-between'>
             <Flex vertical align='flex-start'>
-              <h2>Pushing (1-4)</h2>
+              <h2>Pushing</h2>
+              <h2>(1-4)</h2>
               <Form.Item<FieldType> name="overall_pushing" rules={[{ required: true, message: 'Please input the pushing rating!' }]}>
                 <InputNumber
                   type='number'
@@ -1110,7 +1111,8 @@ function MatchScout(props: any) {
               </Form.Item>
             </Flex>
             <Flex vertical align='flex-start'>
-              <h2>Counterdefense (1-4)</h2>
+              <h2>Counter Defense</h2>
+              <h2>(1-4)</h2>
               <Form.Item<FieldType> name="overall_counter_defense" rules={[{ required: true, message: 'Please input the counter-defense rating!' }]}>
                 <InputNumber
                   type='number'
@@ -1133,7 +1135,8 @@ function MatchScout(props: any) {
           </Flex>
           <Flex justify='in-between'>
             <Flex vertical align='flex-start'>
-              <h2>Driver Skill (1-4)</h2>
+              <h2>Driver Skill</h2>
+              <h2>(1-4)</h2>
               <Form.Item<FieldType> name="overall_driver_skill" rules={[{ required: true, message: 'Please input the driver skill rating!' }]}>
                 <InputNumber
                   type='number'
