@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/PhantomCatz/2025IntegratedScoutingApps#readme",
   "dependencies": {
+    "chart.js": "^4.4.7",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "mysql2": "^3.12.0",

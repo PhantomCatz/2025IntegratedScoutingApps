@@ -12,6 +12,7 @@ import Header from "./header";
 import { Radio } from 'antd';
 import QrCode from './qrCodeViewer';
 import {getTeamNumber, isMatchVisible, getTeam} from './utils/tbaRequest';
+import type { RadioChangeEvent } from "antd";
 
 interface SpacerProps {
   height?: string;
@@ -21,6 +22,7 @@ interface SpacerProps {
 const Spacer: React.FC<SpacerProps> = ({ height = '0px', width = '0px' }) => {
   return <div style={{ height, width }} />;
 };
+
 
 function MatchScout(props: any) {
   const [form] = Form.useForm();
@@ -38,7 +40,7 @@ function MatchScout(props: any) {
   const [wasDefendedIsVisible, setWasDefendedIsVisible] = useState(false);
   const [penaltiesIsVisible, setPenaltiesIsVisible] = useState(false);
   const [opposingTeamNum, setOpposingTeamNum] = useState([""]);
-  const [startPos, setStartPos] = useState("")
+  const [startPos, setStartPos] = useState("");
   const [formValue, setFormValue] = useState<any>({
     /*
     // Pre-match
@@ -96,6 +98,10 @@ function MatchScout(props: any) {
     "overall_comments": "",
   });
 
+  const handleStartPosChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setStartPos(event.target.value);
+  };
+  
   const match_event = process.env.REACT_APP_EVENTNAME;
 
   useEffect(() => { document.title = props.title; return () => { }; }, [props.title]);
@@ -364,7 +370,7 @@ function MatchScout(props: any) {
         </Form.Item>
         <h2>Match #</h2>
         <Form.Item<FieldType> name="match_number" rules={[{ required: true, message: 'Enter match #' }]}>
-          <InputNumber min={1} onChange={updateTeamNumber} className="input" type='number' pattern="\d*" />
+          <InputNumber min={1} onChange={updateTeamNumber} onWheel={(e) => e.currentTarget.blur()} className="input" type='number' pattern="\d*" />
         </Form.Item>
 
         <h2>Match Level:</h2>
@@ -386,50 +392,66 @@ function MatchScout(props: any) {
         <h2>Robot Starting Position</h2>
         <div className = 'radioRow'> 
           <div className = 'radioColumn'>
-            
-            <div className = 'radioLabel'>
-              <h3>B&Sigma;1</h3>
-              <input type = "radio" name = "startPos" value = "B&Sigma;1" className = "startPos"/>
-            </div>
 
-            <div className = 'radioLabel'>
-              <h3>B&Sigma;2</h3>
-              <input type = "radio" name = "startPos" value = "B&Sigma;2" className = "startPos"/>
-            </div>
+          <Form.Item name="startPos">
+          <div className = 'radioLabel'> 
+            <h3>B&Sigma;1</h3> 
+            <input type = "radio" name = "startPos" value = "B&Sigma;1" className = "startPos" onChange = {handleStartPosChange}/> 
+          </div> 
+          </Form.Item>
 
-            <div className = 'radioLabel'>
-              <h3>B&Sigma;3</h3>
-              <input type = "radio" name = "startPos" value = "B&Sigma;3" className = "startPos"/>
-            </div>
+          <Form.Item name="startPos">
+          <div className = 'radioLabel'> 
+            <h3>B&Sigma;2</h3> 
+            <input type = "radio" name = "startPos" value = "B&Sigma;2" className = "startPos" onChange = {handleStartPosChange}/> 
+          </div> 
+          </Form.Item>
 
+          <Form.Item name="startPos">
+          <div className = 'radioLabel'> 
+            <h3>B&Sigma;3
+              </h3> 
+            <input type = "radio" name = "startPos" value = "B&Sigma;3" className = "startPos" onChange = {handleStartPosChange}/> 
+          </div> 
+          </Form.Item>
+
+
+        </div> 
+
+        <Spacer width = "30px"/> 
+        <div className = "boxes"> 
+          <div className = 'blueBox'></div> 
+          <div className = 'redBox'></div>
+        </div> 
+
+      
+        <Spacer width = "30px"/>
+        <div className = 'radioColumn'> 
+
+        <Form.Item name="startPos">
+          <div className = 'radioLabel'> 
+            <input type = "radio" name = "startPos" value = "R&Sigma;3" className = "startPos" onChange = {handleStartPosChange}/> 
+            <h3>R&Sigma;3</h3> 
+          </div> 
+          </Form.Item>
+
+          <Form.Item name="startPos">
+          <div className = 'radioLabel'> 
+            <input type = "radio" name = "startPos" value = "R&Sigma;2" className = "startPos" onChange={handleStartPosChange}/> 
+            <h3>R&Sigma;2</h3>
+          </div> 
+          </Form.Item>
+
+          <Form.Item name="startPos">
+          <div className = 'radioLabel'> 
+            <input type = "radio" name = "startPos" value = "R&Sigma;1" className = "startPos" onChange={handleStartPosChange}/> 
+            <h3>R&Sigma;1</h3> 
           </div>
-          
-          <Spacer width = "30px"/>
-          <div className = "boxes">
-            <div className = 'blueBox'></div>
-            <div className = 'redBox'></div>
-          </div>
-          <Spacer width = "30px"/>
+            </Form.Item>
 
-          <div className = 'radioColumn'>
-            
-            <div className = 'radioLabel'>
-              <input type = "radio" name = "startPos" value = "R&Sigma;3" className = "startPos"/>
-              <h3>R&Sigma;3</h3>
-            </div>
-
-            <div className = 'radioLabel'>
-              <input type = "radio" name = "startPos" value = "R&Sigma;2" className = "startPos"/>
-              <h3>R&Sigma;2</h3>
-            </div>
-
-            <div className = 'radioLabel'>
-              <input type = "radio" name = "startPos" value = "R&Sigma;1" className = "startPos"/>
-              <h3>R&Sigma;1</h3>
-            </div>
-            
-          </div>
         </div>
+      </div>
+      <p>Selected Start Position: {startPos}</p>
         <Spacer height = "30px"/>
         </div>
         
