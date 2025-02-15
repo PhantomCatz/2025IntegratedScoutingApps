@@ -12,6 +12,7 @@ import Header from "./header";
 import { Radio } from 'antd';
 import QrCode from './qrCodeViewer';
 import {getTeamNumber, isMatchVisible, getTeam} from './utils/tbaRequest';
+import type { RadioChangeEvent } from "antd";
 
 interface SpacerProps {
   height?: string;
@@ -95,9 +96,13 @@ function MatchScout(props: any) {
   const [wasDefendedIsVisible, setWasDefendedIsVisible] = useState(false);
   const [penaltiesIsVisible, setPenaltiesIsVisible] = useState(false);
   const [opposingTeamNum, setOpposingTeamNum] = useState([""]);
-  const [startPos, setStartPos] = useState("")
+  const [robot_starting_position, setStartPos] = useState("")
   const [formValue, setFormValue] = useState<any>(formDefaultValues);
 
+  const handleStartPosChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setStartPos(event.target.value);
+  };
+  
   const match_event = process.env.REACT_APP_EVENTNAME;
 
   useEffect(() => { document.title = props.title; return () => { }; }, [props.title]);
@@ -388,50 +393,65 @@ function MatchScout(props: any) {
         <h2>Robot Starting Position</h2>
         <div className = 'radioRow'> 
           <div className = 'radioColumn'>
-            
-            <div className = 'radioLabel'>
-              <h3>B&Sigma;1</h3>
-              <input type = "radio" name = "startPos" value = "B&Sigma;1" className = "startPos"/>
-            </div>
 
-            <div className = 'radioLabel'>
-              <h3>B&Sigma;2</h3>
-              <input type = "radio" name = "startPos" value = "B&Sigma;2" className = "startPos"/>
-            </div>
+          <Form.Item name="robot_starting_position">
+          <div className = 'radioLabel'> 
+            <h3>B&Sigma;1</h3> 
+            <input type = "radio" name="robot_starting_position" value = "B&Sigma;1" className = "robot_starting_position" onChange = {handleStartPosChange}/> 
+          </div> 
+          </Form.Item>
 
-            <div className = 'radioLabel'>
-              <h3>B&Sigma;3</h3>
-              <input type = "radio" name = "startPos" value = "B&Sigma;3" className = "startPos"/>
-            </div>
+          <Form.Item name="robot_starting_position">
+          <div className = 'radioLabel'> 
+            <h3>B&Sigma;2</h3> 
+            <input type = "radio" name="robot_starting_position" value = "B&Sigma;2" className = "robot_starting_position" onChange = {handleStartPosChange}/> 
+          </div> 
+          </Form.Item>
 
+          <Form.Item name="robot_starting_position">
+          <div className = 'radioLabel'> 
+            <h3>B&Sigma;3</h3> 
+            <input type = "radio" name="robot_starting_position" value = "B&Sigma;3" className = "robot_starting_position" onChange = {handleStartPosChange}/> 
+          </div> 
+          </Form.Item>
+
+
+        </div> 
+
+        <Spacer width = "30px"/> 
+        <div className = "boxes"> 
+          <div className = 'blueBox'></div> 
+          <div className = 'redBox'></div>
+        </div> 
+
+      
+        <Spacer width = "30px"/>
+        <div className = 'radioColumn'> 
+
+        <Form.Item name="robot_starting_position">
+          <div className = 'radioLabel'> 
+            <input type = "radio" name = "robot_starting_position" value = "R&Sigma;3" className = "robot_starting_position" onChange = {handleStartPosChange}/> 
+            <h3>R&Sigma;3</h3> 
+          </div> 
+          </Form.Item>
+
+          <Form.Item name="robot_starting_position">
+          <div className = 'radioLabel'> 
+            <input type = "radio" name = "robot_starting_position" value = "R&Sigma;2" className = "robot_starting_position" onChange={handleStartPosChange}/> 
+            <h3>R&Sigma;2</h3>
+          </div> 
+          </Form.Item>
+
+          <Form.Item name="robot_starting_position">
+          <div className = 'radioLabel'> 
+            <input type = "radio" name = "robot_starting_position" value = "R&Sigma;1" className = "robot_starting_position" onChange={handleStartPosChange}/> 
+            <h3>R&Sigma;1</h3> 
           </div>
-          
-          <Spacer width = "30px"/>
-          <div className = "boxes">
-            <div className = 'blueBox'></div>
-            <div className = 'redBox'></div>
-          </div>
-          <Spacer width = "30px"/>
+            </Form.Item>
 
-          <div className = 'radioColumn'>
-            
-            <div className = 'radioLabel'>
-              <input type = "radio" name = "startPos" value = "R&Sigma;3" className = "startPos"/>
-              <h3>R&Sigma;3</h3>
-            </div>
-
-            <div className = 'radioLabel'>
-              <input type = "radio" name = "startPos" value = "R&Sigma;2" className = "startPos"/>
-              <h3>R&Sigma;2</h3>
-            </div>
-
-            <div className = 'radioLabel'>
-              <input type = "radio" name = "startPos" value = "R&Sigma;1" className = "startPos"/>
-              <h3>R&Sigma;1</h3>
-            </div>
-            
-          </div>
         </div>
+      </div>
+      <p>Selected Start Position: {robot_starting_position}</p>
         <Spacer height = "30px"/>
         </div>
         

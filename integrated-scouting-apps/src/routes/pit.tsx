@@ -173,6 +173,7 @@ function PitScout(props: any) {
       { label: "Pneumatasic", value: "Pneumatasic" },
       { label: "Omni", value: "Omni" },
       { label: "Mechanum", value: "Mechanum" },
+      { label: "TPU", value: "TPU" },
       { label: "Other", value: "Other" },
     ];
     const coralIntakeCap = [
