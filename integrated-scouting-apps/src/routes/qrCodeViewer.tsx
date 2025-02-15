@@ -31,9 +31,19 @@ function QrCode(props : any) {
 		for(const [k,v] of Object.entries(qrValue)) {
 			//console.log(k + "," + v);
 			keys.push(k);
-			vals.push(v);
-			if(v === undefined) {
+			switch(v) {
+			case true:
+				vals.push(1);
+				break;
+			case false:
+				vals.push(0);
+				break;
+			case undefined:
 				console.log(`${k} is undefined`);
+				vals.push(v);
+			default:
+				vals.push(v);
+				break;
 			}
 		}
 	}
