@@ -96,11 +96,11 @@ function MatchScout(props: any) {
   const [wasDefendedIsVisible, setWasDefendedIsVisible] = useState(false);
   const [penaltiesIsVisible, setPenaltiesIsVisible] = useState(false);
   const [opposingTeamNum, setOpposingTeamNum] = useState([""]);
-  const [robot_starting_position, setStartPos] = useState("")
+  const [robot_starting_position, setRobot_starting_position] = useState("")
   const [formValue, setFormValue] = useState<any>(formDefaultValues);
 
   const handleStartPosChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setStartPos(event.target.value);
+    setRobot_starting_position(event.target.value);
   };
   
   const match_event = process.env.REACT_APP_EVENTNAME;
@@ -227,7 +227,7 @@ function MatchScout(props: any) {
         "match_level": event.match_level + (event.round_number !== undefined ? event.round_number : ""),
         "match_number": event.match_number,
         "robot_position": event.robot_position,
-        "robot_starting_position": event.robot_starting_position,
+        "robot_starting_position": robot_starting_position,
         // Auton
         "auton_leave_starting_line": event.auton_leave_starting_line,
         "auton_coral_scored_l4": event.auton_coral_scored_l4,
@@ -389,70 +389,69 @@ function MatchScout(props: any) {
           <Select options={robot_position} onChange={updateTeamNumber} className="input"  listItemHeight={10} listHeight={500} placement='bottomLeft'/>
         </Form.Item>
 
-        <div className = 'divdivdiv'> 
+        <div className='divdivdiv'> 
         <h2>Robot Starting Position</h2>
-        <div className = 'radioRow'> 
-          <div className = 'radioColumn'>
+        <div className='radioRow'> 
+          <div className='radioColumn'>
 
           <Form.Item name="robot_starting_position">
-          <div className = 'radioLabel'> 
+          <div className='radioLabel'> 
             <h3>B&Sigma;1</h3> 
-            <input type = "radio" name="robot_starting_position" value = "B&Sigma;1" className = "robot_starting_position" onChange = {handleStartPosChange}/> 
+            <input type="radio" name="robot_starting_position" value="B&Sigma;1" className="robot_starting_position" onChange={handleStartPosChange}/> 
           </div> 
           </Form.Item>
 
           <Form.Item name="robot_starting_position">
-          <div className = 'radioLabel'> 
+          <div className='radioLabel'> 
             <h3>B&Sigma;2</h3> 
-            <input type = "radio" name="robot_starting_position" value = "B&Sigma;2" className = "robot_starting_position" onChange = {handleStartPosChange}/> 
+            <input type="radio" name="robot_starting_position" value="B&Sigma;2" className="robot_starting_position" onChange={handleStartPosChange}/> 
           </div> 
           </Form.Item>
 
           <Form.Item name="robot_starting_position">
-          <div className = 'radioLabel'> 
+          <div className='radioLabel'> 
             <h3>B&Sigma;3</h3> 
-            <input type = "radio" name="robot_starting_position" value = "B&Sigma;3" className = "robot_starting_position" onChange = {handleStartPosChange}/> 
+            <input type="radio" name="robot_starting_position" value="B&Sigma;3" className="robot_starting_position" onChange={handleStartPosChange}/> 
           </div> 
           </Form.Item>
 
 
         </div> 
 
-        <Spacer width = "30px"/> 
-        <div className = "boxes"> 
-          <div className = 'blueBox'></div> 
-          <div className = 'redBox'></div>
+        <Spacer width="30px"/> 
+        <div className="boxes"> 
+          <div className='blueBox'></div> 
+          <div className='redBox'></div>
         </div> 
 
       
-        <Spacer width = "30px"/>
-        <div className = 'radioColumn'> 
+        <Spacer width="30px"/>
+        <div className='radioColumn'> 
 
         <Form.Item name="robot_starting_position">
-          <div className = 'radioLabel'> 
-            <input type = "radio" name = "robot_starting_position" value = "R&Sigma;3" className = "robot_starting_position" onChange = {handleStartPosChange}/> 
+          <div className='radioLabel'> 
+            <input type="radio" name="robot_starting_position" value="R&Sigma;3" className="robot_starting_position" onChange={handleStartPosChange}/> 
             <h3>R&Sigma;3</h3> 
           </div> 
-          </Form.Item>
+        </Form.Item>
 
-          <Form.Item name="robot_starting_position">
-          <div className = 'radioLabel'> 
-            <input type = "radio" name = "robot_starting_position" value = "R&Sigma;2" className = "robot_starting_position" onChange={handleStartPosChange}/> 
+        <Form.Item name="robot_starting_position">
+          <div className='radioLabel'> 
+            <input type="radio" name="robot_starting_position" value="R&Sigma;2" className="robot_starting_position" onChange={handleStartPosChange}/> 
             <h3>R&Sigma;2</h3>
           </div> 
-          </Form.Item>
+        </Form.Item>
 
-          <Form.Item name="robot_starting_position">
-          <div className = 'radioLabel'> 
-            <input type = "radio" name = "robot_starting_position" value = "R&Sigma;1" className = "robot_starting_position" onChange={handleStartPosChange}/> 
+        <Form.Item name="robot_starting_position">
+          <div className='radioLabel'> 
+            <input type="radio" name="robot_starting_position" value="R&Sigma;1" className="robot_starting_position" onChange={handleStartPosChange}/> 
             <h3>R&Sigma;1</h3> 
           </div>
-            </Form.Item>
+        </Form.Item>
 
         </div>
-      </div>
-      <p>Selected Start Position: {robot_starting_position}</p>
-        <Spacer height = "30px"/>
+        </div>
+        <Spacer height="30px"/>
         </div>
         
         
