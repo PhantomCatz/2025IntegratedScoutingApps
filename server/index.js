@@ -34,8 +34,8 @@ app.get("/api", async (req, res) => {
 
 	//console.log(result);
 
-	await res.json(result);
 	await res.append("Access-Control-Allow-Origin", "*");
+	await res.json(result);
 	return res;
 });
 
