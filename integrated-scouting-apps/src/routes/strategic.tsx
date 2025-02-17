@@ -11,29 +11,26 @@ import {getTeamNumber, isMatchVisible} from './utils/tbaRequest';
 function Strategic(props: any, text:any) {
   const [form] = Form.useForm();
   const [tabNum, setTabNum] = useState("1");
-  const [teamNum, setTeamNum] = useState(0);
+  const [team_number, setTeamNum] = useState(0);
   const [isLoading, setLoading] = useState(false);
   const [roundIsVisible, setRoundIsVisible] = useState(false);
   const [qrValue, setQrValue] = useState<any>();
 
   useEffect(() => { document.title = props.title; return () => { } }, [props.title]);
-  // useEffect(() => { getComments(teamNum); return () => {}}, [teamNum]);
+  // useEffect(() => { getComments(team_number); return () => {}}, [team_number]);
   // useEffect(() => { calculateMatchLevel(); return () => {}}, [form, calculateMatchLevel()]);
-  const eventname = process.env.REACT_APP_EVENTNAME;
+  const match_event = process.env.REACT_APP_EVENTNAME;
   
   async function setNewStrategicScout(event: any) {
     const body = {
-      "matchIdentifier": {
-        "Initials": event.initials,
-        "match_event": eventname,
-        "match_level": event.matchlevel,
-        "match_number": event.matchnum,
-        "team_number": teamNum,
-      },
-      "comment": event.comments,
-      "timesAmplified": event.timesamplified,
+      "team_number": team_number,
+      "scouter_initials": event.scouter_initials,
+      "match_event": match_event,
+      "match_level": event.match_level,
+      "match_number": event.match_number,
+      "comments": event.comments,
     };
-    if (!teamNum) {
+    if (!team_number) {
       window.alert("Team number is 0, please check in Pre.");
       throw new Error("bad team number");
     }
@@ -43,7 +40,7 @@ function Strategic(props: any, text:any) {
     const WORKING_TEST_DO_NOT_REMOVE_OR_YOU_WILL_BE_FIRED = {
       "matchIdentifier": {
         "team_number": 2637,
-        "Initials": "LL",
+        "scouter_initials": "LL",
         "match_level": "Qual",
         "match_number": 5,
         "match_event": "2024CALA",
@@ -57,12 +54,12 @@ function Strategic(props: any, text:any) {
   }
   async function updateTeamNumber() {
     try {
-      const matchLevel = form.getFieldValue('matchlevel');
-      const matchNumber = form.getFieldValue('matchnum');
-      const roundNumber = form.getFieldValue('roundnum');
-      const robotPosition = form.getFieldValue('robotpos');
+      const matchLevel = form.getFieldValue('match_level');
+      const matchNumber = form.getFieldValue('match_number');
+      const robotPosition = form.getFieldValue('robot_position');
+      const roundNumber = form.getFieldValue('round_number');
 
-      const teamNumber = await getTeamNumber(roundIsVisible, matchLevel, matchNumber, robotPosition, roundNumber);
+      const teamNumber = await getTeamNumber(roundIsVisible, matchLevel, matchNumber, roundNumber, robotPosition);
 
       setTeamNum(teamNumber);
     }
@@ -71,17 +68,17 @@ function Strategic(props: any, text:any) {
     }
   }
   function calculateMatchLevel() {
-    const isVisible = isMatchVisible(form.getFieldValue('matchlevel'));
+    const isVisible = isMatchVisible(form.getFieldValue('match_level'));
     setRoundIsVisible(isVisible);
   }
   function preMatch() {
     type FieldType = {
-      initials: string;
+      scouter_initials: string;
       teamnum: number;
-      matchlevel: string;
-      matchnum: number;
-      roundnum: number;
-      robotpos: string;
+      match_level: string;
+      match_number: number;
+      round_number: number;
+      robot_position: string;
     };
     const rounds = [
       { label: "Qualifications", value: "qm" },
@@ -89,7 +86,7 @@ function Strategic(props: any, text:any) {
       { label: "Semi-Finals", value: "sf" },
       { label: "Finals", value: "f" },
     ];
-    const robotpos = [
+    const robot_position = [
       { label: "R1", value: "red_1" },
       { label: "R2", value: "red_2" },
       { label: "R3", value: 'red_3' },
@@ -99,26 +96,26 @@ function Strategic(props: any, text:any) {
     ];
     return (
       <div>
-        <h2>Team: {teamNum}</h2>
+        <h2>Team: {team_number}</h2>
         <h2>Scouter Initials</h2>
-        <Form.Item<FieldType> name="initials" rules={[{ required: true, message: 'Please input your initials!' }]}>
+        <Form.Item<FieldType> name="scouter_initials" rules={[{ required: true, message: 'Please input your initials!' }]}>
           <Input maxLength={2} className="input" />
         </Form.Item>
-        <h2>Match Level</h2>
-        <Form.Item<FieldType> name="matchlevel" rules={[{ required: true, message: 'Please input the match level!' }]}>
-          <Select options={rounds} className="input" onChange={() => { calculateMatchLevel(); updateTeamNumber(); }} />
-        </Form.Item>
         <h2>Match #</h2>
-        <Form.Item<FieldType> name="matchnum" rules={[{ required: true, message: 'Please input the match number!',  }]}>
+        <Form.Item<FieldType> name="match_number" rules={[{ required: true, message: 'Please input the match number!',  }]}>
           <InputNumber min={1} className = "input" onChange={() => { updateTeamNumber(); }} type='number' /> 
         </Form.Item>
+        <h2>Match Level</h2>
+        <Form.Item<FieldType> name="match_level" rules={[{ required: true, message: 'Please input the match level!' }]}>
+          <Select options={rounds} className="input" onChange={() => { calculateMatchLevel(); updateTeamNumber(); }} />
+        </Form.Item>
         <h2 style={{ display: roundIsVisible ? 'inherit' : 'none' }}>Round #</h2>
-        <Form.Item<FieldType> name="roundnum" rules={[{ required: roundIsVisible ? true : false, message: 'Please input the round number!' }]} style={{ display: roundIsVisible ? 'inherit' : 'none' }}>
+        <Form.Item<FieldType> name="round_number" rules={[{ required: roundIsVisible ? true : false, message: 'Please input the round number!' }]} style={{ display: roundIsVisible ? 'inherit' : 'none' }}>
           <InputNumber min={1} onChange={() => { updateTeamNumber(); }} style={{ display: roundIsVisible ? 'inherit' : 'none' }} className="input" type='number' pattern="\d*" onWheel={(event) => (event.target as HTMLElement).blur()} />
         </Form.Item>
         <h2>Robot Position</h2>
-        <Form.Item<FieldType> name="robotpos" rules={[{ required: true, message: 'Please input the robot position!' }]}>
-          <Select options={robotpos} onChange={() => { updateTeamNumber(); }} className='input' listItemHeight={10} listHeight={500} placement='bottomLeft'/>
+        <Form.Item<FieldType> name="robot_position" rules={[{ required: true, message: 'Please input the robot position!' }]}>
+          <Select options={robot_position} onChange={() => { updateTeamNumber(); }} className='input' listItemHeight={10} listHeight={500} placement='bottomLeft'/>
         </Form.Item>
         <Flex justify='in-between' style={{ paddingBottom : '5%' }}>
           <Button onClick={() => setTabNum("2")} className='tabbutton'>Next</Button>
@@ -168,18 +165,16 @@ function Strategic(props: any, text:any) {
         onFinish={async event => {
           setLoading(true);
           try {
-            await updateTeamNumber();
-            console.log(teamNum)
             await setNewStrategicScout(event);
-            const initials = form.getFieldValue('initials');
-            const matchnum = form.getFieldValue('matchnum');
-            const matchlevel = form.getFieldValue('matchlevel');
-            const robotpos = form.getFieldValue('robotpos');
+            const scouter_initials = form.getFieldValue('scouter_initials');
+            const match_number = form.getFieldValue('match_number');
+            const match_level = form.getFieldValue('match_level');
+            const robot_position = form.getFieldValue('robot_position');
             form.resetFields();
-            form.setFieldValue('initials', initials);
-            form.setFieldValue('matchnum', matchnum + 1);
-            form.setFieldValue('matchlevel', matchlevel);
-            form.setFieldValue('robotpos', robotpos);
+            form.setFieldValue('scouter_initials', scouter_initials);
+            form.setFieldValue('match_number', match_number + 1);
+            form.setFieldValue('match_level', match_level);
+            form.setFieldValue('robot_position', robot_position);
             await calculateMatchLevel();
             await updateTeamNumber();
           }

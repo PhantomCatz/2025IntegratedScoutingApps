@@ -76,8 +76,8 @@ const formDefaultValues = {
   "overall_counter_defense": 0,
   "overall_driver_skill": 0,
   "overall_num_penalties": 0,
-  "overall_penalties_incurred": "",
-  "overall_comments": "",
+  "overall_penalties_incurred": null,
+  "overall_comments": null,
 };
 
 function MatchScout(props: any) {
@@ -397,21 +397,21 @@ function MatchScout(props: any) {
           <Form.Item name="robot_starting_position">
           <div className='radioLabel'> 
             <h3>B&Sigma;1</h3> 
-            <input type="radio" name="robot_starting_position" value="B&Sigma;1" className="robot_starting_position" onChange={handleStartPosChange}/> 
+            <input type="radio" name="robot_starting_position" value="B&Sigma;1" className="robot_starting_position_radio" onChange={handleStartPosChange}/> 
           </div> 
           </Form.Item>
 
           <Form.Item name="robot_starting_position">
           <div className='radioLabel'> 
             <h3>B&Sigma;2</h3> 
-            <input type="radio" name="robot_starting_position" value="B&Sigma;2" className="robot_starting_position" onChange={handleStartPosChange}/> 
+            <input type="radio" name="robot_starting_position" value="B&Sigma;2" className="robot_starting_position_radio" onChange={handleStartPosChange}/> 
           </div> 
           </Form.Item>
 
           <Form.Item name="robot_starting_position">
           <div className='radioLabel'> 
             <h3>B&Sigma;3</h3> 
-            <input type="radio" name="robot_starting_position" value="B&Sigma;3" className="robot_starting_position" onChange={handleStartPosChange}/> 
+            <input type="radio" name="robot_starting_position" value="B&Sigma;3" className="robot_starting_position_radio" onChange={handleStartPosChange}/> 
           </div> 
           </Form.Item>
 
@@ -430,21 +430,21 @@ function MatchScout(props: any) {
 
         <Form.Item name="robot_starting_position">
           <div className='radioLabel'> 
-            <input type="radio" name="robot_starting_position" value="R&Sigma;3" className="robot_starting_position" onChange={handleStartPosChange}/> 
+            <input type="radio" name="robot_starting_position" value="R&Sigma;3" className="robot_starting_position_radio" onChange={handleStartPosChange}/> 
             <h3>R&Sigma;3</h3> 
           </div> 
         </Form.Item>
 
         <Form.Item name="robot_starting_position">
           <div className='radioLabel'> 
-            <input type="radio" name="robot_starting_position" value="R&Sigma;2" className="robot_starting_position" onChange={handleStartPosChange}/> 
+            <input type="radio" name="robot_starting_position" value="R&Sigma;2" className="robot_starting_position_radio" onChange={handleStartPosChange}/> 
             <h3>R&Sigma;2</h3>
           </div> 
         </Form.Item>
 
         <Form.Item name="robot_starting_position">
           <div className='radioLabel'> 
-            <input type="radio" name="robot_starting_position" value="R&Sigma;1" className="robot_starting_position" onChange={handleStartPosChange}/> 
+            <input type="radio" name="robot_starting_position" value="R&Sigma;1" className="robot_starting_position_radio" onChange={handleStartPosChange}/> 
             <h3>R&Sigma;1</h3> 
           </div>
         </Form.Item>
@@ -1309,8 +1309,6 @@ function MatchScout(props: any) {
         form={form}
         initialValues={formDefaultValues}
         onFinish={async (event) => {
-          console.log(isLoading);
-          console.log("starting");
           if(isLoading) {
             return;
           }
@@ -1322,12 +1320,14 @@ function MatchScout(props: any) {
             const match_level = form.getFieldValue("match_level");
             const robot_position = form.getFieldValue("robot_position");
             form.resetFields();
+			setFormValue(formDefaultValues);
             form.setFieldValue("scouter_initials", scouter_initials);
             form.setFieldValue("match_number", match_number + 1);
             form.setFieldValue("match_level", match_level);
             form.setFieldValue("robot_position", robot_position);
             setWasDefendedIsVisible(false);
             setDefendedIsVisible(false);
+			setPenaltiesIsVisible(false);
             await calculateMatchLevel();
             await updateTeamNumber();
             await updateDefendedList();
@@ -1338,7 +1338,6 @@ function MatchScout(props: any) {
           finally {
             setLoading(false);
           }
-          console.log("ending");
         }}
       >
         <Tabs defaultActiveKey="1" activeKey={tabNum} items={items} className='tabs' centered onChange={async (key) => { setTabNum(key) }} />

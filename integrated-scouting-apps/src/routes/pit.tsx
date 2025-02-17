@@ -12,57 +12,66 @@ import Header from './header';
 import QrCode from './qrCodeViewer';
 import {getAllTeams} from './utils/tbaRequest';
 
-//Rhys was here//
+const formDefaultValues = {
+  "event_name": null,
+  "team_number": 0,
+  "scouter_initials": null,
+  "robot_weight": 0,
+  "drive_train_type": null,
+  "motor_type": null,
+  "number_of_motors": 0,
+  "wheel_type": null,
+  "coral_intake_capability": null,
+  "coral_scoring_l1": false,
+  "coral_scoring_l2": false,
+  "coral_scoring_l3": false,
+  "coral_scoring_l4": false,
+  "algae_intake_capability": null,
+  "algae_scoring_capability": null,
+  "climbing_capability": null,
+  "pit_organization": 0,
+  "team_safety": 0,
+  "team_workmanship": 0,
+  "gracious_professionalism": 0,
+  "comments": null,
+}
 
 function PitScout(props: any) {
-  const eventname = process.env.REACT_APP_EVENTNAME as string;
+  const event_name = process.env.REACT_APP_EVENTNAME as string;
   const imageURI = useRef<string>();
   const canvasRef = useRef<ReactSketchCanvasRef>(null);
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [robotImageURI] = useState([""]);
-  const [formValue, setFormValue] = useState({
-    robot_events: 0,
-    robot_weight: 0,
-    robot_motor_counter: 0,
-    robot_pit_organization: 0,
-    robot_team_safety: 0,
-    robot_team_workmanship: 0,
-    robot_GP: 0,
-    comments: "",
-  });
+  const [formValue, setFormValue] = useState(formDefaultValues);
   const [qrValue, setQrValue] = useState<any>();
-  const [robotWeight, setRobotWeight] = useState(0); // Add this line
+  const [robotWeight, setRobotWeight] = useState(0);
 
   useEffect(() => { document.title = props.title; return () => { } }, [props.title]);
   useEffect(() => {
-    if ((document.getElementById("robot_events") as HTMLInputElement) !== null) {
-      (document.getElementById("robot_events") as HTMLInputElement).value = formValue.robot_events.toString();
-      form.setFieldValue('robot_events', formValue.robot_events);
-    }
     if ((document.getElementById("robot_weight") as HTMLInputElement) !== null) {
-      (document.getElementById("robot_weight") as HTMLInputElement).value = robotWeight.toString(); // changed
-      form.setFieldValue('robot_weight', robotWeight); // changed
+      (document.getElementById("robot_weight") as HTMLInputElement).value = robotWeight.toString();
+      form.setFieldValue('robot_weight', robotWeight);
     }
-    if ((document.getElementById("robot_motor_counter") as HTMLInputElement) !== null) {
-      (document.getElementById("robot_motor_counter") as HTMLInputElement).value = formValue.robot_motor_counter.toString();
-      form.setFieldValue('robot_motor_counter', formValue.robot_motor_counter);
+    if ((document.getElementById("number_of_motors") as HTMLInputElement) !== null) {
+      (document.getElementById("number_of_motors") as HTMLInputElement).value = formValue.number_of_motors.toString();
+      form.setFieldValue('number_of_motors', formValue.number_of_motors);
     }
-    if ((document.getElementById("robot_pit_organization") as HTMLInputElement) !== null) {
-      (document.getElementById("robot_pit_organization") as HTMLInputElement).value = formValue.robot_pit_organization.toString();
-      form.setFieldValue('robot_pit_organization', formValue.robot_pit_organization);
+    if ((document.getElementById("pit_organization") as HTMLInputElement) !== null) {
+      (document.getElementById("pit_organization") as HTMLInputElement).value = formValue.pit_organization.toString();
+      form.setFieldValue('pit_organization', formValue.pit_organization);
     }
-    if ((document.getElementById("robot_team_safety") as HTMLInputElement) !== null) {
-      (document.getElementById("robot_team_safety") as HTMLInputElement).value = formValue.robot_team_safety.toString();
-      form.setFieldValue('robot_team_safety', formValue.robot_team_safety);
+    if ((document.getElementById("team_safety") as HTMLInputElement) !== null) {
+      (document.getElementById("team_safety") as HTMLInputElement).value = formValue.team_safety.toString();
+      form.setFieldValue('team_safety', formValue.team_safety);
     }
-    if ((document.getElementById("robot_team_workmanship") as HTMLInputElement) !== null) {
-      (document.getElementById("robot_team_workmanship") as HTMLInputElement).value = formValue.robot_team_workmanship.toString();
-      form.setFieldValue('robot_team_workmanship', formValue.robot_team_workmanship);
+    if ((document.getElementById("team_workmanship") as HTMLInputElement) !== null) {
+      (document.getElementById("team_workmanship") as HTMLInputElement).value = formValue.team_workmanship.toString();
+      form.setFieldValue('team_workmanship', formValue.team_workmanship);
     }
-    if ((document.getElementById("robot_GP") as HTMLInputElement) !== null) {
-      (document.getElementById("robot_GP") as HTMLInputElement).value = formValue.robot_GP.toString();
-      form.setFieldValue('robot_GP', formValue.robot_GP);
+    if ((document.getElementById("gracious_professionalism") as HTMLInputElement) !== null) {
+      (document.getElementById("gracious_professionalism") as HTMLInputElement).value = formValue.gracious_professionalism.toString();
+      form.setFieldValue('gracious_professionalism', formValue.gracious_professionalism);
     }
     return () => { };
   }, [formValue, form, robotWeight]);
@@ -86,35 +95,34 @@ function PitScout(props: any) {
       }
     };
     getTeams();
-  }, [eventname]);
+  }, [event_name]);
 
   async function submitData(event: any) {
     await canvasRef.current?.exportImage('png').then((data) => { imageURI.current = data; });
     const body = {
-      "initial": event.scouter_initial,
-      "robot_events": -1,
+      "event_name": event_name,
       "team_number": event.team_number,
-      "robot_drive_train": event.robot_drive_train,
+      "scouter_initials": event.scouter_initials,
       "robot_weight": event.robot_weight,
-      "robot_motor_type": event.robot_motor_type,
-      "robot_motor_counter": event.robot_motor_counter,
-      "robot_wheel_type": event.robot_wheel_type,
-      "robot_coral_intake_capability": event.robot_coral_intake_capability,
-      "robot_algae_intake_capability": event.robot_algae_intake_capability,
-      "robot_algae_scoring_capability": event.robot_algae_scoring_capability,
-      "robot_ability_score_l1": event.robot_ability_score_l1 || false,
-      "robot_ability_score_l2": event.robot_ability_score_l2 || false,
-      "robot_ability_score_l3": event.robot_ability_score_l3 || false,
-      "robot_ability_score_l4": event.robot_ability_score_l4 || false,
-      "robot_climbing_capabilities": event.robot_climbing_capabilities,
-      "robot_pit_organization": event.robot_pit_organization,
-      "robot_team_safety": event.robot_team_safety,
-      "robot_team_workmanship": event.robot_team_workmanship,
-      "robot_GP": event.robot_GP,
-      "images": robotImageURI,
+      "drive_train_type": event.drive_train_type,
+      "motor_type": event.motor_type,
+      "number_of_motors": event.number_of_motors,
+      "wheel_type": event.wheel_type,
+      "coral_intake_capability": event.coral_intake_capability,
+      "coral_scoring_l1": event.coral_scoring_l1 || false,
+      "coral_scoring_l2": event.coral_scoring_l2 || false,
+      "coral_scoring_l3": event.coral_scoring_l3 || false,
+      "coral_scoring_l4": event.coral_scoring_l4 || false,
+      "algae_intake_capability": event.algae_intake_capability,
+      "algae_scoring_capability": event.algae_scoring_capability,
+      "climbing_capability": event.climbing_capability,
+      "pit_organization": event.pit_organization,
+      "team_safety": event.team_safety,
+      "team_workmanship": event.team_workmanship,
+      "gracious_professionalism": event.gracious_professionalism,
       "comments": event.comments,
     };
-      setQrValue(body);
+    setQrValue(body);
   };
   async function getPitScout(team_number: number) {
     try {
@@ -125,30 +133,30 @@ function PitScout(props: any) {
       }
     }
     catch (err) {
-      console.log(err);
+      console.log("Could not fetch team data:",err);
     }
   }
   function Pit() {
     type FieldType = {
-      scouter_initial: string;
+      scouter_initials: string;
       team_number: number;
-      robot_drive_train: string;
+      drive_train_type: string;
       robot_weight: number;
-      robot_motor_type: string;
-      robot_motor_counter: number;
-      robot_wheel_type: string;
-      robot_coral_intake_capability: string;
-      robot_algae_intake_capability: string;
-      robot_algae_scoring_capability: string;
-      robot_ability_score_l1: boolean;
-      robot_ability_score_l2: boolean;
-      robot_ability_score_l3: boolean;
-      robot_ability_score_l4: boolean;
-      robot_climbing_capabilities: string;
-      robot_pit_organization: number;
-      robot_team_safety: number;
-      robot_team_workmanship: number;
-      robot_GP: number;
+      motor_type: string;
+      number_of_motors: number;
+      wheel_type: string;
+      coral_intake_capability: string;
+      algae_intake_capability: string;
+      algae_scoring_capability: string;
+      coral_scoring_l1: boolean;
+      coral_scoring_l2: boolean;
+      coral_scoring_l3: boolean;
+      coral_scoring_l4: boolean;
+      climbing_capability: string;
+      pit_organization: number;
+      team_safety: number;
+      team_workmanship: number;
+      gracious_professionalism: number;
       robot_images: string;
       comments: string;
     };
@@ -203,7 +211,7 @@ function PitScout(props: any) {
       <div>
         <h2>Scouter Initials</h2>
         <Form.Item<FieldType>
-          name="scouter_initial"
+          name="scouter_initials"
           rules={[
             { required: true, message: 'Please input your initials!' },
             {
@@ -278,7 +286,7 @@ function PitScout(props: any) {
           />
         </Form.Item>
         <h2>Drive Train Type</h2>
-        <Form.Item name="robot_drive_train" rules={[{ required: true, message: 'Please input the drive train type!' }]}>
+        <Form.Item name="drive_train_type" rules={[{ required: true, message: 'Please input the drive train type!' }]}>
         <Select
           options={drive_train}
           className="input"
@@ -287,7 +295,7 @@ function PitScout(props: any) {
         />
         </Form.Item>
         <h2>Motor Type</h2>
-        <Form.Item name="robot_motor_type" rules={[{ required: true, message: 'Please input the motor type!' }]}>
+        <Form.Item name="motor_type" rules={[{ required: true, message: 'Please input the motor type!' }]}>
         <Select
           options={motor_type}
           className="input"
@@ -296,25 +304,25 @@ function PitScout(props: any) {
         />
         </Form.Item>
         <h2># of Motors</h2>
-        <Form.Item<FieldType> name="robot_motor_counter" rules={[{ required: true, message: 'Please input the number of motors!' }]}>
+        <Form.Item<FieldType> name="number_of_motors" rules={[{ required: true, message: 'Please input the number of motors!' }]}>
           <InputNumber
             controls
             min={0} // Modified: can start from 0
             className="input"
-            value={formValue.robot_motor_counter}
+            value={formValue.number_of_motors}
             onChange={(value) => {
-              setFormValue({ ...formValue, robot_motor_counter: value ? value : 0 });
+              setFormValue({ ...formValue, number_of_motors: value ? value : 0 });
             }}
-            addonAfter={<Button onClick={() => {
-              setFormValue(prevFormValue => ({ ...prevFormValue, robot_motor_counter: prevFormValue.robot_motor_counter + 1 }));
+            addonAfter={<Button onMouseDown={() => {
+              setFormValue(prevFormValue => ({ ...prevFormValue, number_of_motors: prevFormValue.number_of_motors + 1 }));
             }} className='incrementbutton'>+</Button>}
-            addonBefore={<Button onClick={() => {
-              setFormValue(prevFormValue => ({ ...prevFormValue, robot_motor_counter: Math.max(0, prevFormValue.robot_motor_counter - 1) })); //Modified
+            addonBefore={<Button onMouseDown={() => {
+              setFormValue(prevFormValue => ({ ...prevFormValue, number_of_motors: Math.max(0, prevFormValue.number_of_motors - 1) })); //Modified
             }} className='decrementbutton'>-</Button>}
           />
         </Form.Item>
         <h2>Wheel Type</h2>
-        <Form.Item name="robot_wheel_type" rules={[{ required: true, message: 'Please input the wheel type!' }]}>
+        <Form.Item name="wheel_type" rules={[{ required: true, message: 'Please input the wheel type!' }]}>
         <Select
           placeholder=""
           options={wheel_type}
@@ -324,7 +332,7 @@ function PitScout(props: any) {
         />
         </Form.Item>
         <h2>Coral Intake Capability</h2>
-          <Form.Item name="robot_coral_intake_capability" rules={[{ required: true, message: 'Please input the intake capability!' }]}>
+          <Form.Item name="coral_intake_capability" rules={[{ required: true, message: 'Please input the intake capability!' }]}>
           <Select
             options={coralIntakeCap}
             className="input"
@@ -334,23 +342,23 @@ function PitScout(props: any) {
         </Form.Item>
         <h2>Coral Scoring</h2>
         <h2> L1 </h2>
-        <Form.Item<FieldType> valuePropName="checked" name="robot_ability_score_l1">
+        <Form.Item<FieldType> valuePropName="checked" name="coral_scoring_l1">
           <Checkbox className='input_checkbox' />
         </Form.Item>
         <h2> L2 </h2>
-        <Form.Item<FieldType> valuePropName="checked" name="robot_ability_score_l2">
+        <Form.Item<FieldType> valuePropName="checked" name="coral_scoring_l2">
           <Checkbox className='input_checkbox' />
         </Form.Item>
         <h2> L3 </h2>
-        <Form.Item<FieldType> valuePropName="checked" name="robot_ability_score_l3">
+        <Form.Item<FieldType> valuePropName="checked" name="coral_scoring_l3">
           <Checkbox className='input_checkbox' />
         </Form.Item>
         <h2> L4 </h2>
-        <Form.Item<FieldType> valuePropName="checked" name="robot_ability_score_l4">
+        <Form.Item<FieldType> valuePropName="checked" name="coral_scoring_l4">
           <Checkbox className='input_checkbox' />
         </Form.Item>
         <h2>Algae Intake Capability</h2>
-              <Form.Item name="robot_algae_intake_capability" rules={[{ required: true, message: 'Please input the Algae intake capability!' }]}>
+              <Form.Item name="algae_intake_capability" rules={[{ required: true, message: 'Please input the Algae intake capability!' }]}>
         <Select
           options={algaeintakeCap}
           className="input"
@@ -359,7 +367,7 @@ function PitScout(props: any) {
         />
       </Form.Item>
         <h2>Algae Scoring Capability</h2>
-              <Form.Item name="robot_algae_scoring_capability" rules={[{ required: true, message: 'Please input the Algae Scoring capability!' }]}>
+              <Form.Item name="algae_scoring_capability" rules={[{ required: true, message: 'Please input the Algae Scoring capability!' }]}>
         <Select
           options={algaescoringCap}
           className="input"
@@ -368,27 +376,27 @@ function PitScout(props: any) {
         />
       </Form.Item>
         <h2>Climbing Capability</h2>
-        <Form.Item<FieldType> name="robot_climbing_capabilities" rules={[{ required: true, message: 'Please input the climbing capability!' }]}>
+        <Form.Item<FieldType> name="climbing_capability" rules={[{ required: true, message: 'Please input the climbing capability!' }]}>
           <Select options={climbingCap} className="input" />
         </Form.Item>
 
         <Form.Item>
             <h2>Pit Organization(0-4)</h2>
-          <Form.Item<FieldType> name="robot_pit_organization" rules={[{ required: true, message: 'Please input the pit organization rating!' }]}>
+          <Form.Item<FieldType> name="pit_organization" rules={[{ required: true, message: 'Please input the pit organization rating!' }]}>
             <InputNumber
                   min={0}
                   max={4}
                   className="input"
-                addonAfter={<Button onClick={() => {
+                addonAfter={<Button onMouseDown={() => {
                   setFormValue(prevValue => ({
                     ...prevValue,
-                    robot_pit_organization: Math.min(4, (prevValue.robot_pit_organization || 0) + 1)
+                    pit_organization: Math.min(4, (prevValue.pit_organization || 0) + 1)
                 }));
               }} className='incrementbutton'>+</Button>}
-              addonBefore={<Button onClick={() => {
+              addonBefore={<Button onMouseDown={() => {
                 setFormValue(prevValue => ({
                     ...prevValue,
-                    robot_pit_organization: Math.max(0, (prevValue.robot_pit_organization || 0) - 1)
+                    pit_organization: Math.max(0, (prevValue.pit_organization || 0) - 1)
                   }));
               }} className='decrementbutton'>-</Button>}
             />
@@ -396,21 +404,21 @@ function PitScout(props: any) {
 
           <Form.Item>
             <h2>Team Safety(0-4)</h2>
-          <Form.Item<FieldType> name="robot_team_safety" rules={[{ required: true, message: 'Please input the team safety rating!' }]}>
+          <Form.Item<FieldType> name="team_safety" rules={[{ required: true, message: 'Please input the team safety rating!' }]}>
             <InputNumber
                   min={0}
                   max={4}
                   className="input"
-                addonAfter={<Button onClick={() => {
+                addonAfter={<Button onMouseDown={() => {
                   setFormValue(prevValue => ({
                     ...prevValue,
-                    robot_team_safety: Math.min(4, (prevValue.robot_team_safety || 0) + 1)
+                    team_safety: Math.min(4, (prevValue.team_safety || 0) + 1)
                 }));
               }} className='incrementbutton'>+</Button>}
-              addonBefore={<Button onClick={() => {
+              addonBefore={<Button onMouseDown={() => {
                 setFormValue(prevValue => ({
                     ...prevValue,
-                    robot_team_safety: Math.max(0, (prevValue.robot_team_safety || 0) - 1)
+                    team_safety: Math.max(0, (prevValue.team_safety || 0) - 1)
                   }));
               }} className='decrementbutton'>-</Button>}
             />
@@ -419,21 +427,21 @@ function PitScout(props: any) {
         
           <Form.Item>
             <h2>Team Workmanship(0-4)</h2>
-          <Form.Item<FieldType> name="robot_team_workmanship" rules={[{ required: true, message: 'Please input the team workmanship rating!' }]}>
+          <Form.Item<FieldType> name="team_workmanship" rules={[{ required: true, message: 'Please input the team workmanship rating!' }]}>
             <InputNumber
                   min={0}
                   max={4}
                   className="input"
-                addonAfter={<Button onClick={() => {
+                addonAfter={<Button onMouseDown={() => {
                   setFormValue(prevValue => ({
                     ...prevValue,
-                    robot_team_workmanship: Math.min(4, (prevValue.robot_team_workmanship || 0) + 1)
+                    team_workmanship: Math.min(4, (prevValue.team_workmanship || 0) + 1)
                 }));
               }} className='incrementbutton'>+</Button>}
-              addonBefore={<Button onClick={() => {
+              addonBefore={<Button onMouseDown={() => {
                 setFormValue(prevValue => ({
                     ...prevValue,
-                    robot_team_workmanship: Math.max(0, (prevValue.robot_team_workmanship || 0) - 1)
+                    team_workmanship: Math.max(0, (prevValue.team_workmanship || 0) - 1)
                   }));
               }} className='decrementbutton'>-</Button>}
             />
@@ -442,21 +450,21 @@ function PitScout(props: any) {
 
           <Form.Item>
             <h2>Gracious Professionalism(0-4)</h2>
-          <Form.Item<FieldType> name="robot_GP" rules={[{ required: true, message: 'Please input the GP rating!' }]}>
+          <Form.Item<FieldType> name="gracious_professionalism" rules={[{ required: true, message: 'Please input the GP rating!' }]}>
             <InputNumber
                   min={0}
                   max={4}
                   className="input"
-                addonAfter={<Button onClick={() => {
+                addonAfter={<Button onMouseDown={() => {
                   setFormValue(prevValue => ({
                     ...prevValue,
-                    robot_GP: Math.min(4, (prevValue.robot_GP || 0) + 1)
+                    gracious_professionalism: Math.min(4, (prevValue.gracious_professionalism || 0) + 1)
                 }));
               }} className='incrementbutton'>+</Button>}
-              addonBefore={<Button onClick={() => {
+              addonBefore={<Button onMouseDown={() => {
                 setFormValue(prevValue => ({
                     ...prevValue,
-                    robot_GP: Math.max(0, (prevValue.robot_GP || 0) - 1)
+                    gracious_professionalism: Math.max(0, (prevValue.gracious_professionalism || 0) - 1)
                   }));
               }} className='decrementbutton'>-</Button>}
             />
@@ -475,30 +483,18 @@ function PitScout(props: any) {
   }
   return (
     <div>
-	<Header name={"Pit Scout"} back={"/scoutingapp"}/>
+  <Header name={"Pit Scout"} back={"/scoutingapp"}/>
       <Form
         form={form}
-        initialValues={{
-          robot_ability_traversed_stage: false,
-	}}
+        initialValues={formDefaultValues}
         onFinish={async (event) => {
           try {
             setLoading(true);
             await submitData(event);
-            const initials = form.getFieldValue("scouter_initial");
+            const initials = form.getFieldValue("scouter_initials");
             form.resetFields();
             setRobotWeight(0);
-            form.setFieldsValue({ "scouter_initial": initials });
-            setFormValue({
-              robot_events: 0,
-              robot_weight: 0,
-              robot_motor_counter: 0,
-              robot_pit_organization: 0,
-              robot_team_safety: 0,
-              robot_team_workmanship: 0,
-              robot_GP: 0,
-              comments: "",
-            });
+            form.setFieldsValue({...formDefaultValues, "scouter_initials": initials});
           }
           catch (err) {
             // console.log(err);
