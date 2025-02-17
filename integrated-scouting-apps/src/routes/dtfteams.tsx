@@ -41,6 +41,7 @@ function DTFTeams(props: any) {
       fetchLink += `&team3=${teamList[2]}`;
     }
 
+	console.log(fetchLink);
     fetch(fetchLink)
       .then((res) => {
         const value = res.json();
@@ -142,8 +143,18 @@ function DTFTeams(props: any) {
             data[k] += v as any/l;
           }
           break;
-        }
         // Summative values
+        case "overall_robot_died":
+          if(data[k] === undefined) {
+            data[k] = v as any;
+          } else {
+            data[k] += v as any;
+          }
+          break;
+		default:
+			break;
+        }
+
       }
     }
     return data;
@@ -166,7 +177,7 @@ function DTFTeams(props: any) {
                <Flex justify='in-between'>
                  <Flex vertical align='flex-start'>
                    <h2>L1 avg</h2>
-                   <Input className="dtf-input" disabled value={""} /> 
+                   <Input className="dtf-input" disabled value={data.auton_coral_scored_l1} /> 
                  </Flex>
                  <Flex vertical align='flex-start'>
                    <h2>L2 avg</h2>
