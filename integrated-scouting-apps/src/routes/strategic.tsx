@@ -8,6 +8,16 @@ import Header from "./header";
 import QrCode from "./qrCodeViewer";
 import {getTeamNumber, isMatchVisible} from './utils/tbaRequest';
 
+const formDefaultValues = {
+  "match_event": null,
+  "team_number": 0,
+  "scouter_initials": null,
+  "match_level": null,
+  "match_number": 0,
+  "robot_position": null,
+  "comments": null,
+}
+
 function Strategic(props: any, text:any) {
   const [form] = Form.useForm();
   const [tabNum, setTabNum] = useState("1");
@@ -23,11 +33,12 @@ function Strategic(props: any, text:any) {
   
   async function setNewStrategicScout(event: any) {
     const body = {
-      "team_number": team_number,
-      "scouter_initials": event.scouter_initials,
       "match_event": match_event,
+      "team_number": team_number,
+      "scouter_initials": event.scouter_initials.toLowerCase(),
       "match_level": event.match_level,
       "match_number": event.match_number,
+      "robot_position": event.robot_position,
       "comments": event.comments,
     };
     if (!team_number) {
@@ -102,12 +113,12 @@ function Strategic(props: any, text:any) {
           <Input maxLength={2} className="input" />
         </Form.Item>
         <h2>Match #</h2>
-        <Form.Item<FieldType> name="match_number" rules={[{ required: true, message: 'Please input the match number!',  }]}>
-          <InputNumber min={1} className = "input" onChange={() => { updateTeamNumber(); }} type='number' /> 
-        </Form.Item>
         <h2>Match Level</h2>
         <Form.Item<FieldType> name="match_level" rules={[{ required: true, message: 'Please input the match level!' }]}>
           <Select options={rounds} className="input" onChange={() => { calculateMatchLevel(); updateTeamNumber(); }} />
+        </Form.Item>
+        <Form.Item<FieldType> name="match_number" rules={[{ required: true, message: 'Please input the match number!',  }]}>
+          <InputNumber min={1} className = "input" onChange={() => { updateTeamNumber(); }} type='number' /> 
         </Form.Item>
         <h2 style={{ display: roundIsVisible ? 'inherit' : 'none' }}>Round #</h2>
         <Form.Item<FieldType> name="round_number" rules={[{ required: roundIsVisible ? true : false, message: 'Please input the round number!' }]} style={{ display: roundIsVisible ? 'inherit' : 'none' }}>
@@ -170,7 +181,7 @@ function Strategic(props: any, text:any) {
             const match_number = form.getFieldValue('match_number');
             const match_level = form.getFieldValue('match_level');
             const robot_position = form.getFieldValue('robot_position');
-            form.resetFields();
+            form.setFieldsValue({...formDefaultValues})
             form.setFieldValue('scouter_initials', scouter_initials);
             form.setFieldValue('match_number', match_number + 1);
             form.setFieldValue('match_level', match_level);

@@ -255,7 +255,7 @@ function MatchScout(props: any) {
         "teleop_algae_scored_processor": event.teleop_algae_scored_processor,
         // Endgame
         "endgame_coral_intake_capability": event.endgame_coral_intake_capability,
-        "endgame_coral_station": event.endgame_coral_intake_capability,
+        "endgame_coral_station": event.endgame_coral_station,
         "endgame_algae_intake_capability": event.endgame_algae_intake_capability,
         "endgame_climb_successful": event.endgame_climb_successful,
         "endgame_climb_type": event.endgame_climb_type,
@@ -273,6 +273,7 @@ function MatchScout(props: any) {
         "overall_penalties_incurred": event.overall_penalties_incurred,
         "overall_comments": event.overall_comments,
       };
+	  console.log(robot_starting_position);
       const qrBody : any = {};
       for (const [field, value] of Object.entries(body)) {
         qrBody[field] = value;
@@ -369,14 +370,14 @@ function MatchScout(props: any) {
             }}
           /> 
         </Form.Item>
-        <h2>Match #</h2>
-        <Form.Item<FieldType> name="match_number" rules={[{ required: true, message: 'Enter match #' }]}>
-          <InputNumber min={1} onChange={updateTeamNumber} className="input" type='number' pattern="\d*" onWheel={(e) => (e.target as HTMLElement).blur()}/>
-        </Form.Item>
-
         <h2>Match Level:</h2>
         <Form.Item<FieldType> name="match_level" rules={[{ required: true, message: 'Enter match level' }]}>
           <Select options={rounds} onChange={() => { calculateMatchLevel(); updateTeamNumber(); }} className="input" />
+        </Form.Item>
+        
+        <h2>Match #</h2>
+		<Form.Item<FieldType> name="match_number" rules={[{ required: true, message: 'Enter match #' }]}>
+          <InputNumber min={1} onChange={updateTeamNumber} className="input" type='number' pattern="\d*" onWheel={(e) => (e.target as HTMLElement).blur()}/>
         </Form.Item>
 
         <h2 style={{ display: roundIsVisible ? 'inherit' : 'none' }}>Round #</h2>
@@ -396,22 +397,22 @@ function MatchScout(props: any) {
 
           <Form.Item name="robot_starting_position">
           <div className='radioLabel'> 
-            <h3>B&Sigma;1</h3> 
-            <input type="radio" name="robot_starting_position" value="B&Sigma;1" className="robot_starting_position_radio" onChange={handleStartPosChange}/> 
+            <h3>BS1</h3> 
+            <input type="radio" name="robot_starting_position" value="BS1" className="robot_starting_position_radio" onChange={handleStartPosChange}/> 
           </div> 
           </Form.Item>
 
           <Form.Item name="robot_starting_position">
           <div className='radioLabel'> 
-            <h3>B&Sigma;2</h3> 
-            <input type="radio" name="robot_starting_position" value="B&Sigma;2" className="robot_starting_position_radio" onChange={handleStartPosChange}/> 
+            <h3>BS2</h3> 
+            <input type="radio" name="robot_starting_position" value="BS2" className="robot_starting_position_radio" onChange={handleStartPosChange}/> 
           </div> 
           </Form.Item>
 
           <Form.Item name="robot_starting_position">
           <div className='radioLabel'> 
-            <h3>B&Sigma;3</h3> 
-            <input type="radio" name="robot_starting_position" value="B&Sigma;3" className="robot_starting_position_radio" onChange={handleStartPosChange}/> 
+            <h3>BS3</h3> 
+            <input type="radio" name="robot_starting_position" value="BS3" className="robot_starting_position_radio" onChange={handleStartPosChange}/> 
           </div> 
           </Form.Item>
 
@@ -430,22 +431,22 @@ function MatchScout(props: any) {
 
         <Form.Item name="robot_starting_position">
           <div className='radioLabel'> 
-            <input type="radio" name="robot_starting_position" value="R&Sigma;3" className="robot_starting_position_radio" onChange={handleStartPosChange}/> 
-            <h3>R&Sigma;3</h3> 
+            <input type="radio" name="robot_starting_position" value="RS3" className="robot_starting_position_radio" onChange={handleStartPosChange}/> 
+            <h3>RS3</h3> 
           </div> 
         </Form.Item>
 
         <Form.Item name="robot_starting_position">
           <div className='radioLabel'> 
-            <input type="radio" name="robot_starting_position" value="R&Sigma;2" className="robot_starting_position_radio" onChange={handleStartPosChange}/> 
-            <h3>R&Sigma;2</h3>
+            <input type="radio" name="robot_starting_position" value="RS2" className="robot_starting_position_radio" onChange={handleStartPosChange}/> 
+            <h3>RS2</h3>
           </div> 
         </Form.Item>
 
         <Form.Item name="robot_starting_position">
           <div className='radioLabel'> 
-            <input type="radio" name="robot_starting_position" value="R&Sigma;1" className="robot_starting_position_radio" onChange={handleStartPosChange}/> 
-            <h3>R&Sigma;1</h3> 
+            <input type="radio" name="robot_starting_position" value="RS1" className="robot_starting_position_radio" onChange={handleStartPosChange}/> 
+            <h3>RS1</h3> 
           </div>
         </Form.Item>
 

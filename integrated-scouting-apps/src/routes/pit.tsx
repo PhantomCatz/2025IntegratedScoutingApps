@@ -13,7 +13,7 @@ import QrCode from './qrCodeViewer';
 import {getAllTeams} from './utils/tbaRequest';
 
 const formDefaultValues = {
-  "event_name": null,
+  "match_event": null,
   "team_number": 0,
   "scouter_initials": null,
   "robot_weight": 0,
@@ -37,7 +37,7 @@ const formDefaultValues = {
 }
 
 function PitScout(props: any) {
-  const event_name = process.env.REACT_APP_EVENTNAME as string;
+  const match_event = process.env.REACT_APP_EVENTNAME as string;
   const imageURI = useRef<string>();
   const canvasRef = useRef<ReactSketchCanvasRef>(null);
   const [form] = Form.useForm();
@@ -95,14 +95,14 @@ function PitScout(props: any) {
       }
     };
     getTeams();
-  }, [event_name]);
+  }, [match_event]);
 
   async function submitData(event: any) {
     await canvasRef.current?.exportImage('png').then((data) => { imageURI.current = data; });
     const body = {
-      "event_name": event_name,
+      "match_event": match_event,
       "team_number": event.team_number,
-      "scouter_initials": event.scouter_initials,
+      "scouter_initials": event.scouter_initials.toLowerCase(),
       "robot_weight": event.robot_weight,
       "drive_train_type": event.drive_train_type,
       "motor_type": event.motor_type,
