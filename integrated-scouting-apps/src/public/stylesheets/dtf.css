@@ -60,3 +60,7 @@
 .summary_text {
     text-align: center !important;
 }
+
+.errorLabel {
+	font-size: 70px !important;
+}

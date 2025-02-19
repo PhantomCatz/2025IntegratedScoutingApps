@@ -112,11 +112,11 @@ function Strategic(props: any, text:any) {
         <Form.Item<FieldType> name="scouter_initials" rules={[{ required: true, message: 'Please input your initials!' }]}>
           <Input maxLength={2} className="input" />
         </Form.Item>
-        <h2>Match #</h2>
         <h2>Match Level</h2>
         <Form.Item<FieldType> name="match_level" rules={[{ required: true, message: 'Please input the match level!' }]}>
           <Select options={rounds} className="input" onChange={() => { calculateMatchLevel(); updateTeamNumber(); }} />
         </Form.Item>
+        <h2>Match #</h2>
         <Form.Item<FieldType> name="match_number" rules={[{ required: true, message: 'Please input the match number!',  }]}>
           <InputNumber min={1} className = "input" onChange={() => { updateTeamNumber(); }} type='number' /> 
         </Form.Item>

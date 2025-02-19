@@ -188,24 +188,24 @@ function PitScout(props: any) {
       { label: "Coral Station", value: "Coral Station" },
       { label: "Ground", value: "Ground" },
       { label: "Both", value: "Both" },
-      { label: "None", value: "None" },
+      { label: "Neither", value: "Neither" },
     ];
     const algaeintakeCap = [
       { label: "Reef Zone", value: "Reef Zone" },
       { label: "Coral", value: "Coral" },
       { label: "Both", value: "Both" },
-      { label: "None", value: "None" },
+      { label: "Neither", value: "Neither" },
     ];
     const algaescoringCap = [
       { label: "Net", value: "Net" },
       { label: "Processor", value: "Processor" },
       { label: "Both", value: "Both" },
-      { label: "None", value: "None" },
+      { label: "Neither", value: "Neither" },
     ];
     const climbingCap = [
       { label: "Shallow", value: "Shallow" },
       { label: "Deep", value: "Deep" },
-      { label: "None", value: "None" }
+      { label: "Neither", value: "Neither" }
     ];
     return (
       <div>
@@ -494,6 +494,7 @@ function PitScout(props: any) {
             const initials = form.getFieldValue("scouter_initials");
             form.resetFields();
             setRobotWeight(0);
+			setFormValue(formDefaultValues);
             form.setFieldsValue({...formDefaultValues, "scouter_initials": initials});
           }
           catch (err) {

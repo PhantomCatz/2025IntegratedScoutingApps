@@ -264,8 +264,8 @@ function MatchScout(props: any) {
         "overall_robot_died": event.overall_robot_died,
         "overall_defended_others": event.overall_defended_others,
         "overall_was_defended": event.overall_was_defended,
-        "overall_defended": event.overall_defended,
-        "overall_defended_by": event.overall_defended_by,
+        "overall_defended": event.overall_defended.sort(),
+        "overall_defended_by": event.overall_defended_by.sort(),
         "overall_pushing": event.overall_pushing,
         "overall_counter_defense": event.overall_counter_defense,
         "overall_driver_skill": event.overall_driver_skill,
@@ -1062,12 +1062,14 @@ function MatchScout(props: any) {
     const endgame_algae_intake_capability = [
       { label: "Reef Zone", value: "Reef Zone" },
       { label: "Ground", value: "Ground" },
+      { label: "Both", value: "Both" },
+      { label: "Neither", value: "Neither" },
     ];
     const endgame_climb_type = [
       { label: "Deep Hang", value: "Deep Hang" },
       { label: "Shallow Hang", value: "Shallow Hang" },
       { label: "Park", value: "Park" },
-      { label: "None", value: "None" },
+      { label: "Neither", value: "Neither" },
     ];
     return (
       <>

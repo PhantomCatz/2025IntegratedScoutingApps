@@ -12,6 +12,11 @@ const connectionData = {
 	//},
 };
 
+if(!connectionData || !process.env.DB_USERNAME) {
+	console.log("connectionData=", connectionData);
+	console.log("Check .env");
+}
+
 function test(n) {
 	console.log(`Got to ${n}`);
 }
@@ -38,19 +43,35 @@ async function requestDatabase(query) {
 	return result;
 }
 // Not implemented
-async function getTeamInfo(teams) {
-	let result = {};
-	const sqlQuery = "SELECT * FROM match_data;";
+async function getTeamInfo(queries) {
+	const teams = [];
+	for(let i = 1; i <= 3; i++) {
+		if(queries[`team${i}`]) {
+			teams.push(queries[`team${i}`]);
+		}
+	}
+ 
+	if(teams.length == 0) {
+		console.log("Error: No teams queried");
+		return {};
+	}
+
+	const result = {};
+	const sqlQuery = "SELECT * FROM match_data WHERE team_number=?";
 
 	try {
 		const mysql = getMysql();
 		const conn = await mysql.createConnection(connectionData);
 		await conn.query("USE testdb;");
-		const [res, fields] = await conn.query(sqlQuery);
+
+		for(team of teams) {
+			const [res, fields] = await conn.query(sqlQuery, [team]);
+			console.log("team=", team);
+			result[team] = res;
+		}
 
 		await conn.end();
 
-		result = res
 		return result;
 	} catch(err) {
 		console.log("Failed to resolve request:");
