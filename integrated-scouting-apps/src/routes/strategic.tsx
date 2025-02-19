@@ -25,10 +25,17 @@ function Strategic(props: any, text:any) {
   const [isLoading, setLoading] = useState(false);
   const [roundIsVisible, setRoundIsVisible] = useState(false);
   const [qrValue, setQrValue] = useState<any>();
+  const [shouldRetrySubmit, setShouldRetrySubmit] = useState(false);
 
   useEffect(() => { document.title = props.title; return () => { } }, [props.title]);
   // useEffect(() => { getComments(team_number); return () => {}}, [team_number]);
   // useEffect(() => { calculateMatchLevel(); return () => {}}, [form, calculateMatchLevel()]);
+  useEffect(() => {
+    if(!shouldRetrySubmit) {
+      return;
+    }
+    runFormFinish(undefined)
+  }, [team_number]);
   const match_event = process.env.REACT_APP_EVENTNAME;
   
   async function setNewStrategicScout(event: any) {
@@ -42,24 +49,9 @@ function Strategic(props: any, text:any) {
       "comments": event.comments,
     };
     if (!team_number) {
-      window.alert("Team number is 0, please check in Pre.");
+      //window.alert("Team number is 0, please check in Pre.");
       throw new Error("bad team number");
     }
-    
-
-    // eslint-disable-next-line
-    const WORKING_TEST_DO_NOT_REMOVE_OR_YOU_WILL_BE_FIRED = {
-      "matchIdentifier": {
-        "team_number": 2637,
-        "scouter_initials": "LL",
-        "match_level": "Qual",
-        "match_number": 5,
-        "match_event": "2024CALA",
-      },
-      "comment": {
-        "comment": "asdfasdfasdf"
-      }
-    };
     
     setQrValue(body);
   }
@@ -167,37 +159,52 @@ function Strategic(props: any, text:any) {
       children: comment(),
     },
   ];
+  async function runFormFinish(event : any) {
+    setLoading(true);
+    try {
+      try {
+        console.log(event);
+        console.log(form);
+        await setNewStrategicScout(event);
+      } catch(err : any) {
+        if(err.message === "bad team number") {
+          const num = Number(prompt("Could not get team number. Please input the team that you are scouting."));
+          console.log(team_number);
+          setTeamNum(num);
+          console.log(team_number);
+          await setNewStrategicScout(event);
+        } else {
+          throw err;
+        }
+      }
+      const scouter_initials = form.getFieldValue('scouter_initials');
+      const match_number = form.getFieldValue('match_number');
+      const match_level = form.getFieldValue('match_level');
+      const robot_position = form.getFieldValue('robot_position');
+      form.setFieldsValue({...formDefaultValues})
+      form.setFieldValue('scouter_initials', scouter_initials);
+      form.setFieldValue('match_number', match_number + 1);
+      form.setFieldValue('match_level', match_level);
+      form.setFieldValue('robot_position', robot_position);
+      await calculateMatchLevel();
+      await updateTeamNumber();
+    }
+    catch (err) {
+      console.log(err);
+      window.alert("Error occured, please do not leave this message and notify a Webdev member immediately.");
+      window.alert(err);
+    }
+    finally {
+      setLoading(false);
+    }
+  }
   return (
     <div>
       <meta name="viewport" content="maximum-scale=1.0" />
       <Header name={"Strategic Scout"} back="/scoutingapp/" />
       <Form
         form={form}
-        onFinish={async event => {
-          setLoading(true);
-          try {
-            await setNewStrategicScout(event);
-            const scouter_initials = form.getFieldValue('scouter_initials');
-            const match_number = form.getFieldValue('match_number');
-            const match_level = form.getFieldValue('match_level');
-            const robot_position = form.getFieldValue('robot_position');
-            form.setFieldsValue({...formDefaultValues})
-            form.setFieldValue('scouter_initials', scouter_initials);
-            form.setFieldValue('match_number', match_number + 1);
-            form.setFieldValue('match_level', match_level);
-            form.setFieldValue('robot_position', robot_position);
-            await calculateMatchLevel();
-            await updateTeamNumber();
-          }
-          catch (err) {
-            console.log(err);
-            window.alert("Error occured, please do not do leave this message and notify a Webdev member immediately.");
-            window.alert(err);
-          }
-          finally {
-            setLoading(false);
-          }
-        }}
+        onFinish={runFormFinish}
       >
         <Tabs defaultActiveKey="1" activeKey={tabNum} items={items} centered className='tabs' onChange={async (key) => { setTabNum(key); }} />
       </Form>
@@ -205,5 +212,6 @@ function Strategic(props: any, text:any) {
     </div>
   );
 } 
+
 
 export default Strategic;

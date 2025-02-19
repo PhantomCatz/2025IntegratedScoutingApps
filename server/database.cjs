@@ -6,7 +6,7 @@ const connectionData = {
 	"password" : process.env.DB_PASSWORD,
 	"host" : process.env.DB_HOST, 
 	"port" : process.env.DB_PORT, 
-	//"database" : process.env.DB_DATABASE, 
+	"database" : process.env.DB_DATABASE, 
 	//"ssl" : {
 	//	"rejectUnauthorized" : false,
 	//},
@@ -62,7 +62,7 @@ async function getTeamInfo(queries) {
 	try {
 		const mysql = getMysql();
 		const conn = await mysql.createConnection(connectionData);
-		await conn.query("USE testdb;");
+		//await conn.query("USE ?;");
 
 		for(team of teams) {
 			const [res, fields] = await conn.query(sqlQuery, [team]);

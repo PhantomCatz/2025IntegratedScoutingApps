@@ -132,8 +132,9 @@ function DTFTeams(props: any) {
         data[k] = v;
         break;
       default:
-        console.error("Team has conflicting intake types: ", data[k], v);
-        console.log(data);
+        console.error(`Team has conflicting ${k} types: `, data[k], v);
+        //console.log(data);
+        data[k] = "Both";
         break;
       }
       break;
@@ -267,8 +268,10 @@ function DTFTeams(props: any) {
       const match: { key: string; label: string; children: JSX.Element }[] = [];
 
       if(!teamData) {
-        console.log("Could not load DTF; no data found");
+        console.log("Could not load DTF. No data found");
         return (<></>);
+      } else {
+        console.log("Loaded data.");
       }
 
       const persistentData = [];
@@ -281,6 +284,8 @@ function DTFTeams(props: any) {
             label: team.toString(),
             children: <p className={"errorLabel"}>No Data for team {team}</p>,
           });
+          
+          persistentData.push(data);
           index++;
           continue;
         }
@@ -393,15 +398,19 @@ function DTFTeams(props: any) {
         <div> 
         <h2>Alliance Avg Score</h2> 
         <Input className="input" disabled value={totalAverage} />
-        <h2>Team 1 Avg Score</h2>
-        <Input className="input" disabled value={persistentData[0]?.average_score} /> 
-        {teams[1] && (
+        {persistentData[0].match_count > 0 && (
+          <>
+            <h2>Team 1 Avg Score</h2>
+            <Input className="input" disabled value={persistentData[0]?.average_score} /> 
+          </>
+        )}
+        {persistentData[1].match_count > 0 && (
           <>
             <h2>Team 2 Avg Score</h2>
             <Input className="input" disabled value={persistentData[1]?.average_score} /> 
           </>
         )}
-        {teams[2] && (
+        {persistentData[2].match_count > 0 && (
           <>
             <h2>Team 3 Avg Score</h2>
             <Input className="input" disabled value={persistentData[2]?.average_score} /> 
@@ -409,20 +418,22 @@ function DTFTeams(props: any) {
         )}
         <h2>Driver Skill</h2>
         <Flex justify='in-between'>
-          <Flex vertical align='center'>
-            <h2 className='summary_text'>{teams[0]}</h2>
-            <Input className="dtf-input" disabled value={persistentData[0].overall_driver_skill} /> 
-          </Flex>
-          {teams[1] && (
+          {persistentData[0].match_count > 0 && (
             <Flex vertical align='center'>
-              <h2 className='summary_text'>{teams[1]}</h2>
+              <h2 className='summary_text'>{teams[0]}</h2>
               <Input className="dtf-input" disabled value={persistentData[0].overall_driver_skill} /> 
             </Flex>
           )}
-          {teams[2] && (
+          {persistentData[1].match_count > 0 && (
+            <Flex vertical align='center'>
+              <h2 className='summary_text'>{teams[1]}</h2>
+              <Input className="dtf-input" disabled value={persistentData[1]?.overall_driver_skill} /> 
+            </Flex>
+          )}
+          {persistentData[2].match_count > 0 && (
             <Flex vertical align='center'>
               <h2 className='summary_text'>{teams[2]}</h2>
-              <Input className="dtf-input" disabled value={persistentData[2].overall_driver_skill} />
+              <Input className="dtf-input" disabled value={persistentData[2]?.overall_driver_skill} />
             </Flex>
           )}
         </Flex>
