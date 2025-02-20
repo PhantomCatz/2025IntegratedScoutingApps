@@ -205,7 +205,8 @@ function PitScout(props: any) {
     const climbingCap = [
       { label: "Shallow", value: "Shallow" },
       { label: "Deep", value: "Deep" },
-      { label: "Neither", value: "Neither" }
+      { label: "Both", value: "Both" },
+      { label: "Neither", value: "Neither" },
     ];
     return (
       <div>
