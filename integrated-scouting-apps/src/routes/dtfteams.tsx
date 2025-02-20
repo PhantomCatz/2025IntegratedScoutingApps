@@ -80,7 +80,6 @@ function DTFTeams(props: any) {
       } else {
         data[k] += v as any/l;
       }
-      //console.log("got here");
       break;
     // Summative values
     case "auton_coral_missed_l4":
@@ -240,16 +239,12 @@ function DTFTeams(props: any) {
     }
     data.match_count = matches.length;
     const l = data.match_count;
-    //console.log("matches=", matches);
+
     if(l === 0) {
       return data;
     }
     for(const match of matches) {
       for(const [k, v] of Object.entries(match)) {
-        //console.log("match=", match);
-        //console.log(k, v);
-        //console.log(Object.entries(match));
-        //return data;
         aggregateData(k, v, data);
         if(getScore(k, v) === undefined) {
           console.log(k, v);
@@ -365,6 +360,8 @@ function DTFTeams(props: any) {
         },
           { key: "3", label: "OA", children: (
               <div>
+                <h2>Matches Played</h2>
+                <Input className="input" disabled value={data.match_count}  /> 
                 <h2>Robot Died (counter: matches)</h2>
                 <Input className="input" disabled value={data.overall_robot_died}  /> 
                 <h2>Intake Algae Type</h2>
@@ -396,44 +393,44 @@ function DTFTeams(props: any) {
         label: "Summary",
         children:
         <div> 
-        <h2>Alliance Avg Score</h2> 
+        <h2>Average Alliance Score</h2> 
         <Input className="input" disabled value={totalAverage} />
-        {persistentData[0].match_count > 0 && (
+        {persistentData[0]?.match_count > 0 && (
           <>
-            <h2>Team 1 Avg Score</h2>
-            <Input className="input" disabled value={persistentData[0]?.average_score} /> 
+            <h2>Team {teams[0]} Avg Score</h2>
+            <Input className="input" disabled value={persistentData[0].average_score} /> 
           </>
         )}
-        {persistentData[1].match_count > 0 && (
+        {persistentData[1]?.match_count > 0 && (
           <>
-            <h2>Team 2 Avg Score</h2>
-            <Input className="input" disabled value={persistentData[1]?.average_score} /> 
+            <h2>Team {teams[1]} Avg Score</h2>
+            <Input className="input" disabled value={persistentData[1].average_score} /> 
           </>
         )}
-        {persistentData[2].match_count > 0 && (
+        {persistentData[2]?.match_count > 0 && (
           <>
-            <h2>Team 3 Avg Score</h2>
-            <Input className="input" disabled value={persistentData[2]?.average_score} /> 
+            <h2>Team {teams[2]} Avg Score</h2>
+            <Input className="input" disabled value={persistentData[2].average_score} /> 
           </>
         )}
         <h2>Driver Skill</h2>
         <Flex justify='in-between'>
-          {persistentData[0].match_count > 0 && (
+          {persistentData[0]?.match_count > 0 && (
             <Flex vertical align='center'>
               <h2 className='summary_text'>{teams[0]}</h2>
               <Input className="dtf-input" disabled value={persistentData[0].overall_driver_skill} /> 
             </Flex>
           )}
-          {persistentData[1].match_count > 0 && (
+          {persistentData[1]?.match_count > 0 && (
             <Flex vertical align='center'>
               <h2 className='summary_text'>{teams[1]}</h2>
-              <Input className="dtf-input" disabled value={persistentData[1]?.overall_driver_skill} /> 
+              <Input className="dtf-input" disabled value={persistentData[1].overall_driver_skill} /> 
             </Flex>
           )}
-          {persistentData[2].match_count > 0 && (
+          {persistentData[2]?.match_count > 0 && (
             <Flex vertical align='center'>
               <h2 className='summary_text'>{teams[2]}</h2>
-              <Input className="dtf-input" disabled value={persistentData[2]?.overall_driver_skill} />
+              <Input className="dtf-input" disabled value={persistentData[2].overall_driver_skill} />
             </Flex>
           )}
         </Flex>

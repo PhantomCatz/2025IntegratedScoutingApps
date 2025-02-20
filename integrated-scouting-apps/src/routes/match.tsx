@@ -295,7 +295,7 @@ function MatchScout(props: any) {
       await updateDefendedList();
     }
     catch (err) {
-      console.error("Failed to request TBA data");
+      console.error("Failed to request TBA data when updating team number");
     }
   }
   function calculateMatchLevel() {
@@ -310,12 +310,11 @@ function MatchScout(props: any) {
       const robotPosition = form.getFieldValue('robot_position');
 
       const team = await getTeam(roundIsVisible, matchLevel, matchNumber, roundNumber, color ? 'red' : 'blue');
-      console.log("team=", team);
 
       setOpposingTeamNum(team);
     }
     catch (err) {
-      console.error("Failed to request TBA data");
+      console.error("Failed to request TBA data when updating opposing team");
     }
   }
 
