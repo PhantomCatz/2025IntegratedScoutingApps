@@ -13,8 +13,10 @@ async function getTeamNumber(roundIsVisible : boolean,
 			!matchNumber ||
 			(roundIsVisible && !roundNumber) ||
 			!robotPosition) {
+		console.log(roundIsVisible, matchLevel, matchNumber, roundNumber, robotPosition);
 		return 0;
 	}
+	console.log("requesting TBA");
 
 	const matchId = getMatchId(roundIsVisible, matchLevel, matchNumber, roundNumber);
 
@@ -32,7 +34,7 @@ async function getTeam(roundIsVisible : boolean,
 					   matchLevel? : number,
 					   matchNumber? : number,
 					   roundNumber? : number,
-					   alliance? : string) : Promise<string[]>{
+					   alliance? : string) : Promise<string[]> {
 	if (!matchLevel ||
 			!matchNumber ||
 			(roundIsVisible && !roundNumber) ||
@@ -40,7 +42,7 @@ async function getTeam(roundIsVisible : boolean,
 		console.log(matchLevel, matchNumber, roundIsVisible, roundNumber, alliance);
 		return [];
 	}
-	//console.log("got here");
+	console.log("requesting TBA");
 
 	const matchId = getMatchId(roundIsVisible, matchLevel, matchNumber, roundNumber);
 

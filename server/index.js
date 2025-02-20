@@ -25,14 +25,16 @@ app.get("/api", async (req, res) => {
 		break;
 	case "getTeam":
 	default:
+		//console.log(req);
 		result = await getTeamInfo(queries);
 		break;
 	}
 
 	//const result = await requestDatabase(query);
 
-	console.log(result);
+	//console.log(result);
 
+	await res.append("Access-Control-Allow-Origin", "*");
 	await res.json(result);
 	return res;
 });

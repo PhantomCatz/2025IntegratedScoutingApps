@@ -26,7 +26,7 @@
     color: white !important;
     text-align: center !important;
 }
-.startPos {
+.robot_starting_position_radio {
     width: 60px;
     min-width: 60px;
     height: 60px !important;
