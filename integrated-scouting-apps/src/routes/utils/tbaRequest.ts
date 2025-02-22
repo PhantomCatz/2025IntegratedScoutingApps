@@ -1,3 +1,5 @@
+const tbaData = require("./tbaData.json");
+
 function isMatchVisible(matchLevel? : string) {
 	return matchLevel !== "qm" ?
 		true :
@@ -13,43 +15,56 @@ async function getTeamNumber(roundIsVisible : boolean,
 			!matchNumber ||
 			(roundIsVisible && !roundNumber) ||
 			!robotPosition) {
+		//console.log(roundIsVisible, matchLevel, matchNumber, roundNumber, robotPosition);
 		return 0;
 	}
+	//console.log("requesting TBA");
+	
 
-	const matchId = getMatchId(roundIsVisible, matchLevel, matchNumber, roundNumber);
+	try {
+		const matchId = getMatchId(roundIsVisible, matchLevel, matchNumber, roundNumber);
 
-	const response = await request('match/' + matchId);
+		const response = await request('match/' + matchId);
 
-	const data = await response.json();
-	const teamColor = robotPosition.substring(0, robotPosition.indexOf('_'));
-	const teamNum = parseInt(robotPosition.substring(robotPosition.indexOf('_') + 1)) - 1;
-	const fullTeam = data.alliances[teamColor].team_keys[teamNum];
-	const teamNumber = parseInt(fullTeam.substring(3));
+		const data = await response.json();
+		const teamColor = robotPosition.substring(0, robotPosition.indexOf('_'));
+		const teamNum = parseInt(robotPosition.substring(robotPosition.indexOf('_') + 1)) - 1;
+		const fullTeam = data.alliances[teamColor].team_keys[teamNum];
+		const teamNumber = parseInt(fullTeam.substring(3));
 
-	return teamNumber;
+		return teamNumber;
+	} catch (err) {
+		console.log("caught err");
+		return await getTeamNumberOffline(roundIsVisible, matchLevel, matchNumber, roundNumber || 0, robotPosition);
+	}
 }
 async function getTeam(roundIsVisible : boolean,
 					   matchLevel? : number,
 					   matchNumber? : number,
 					   roundNumber? : number,
-					   alliance? : string) : Promise<string[]>{
+					   alliance? : string) : Promise<string[]> {
 	if (!matchLevel ||
 			!matchNumber ||
 			(roundIsVisible && !roundNumber) ||
 			!alliance) {
-		console.log(matchLevel, matchNumber, roundIsVisible, roundNumber, alliance);
+		//console.log(matchLevel, matchNumber, roundIsVisible, roundNumber, alliance);
 		return [];
 	}
-	//console.log("got here");
+	//console.log("requesting TBA");
 
-	const matchId = getMatchId(roundIsVisible, matchLevel, matchNumber, roundNumber);
+	try {
+		const matchId = getMatchId(roundIsVisible, matchLevel, matchNumber, roundNumber);
 
-	const response = await request('match/' + matchId);
+		const response = await request('match/' + matchId);
 
-	const data = await response.json();
-	const fullTeam = data.alliances[alliance].team_keys.map((x : string) => x.substring(3));
+		const data = await response.json();
+		const fullTeam = data.alliances[alliance].team_keys.map((x : string) => x.substring(3));
 
-	return fullTeam || [];
+		return fullTeam || [];
+	} catch (err) {
+		console.log("caught err");
+		return await getTeamOffline(roundIsVisible, matchLevel, matchNumber, roundNumber || 0, alliance);
+	}
 }
 async function getAllTeams() {
 	const response = await request('event/' + process.env.REACT_APP_EVENTNAME + '/teams');
@@ -74,6 +89,27 @@ function getMatchId(roundIsVisible : boolean,
 		`${eventName}_${matchLevel}${matchNumber}`;
 	return matchId;
 }
+function getAllianceOffset(color : string) {
+	switch(color) {
+	case "red":
+		return 0;
+	case "blue":
+		return 3;
+	default:
+		throw new Error("Invalid alliance color");
+	}
+}
+function getIndexNumber(robotPosition : string) {
+	let res = 0;
+	const allianceColor = robotPosition.substring(0, robotPosition.indexOf('_'));
+	res += getAllianceOffset(allianceColor);
+	
+	const robotOffset = parseInt(robotPosition.substring(robotPosition.indexOf('_') + 1)) - 1;
+	res += robotOffset;
+
+	return res;
+}
+
 function request(query : string) {
 	const response = fetch('https://www.thebluealliance.com/api/v3/' + query, {
 		method: "GET",
@@ -82,6 +118,26 @@ function request(query : string) {
 		}
 	});
 	return response;
+}
+
+async function getTeamNumberOffline(roundIsVisible : boolean,
+									matchLevel : number,
+									matchNumber : number,
+									roundNumber : number,
+									robotPosition : string) {
+	const matchId = getMatchId(roundIsVisible, matchLevel, matchNumber, roundNumber);
+	const robotIndex = getIndexNumber(robotPosition);
+	return tbaData[matchId][robotIndex];
+}
+async function getTeamOffline(roundIsVisible : boolean,
+							  matchLevel : number,
+							  matchNumber : number,
+							  roundNumber : number,
+							  alliance : string) {
+	const matchId = getMatchId(roundIsVisible, matchLevel, matchNumber, roundNumber);
+	const indexOffset = getAllianceOffset(alliance);
+	const teams = tbaData[matchId];
+	return [teams[indexOffset + 0], teams[indexOffset + 1], teams[indexOffset + 2], ];
 }
 
 export {getTeamNumber, isMatchVisible, getTeam, getAllTeams};

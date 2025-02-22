@@ -50,10 +50,10 @@ function QrCode(props : any) {
 	}
 
 	const shownValue = vals.join(sep);
-	if (shouldShow) {
-		console.log("Current key map: " + keys);
-		console.log("Current values: " + vals);
-	}
+	//if (shouldShow) {
+	//	console.log("Current key map: " + keys);
+	//	console.log("Current values: " + vals);
+	//}
 
 	//shouldShow = true;
 
