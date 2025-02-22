@@ -5,6 +5,8 @@ import { useParams } from "react-router-dom";
 import { Checkbox, Flex, Input, Tabs } from "antd";
 import TextArea from 'antd/es/input/TextArea';
 import Header from "./header";
+import Chart from 'chart.js/auto';
+import ChartComponent from "./chart"; 
 
 function DTFTeams(props: any) {
   const { teamParams } = useParams();
@@ -162,7 +164,12 @@ function DTFTeams(props: any) {
         const data : any = mergeTeamData(teamData[team]);
 
         const teamTabs = [
-          { key: "1", label: "Auton", children: ( <div>
+          { key: "1", label: "Charts", children: ( <div>
+        <ChartComponent />
+      </div>  
+       )
+     },
+          { key: "2", label: "Auton", children: ( <div>
                <Flex justify='in-between'>
                  <Flex vertical align='flex-start'>
                    <h2>L1 avg</h2>
@@ -199,7 +206,7 @@ function DTFTeams(props: any) {
          </div>  
           )
         },
-          { key: "2", label: "Teleop/End", children:( <div> 
+          { key: "3", label: "Teleop/End", children:( <div> 
             <Flex justify='in-between'>
                  <Flex vertical align='flex-start'>
                    <h2>L1 avg</h2>
@@ -235,7 +242,7 @@ function DTFTeams(props: any) {
          </div> 
          )
         },
-          { key: "3", label: "OA", children: (
+          { key: "4", label: "OA", children: (
               <div>
                 <h2>Robot Died (counter: matches)</h2>
                 <Input className="input" disabled value={""}  /> 
