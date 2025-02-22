@@ -44,7 +44,7 @@ export default function App() {
         <Route path="/scoutingapp/lookup/match" element={<DataLookup title="2637 Match Lookup" />} />
         <Route path="/scoutingapp/lookup/pit" element={<PitLookup title="2637 Pit Lookup" />} />
         <Route path="/scoutingapp/lookup/pitpicture" element={<PitPictureLookup title="2637 Pit Picture Lookup" />} />
-        <Route path="/scoutingapp/lookup/teamData/:team_number" element={<TeamData title="2637 Data Lookup" />} />
+        <Route path="/scoutingapp/lookup/teamdata/:teamNumber" element={<TeamData title="2637 Data Lookup" />} />
         <Route path="/scoutingapp/pit" element={<PitScout title="2637 Pit Scout" />} />
         <Route path="/scoutingapp/picklists" element={<Picklist title="2637 Picklists" />} />
         <Route path="/dtf" element={<DTF title="2637 Drive Team Feeder" />} />
