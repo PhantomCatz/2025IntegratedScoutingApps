@@ -45,8 +45,8 @@ function ChartComponent() {
       }
     });
 
-    // const ctx2 = document.getElementById('chart2') as HTMLCanvasElement;
-    const ctx2 = ((<canvas></canvas>) as any) as HTMLCanvasElement;
+    const ctx2 = document.getElementById('chart2') as HTMLCanvasElement;
+    //const ctx2 = ((<canvas></canvas>) as any) as HTMLCanvasElement;
 new Chart(ctx2, {
   type: 'bar',
       data: {
@@ -61,7 +61,7 @@ new Chart(ctx2, {
             barPercentage: 0.3,
           },
           {
-            label: '#L1 attempted', 
+            label: '#L1 missedd', 
             data: [5],
             backgroundColor: 'rgba(255, 255, 255, 0.2)', 
             borderColor: 'rgb(255, 255, 255)',
