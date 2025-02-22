@@ -14,7 +14,7 @@ import StrategicScout from './routes/strategic';
 // import DriverSkill from './routes/driverSkill';
 import Lookup from './routes/lookup';
 import StrategicLookup from './routes/strategicLookup';
-
+import Chart from './routes/chart';
 import PitLookup from './routes/pitLookup';
 import PitScout from './routes/pit';
 import PitPictureLookup from './routes/pitImageLookup';
@@ -52,7 +52,7 @@ export default function App() {
         <Route path="/watchlist" element={<Watchlist title="2637 Watch List" />} />
         <Route path="/watchlist/:team_number" element={<WatchlistGet title="2637 Watch List" />} />
         <Route path="/watchlist/update/:question_info" element={<WatchlistUpdate title="2637 Watch List" />} />
-
+        <Route path="/scoutingapp/chart" element={<Chart  />} />
         <Route path="/qrcode" element={<QrCode title="2637 Watch List" value={"aldshfglaierglkaheflkjghalfdgalwfghu"} />} />
       </Routes>
     </BrowserRouter>
