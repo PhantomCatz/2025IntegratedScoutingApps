@@ -84,18 +84,18 @@ function Strategic(props: any, text:any) {
       robot_position: string;
     };
     const rounds = [
-      { label: "Qualifications", value: "qm" },
-      { label: "Quarter-Finals", value: "qf" },
-      { label: "Semi-Finals", value: "sf" },
-      { label: "Finals", value: "f" },
+      { label: "Qualifications", value: "Qualifications" },
+      { label: "Quarter-Finals", value: "Quarter-Finals" },
+      { label: "Semi-Finals", value: "Semi-Finals" },
+      { label: "Finals", value: "Finals" },
     ];
     const robot_position = [
-      { label: "R1", value: "red_1" },
-      { label: "R2", value: "red_2" },
-      { label: "R3", value: 'red_3' },
-      { label: "B1", value: "blue_1" },
-      { label: "B2", value: "blue_2" },
-      { label: "B3", value: 'blue_3' },
+      { label: "R1", value: "R1" },
+      { label: "R2", value: "R2" },
+      { label: "R3", value: 'R3' },
+      { label: "B1", value: "B1" },
+      { label: "B2", value: "B2" },
+      { label: "B3", value: 'B3' },
     ];
     return (
       <div>

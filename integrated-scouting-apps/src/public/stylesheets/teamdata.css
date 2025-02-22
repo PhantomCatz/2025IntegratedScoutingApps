@@ -9,12 +9,11 @@
 .ant-pagination {
 	display: none !important;
 }
-/*
 .ant-table-thead, .ant-table-thead * {
 	position: sticky !important;
 	top: 0px !important;
+	z-index: 100 !important;
 }
-*/
 .boolean_true, .boolean_false {
 	display: block;
 	width: 100%;

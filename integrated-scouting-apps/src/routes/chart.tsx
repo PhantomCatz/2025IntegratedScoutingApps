@@ -1,7 +1,5 @@
 import React, { useEffect } from 'react';
 import Chart from 'chart.js/auto';
-import logo from '../public/images/logo.png';
-import back from '../public/images/back.png';
 import {Flex, Tabs } from "antd";
 
 function ChartComponent(props : any) {

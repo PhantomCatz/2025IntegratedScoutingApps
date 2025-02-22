@@ -113,3 +113,7 @@ h3 {
 	background-color: var(--pc-blue) !important;
 	margin-left: auto !important;
 }
+.fieldTitle {
+	text-align: center;
+	width: 100%;
+}
