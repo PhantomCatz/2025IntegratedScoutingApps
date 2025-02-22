@@ -43,6 +43,8 @@ function DTFTeams(props: any) {
       }
     }
 
+	console.log(fetchLink);
+
     fetch(fetchLink)
       .then((res) => {
         const value = res.json();
@@ -53,6 +55,7 @@ function DTFTeams(props: any) {
       })
       .catch((err) => {
         console.log("Error fetching data. Is server on?", err);
+		//throw err;
       });
   }, [teamList]);
   useEffect(() => {

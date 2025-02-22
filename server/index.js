@@ -1,4 +1,4 @@
-import { requestDatabase, getTeamInfo } from "./database.cjs";
+import { requestDatabase, getTeamInfo, getTeamsScouted } from "./database.cjs";
 //const requestDatabase = require("database").requestDatabase
 import express from "express";
 //const express = require("express");
@@ -10,8 +10,6 @@ const app = express();
 
 
 app.get("/api", async (req, res) => {
-	const query = req.sqlQuery || "show databases";
-	
 	const queryString = req.url.split("?")[1];
 	const queries = Object.fromEntries(new URLSearchParams(queryString));
 	
@@ -23,14 +21,17 @@ app.get("/api", async (req, res) => {
 	case "hasTeam":
 		result = await hasTeam(queries);
 		break;
+	case "teamsScouted":
+		result = await getTeamsScouted();
+		break;
 	case "getTeam":
+		result = await getTeamInfo(queries);
+		break;
 	default:
-		//console.log(req);
+		console.log("reqType not used:", queries);
 		result = await getTeamInfo(queries);
 		break;
 	}
-
-	//const result = await requestDatabase(query);
 
 	//console.log(result);
 

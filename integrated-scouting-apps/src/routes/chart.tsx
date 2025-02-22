@@ -3,7 +3,8 @@ import Chart from 'chart.js/auto';
 import logo from '../public/images/logo.png';
 import back from '../public/images/back.png';
 import {Flex, Tabs } from "antd";
-function ChartComponent() {
+
+function ChartComponent(props : any) {
   useEffect(() => {
     const ctx1 = document.getElementById('chart1') as HTMLCanvasElement;
     new Chart(ctx1, {
@@ -47,8 +48,8 @@ function ChartComponent() {
 
     // const ctx2 = document.getElementById('chart2') as HTMLCanvasElement;
     const ctx2 = ((<canvas></canvas>) as any) as HTMLCanvasElement;
-new Chart(ctx2, {
-  type: 'bar',
+    new Chart(ctx2, {
+      type: 'bar',
       data: {
         labels: ['Coral scored'], 
         datasets: [
@@ -116,10 +117,6 @@ new Chart(ctx2, {
             borderWidth: 1,
             barPercentage: 0.3
           },
-
-
-
-
         ],
       },
       options: {

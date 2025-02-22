@@ -67,15 +67,48 @@ async function getTeam(roundIsVisible : boolean,
 	}
 }
 async function getAllTeams() {
-	const response = await request('event/' + process.env.REACT_APP_EVENTNAME + '/teams');
-	const teams = await response.json();
+	try {
+		const response = await request('event/' + process.env.REACT_APP_EVENTNAME + '/teams');
+		const teams = await response.json();
 
+		const numbers = teams.map((x : any) => x.team_number);
 
-	const numbers = teams.map((x : any) => x.team_number);
-	
-	//console.log(numbers);
+		return numbers;
+	} catch(err) {
+		const response = await getAllTeamsOffline();
 
-	return numbers;
+		return response;
+	}
+}
+async function getTeamsNotScouted() {
+	try {
+		let fetchLink = process.env.REACT_APP_SERVER_ADDRESS;
+
+		if(!fetchLink) {
+			console.error("Could not get fetch link. Check .env");
+			return;
+		}
+
+		fetchLink += "reqType=teamsScouted";
+
+		let teamsScouted : any = await(await fetch(fetchLink)).json();
+
+		const allTeams = await getAllTeams();
+
+		const all = new Set(allTeams);
+		const scouted = new Set(teamsScouted);
+
+		const diff = all.difference(scouted);
+
+		const res : any[] = [];
+
+		diff.forEach((x : any) => res.push(x));
+
+		return res;
+	} catch(err) {
+		console.log(err);
+		return null;
+	}
 }
 
 function getMatchId(roundIsVisible : boolean,
@@ -139,5 +172,14 @@ async function getTeamOffline(roundIsVisible : boolean,
 	const teams = tbaData[matchId];
 	return [teams[indexOffset + 0], teams[indexOffset + 1], teams[indexOffset + 2], ];
 }
+async function getAllTeamsOffline() {
+	const data = new Set();
 
-export {getTeamNumber, isMatchVisible, getTeam, getAllTeams};
+	for(const [id, teams] of Object.entries(tbaData)) {
+		(teams as any).forEach((x : any) => data.add(x));
+	}
+
+	return data;
+}
+
+export {getTeamNumber, isMatchVisible, getTeam, getAllTeams, getTeamsNotScouted};

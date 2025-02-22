@@ -10,7 +10,7 @@ import { ReactSketchCanvasRef } from 'react-sketch-canvas';
 import TextArea from 'antd/es/input/TextArea';
 import Header from './header';
 import QrCode from './qrCodeViewer';
-import {getAllTeams} from './utils/tbaRequest';
+import {getAllTeams, getTeamsNotScouted} from './utils/tbaRequest';
 
 const formDefaultValues = {
   "match_event": null,
@@ -76,25 +76,32 @@ function PitScout(props: any) {
     return () => { };
   }, [formValue, form, robotWeight]);
   useEffect(() => {
-    async function getTeams() {
+    (async function() {
+      const initialMessage = "Teams not scouted:";
+      let message = initialMessage;
+
       try {
-        const teams = getAllTeams();
-        let message = "Teams not yet scouted:\n";
-        for (const team in teams) {
-          const pitResponse = await (await fetch(process.env.REACT_APP_PIT_LOOKUP_URL as string + "?team_number=" + team)).json();
-          if (pitResponse.documents.length === 0) {
-            message += team + "\n";
-          }
+
+        const teamsNotScouted = await getTeamsNotScouted();
+
+        if(teamsNotScouted === null || teamsNotScouted === undefined) {
+          throw new Error("Could not access teams");
         }
-        window.alert(message);
-      }
-      catch (err) {
-        // console.log(err);
-        // window.alert("Error occured, please do not do leave this message and notify a Webdev member immediately.");
-        // window.alert(err);
-      }
-    };
-    getTeams();
+        
+        teamsNotScouted.sort(function (a : any, b : any) { return parseInt(a) - parseInt(b); });
+
+        for (const team of teamsNotScouted) {
+          message += "\n" + team;
+        }
+
+        if(message === initialMessage) {
+          window.alert("All teams have been scouted.");
+        } else {
+          window.alert(message);
+        }
+      } catch (err : any) {
+        console.error("Error in fetching teams: ", err.message);
+      }})();
   }, [match_event]);
 
   async function submitData(event: any) {
@@ -342,19 +349,19 @@ function PitScout(props: any) {
           />
         </Form.Item>
         <h2>Coral Scoring</h2>
-        <h2> L1 </h2>
+        <h2>L1</h2>
         <Form.Item<FieldType> valuePropName="checked" name="coral_scoring_l1">
           <Checkbox className='input_checkbox' />
         </Form.Item>
-        <h2> L2 </h2>
+        <h2>L2</h2>
         <Form.Item<FieldType> valuePropName="checked" name="coral_scoring_l2">
           <Checkbox className='input_checkbox' />
         </Form.Item>
-        <h2> L3 </h2>
+        <h2>L3</h2>
         <Form.Item<FieldType> valuePropName="checked" name="coral_scoring_l3">
           <Checkbox className='input_checkbox' />
         </Form.Item>
-        <h2> L4 </h2>
+        <h2>L4</h2>
         <Form.Item<FieldType> valuePropName="checked" name="coral_scoring_l4">
           <Checkbox className='input_checkbox' />
         </Form.Item>

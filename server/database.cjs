@@ -42,7 +42,6 @@ async function requestDatabase(query) {
 	}
 	return result;
 }
-// Not implemented
 async function getTeamInfo(queries) {
 	const teams = [];
 	for(let i = 1; i <= 3; i++) {
@@ -62,7 +61,6 @@ async function getTeamInfo(queries) {
 	try {
 		const mysql = getMysql();
 		const conn = await mysql.createConnection(connectionData);
-		//await conn.query("USE ?;");
 
 		for(team of teams) {
 			const [res, fields] = await conn.query(sqlQuery, [team]);
@@ -75,7 +73,7 @@ async function getTeamInfo(queries) {
 		return result;
 	} catch(err) {
 		console.log("Failed to resolve request:");
-		console.dir(err);
+		throw err;
 	}
 	return result;
 }
@@ -88,7 +86,7 @@ async function hasTeam() {
 		const conn = await mysql.createConnection(connectionData);
 		await conn.query("USE testdb");
 		const [r1, f1] = await conn.query("SHOW TABLES");
-		console.log(r1);
+		//console.log(r1);
 		const [res, fields] = await conn.query(sqlQuery);
 
 		await conn.end();
@@ -97,9 +95,29 @@ async function hasTeam() {
 		return result;
 	} catch(err) {
 		console.log("Failed to resolve request:");
-		console.dir(err);
+		throw err;
 	}
 	return result;
+}
+async function getTeamsScouted() {
+	let result = {};
+	const sqlQuery = "SELECT DISTINCT team_number FROM pit_data";
+
+	try {
+		const mysql = getMysql();
+		const conn = await mysql.createConnection(connectionData);
+
+		const [res, fields] = await conn.query(sqlQuery);
+
+		await conn.end();
+
+		result = res;
+
+		return result;
+	} catch(err) {
+		console.log("Failed to resolve request:");
+		throw err;
+	}
 }
 
 function getMysql() {
@@ -114,4 +132,5 @@ function verifyConnection(connection) {
 
 module.exports.requestDatabase = requestDatabase;
 module.exports.getTeamInfo = getTeamInfo;
+module.exports.getTeamsScouted = getTeamsScouted;
 //export {requestDatabase, getTeamInfo};
