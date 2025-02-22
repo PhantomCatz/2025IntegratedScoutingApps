@@ -7,6 +7,7 @@
 :root {
 	--pc-blue: #32a7dc;
 	--pc-blue: #000000;
+	--font-color: #ffffff;
 }
 @font-face {
 	font-family: Audiowide;
@@ -18,7 +19,7 @@
 }
 * {
 	font-family: Arial, Audiowide !important;
-	color: white !important;
+	color: var(--font-color) !important;
 }
 body {
 	margin: 0 !important;

@@ -224,7 +224,7 @@ function MatchScout(props: any) {
         "match_event": match_event,
         "team_number": team_number,
         "scouter_initials": event.scouter_initials.toLowerCase(),
-        "match_level": event.match_level + (event.round_number !== undefined ? event.round_number : ""),
+        "match_level": event.match_level + (roundIsVisible && event.round_number !== undefined ? event.round_number : ""),
         "match_number": event.match_number,
         "robot_position": event.robot_position,
         "robot_starting_position": robot_starting_position,

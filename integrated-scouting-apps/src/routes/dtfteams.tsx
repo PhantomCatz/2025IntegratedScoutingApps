@@ -5,6 +5,8 @@ import { useParams } from "react-router-dom";
 import { Checkbox, Flex, Input, Tabs } from "antd";
 import TextArea from 'antd/es/input/TextArea';
 import Header from "./header";
+import Chart from 'chart.js/auto';
+import ChartComponent from "./chart"; 
 
 const MAX_NUM_TEAMS = 3;
 
@@ -41,6 +43,8 @@ function DTFTeams(props: any) {
       }
     }
 
+	console.log(fetchLink);
+
     fetch(fetchLink)
       .then((res) => {
         const value = res.json();
@@ -51,6 +55,7 @@ function DTFTeams(props: any) {
       })
       .catch((err) => {
         console.log("Error fetching data. Is server on?", err);
+		//throw err;
       });
   }, [teamList]);
   useEffect(() => {
@@ -289,7 +294,12 @@ function DTFTeams(props: any) {
         persistentData.push(data);
 
         const teamTabs = [
-          { key: "1", label: "Auton", children: ( <div>
+          { key: "1", label: "Charts", children: ( <div>
+        <ChartComponent />
+      </div>  
+       )
+     },
+          { key: "2", label: "Auton", children: ( <div>
                <Flex justify='in-between'>
                  <Flex vertical align='flex-start'>
                    <h2>L1 avg</h2>
@@ -322,7 +332,7 @@ function DTFTeams(props: any) {
          </div>  
           )
         },
-          { key: "2", label: "Teleop/End", children:( <div> 
+          { key: "3", label: "Teleop/End", children:( <div> 
             <Flex justify='in-between'>
                  <Flex vertical align='flex-start'>
                    <h2>L1 avg</h2>
@@ -358,7 +368,7 @@ function DTFTeams(props: any) {
          </div> 
          )
         },
-          { key: "3", label: "OA", children: (
+          { key: "4", label: "OA", children: (
               <div>
                 <h2>Matches Played</h2>
                 <Input className="input" disabled value={data.match_count}  /> 

@@ -3,159 +3,145 @@ import Chart from 'chart.js/auto';
 import logo from '../public/images/logo.png';
 import back from '../public/images/back.png';
 import {Flex, Tabs } from "antd";
-function ChartComponent() {
+
+function ChartComponent(props : any) {
   useEffect(() => {
     const ctx1 = document.getElementById('chart1') as HTMLCanvasElement;
     new Chart(ctx1, {
       type: 'bar',
       data: {
-        labels: ['Match 1', 'Match 2', 'Match 3','Match 4','Match 5', 'Match 6'], // x-axis labels
+        labels: ['Algae scored'], 
         datasets: [
           {
-            label: '# of Coral', // First dataset
-            data: [12, 19, 3, 13, 21, 10],
-            backgroundColor: 'rgba(153, 102, 255, 0.2)', 
-            borderColor: 'rgba(153, 102, 255, 1)',
+            label: '# processed', 
+            data: [12],
+            backgroundColor: 'rgb(72, 175, 201, 0.2)', 
+            borderColor: 'rgb(72, 175, 201)',
             borderWidth: 1,
+            barPercentage: 0.3
           },
           {
-            label: '# of Algae', // Second dataset
-            data: [7, 6, 4, 2, 5, 9],
-            backgroundColor: 'rgba(72, 201, 176, 0.2)', 
-            borderColor: 'rgba(72, 201, 176, 1)',
+            label: '# netted', 
+            data: [7],
+            backgroundColor: 'rgba(45, 255, 202, 0.2)', 
+            borderColor: 'rgb(45, 255, 202)',
             borderWidth: 1,
+            barPercentage: 0.3
           },
+
         ],
       },
       options: {
         responsive: true,
+        indexAxis: 'y', 
         scales: {
-          y: {
-            beginAtZero: true, // Ensure the y-axis starts at zero
-          },
-        },
-      },
-    });
-
-    const ctx2 = document.getElementById('chart2') as HTMLCanvasElement;
-new Chart(ctx2, {
-  type: 'bar',
-  data: {
-    labels:['Match 1', 'Match 2', 'Match 3','Match 4','Match 5', 'Match 6'],
-    datasets: [
-      {
-        label: '# Auton scored', // First dataset
-        data: [12, 19, 3, 13, 21, 10],
-        backgroundColor: 'rgba(255, 99, 132, 0.2)',
-        borderColor: 'rgba(255, 99, 132, 1)',
-        borderWidth: 1,
-      },
-      {
-        label: '# Teleop scored', // Second dataset
-        data: [7, 6, 4, 2, 5, 9],
-        backgroundColor: 'rgba(54, 162, 235, 0.2)',
-        borderColor: 'rgba(54, 162, 235, 1)',
-        borderWidth: 1,
-      },
-      {
-        label: '# End scored', // Second dataset
-        data: [2, 3, 5, 4, 6, 7],
-        backgroundColor: 'rgba(255, 206, 86, 0.2)',
-        borderColor: 'rgba(255, 206, 86, 1)',
-        borderWidth: 1,
-      },
-    ],
-  },
-  options: {
-    responsive: true,
-    plugins: {
-      tooltip: {
-        mode: 'index', // Ensures tooltips for both datasets are visible
-        intersect: false,
-      },
-    },
-    scales: {
-      x: {
-        stacked: true, // Enable stacking for x-axis
-      },
-      y: {
-        stacked: true, // Enable stacking for y-axis
-        beginAtZero: true,
-      },
-    },
-  },
-});
-
-    
-
-    const ctx3 = document.getElementById('chart3') as HTMLCanvasElement;
-    new Chart(ctx3, {
-      type: 'line',
-      data: {
-        labels: ['Match 1', 'Match 2', 'Match 3','Match 4','Match 5', 'Match 6'],
-        datasets: [
-          {
-            label: '# Auton scored', // First dataset
-            data: [12, 19, 8, 13, 21, 10],
-            backgroundColor: 'rgba(255, 99, 132, 0.2)',
-            borderColor: 'rgba(255, 99, 132, 1)',
-            borderWidth: 2,
-          },
-          {
-            label: '# Teleop scored', // Second dataset
-            data: [7, 6, 4, 2, 5, 9],
-            backgroundColor: 'rgba(54, 162, 235, 0.2)',
-            borderColor: 'rgba(54, 162, 235, 1)',
-            borderWidth: 2,
-          },
-          {
-            label: '# End scored', // Second dataset
-            data: [2, 3, 5, 4, 6, 7],
-            backgroundColor: 'rgba(255, 206, 86, 0.2)',
-            borderColor: 'rgba(255, 206, 86, 1)',
-            borderWidth: 2,
-          },
-        ],
-      },
-      options: {
-        responsive: true,
-        scales: {
-          y: {
+          x: {
+            stacked: true, 
             beginAtZero: true,
           },
+          y: {
+            stacked: true,
+          },
         },
+      }
+    });
+
+    // const ctx2 = document.getElementById('chart2') as HTMLCanvasElement;
+    const ctx2 = ((<canvas></canvas>) as any) as HTMLCanvasElement;
+    new Chart(ctx2, {
+      type: 'bar',
+      data: {
+        labels: ['Coral scored'], 
+        datasets: [
+          {
+            label: '#L1 scored',
+            data: [15],
+            backgroundColor: 'rgba(255, 52, 42, 0.2)', 
+            borderColor: 'rgb(255, 52, 42)',
+            borderWidth: 1,
+            barPercentage: 0.3,
+          },
+          {
+            label: '#L1 attempted', 
+            data: [5],
+            backgroundColor: 'rgba(255, 255, 255, 0.2)', 
+            borderColor: 'rgb(255, 255, 255)',
+            borderWidth: 1,
+            barPercentage: 0.3
+          },
+          {
+            label: '#L2 scored', 
+            data: [16],
+            backgroundColor: 'rgba(85, 196, 251, 0.2)', 
+            borderColor: 'rgb(85, 196, 251)',
+            borderWidth: 1,
+            barPercentage: 0.3
+          },
+          {
+            label: '#L2 attempted',
+            data: [7],
+            backgroundColor: 'rgba(255, 255, 255, 0.2)', 
+            borderColor: 'rgb(255, 255, 255)',
+            borderWidth: 1,
+            barPercentage: 0.3
+          },
+          {
+            label: '#L3 scored',
+            data: [10],
+            backgroundColor: 'rgba(78, 216, 135, 0.2)', 
+            borderColor: 'rgb(78, 216, 135)',
+            borderWidth: 1,
+            barPercentage: 0.3
+          },
+          {
+            label: '#L3 attempted', 
+            data: [1],
+            backgroundColor: 'rgba(255, 255, 255, 0.2)', 
+            borderColor: 'rgb(255, 255, 255)',
+            borderWidth: 1,
+            barPercentage: 0.3
+          },
+          {
+            label: '#L4 scored', 
+            data: [17],
+            backgroundColor: 'rgba(255, 252, 89, 0.2)', 
+            borderColor: 'rgb(255, 252, 89)',
+            borderWidth: 1,
+            barPercentage: 0.3
+          },
+          {
+            label: '#L4 attempted', 
+            data: [7],
+            backgroundColor: 'rgba(255, 255, 255, 0.2)', 
+            borderColor: 'rgb(255, 255, 255)',
+            borderWidth: 1,
+            barPercentage: 0.3
+          },
+        ],
       },
+      options: {
+        responsive: true,
+        indexAxis: 'y', 
+        scales: {
+          x: {
+            stacked: true, 
+            beginAtZero: true,
+          },
+          y: {
+            stacked: true,
+          },
+        },
+      }
     });
   }, []);
 
   return (
-
-      <div className='banner'>
-      <meta name="viewport" content="maximum-scale=1.0" />
-        <header>
-          <a href='/dtf'><img src={back} style={{ height: 64 + 'px', paddingTop: '5%' }} alt=''></img></a>
-          <table>
-            <tbody>
-              <tr>
-                <td>
-                  <img src={logo} style={{ height: 256 + 'px' }} alt=''></img>
-                </td>
-                <td>
-                  <h1 style={{ display: 'inline-block', textAlign: 'center' }}>2637 Data Charts</h1>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </header>
       <div  style={{ padding: '50px'}}>
-        <h2>Chart 1: Coral v. Algae</h2>
-        <canvas id="chart1"></canvas>
-        <h2>Chart 2: Segmented Bar Chart</h2>
-        <canvas id="chart2"></canvas>
-        <h2>Chart 3: Line Chart</h2>
-        <canvas id="chart3"></canvas>
+        <h2>Algae: Processsed v. Netted</h2>
+        {<canvas id="chart1"></canvas>}
+        <h2>Coral: L1 v. L2 v. L3 v. L4</h2>
+        {<canvas id="chart2"></canvas>}
       </div>
-    </div>
   );
 }
 
