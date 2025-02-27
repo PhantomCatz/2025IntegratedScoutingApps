@@ -43,7 +43,7 @@ export default function App() {
         <Route path="/watchlist/:team_number" element={<WatchlistGet title="2637 Watch List" />} />
         <Route path="/watchlist/update/:question_info" element={<WatchlistUpdate title="2637 Watch List" />} />
         
-		<Route path="/scoutingapp/chart" element={<Chart  />} />
+		<Route path="/scoutingapp/chart" element={<Chart />} />
         <Route path="/qrcode" element={<QrCode title="Qr Code" value={"aldshfglaierglkaheflkjghalfdgalwfghu"} />} />
       </Routes>
     </BrowserRouter>

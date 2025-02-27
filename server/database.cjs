@@ -104,7 +104,7 @@ async function getTeamInfo(queries) {
 
 		for(team of teams) {
 			const [res, fields] = await conn.query(sqlQuery, [team]);
-			console.log("team=", team);
+			//console.log("team=", team);
 			result[team] = res;
 		}
 
@@ -120,7 +120,7 @@ async function getTeamInfo(queries) {
 async function getTeamPitInfo(queries) {
 	const team = queries.team;
 
-	console.log(queries);
+	//console.log(queries);
 
 	let result = {};
 

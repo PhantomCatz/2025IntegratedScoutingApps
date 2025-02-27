@@ -5,6 +5,8 @@ import Column from 'antd/es/table/Column';
 import { Table } from 'antd';
 import Header from "./header";
 
+window.alert = (...args) => console.log("Alerting: ", ...args);
+
 function Picklist(props: any) {
   const [loading, setLoading] = useState(false);
   const [fetchedData, setFetchedData] = useState<{ [x: string]: any; }[]>([]);
