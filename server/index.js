@@ -1,4 +1,4 @@
-import { requestDatabase, getTeamInfo, getTeamsScouted } from "./database.cjs";
+import { requestDatabase, getTeamInfo, getTeamsScouted, getTeamPitInfo, getTeamStrategicInfo } from "./database.cjs";
 //const requestDatabase = require("database").requestDatabase
 import express from "express";
 //const express = require("express");
@@ -26,6 +26,12 @@ app.get("/api", async (req, res) => {
 		break;
 	case "getTeam":
 		result = await getTeamInfo(queries);
+		break;
+	case "getTeamPit":
+		result = await getTeamPitInfo(queries);
+		break;
+	case "getTeamStrategic":
+		result = await getTeamStrategicInfo(queries);
 		break;
 	default:
 		console.log("reqType not used:", queries);
