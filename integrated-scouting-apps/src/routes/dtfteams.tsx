@@ -51,7 +51,7 @@ function DTFTeams(props: any) {
         return value;
       })
       .then((data) => {
-        setTeamData(data)
+        setTeamData(data);
       })
       .catch((err) => {
         console.log("Error fetching data. Is server on?", err);
@@ -64,6 +64,9 @@ function DTFTeams(props: any) {
   
   function aggregateData(k : any, v : any, data : any) {
     const l = data.match_count;
+    if(v === null && v === undefined) {
+      return;
+    }
     switch(k) {
     // Average values
     case "auton_coral_scored_l4":
@@ -295,7 +298,7 @@ function DTFTeams(props: any) {
 
         const teamTabs = [
           { key: "1", label: "Charts", children: ( <div>
-        <ChartComponent />
+        <ChartComponent teamNumber={team} index={index} />
       </div>  
        )
      },
