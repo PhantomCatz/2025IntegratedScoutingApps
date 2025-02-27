@@ -328,18 +328,18 @@ function MatchScout(props: any) {
       round_number: number,
     };
     const rounds = [
-      { label: "Qualifications", value: "qm" },
-      { label: "Quarter-Finals", value: "qf" },
-      { label: "Semi-Finals", value: "sf" },
-      { label: "Finals", value: "f" },
+      { label: "Qualifications", value: "Qualifications" },
+      { label: "Quarter-Finals", value: "Quarter-Finals" },
+      { label: "Semi-Finals", value: "Semi-Finals" },
+      { label: "Finals", value: "Finals" },
     ];
     const robot_position = [
-      { label: "R1", value: "red_1" },
-      { label: "R2", value: "red_2" },
-      { label: "R3", value: 'red_3' },
-      { label: "B1", value: "blue_1" },
-      { label: "B2", value: "blue_2" },
-      { label: "B3", value: 'blue_3' },
+      { label: "R1", value: "R1" },
+      { label: "R2", value: "R2" },
+      { label: "R3", value: 'R3' },
+      { label: "B1", value: "B1" },
+      { label: "B2", value: "B2" },
+      { label: "B3", value: 'B3' },
     ];
     return (
       <div>
@@ -1141,18 +1141,20 @@ function MatchScout(props: any) {
         </Flex>
 
         <h2 style={{ display: defendedIsVisible ? 'inherit' : 'none' }}>Defended:</h2>
-        <Form.Item<FieldType> name="overall_defended" valuePropName="checked" style={{ display: defendedIsVisible ? 'inherit' : 'none' }}>
+        <Form.Item<FieldType> name="overall_defended" valuePropName="checked" style={{ display: defendedIsVisible ? 'inherit' : 'none' }}
+            rules={[{required: defendedIsVisible, message : "Please select the teams it defended!"}]}>
           <Select mode='multiple' options={opposingTeamNum.map((team) => ({ label: team, value: team }))} className="input" showSearch={false} style={{ display: defendedIsVisible ? 'inherit' : 'none' }} />
         </Form.Item>
         <h2 style={{ display: wasDefendedIsVisible ? 'inherit' : 'none' }}>Defended By:</h2>
-        <Form.Item<FieldType> name="overall_defended_by" valuePropName="checked" style={{ display: wasDefendedIsVisible ? 'inherit' : 'none' }}>
+        <Form.Item<FieldType> name="overall_defended_by" valuePropName="checked" style={{ display: wasDefendedIsVisible ? 'inherit' : 'none' }}
+              rules={[{required: wasDefendedIsVisible, message : "Please select the teams it was defended by!"}]}>
           <Select mode='multiple' options={opposingTeamNum.map((team) => ({ label: team, value: team }))} className="input" showSearch={false} style={{ display: wasDefendedIsVisible ? 'inherit' : 'none' }} />
         </Form.Item>
 
         <Flex justify='in-between'>
             <Flex vertical align='flex-start'>
-              <h2>Pushing</h2>
-              <h2>(1-4)</h2>
+              <h2 className="fieldTitle">Pushing</h2>
+              <h2 className="fieldTitle">(1 - 4)</h2>
               <Form.Item<FieldType> name="overall_pushing" rules={[{ required: true, message: 'Please input the pushing rating!' }]}>
                 <InputNumber
                   type='number'
@@ -1174,8 +1176,8 @@ function MatchScout(props: any) {
               </Form.Item>
             </Flex>
             <Flex vertical align='flex-start'>
-              <h2>Counter Defense</h2>
-              <h2>(1-4)</h2>
+              <h2 className="fieldTitle">Counter Defense</h2>
+              <h2 className="fieldTitle">(1 - 4)</h2>
               <Form.Item<FieldType> name="overall_counter_defense" rules={[{ required: true, message: 'Please input the counter-defense rating!' }]}>
                 <InputNumber
                   type='number'
@@ -1199,8 +1201,8 @@ function MatchScout(props: any) {
           </Flex>
           <Flex justify='in-between'>
             <Flex vertical align='flex-start'>
-              <h2>Driver Skill</h2>
-              <h2>(1-4)</h2>
+              <h2 className="fieldTitle">Driver Skill</h2>
+              <h2 className="fieldTitle">(1 - 4)</h2>
               <Form.Item<FieldType> name="overall_driver_skill" rules={[{ required: true, message: 'Please input the driver skill rating!' }]}>
                 <InputNumber
                   type='number'
@@ -1222,8 +1224,8 @@ function MatchScout(props: any) {
               </Form.Item>
             </Flex>
             <Flex vertical align='flex-start'>
-            <h2>Num Penalties</h2>
-            <h2>&nbsp;</h2>
+            <h2 className="fieldTitle">Num Penalties</h2>
+            <h2 className="fieldTitle">&nbsp;</h2>
               <Form.Item<FieldType> name="overall_num_penalties" rules={[{ required: true, message: 'Enter # of incurred penalties' }]}>
                 <InputNumber
                   type='number'
@@ -1271,7 +1273,7 @@ function MatchScout(props: any) {
           <TextArea style={{ verticalAlign: 'center' }} className='textbox_input' />
         </Form.Item>
         <h2>Comments</h2>
-        <Form.Item<FieldType> name="overall_comments">
+        <Form.Item<FieldType> name="overall_comments" rules={[{required : true, message : "Please enter some comments!"}]}>
           <TextArea style={{ verticalAlign: 'center' }} className='textbox_input' />
         </Form.Item>
       </div>

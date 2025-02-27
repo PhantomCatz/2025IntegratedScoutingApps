@@ -1,7 +1,7 @@
 import '../public/stylesheets/style.css';
 import '../public/stylesheets/strategic.css';
 import { useEffect, useState} from 'react';
-import { Tabs, Input, Form, Select, InputNumber, Button, Flex } from 'antd';
+import { Tabs, Input, Form, Select, InputNumber, Button, Flex, Table } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import { saveAs } from 'file-saver';
 import Header from "./header";
@@ -84,18 +84,18 @@ function Strategic(props: any, text:any) {
       robot_position: string;
     };
     const rounds = [
-      { label: "Qualifications", value: "qm" },
-      { label: "Quarter-Finals", value: "qf" },
-      { label: "Semi-Finals", value: "sf" },
-      { label: "Finals", value: "f" },
+      { label: "Qualifications", value: "Qualifications" },
+      { label: "Quarter-Finals", value: "Quarter-Finals" },
+      { label: "Semi-Finals", value: "Semi-Finals" },
+      { label: "Finals", value: "Finals" },
     ];
     const robot_position = [
-      { label: "R1", value: "red_1" },
-      { label: "R2", value: "red_2" },
-      { label: "R3", value: 'red_3' },
-      { label: "B1", value: "blue_1" },
-      { label: "B2", value: "blue_2" },
-      { label: "B3", value: 'blue_3' },
+      { label: "R1", value: "R1" },
+      { label: "R2", value: "R2" },
+      { label: "R3", value: 'R3' },
+      { label: "B1", value: "B1" },
+      { label: "B2", value: "B2" },
+      { label: "B3", value: 'B3' },
     ];
     return (
       <div>
@@ -133,8 +133,37 @@ function Strategic(props: any, text:any) {
       comments: string;
     
     };
+
+    const columns = [{
+      title:'Scouter Initials',
+      dataIndex:'si',
+      width: '1300px',
+    },
+    {
+      title:'Match #',
+      dataIndex:'match',
+      width:'200px',
+    },
+    ]
+    const dataSource = []
+    for (let index = 1; index < 7; index++) {
+      dataSource.push({
+        key: index,
+        si:'Scouter Initials' + index,
+        match:index,
+        comment:"Comment" + index
+             })
+      
+    }
+ 
     return (
       <div>
+        <Table columns = {columns} dataSource = {dataSource} expandable = {{rowExpandable:(record) => true,
+          expandedRowRender:(record) => {
+            return <p>{record.comment}</p>
+          }
+        }}>
+        </Table>
         <h2>Comments</h2>
         <Form.Item<FieldType> name="comments" rules={[{ required: true, message: "Please input some comments!" }]}>
           <TextArea style={{ verticalAlign: 'center' }} className='strategic-input' />

@@ -9,15 +9,26 @@ import Lookup from './routes/lookup';
 import StrategicLookup from './routes/strategicLookup';
 import PitLookup from './routes/pitLookup';
 import PitScout from './routes/pit';
+<<<<<<< HEAD
 import DataLookup from './routes/matchLookup';
 import TeamData from './routes/matchData';
 import Picklist from './routes/picklists';
+=======
+import MatchLookup from './routes/matchLookup';
+import TeamData from './routes/matchData';
+import Picklist from './routes/picklist';
+>>>>>>> origin/main
 import Watchlist from './routes/watchlist';
 import WatchlistGet from './routes/watchlistData';
 import WatchlistUpdate from './routes/watchlistUpdate';
 
 import Chart from './routes/chart';
 import QrCode from './routes/qrCodeViewer';
+<<<<<<< HEAD
+=======
+
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+>>>>>>> origin/main
 
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
@@ -32,18 +43,20 @@ export default function App() {
         <Route path="/scoutingapp/strategic" element={<StrategicScout title="2637 Strategic Scout" />} />
         <Route path="/scoutingapp/lookup/" element={<Lookup title="2637 Lookup" />} />
         <Route path="/scoutingapp/lookup/strategic" element={<StrategicLookup title="2637 Strategic Lookup" />} />
-        <Route path="/scoutingapp/lookup/match" element={<DataLookup title="2637 Match Lookup" />} />
+        <Route path="/scoutingapp/lookup/match" element={<MatchLookup title="2637 Match Lookup" />} />
         <Route path="/scoutingapp/lookup/pit" element={<PitLookup title="2637 Pit Lookup" />} />
         <Route path="/scoutingapp/lookup/teamdata/:teamNumber" element={<TeamData title="2637 Data Lookup" />} />
         <Route path="/scoutingapp/pit" element={<PitScout title="2637 Pit Scout" />} />
-        <Route path="/scoutingapp/picklists" element={<Picklist title="2637 Picklists" />} />
+        <Route path="/scoutingapp/picklist" element={<Picklist title="2637 Picklist" />} />
         <Route path="/dtf" element={<DTF title="2637 Drive Team Feeder" />} />
         <Route path="/dtf/:teamParams" element={<DTFTeams title="2637 Drive Team Feeder" />} />
         <Route path="/watchlist" element={<Watchlist title="2637 Watch List" />} />
         <Route path="/watchlist/:team_number" element={<WatchlistGet title="2637 Watch List" />} />
         <Route path="/watchlist/update/:question_info" element={<WatchlistUpdate title="2637 Watch List" />} />
         
-		<Route path="/scoutingapp/chart" element={<Chart  />} />
+
+		<Route path="/scoutingapp/chart" element={<Chart />} />
+
         <Route path="/qrcode" element={<QrCode title="Qr Code" value={"aldshfglaierglkaheflkjghalfdgalwfghu"} />} />
       </Routes>
     </BrowserRouter>
