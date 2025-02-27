@@ -7,6 +7,7 @@ import { saveAs } from 'file-saver';
 import Header from "./header";
 import QrCode from "./qrCodeViewer";
 import {getTeamNumber, isMatchVisible} from './utils/tbaRequest';
+import { Color } from 'antd/es/color-picker';
 
 const formDefaultValues = {
   "match_event": null,
@@ -147,21 +148,37 @@ function Strategic(props: any, text:any) {
     ]
     const dataSource = []
     for (let index = 1; index < 7; index++) {
-      dataSource.push({
+      dataSource.push
+      ({
         key: index,
         si:'Scouter Initials' + index,
         match:index,
         comment:"Comment" + index
-             })
+             },
+    //  {
+    //    key: 1,
+    //    si:'JD',
+    //    match:'0',
+    //    comment: 
+    //      'This is where to pull comments from backend.
+    //      The key shows what row is being used.  
+    //      When you have the backend data to input, you can make seperate keys for each.   
+    //      So they wont all just say 'comment1' etc, etc. 
+    //      After that, you can remove the key:index as it's just a placeholder.
+    //      You may still want to keep the + index though. '
+    //  }      
+            )
       
     }
  
     return (
       <div>
-        <Table columns = {columns} dataSource = {dataSource} expandable = {{rowExpandable:(record) => true,
-          expandedRowRender:(record) => {
+        <Table columns = {columns} dataSource = {dataSource} 
+        expandable = {{rowExpandable:(record) => true, 
+         expandedRowRender:(record) => {
             return <p>{record.comment}</p>
-          }
+          },
+         expandRowByClick: true
         }}>
         </Table>
         <h2>Comments</h2>
