@@ -1,7 +1,7 @@
 import '../public/stylesheets/style.css';
 import '../public/stylesheets/strategic.css';
 import { useEffect, useState} from 'react';
-import { Tabs, Input, Form, Select, InputNumber, Button, Flex } from 'antd';
+import { Tabs, Input, Form, Select, InputNumber, Button, Flex, Table } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import { saveAs } from 'file-saver';
 import Header from "./header";
@@ -133,8 +133,37 @@ function Strategic(props: any, text:any) {
       comments: string;
     
     };
+
+    const columns = [{
+      title:'Scouter Initials',
+      dataIndex:'si',
+      width: '1300px',
+    },
+    {
+      title:'Match #',
+      dataIndex:'match',
+      width:'200px',
+    },
+    ]
+    const dataSource = []
+    for (let index = 1; index < 7; index++) {
+      dataSource.push({
+        key: index,
+        si:'Scouter Initials' + index,
+        match:index,
+        comment:"Comment" + index
+             })
+      
+    }
+ 
     return (
       <div>
+        <Table columns = {columns} dataSource = {dataSource} expandable = {{rowExpandable:(record) => true,
+          expandedRowRender:(record) => {
+            return <p>{record.comment}</p>
+          }
+        }}>
+        </Table>
         <h2>Comments</h2>
         <Form.Item<FieldType> name="comments" rules={[{ required: true, message: "Please input some comments!" }]}>
           <TextArea style={{ verticalAlign: 'center' }} className='strategic-input' />
