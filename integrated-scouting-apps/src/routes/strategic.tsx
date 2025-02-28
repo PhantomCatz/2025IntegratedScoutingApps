@@ -158,12 +158,12 @@ function Strategic(props: any, text:any) {
  
     return (
       <div>
-        <Table columns = {columns} dataSource = {dataSource} expandable = {{rowExpandable:(record) => true,
+        {/* <Table columns = {columns} dataSource = {dataSource} expandable = {{rowExpandable:(record) => true,
           expandedRowRender:(record) => {
             return <p>{record.comment}</p>
           }
         }}>
-        </Table>
+        </Table> */}
         <h2>Comments</h2>
         <Form.Item<FieldType> name="comments" rules={[{ required: true, message: "Please input some comments!" }]}>
           <TextArea style={{ verticalAlign: 'center' }} className='strategic-input' />
