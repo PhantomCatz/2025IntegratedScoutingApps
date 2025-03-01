@@ -2,6 +2,7 @@ import '../public/stylesheets/style.css';
 import '../public/stylesheets/pitLookup.css';
 import { useEffect, useState } from 'react';
 import { Checkbox, Input, InputNumber, Tabs, Image, Flex } from 'antd';
+import TextArea from 'antd/es/input/TextArea';
 import Header from "./header";
 import { getAllTeams } from './utils/tbaRequest';
 
@@ -153,6 +154,8 @@ function TeamData(props: any) {
             <Input className="input" disabled value={pitInfo.team_workmanship} />
             <h2>Gracious Professionalism</h2>
             <Input className="input" disabled value={pitInfo.gracious_professionalism} />
+            <h2>Comments</h2>
+            <TextArea className="pit-comments" disabled value={pitInfo.comments} style={{marginBottom: '5%'}} />
             </div>
           )
         });

@@ -10,6 +10,13 @@ import ChartComponent from "./chart";
 
 const MAX_NUM_TEAMS = 3;
 
+function round(num : number, prec? : number) {
+  if(prec === undefined) {
+    prec = 3;
+  }
+  return Math.round(num * 10 ** prec) / 10 ** prec;
+}
+
 function DTFTeams(props: any) {
   const { teamParams } = useParams();
   const [loading, setLoading] = useState(false);
@@ -43,8 +50,6 @@ function DTFTeams(props: any) {
       }
     }
 
-	console.log(fetchLink);
-
     fetch(fetchLink)
       .then((res) => {
         const value = res.json();
@@ -55,7 +60,7 @@ function DTFTeams(props: any) {
       })
       .catch((err) => {
         console.log("Error fetching data. Is server on?", err);
-		//throw err;
+        //throw err;
       });
   }, [teamList]);
   useEffect(() => {
@@ -261,6 +266,12 @@ function DTFTeams(props: any) {
       }
     }
     data.average_score = data.total_score / l;
+
+    for(const [k, v] of Object.entries(data)) {
+      if(typeof v === "number") {
+        data[k] = round(v);
+      }
+    }
     return data;
   }
 
