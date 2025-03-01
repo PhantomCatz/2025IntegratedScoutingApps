@@ -1,3 +1,4 @@
+import React from "react";
 import ReactDOM from 'react-dom/client';
 import HomePage from './routes/home';
 import ScoutingApp from './routes/scoutingapp';
@@ -19,10 +20,14 @@ import WatchlistUpdate from './routes/watchlistUpdate';
 import Chart from './routes/chart';
 import QrCode from './routes/qrCodeViewer';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { HashRouter, } from 'react-router-dom';
 
-export default function App() {
-  return (
-    <BrowserRouter>
+const rootElement = document.getElementById('root') as HTMLElement;
+const root = ReactDOM.createRoot(rootElement);
+
+function App() {
+	return (
+    <HashRouter>
       <Routes>
         <Route path="/" element={<HomePage title="2637 Strategy App" />} />
         <Route path="/home" element={<HomePage title="2637 Strategy App" />} />
@@ -42,14 +47,16 @@ export default function App() {
         <Route path="/watchlist/:team_number" element={<WatchlistGet title="2637 Watch List" />} />
         <Route path="/watchlist/update/:question_info" element={<WatchlistUpdate title="2637 Watch List" />} />
         
-
-		<Route path="/scoutingapp/chart" element={<Chart />} />
-
+        <Route path="/scoutingapp/chart" element={<Chart />} />
         <Route path="/qrcode" element={<QrCode title="Qr Code" value={"aldshfglaierglkaheflkjghalfdgalwfghu"} />} />
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 
-const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
-root.render(<App />);
+//root.render(<App />);
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);

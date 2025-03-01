@@ -221,7 +221,7 @@ async function getAllTeamsOffline() {
 		res.push(x);
 	});
 
-	res = res.sort((a : number, b : number) => a - b);
+	res.sort((a : number, b : number) => a - b);
 
 	return res;
 }
