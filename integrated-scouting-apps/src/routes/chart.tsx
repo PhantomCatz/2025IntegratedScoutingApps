@@ -20,7 +20,7 @@ function ChartComponent(props : any) {
     coral_overall_total: number,
     algae_scored: number,
     algae_missed: number,
-    alage_overall_total: number
+    algae_overall_total: number
   }> {
 
     let total = {
@@ -35,9 +35,9 @@ function ChartComponent(props : any) {
       coral_overall_total: 0,
       algae_scored: 0,
       algae_missed: 0,
-      alage_overall_total: 0
+      algae_overall_total: 0,
+      
     };
-
 
     try {
       const table = [];
@@ -54,6 +54,8 @@ function ChartComponent(props : any) {
   
       const response = await fetch(fetchLink);
       const data : any[] = (await response.json())[teamNumber];
+
+      console.log(data);
 
       for (let i = 0; i < data.length; i++) {
 
@@ -96,47 +98,68 @@ function ChartComponent(props : any) {
         }
 
         // TODO:  need to verify that the data is valid. 
-        if (data[i].auton.coral_missed_l1 !== null && data[i].auton.coral_missed_l1 !== undefined) {
+        if (data[i].auton_coral_missed_l1 !== null && data[i].auton_coral_missed_l1 !== undefined) {
           total.coral_missed_l1 += data[i].auton_coral_missed_l1;
         }
 
-        if (data[i].teleop.coral_missed_l1 !== null && data[i].teleop.coral_missed_l1 !== undefined) {
+        if (data[i].teleop_coral_missed_l1 !== null && data[i].teleop_coral_missed_l1 !== undefined) {
           total.coral_missed_l1 += data[i].teleop_coral_missed_l1;
         }
 
-        if (data[i].auton.coral_missed_l2  !== null && data[i].auton.coral_missed_l2 !== undefined) {
+        if (data[i].auton_coral_missed_l2  !== null && data[i].auton_coral_missed_l2 !== undefined) {
           total.coral_missed_l2 += data[i].auton_coral_missed_l2;
         }
 
-        if (data[i].teleop.coral_missed_l2 !== null && data[i].teleop.coral_missed_l2 !== undefined) {
+        if (data[i].teleop_coral_missed_l2 !== null && data[i].teleop_coral_missed_l2 !== undefined) {
           total.coral_missed_l2 += data[i].teleop_coral_missed_l2;
         }
 
-        if (data[i].auton.coral_missed_l3 !== null && data[i].auton.coral_missed_l3 !== undefined) {
+        if (data[i].auton_coral_missed_l3 !== null && data[i].auton_coral_missed_l3 !== undefined) {
           total.coral_missed_l3 += data[i].auton_coral_missed_l3;
         }
 
-        if (data[i].teleop.coral_missed_l3 !== null && data[i].teleop.coral_missed_l3 !== undefined) {
+        if (data[i].teleop_coral_missed_l3 !== null && data[i].teleop_coral_missed_l3 !== undefined) {
           total.coral_missed_l3 += data[i].teleop_coral_missed_l3;
         }
 
-        if (data[i].auton.coral_missed_l4 !== null && data[i].auton.coral_missed_l4 !== undefined) {
+        if (data[i].auton_coral_missed_l4 !== null && data[i].auton_coral_missed_l4 !== undefined) {
           total.coral_missed_l4 += data[i].auton_coral_missed_l4;
         }
 
-        if (data[i].teleop.coral_missed_l4 !== null && data[i].teleop.coral_missed_l4 !== undefined) {
+        if (data[i].teleop_coral_missed_l4 !== null && data[i].teleop_coral_missed_l4 !== undefined) {
           total.coral_missed_l4 += data[i].teleop_coral_missed_l4;
         }
         
-        total.algae_scored += (data[i].auton_algae_scored_net + data[i].teleop_algae_scored_net);
-        total.algae_missed += (data[i].auton_algae_missed_net + data[i].teleop_algae_missed_net);
+        
+        if (data[i].auton_algae_scored_net !== null && data[i].auton_algae_scored_net !== undefined) {
+          total.algae_scored += data[i].auton_algae_scored_net;
+        }
+
+        if (data[i].teleop_algae_scored_net !== null && data[i].teleop_algae_scored_net !== undefined) {
+          total.algae_scored += data[i].teleop_algae_scored_net;
+        }
+
+        if (data[i].auton_algae_missed_net !== null && data[i].auton_algae_missed_net !== undefined) {
+          total.algae_missed += data[i].auton_algae_missed_net;
+        }
+
+        if (data[i].teleop_algae_missed_net !== null && data[i].teleop_algae_missed_net !== undefined) {
+          total.algae_missed += data[i].teleop_algae_missed_net;
+        }
+
+        console.log(teamNumber,"data[i].auton_algae_scored_net", data[i].auton_algae_scored_net);
+        console.log(teamNumber," data[i].teleop_algae_scored_net", data[i].teleop_algae_scored_net);
+        console.log(teamNumber,"data[i].auton_algae_missed_net", data[i].auton_algae_missed_net);
+        console.log(teamNumber,"data[i].teleop_algae_missed_net", data[i].teleop_algae_missed_net);
+
+
 
         total.coral_overall_total += (total.coral_scored_l1 + total.coral_scored_l2 + 
                                       total.coral_scored_l3 + total.coral_scored_l4 +
                                       total.coral_missed_l1 + total.coral_missed_l2 + total.coral_missed_l3 + 
                                       total.coral_missed_l4);
 
-        total.alage_overall_total += total.algae_scored + total.algae_missed;
+        total.algae_overall_total += (total.algae_scored + total.algae_missed);
       }
 
       // debug code. 
@@ -151,7 +174,7 @@ function ChartComponent(props : any) {
       console.log("total.algae_missed: ", total.algae_missed);
       console.log("total.algae_scored: ", total.algae_scored);
       console.log("total.coral_overall_total: ", total.coral_overall_total);
-      console.log("total.alage_overall_total: ", total.alage_overall_total);
+      console.log("total.algae_overall_total: ", total.algae_overall_total);
 
       return total;
 
@@ -167,21 +190,36 @@ function ChartComponent(props : any) {
   useEffect(() => {(
     async function() {
 
+    let ratio = {
+      algae_scored_ratio: 0,
+      algae_missed_ratio: 0,
+
+      coral_scored_l1_ratio: 0,
+      coral_scored_l2_ratio: 0,
+      coral_scored_l3_ratio: 0,
+      coral_scored_l4_ratio: 0,
+
+      coral_missed_l1_ratio: 0,
+      coral_missed_l2_ratio: 0,
+      coral_missed_l3_ratio: 0,
+      coral_missed_l4_ratio: 0,
+    }
+
       const matchData = await getMatchData(teamNumber);
 
       // Calculate ratios
-      let algae_scored_ratio = matchData.algae_scored / matchData.alage_overall_total;
-      let algae_missed_ratio = matchData.algae_missed / matchData.alage_overall_total;
+      ratio.algae_scored_ratio = matchData.algae_scored / matchData.algae_overall_total;
+      ratio.algae_missed_ratio = matchData.algae_missed / matchData.algae_overall_total;
 
-      let coral_scored_l1_ratio = matchData.coral_scored_l1 / matchData.coral_overall_total;
-      let coral_scored_l2_ratio = matchData.coral_scored_l2 / matchData.coral_overall_total;
-      let coral_scored_l3_ratio = matchData.coral_scored_l3 / matchData.coral_overall_total;
-      let coral_scored_l4_ratio = matchData.coral_scored_l4 / matchData.coral_overall_total;
+      ratio.coral_scored_l1_ratio = matchData.coral_scored_l1 / matchData.coral_overall_total;
+      ratio.coral_scored_l2_ratio = matchData.coral_scored_l2 / matchData.coral_overall_total;
+      ratio.coral_scored_l3_ratio = matchData.coral_scored_l3 / matchData.coral_overall_total;
+      ratio.coral_scored_l4_ratio = matchData.coral_scored_l4 / matchData.coral_overall_total;
 
-      let coral_missed_l1_ratio = matchData.coral_missed_l1 / matchData.coral_overall_total;
-      let coral_missed_l2_ratio = matchData.coral_missed_l2 / matchData.coral_overall_total;
-      let coral_missed_l3_ratio = matchData.coral_missed_l3 / matchData.coral_overall_total;
-      let coral_missed_l4_ratio = matchData.coral_missed_l4 / matchData.coral_overall_total;
+      ratio.coral_missed_l1_ratio = matchData.coral_missed_l1 / matchData.coral_overall_total;
+      ratio.coral_missed_l2_ratio = matchData.coral_missed_l2 / matchData.coral_overall_total;
+      ratio.coral_missed_l3_ratio = matchData.coral_missed_l3 / matchData.coral_overall_total;
+      ratio.coral_missed_l4_ratio = matchData.coral_missed_l4 / matchData.coral_overall_total;
 
 
     const ctx1 = document.querySelector(`.chart1_${teamNumber}_${index}`) as HTMLCanvasElement;
@@ -192,7 +230,7 @@ function ChartComponent(props : any) {
         datasets: [ 
           {
             label: 'Algae Scored', 
-            data: [algae_scored_ratio],
+            data: [ratio.algae_scored_ratio],
             backgroundColor: 'rgb(72, 175, 201, 0.2)', 
             borderColor: 'rgb(72, 175, 201)',
             borderWidth: 1,
@@ -200,7 +238,7 @@ function ChartComponent(props : any) {
           },
           {
             label: 'Algae Missed', 
-            data: [algae_missed_ratio],
+            data: [ratio.algae_missed_ratio],
             backgroundColor: 'rgba(45, 255, 202, 0.2)', 
             borderColor: 'rgb(45, 255, 202)',
             borderWidth: 1,
@@ -233,7 +271,7 @@ function ChartComponent(props : any) {
         datasets: [
           {
             label: 'L4 scored',
-            data: [coral_scored_l4_ratio],
+            data: [ratio.coral_scored_l4_ratio],
             backgroundColor: 'rgba(255, 52, 42, 0.2)', 
             borderColor: 'rgb(255, 52, 42)',
             borderWidth: 1,
@@ -241,7 +279,7 @@ function ChartComponent(props : any) {
           },
           {
             label: 'L4 missed', 
-            data: [coral_missed_l4_ratio],
+            data: [ratio.coral_missed_l4_ratio],
             backgroundColor: 'rgba(255, 255, 255, 0.2)', 
             borderColor: 'rgb(255, 255, 255)',
             borderWidth: 1,
@@ -249,7 +287,7 @@ function ChartComponent(props : any) {
           },
           {
             label: 'L3 scored', 
-            data: [coral_scored_l3_ratio],
+            data: [ratio.coral_scored_l3_ratio],
             backgroundColor: 'rgba(85, 196, 251, 0.2)', 
             borderColor: 'rgb(85, 196, 251)',
             borderWidth: 1,
@@ -257,7 +295,7 @@ function ChartComponent(props : any) {
           },
           {
             label: 'L3 missed',
-            data: [coral_missed_l3_ratio],
+            data: [ratio.coral_missed_l3_ratio],
             backgroundColor: 'rgba(255, 255, 255, 0.2)', 
             borderColor: 'rgb(255, 255, 255)',
             borderWidth: 1,
@@ -265,7 +303,7 @@ function ChartComponent(props : any) {
           },
           {
             label: 'L2 scored',
-            data: [coral_scored_l2_ratio],
+            data: [ratio.coral_scored_l2_ratio],
             backgroundColor: 'rgba(78, 216, 135, 0.2)', 
             borderColor: 'rgb(78, 216, 135)',
             borderWidth: 1,
@@ -273,7 +311,7 @@ function ChartComponent(props : any) {
           },
           {
             label: 'L2 missed', 
-            data: [coral_missed_l2_ratio],
+            data: [ratio.coral_missed_l2_ratio],
             backgroundColor: 'rgba(255, 255, 255, 0.2)', 
             borderColor: 'rgb(255, 255, 255)',
             borderWidth: 1,
@@ -281,7 +319,7 @@ function ChartComponent(props : any) {
           },
           {
             label: 'L1 scored', 
-            data: [coral_scored_l1_ratio],
+            data: [ratio.coral_scored_l1_ratio],
             backgroundColor: 'rgba(255, 252, 89, 0.2)', 
             borderColor: 'rgb(255, 252, 89)',
             borderWidth: 1,
@@ -289,7 +327,7 @@ function ChartComponent(props : any) {
           },
           {
             label: 'L1 missed', 
-            data: [coral_missed_l1_ratio],
+            data: [ratio.coral_missed_l1_ratio],
             backgroundColor: 'rgba(255, 255, 255, 0.2)', 
             borderColor: 'rgb(255, 255, 255)',
             borderWidth: 1,
