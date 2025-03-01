@@ -147,20 +147,14 @@ function ChartComponent(props : any) {
           total.algae_missed += data[i].teleop_algae_missed_net;
         }
 
-        console.log(teamNumber,"data[i].auton_algae_scored_net", data[i].auton_algae_scored_net);
-        console.log(teamNumber," data[i].teleop_algae_scored_net", data[i].teleop_algae_scored_net);
-        console.log(teamNumber,"data[i].auton_algae_missed_net", data[i].auton_algae_missed_net);
-        console.log(teamNumber,"data[i].teleop_algae_missed_net", data[i].teleop_algae_missed_net);
-
-
-
-        total.coral_overall_total += (total.coral_scored_l1 + total.coral_scored_l2 + 
-                                      total.coral_scored_l3 + total.coral_scored_l4 +
-                                      total.coral_missed_l1 + total.coral_missed_l2 + total.coral_missed_l3 + 
-                                      total.coral_missed_l4);
-
-        total.algae_overall_total += (total.algae_scored + total.algae_missed);
       }
+      total.coral_overall_total = (total.coral_scored_l1 + total.coral_scored_l2 + 
+        total.coral_scored_l3 + total.coral_scored_l4 +
+        total.coral_missed_l1 + total.coral_missed_l2 + total.coral_missed_l3 + 
+        total.coral_missed_l4);
+    
+
+      total.algae_overall_total = (total.algae_scored + total.algae_missed);
 
       // debug code. 
       console.log("total.coral_missed_l1: ", total.coral_missed_l1);
@@ -184,8 +178,6 @@ function ChartComponent(props : any) {
       return total;
     }
   }
-  
-
 
   useEffect(() => {(
     async function() {
