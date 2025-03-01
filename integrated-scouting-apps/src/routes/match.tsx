@@ -98,6 +98,8 @@ function MatchScout(props: any) {
   const [opposingTeamNum, setOpposingTeamNum] = useState([""]);
   const [robot_starting_position, setRobot_starting_position] = useState("")
   const [formValue, setFormValue] = useState<any>(formDefaultValues);
+  const [shouldRetrySubmit, setShouldRetrySubmit] = useState(true);
+  const [lastFormValue, setLastFormValue] = useState<any>(null);
 
   const handleStartPosChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRobot_starting_position(event.target.value);
@@ -217,70 +219,117 @@ function MatchScout(props: any) {
   async function setNewMatchScout(event: any) {
     if (team_number === 0) {
       window.alert("Team number is 0, please check in Pre.");
+	  return;
     }
-    else {
-      const body = {
-        // Pre-match
-        "match_event": match_event,
-        "team_number": team_number,
-        "scouter_initials": event.scouter_initials.toLowerCase(),
-        "match_level": event.match_level + (roundIsVisible && event.round_number !== undefined ? event.round_number : ""),
-        "match_number": event.match_number,
-        "robot_position": event.robot_position,
-        "robot_starting_position": robot_starting_position,
-        // Auton
-        "auton_leave_starting_line": event.auton_leave_starting_line,
-        "auton_coral_scored_l4": event.auton_coral_scored_l4,
-        "auton_coral_missed_l4": event.auton_coral_missed_l4,
-        "auton_coral_scored_l3": event.auton_coral_scored_l3,
-        "auton_coral_missed_l3": event.auton_coral_missed_l3,
-        "auton_coral_scored_l2": event.auton_coral_scored_l2,
-        "auton_coral_missed_l2": event.auton_coral_missed_l2,
-        "auton_coral_scored_l1": event.auton_coral_scored_l1,
-        "auton_coral_missed_l1": event.auton_coral_missed_l1,
-        "auton_algae_scored_net": event.auton_algae_scored_net,
-        "auton_algae_missed_net": event.auton_algae_missed_net,
-        "auton_algae_scored_processor": event.auton_algae_scored_processor,
-        // Teleop
-        "teleop_coral_scored_l4": event.teleop_coral_scored_l4,
-        "teleop_coral_missed_l4": event.teleop_coral_missed_l4,
-        "teleop_coral_scored_l3": event.teleop_coral_scored_l3,
-        "teleop_coral_missed_l3": event.teleop_coral_missed_l3,
-        "teleop_coral_scored_l2": event.teleop_coral_scored_l2,
-        "teleop_coral_missed_l2": event.teleop_coral_missed_l2,
-        "teleop_coral_scored_l1": event.teleop_coral_scored_l1,
-        "teleop_coral_missed_l1": event.teleop_coral_missed_l1,
-        "teleop_algae_scored_net": event.teleop_algae_scored_net,
-        "teleop_algae_missed_net": event.teleop_algae_missed_net,
-        "teleop_algae_scored_processor": event.teleop_algae_scored_processor,
-        // Endgame
-        "endgame_coral_intake_capability": event.endgame_coral_intake_capability,
-        "endgame_coral_station": event.endgame_coral_station,
-        "endgame_algae_intake_capability": event.endgame_algae_intake_capability,
-        "endgame_climb_successful": event.endgame_climb_successful,
-        "endgame_climb_type": event.endgame_climb_type,
-        "endgame_climb_time": event.endgame_climb_time,
-        // Overall
-        "overall_robot_died": event.overall_robot_died,
-        "overall_defended_others": event.overall_defended_others,
-        "overall_was_defended": event.overall_was_defended,
-        "overall_defended": event.overall_defended.sort(),
-        "overall_defended_by": event.overall_defended_by.sort(),
-        "overall_pushing": event.overall_pushing,
-        "overall_counter_defense": event.overall_counter_defense,
-        "overall_driver_skill": event.overall_driver_skill,
-        "overall_num_penalties": event.overall_num_penalties,
-        "overall_penalties_incurred": event.overall_penalties_incurred,
-        "overall_comments": event.overall_comments,
-      };
-	  console.log(robot_starting_position);
-      const qrBody : any = {};
-      for (const [field, value] of Object.entries(body)) {
-        qrBody[field] = value;
-      }
-      setQrValue(qrBody);
+    const body = {
+      // Pre-match
+      "match_event": match_event,
+      "team_number": team_number,
+      "scouter_initials": event.scouter_initials.toLowerCase(),
+      "match_level": event.match_level + (roundIsVisible && event.round_number !== undefined ? event.round_number : ""),
+      "match_number": event.match_number,
+      "robot_position": event.robot_position,
+      "robot_starting_position": robot_starting_position,
+      // Auton
+      "auton_leave_starting_line": event.auton_leave_starting_line,
+      "auton_coral_scored_l4": event.auton_coral_scored_l4,
+      "auton_coral_missed_l4": event.auton_coral_missed_l4,
+      "auton_coral_scored_l3": event.auton_coral_scored_l3,
+      "auton_coral_missed_l3": event.auton_coral_missed_l3,
+      "auton_coral_scored_l2": event.auton_coral_scored_l2,
+      "auton_coral_missed_l2": event.auton_coral_missed_l2,
+      "auton_coral_scored_l1": event.auton_coral_scored_l1,
+      "auton_coral_missed_l1": event.auton_coral_missed_l1,
+      "auton_algae_scored_net": event.auton_algae_scored_net,
+      "auton_algae_missed_net": event.auton_algae_missed_net,
+      "auton_algae_scored_processor": event.auton_algae_scored_processor,
+      // Teleop
+      "teleop_coral_scored_l4": event.teleop_coral_scored_l4,
+      "teleop_coral_missed_l4": event.teleop_coral_missed_l4,
+      "teleop_coral_scored_l3": event.teleop_coral_scored_l3,
+      "teleop_coral_missed_l3": event.teleop_coral_missed_l3,
+      "teleop_coral_scored_l2": event.teleop_coral_scored_l2,
+      "teleop_coral_missed_l2": event.teleop_coral_missed_l2,
+      "teleop_coral_scored_l1": event.teleop_coral_scored_l1,
+      "teleop_coral_missed_l1": event.teleop_coral_missed_l1,
+      "teleop_algae_scored_net": event.teleop_algae_scored_net,
+      "teleop_algae_missed_net": event.teleop_algae_missed_net,
+      "teleop_algae_scored_processor": event.teleop_algae_scored_processor,
+      // Endgame
+      "endgame_coral_intake_capability": event.endgame_coral_intake_capability,
+      "endgame_coral_station": event.endgame_coral_station,
+      "endgame_algae_intake_capability": event.endgame_algae_intake_capability,
+      "endgame_climb_successful": event.endgame_climb_successful,
+      "endgame_climb_type": event.endgame_climb_type,
+      "endgame_climb_time": event.endgame_climb_time,
+      // Overall
+      "overall_robot_died": event.overall_robot_died,
+      "overall_defended_others": event.overall_defended_others,
+      "overall_was_defended": event.overall_was_defended,
+      "overall_defended": event.overall_defended.sort(),
+      "overall_defended_by": event.overall_defended_by.sort(),
+      "overall_pushing": event.overall_pushing,
+      "overall_counter_defense": event.overall_counter_defense,
+      "overall_driver_skill": event.overall_driver_skill,
+      "overall_num_penalties": event.overall_num_penalties,
+      "overall_penalties_incurred": event.overall_penalties_incurred,
+      "overall_comments": event.overall_comments,
     };
+
+    const qrBody : any = {};
+    for (const [field, value] of Object.entries(body)) {
+      qrBody[field] = value;
+    }
+    setQrValue(qrBody);
   }
+
+  async function trySubmit(event : any) {
+    if(isLoading) {
+      return;
+    }
+
+    if(!event) {
+      event = lastFormValue;
+    } else {
+      setLastFormValue(event);
+    }
+
+    if(!robot_starting_position) {
+      window.alert("Please enter the robot's starting position!");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      await setNewMatchScout(event);
+      const scouter_initials = form.getFieldValue("scouter_initials");
+      const match_number = form.getFieldValue("match_number");
+      const match_level = form.getFieldValue("match_level");
+      const robot_position = form.getFieldValue("robot_position");
+      
+      form.resetFields();
+      setFormValue(formDefaultValues);
+      form.setFieldValue("scouter_initials", scouter_initials);
+      form.setFieldValue("match_number", match_number + 1);
+      form.setFieldValue("match_level", match_level);
+      form.setFieldValue("robot_position", robot_position);
+      
+      setWasDefendedIsVisible(false);
+      setDefendedIsVisible(false);
+      setPenaltiesIsVisible(false);
+
+      await calculateMatchLevel();
+      await updateTeamNumber();
+      await updateDefendedList();
+    }
+    catch (err) {
+      console.log(err);
+    }
+    finally {
+      setLoading(false);
+    }
+  }
+
   async function updateTeamNumber() {
     try {
       const matchLevel = form.getFieldValue('match_level');
@@ -1041,7 +1090,7 @@ function MatchScout(props: any) {
     );
   }
   
-  function endgame() {
+  function endgameMatch() {
     type FieldType = {
       endgame_climb_successful: boolean,
       endgame_climb_time: number,
@@ -1100,6 +1149,7 @@ function MatchScout(props: any) {
         </Form.Item>
       </>
   )}
+
   function overall() {
     type FieldType = {
       overall_robot_died: boolean;
@@ -1279,6 +1329,7 @@ function MatchScout(props: any) {
       </div>
     )
   }
+
   const items: TabsProps['items'] = [
     {
       key: '1',
@@ -1298,13 +1349,14 @@ function MatchScout(props: any) {
     {
       key: '4',
       label: 'Endgame',
-      children: endgame(),
+      children: endgameMatch(),
     },
     {
       key: '5',
       label: 'Overall',
       children: overall(),
     },
+  
   ];
   return (
     <div>
@@ -1312,37 +1364,7 @@ function MatchScout(props: any) {
       <Form
         form={form}
         initialValues={formDefaultValues}
-        onFinish={async (event) => {
-          if(isLoading) {
-            return;
-          }
-          try {
-            setLoading(true);
-            await setNewMatchScout(event);
-            const scouter_initials = form.getFieldValue("scouter_initials");
-            const match_number = form.getFieldValue("match_number");
-            const match_level = form.getFieldValue("match_level");
-            const robot_position = form.getFieldValue("robot_position");
-            form.resetFields();
-			setFormValue(formDefaultValues);
-            form.setFieldValue("scouter_initials", scouter_initials);
-            form.setFieldValue("match_number", match_number + 1);
-            form.setFieldValue("match_level", match_level);
-            form.setFieldValue("robot_position", robot_position);
-            setWasDefendedIsVisible(false);
-            setDefendedIsVisible(false);
-			setPenaltiesIsVisible(false);
-            await calculateMatchLevel();
-            await updateTeamNumber();
-            await updateDefendedList();
-          }
-          catch (err) {
-            console.log(err);
-          }
-          finally {
-            setLoading(false);
-          }
-        }}
+        onFinish={trySubmit}
       >
         <Tabs defaultActiveKey="1" activeKey={tabNum} items={items} className='tabs' centered onChange={async (key) => { setTabNum(key) }} />
         <Footer style={{ position: "sticky", bottom: "0" }}>

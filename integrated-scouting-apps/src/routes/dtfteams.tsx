@@ -10,6 +10,13 @@ import ChartComponent from "./chart";
 
 const MAX_NUM_TEAMS = 3;
 
+function round(num : number, prec? : number) {
+  if(prec === undefined) {
+    prec = 3;
+  }
+  return Math.round(num * 10 ** prec) / 10 ** prec;
+}
+
 function DTFTeams(props: any) {
   const { teamParams } = useParams();
   const [loading, setLoading] = useState(false);
@@ -43,19 +50,17 @@ function DTFTeams(props: any) {
       }
     }
 
-	console.log(fetchLink);
-
     fetch(fetchLink)
       .then((res) => {
         const value = res.json();
         return value;
       })
       .then((data) => {
-        setTeamData(data)
+        setTeamData(data);
       })
       .catch((err) => {
         console.log("Error fetching data. Is server on?", err);
-		//throw err;
+        //throw err;
       });
   }, [teamList]);
   useEffect(() => {
@@ -258,6 +263,12 @@ function DTFTeams(props: any) {
       }
     }
     data.average_score = data.total_score / l;
+
+    for(const [k, v] of Object.entries(data)) {
+      if(typeof v === "number") {
+        data[k] = round(v);
+      }
+    }
     return data;
   }
 
@@ -294,11 +305,12 @@ function DTFTeams(props: any) {
         persistentData.push(data);
 
         const teamTabs = [
-          { key: "1", label: "Charts", children: ( <div>
-        <ChartComponent />
-      </div>  
-       )
-     },
+          { key: "1", label: "Charts", children: (
+            <div>
+            <ChartComponent />
+            </div>  
+            )
+          },
           { key: "2", label: "Auton", children: ( <div>
                <Flex justify='in-between'>
                  <Flex vertical align='flex-start'>
