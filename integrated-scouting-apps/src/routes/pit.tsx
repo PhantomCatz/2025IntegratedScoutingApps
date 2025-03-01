@@ -35,6 +35,20 @@ const formDefaultValues = {
   "comments": null,
 }
 
+// Debounce alerting because React runs it twice
+window.alert = (function() {
+  const alert = window.alert;
+  let id : any;
+
+  return function(...args) {
+    clearTimeout(id);
+
+    id = setTimeout(function() {
+      alert(...args);
+    }, 100);
+  }
+})();
+
 function PitScout(props: any) {
   const match_event = process.env.REACT_APP_EVENTNAME as string;
   const imageURI = useRef<string>();
@@ -76,11 +90,14 @@ function PitScout(props: any) {
   }, [formValue, form, robotWeight]);
   useEffect(() => {
     (async function() {
+      if(!match_event) {
+        return;
+      }
+
       const initialMessage = "Teams not scouted:";
       let message = initialMessage;
 
       try {
-
         const teamsNotScouted = await getTeamsNotScouted();
 
         if(teamsNotScouted === null || teamsNotScouted === undefined) {

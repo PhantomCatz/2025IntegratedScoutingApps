@@ -115,6 +115,8 @@ function TeamData(props: any) {
       let index = 2;
 
       for (const strategicInfo of response) {
+        strategicInfo.comments = strategicInfo.comments.replaceAll("\\n", "\n");
+
         match.push({
           key: `${strategicInfo.scouter_initials.toUpperCase()}|${strategicInfo.team_number}|${index}`,
           label: strategicInfo.scouter_initials.toUpperCase() + ": " + strategicInfo.team_number,

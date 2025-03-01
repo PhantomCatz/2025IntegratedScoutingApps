@@ -42,6 +42,9 @@ function TeamData(props: any) {
             case "overall_was_defended":
               row[field] = (<div className={`boolean_${!!match[field]}`}>&nbsp;</div>);
               break;
+            case "overall_comments":
+              row[field] = match[field].replaceAll("\\n", "\n");
+              break;
             default:
               row[field] = match[field].toString();
               break;
@@ -51,7 +54,6 @@ function TeamData(props: any) {
           table.push(row);
         }
 
-        console.log("table=", table);
         setMatchData(table);
       }
       catch (err) {
