@@ -136,7 +136,7 @@ function Strategic(props: any, text:any) {
     }
     catch (err) {
       console.log(err);
-      window.alert("Error occured, please do not leave this message and notify a Webdev member immediately.\n", err);
+      window.alert("Error occured, please do not leave this message and notify a Webdev member immediately.");
     }
     finally {
       setLoading(false);
