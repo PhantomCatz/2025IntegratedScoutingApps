@@ -10,7 +10,7 @@ import Lookup from './routes/lookup';
 import StrategicLookup from './routes/strategicLookup';
 import PitLookup from './routes/pitLookup';
 import PitScout from './routes/pit';
-import MatchLookup from './routes/matchLookup';
+import DataLookup from './routes/matchLookup';
 import TeamData from './routes/matchData';
 import Picklist from './routes/picklist';
 import Watchlist from './routes/watchlist';
@@ -19,7 +19,6 @@ import WatchlistUpdate from './routes/watchlistUpdate';
 
 import Chart from './routes/chart';
 import QrCode from './routes/qrCodeViewer';
-
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { HashRouter, } from 'react-router-dom';
 
@@ -37,7 +36,7 @@ function App() {
         <Route path="/scoutingapp/strategic" element={<StrategicScout title="2637 Strategic Scout" />} />
         <Route path="/scoutingapp/lookup/" element={<Lookup title="2637 Lookup" />} />
         <Route path="/scoutingapp/lookup/strategic" element={<StrategicLookup title="2637 Strategic Lookup" />} />
-        <Route path="/scoutingapp/lookup/match" element={<MatchLookup title="2637 Match Lookup" />} />
+        <Route path="/scoutingapp/lookup/match" element={<DataLookup title="2637 Match Lookup" />} />
         <Route path="/scoutingapp/lookup/pit" element={<PitLookup title="2637 Pit Lookup" />} />
         <Route path="/scoutingapp/lookup/teamdata/:teamNumber" element={<TeamData title="2637 Data Lookup" />} />
         <Route path="/scoutingapp/pit" element={<PitScout title="2637 Pit Scout" />} />
