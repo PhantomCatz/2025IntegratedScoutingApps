@@ -48,11 +48,12 @@ function QrCode(props : any) {
 		}
 	}
 
-	const shownValue = vals.join(sep);
+	const shownValue = vals.join(sep).replaceAll("\n", "\\n");
 	//if (shouldShow) {
 	//	console.log("Current key map: " + keys);
 	//	console.log("Current values: " + vals);
 	//}
+	
 	
 	const valuesToDisplay : {key : any, display : string}[] = [
 		{
