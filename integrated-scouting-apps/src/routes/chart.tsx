@@ -56,7 +56,6 @@ function ChartComponent(props: any) {
 
       for (let i = 0; i < data.length; i++) {
 
-
         // total.coral_scored_l1 = auton_coral_scored_l1 + teleop_coral_scored_l1
         if (data[i].auton_coral_scored_l1 !== null && data[i].auton_coral_scored_l1 != undefined) {
           total.coral_scored_l1 += data[i].auton_coral_scored_l1;
@@ -94,12 +93,37 @@ function ChartComponent(props: any) {
         }
 
         // TODO:  need to verify that the data is valid. 
-        total.coral_missed_l1 += (data[i].auton_coral_missed_l1 + data[i].teleop_coral_missed_l1);
-        total.coral_missed_l2 += (data[i].auton_coral_missed_l2 + data[i].teleop_coral_missed_l2);
-        total.coral_missed_l3 += (data[i].auton_coral_missed_l3 + data[i].teleop_coral_missed_l3);
-        total.coral_missed_l4 += (data[i].auton_coral_missed_l4 + data[i].teleop_coral_missed_l4);
+        if (data[i].auton.coral_missed_l1 !== null && data[i].auton.coral_missed_l1 !== undefined) {
+          total.coral_missed_l1 += data[i].auton_coral_missed_l1;
+        }
 
+        if (data[i].teleop.coral_missed_l1 !== null && data[i].teleop.coral_missed_l1 !== undefined) {
+          total.coral_missed_l1 += data[i].teleop_coral_missed_l1;
+        }
 
+        if (data[i].auton.coral_missed_l2  !== null && data[i].auton.coral_missed_l2 !== undefined) {
+          total.coral_missed_l2 += data[i].auton_coral_missed_l2;
+        }
+
+        if (data[i].teleop.coral_missed_l2 !== null && data[i].teleop.coral_missed_l2 !== undefined) {
+          total.coral_missed_l2 += data[i].teleop_coral_missed_l2;
+        }
+
+        if (data[i].auton.coral_missed_l3 !== null && data[i].auton.coral_missed_l3 !== undefined) {
+          total.coral_missed_l3 += data[i].auton_coral_missed_l3;
+        }
+
+        if (data[i].teleop.coral_missed_l3 !== null && data[i].teleop.coral_missed_l3 !== undefined) {
+          total.coral_missed_l3 += data[i].teleop_coral_missed_l3;
+        }
+
+        if (data[i].auton.coral_missed_l4 !== null && data[i].auton.coral_missed_l4 !== undefined) {
+          total.coral_missed_l4 += data[i].auton_coral_missed_l4;
+        }
+
+        if (data[i].teleop.coral_missed_l4 !== null && data[i].teleop.coral_missed_l4 !== undefined) {
+          total.coral_missed_l4 += data[i].teleop_coral_missed_l4;
+        }
 
         total.algae_scored += (data[i].auton_algae_scored_net + data[i].teleop_algae_scored_net);
         total.algae_missed += (data[i].auton_algae_missed_net + data[i].teleop_algae_missed_net);
