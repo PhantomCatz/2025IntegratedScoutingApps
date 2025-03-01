@@ -9,11 +9,11 @@ function Lookup(props: any) {
 	return (
 		<div>
 			<meta name="viewport" content="maximum-scale=1.0" />
-			<Header name={"Data Lookup"} back={"/scoutingapp"} />
+			<Header name={"Data Lookup"} back={"/#scoutingapp"} />
 			<div>
-				<Button className='mainbutton' href='/scoutingapp/lookup/match'>Match</Button>
-				<Button className='mainbutton' href='/scoutingapp/lookup/strategic'>Strategic</Button>
-				<Button className='mainbutton' href='/scoutingapp/lookup/pit'>Pit</Button>
+				<Button className='mainbutton' href='/#scoutingapp/lookup/match'>Match</Button>
+				<Button className='mainbutton' href='/#scoutingapp/lookup/strategic'>Strategic</Button>
+				<Button className='mainbutton' href='/#scoutingapp/lookup/pit'>Pit</Button>
 			</div>
 		</div>
 	);

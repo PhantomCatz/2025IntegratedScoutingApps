@@ -1360,7 +1360,7 @@ function MatchScout(props: any) {
   ];
   return (
     <div>
-    <Header name="Match Scout" back="/scoutingapp" />
+    <Header name="Match Scout" back="/#scoutingapp" />
       <Form
         form={form}
         initialValues={formDefaultValues}

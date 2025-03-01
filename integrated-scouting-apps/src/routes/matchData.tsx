@@ -68,7 +68,7 @@ function TeamData(props: any) {
   return (
     <>
       <meta name="viewport" content="maximum-scale=1.0" />
-      <Header name={`Data for ${teamNumber}`} back="/scoutingapp/lookup/match" />
+      <Header name={`Data for ${teamNumber}`} back="/#scoutingapp/lookup/match" />
       <h2 style={{ whiteSpace: 'pre-line' }}>{loading ? "Loading..." : ""}</h2>
       <Table dataSource={matchData} >
         <ColumnGroup title="Match Identifier">

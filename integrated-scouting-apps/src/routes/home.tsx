@@ -10,9 +10,9 @@ function HomePage(props: any) {
     <div>
       <Header name={"Strategy App"} rootPage={true} />
       <div style={{ height: '1250px' }}>
-        <Button className='homebutton' href='/scoutingapp'>Scouting App</Button>
-        <Button className='homebutton' href='/dtf'>DTF</Button>
-        <Button className='homebutton' href='/watchlist'>Watchlist</Button>
+        <Button className='homebutton' href='/#scoutingapp'>Scouting App</Button>
+        <Button className='homebutton' href='/#dtf'>DTF</Button>
+        <Button className='homebutton' href='/#watchlist'>Watchlist</Button>
       </div>
     </div>
   );
