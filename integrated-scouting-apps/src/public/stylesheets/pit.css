@@ -11,5 +11,11 @@
     font-weight: bold;
     color: white !important;
     text-align: center !important;
-    background: transparent !important;
+	background: transparent !important;
 }
+.ant-input-number .ant-input-number-input::placeholder {
+	color: white !important;
+	font-weight: bold !important;
+	opacity: 1.0 !important;
+}
+
