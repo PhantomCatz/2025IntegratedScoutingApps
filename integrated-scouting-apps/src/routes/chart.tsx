@@ -284,7 +284,7 @@ function ChartComponent(props : any) {
         labels: ['Coral'], 
         datasets: [
           {
-            label: 'L4 scored',
+            label: 'L4 Scored',
             data: [ratio.coral_scored_l4_ratio],
             backgroundColor: 'rgb(185, 52, 206, 0.3)', 
             borderColor: 'rgb(185, 52, 206)',
@@ -292,7 +292,7 @@ function ChartComponent(props : any) {
             barPercentage: 0.3,
           },
           {
-            label: 'L4 missed', 
+            label: 'L4 Missed', 
             data: [ratio.coral_missed_l4_ratio],
             backgroundColor: 'rgba(255, 255, 255, 0.3)', 
             borderColor: 'rgb(255, 255, 255)',
@@ -300,7 +300,7 @@ function ChartComponent(props : any) {
             barPercentage: 0.3
           },
           {
-            label: 'L3 scored', 
+            label: 'L3 Scored', 
             data: [ratio.coral_scored_l3_ratio],
             backgroundColor: 'rgba(164, 74, 249, 0.3)', 
             borderColor: 'rgb(164, 74, 249)',
@@ -308,7 +308,7 @@ function ChartComponent(props : any) {
             barPercentage: 0.3
           },
           {
-            label: 'L3 missed',
+            label: 'L3 Missed',
             data: [ratio.coral_missed_l3_ratio],
             backgroundColor: 'rgba(255, 255, 255, 0.3)', 
             borderColor: 'rgb(255, 255, 255)',
@@ -316,7 +316,7 @@ function ChartComponent(props : any) {
             barPercentage: 0.3
           },
           {
-            label: 'L2 scored',
+            label: 'L2 Scored',
             data: [ratio.coral_scored_l2_ratio],
             backgroundColor: 'rgba(74, 129, 249, 0.3)', 
             borderColor: 'rgb(74, 129, 249)',
@@ -324,7 +324,7 @@ function ChartComponent(props : any) {
             barPercentage: 0.3
           },
           {
-            label: 'L2 missed', 
+            label: 'L2 Missed', 
             data: [ratio.coral_missed_l2_ratio],
             backgroundColor: 'rgba(255, 255, 255, 0.3)', 
             borderColor: 'rgb(255, 255, 255)',
@@ -332,7 +332,7 @@ function ChartComponent(props : any) {
             barPercentage: 0.3
           },
           {
-            label: 'L1 scored', 
+            label: 'L1 Scored', 
             data: [ratio.coral_scored_l1_ratio],
             backgroundColor: 'rgba(85, 196, 251, 0.3)', 
             borderColor: 'rgb(85, 196, 251)',
@@ -340,7 +340,7 @@ function ChartComponent(props : any) {
             barPercentage: 0.3
           },
           {
-            label: 'L1 missed', 
+            label: 'L1 Missed', 
             data: [ratio.coral_missed_l1_ratio],
             backgroundColor: 'rgba(255, 255, 255, 0.3)', 
             borderColor: 'rgb(255, 255, 255)',

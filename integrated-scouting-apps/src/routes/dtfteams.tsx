@@ -308,12 +308,14 @@ function DTFTeams(props: any) {
         persistentData.push(data);
 
         const teamTabs = [
-          { key: "1", label: "Charts", children: ( <div>
-        <ChartComponent teamNumber={team} index={index} />
-      </div>  
+          { key: "1", label: "Charts", children: ( 
+          <div>
+             <ChartComponent teamNumber={team} index={index} />
+          </div>  
        )
      },
-          { key: "2", label: "Auton", children: ( <div>
+          { key: "2", label: "Auton", children: ( 
+          <div>
                <Flex justify='in-between'>
                  <Flex vertical align='flex-start'>
                    <h2>L1 avg</h2>
@@ -346,7 +348,8 @@ function DTFTeams(props: any) {
          </div>  
           )
         },
-          { key: "3", label: "Teleop/End", children:( <div> 
+          { key: "3", label: "Teleop/End", children:( 
+          <div> 
             <Flex justify='in-between'>
                  <Flex vertical align='flex-start'>
                    <h2>L1 avg</h2>
