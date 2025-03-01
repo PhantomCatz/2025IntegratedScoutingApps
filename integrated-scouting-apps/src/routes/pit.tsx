@@ -240,58 +240,64 @@ function PitScout(props: any) {
           />
         </Form.Item>
         <h2>Team #</h2>
-        <Form.Item<FieldType> 
-          name="team_number" 
-          rules={[{ required: true, message: 'Please input the team number!' }]}>
-          <InputNumber 
-            controls 
-            min={1} 
-           max={99999} 
-           className="input"
-           onChange={(value) => {
-              if (value !== null) {
-               const limitedValue = Math.min(99999, value);
-                getPitScout(limitedValue);
-              }
-            }}
-            onKeyPress={(event) => {
-              const currentValue = event.currentTarget.value;
-              const charCode = event.which ? event.which : event.keyCode;
-              if (charCode > 31 && (charCode < '0'.charCodeAt(0) || charCode > '9'.charCodeAt(0))) {
-                  event.preventDefault();
-              }
-              if (currentValue.length >= 5) {
-                event.preventDefault();
-              }
-            }}
-          />
-        </Form.Item>
-        <h2>Robot Weight (lbs)</h2>
-        <Form.Item
-          name="robot_weight"
-          rules={[{ required: true, message: 'Please input the robot weight in lbs!' }]}
-        >
-          <InputNumber
-            min={0}
-            max={1000}
-            precision={0}
-            placeholder="0"
-            className="input robot-weight-input"
-            value={robotWeight}
-            onChange={(value) => {
-              const numValue = typeof value === 'number' ? value : 0;
-              setRobotWeight(numValue);
-            }}
-            onKeyPress={(event) => {
-              const charCode = event.which ? event.which : event.keyCode;
-              if (charCode > 31 && (charCode < 48 || charCode > 57)) {
-                event.preventDefault();
-              }
-            }}
-            formatter={(value) => `${value}`.replace(/^0+/, '')}
-            parser={(value) => value ? Math.round(parseFloat(value)) : 0}
-          />
-        </Form.Item>
+<Form.Item<FieldType> 
+  name="team_number" 
+  rules={[{ required: true, message: 'Please input the team number!' }]}>
+  <InputNumber 
+    controls 
+    min={1} 
+    max={99999} 
+    className="input"
+    type="number"
+    pattern="[0-9]*"
+    onChange={(value) => {
+      if (value !== null) {
+        const limitedValue = Math.min(99999, value);
+        getPitScout(limitedValue);
+      }
+    }}
+    onKeyPress={(event) => {
+      const currentValue = event.currentTarget.value;
+      const charCode = event.which ? event.which : event.keyCode;
+      if (charCode > 31 && (charCode < '0'.charCodeAt(0) || charCode > '9'.charCodeAt(0))) {
+        event.preventDefault();
+      }
+      if (currentValue.length >= 5) {
+        event.preventDefault();
+      }
+    }}
+    onWheel={(e) => (e.target as HTMLElement).blur()}
+  />
+</Form.Item>
+<h2>Robot Weight (lbs)</h2>
+<Form.Item
+  name="robot_weight"
+  rules={[{ required: true, message: 'Please input the robot weight in lbs!' }]}
+>
+  <InputNumber
+    min={0}
+    max={1000}
+    precision={0}
+    placeholder="0"
+    className="input robot-weight-input"
+    value={robotWeight}
+    type="number"
+    pattern="[0-9]*"
+    onChange={(value) => {
+      const numValue = typeof value === 'number' ? value : 0;
+      setRobotWeight(numValue);
+    }}
+    onKeyPress={(event) => {
+      const charCode = event.which ? event.which : event.keyCode;
+      if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+        event.preventDefault();
+      }
+    }}
+    formatter={(value) => `${value}`.replace(/^0+/, '')}
+    parser={(value) => value ? Math.round(parseFloat(value)) : 0}
+    onWheel={(e) => (e.target as HTMLElement).blur()}
+  />
+</Form.Item>
         <h2>Drive Train Type</h2>
         <Form.Item name="drive_train_type" rules={[{ required: true, message: 'Please input the drive train type!' }]}>
         <Select
