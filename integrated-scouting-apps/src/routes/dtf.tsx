@@ -9,12 +9,12 @@ function DTF(props: any) {
 
 	return (
 		<div>
-			<Header name={"Drive Team Feeder"} back={"/#home"} />
+			<Header name={"Drive Team Feeder"} back={"#home"} />
 			<Form
 			  form={form}
 			  onFinish={async event => {
 				const teamNums = [event.team1Num, event.team2Num, event.team3Num].filter(num => num !== undefined);
-				window.location.href = "/#dtf/" + teamNums.join(",");
+				window.location.href = "#dtf/" + teamNums.join(",");
 			  }}
 			>
 			  <div>

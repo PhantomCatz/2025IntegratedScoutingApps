@@ -20,7 +20,7 @@ function TeamData(props: any) {
 					//console.log(team);
 
 					return (<h2 key={team}>
-							<a href={`/#scoutingapp/lookup/teamdata/${team}`}>{team}</a>
+							<a href={`#scoutingapp/lookup/teamdata/${team}`}>{team}</a>
 							</h2>)
 				});
 
@@ -35,11 +35,11 @@ function TeamData(props: any) {
 	return (
 		<div>
 			<meta name="viewport" content="maximum-scale=1.0" />
-			<Header name={"Match Lookup"} back={"/#scoutingapp/lookup"} />
+			<Header name={"Match Lookup"} back={"#scoutingapp/lookup"} />
 			<Form
 				form={form}
 				onFinish={async event => {
-					window.location.href = "/scoutingapp/lookup/teamData/" + event.teamNum;
+					window.location.href = "#scoutingapp/lookup/teamData/" + event.teamNum;
 				}}
 			>
 				<div>

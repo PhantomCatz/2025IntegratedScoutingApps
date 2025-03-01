@@ -130,7 +130,7 @@ function Watchlist(props: any) {
   ];
   return (
     <div>
-      <Header name={"2637 Watchlist"} back={"/#home"} />
+      <Header name={"2637 Watchlist"} back={"#home"} />
       <Tabs defaultActiveKey="1" activeKey={tabNum} items={items} className='tabs' centered onChange={async (key) => { setTabNum(key); }} />
     </div>
   );

@@ -204,7 +204,7 @@ function WatchlistUpdate(props: any) {
   return(
     <div>
       <div>
-        <Header name={'Team ' + team_number} back="/#watchlist" />
+        <Header name={'Team ' + team_number} back="#watchlist" />
       </div>
       <Tabs defaultActiveKey="1" activeKey={tabNum} items={items} className='tabs' centered onChange={async (key) => {setTabNum(key)}}/>
     </div>
