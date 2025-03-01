@@ -473,7 +473,7 @@ function DTFTeams(props: any) {
   }
   return (
     <div>
-    <Header name={"Drive Team Feeder"} back={"/home"} />
+    <Header name={"Drive Team Feeder"} back={"#home"} />
     <h2 style={{ display: loading ? 'inherit' : 'none' }}>Loading data...</h2>
     <Tabs defaultActiveKey="1" items={items} centered className='tabs' />
     </div>
