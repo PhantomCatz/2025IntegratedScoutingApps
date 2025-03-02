@@ -1,7 +1,7 @@
 import '../public/stylesheets/style.css';
 import '../public/stylesheets/pit.css';
 import '../public/stylesheets/match.css';
-import { Checkbox, Form, Input, InputNumber, Select, Upload } from 'antd';
+import { Checkbox, Form, Input, InputNumber, Select, } from 'antd';
 import { useRef } from 'react';
 import { Button } from 'antd';
 import React, { useState, useEffect } from 'react';
@@ -9,7 +9,7 @@ import { ReactSketchCanvasRef } from 'react-sketch-canvas';
 import TextArea from 'antd/es/input/TextArea';
 import Header from './header';
 import QrCode from './qrCodeViewer';
-import {getAllTeams, getTeamsNotScouted} from './utils/tbaRequest';
+import { getTeamsNotScouted, } from './utils/tbaRequest';
 
 const formDefaultValues = {
   "match_event": null,
@@ -55,7 +55,6 @@ function PitScout(props: any) {
   const canvasRef = useRef<ReactSketchCanvasRef>(null);
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
-  const [robotImageURI] = useState([""]);
   const [formValue, setFormValue] = useState(formDefaultValues);
   const [qrValue, setQrValue] = useState<any>();
   const [robotWeight, setRobotWeight] = useState(0);

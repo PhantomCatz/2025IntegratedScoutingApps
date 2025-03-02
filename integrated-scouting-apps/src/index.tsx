@@ -19,8 +19,8 @@ import WatchlistUpdate from './routes/watchlistUpdate';
 
 import Chart from './routes/chart';
 import QrCode from './routes/qrCodeViewer';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { HashRouter, } from 'react-router-dom';
+
+import { HashRouter, Routes, Route } from 'react-router-dom';
 
 const rootElement = document.getElementById('root') as HTMLElement;
 const root = ReactDOM.createRoot(rootElement);
