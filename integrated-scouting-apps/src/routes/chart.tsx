@@ -296,7 +296,7 @@ function ChartComponent(props : any) {
           {
             label: 'L4 Missed', 
             data: [ratio.coral_missed_l4_ratio],
-            backgroundColor: 'rgba(255, 255, 255, 0.4)', 
+            backgroundColor: 'rgba(255, 255, 255, 0.5)', 
             borderColor: 'rgb(255, 255, 255)',
             borderWidth: 1,
             barPercentage: 0.3
@@ -312,7 +312,7 @@ function ChartComponent(props : any) {
           {
             label: 'L3 Missed',
             data: [ratio.coral_missed_l3_ratio],
-            backgroundColor: 'rgba(255, 255, 255, 0.4)', 
+            backgroundColor: 'rgba(255, 255, 255, 0.5)', 
             borderColor: 'rgb(255, 255, 255)',
             borderWidth: 1,
             barPercentage: 0.3
@@ -328,7 +328,7 @@ function ChartComponent(props : any) {
           {
             label: 'L2 Missed', 
             data: [ratio.coral_missed_l2_ratio],
-            backgroundColor: 'rgba(255, 255, 255, 0.4)', 
+            backgroundColor: 'rgba(255, 255, 255, 0.5)', 
             borderColor: 'rgb(255, 255, 255)',
             borderWidth: 1,
             barPercentage: 0.3
@@ -344,7 +344,7 @@ function ChartComponent(props : any) {
           {
             label: 'L1 Missed', 
             data: [ratio.coral_missed_l1_ratio],
-            backgroundColor: 'rgba(255, 255, 255, 0.4)', 
+            backgroundColor: 'rgba(255, 255, 255, 0.5)', 
             borderColor: 'rgb(255, 255, 255)',
             borderWidth: 1,
             barPercentage: 0.3
