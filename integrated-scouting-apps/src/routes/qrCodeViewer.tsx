@@ -2,7 +2,7 @@ import '../public/stylesheets/style.css';
 import '../public/stylesheets/qrcode.css';
 
 import {QRCode as AntQr} from 'antd';
-import {useState, useEffect} from 'react';
+import {useState, } from 'react';
 
 const sep = "\t";
 const defualtValue = <></>;

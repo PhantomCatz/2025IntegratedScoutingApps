@@ -1,7 +1,7 @@
 import '../public/stylesheets/style.css';
 import '../public/stylesheets/pitLookup.css';
 import { useEffect, useState } from 'react';
-import { Checkbox, Input, InputNumber, Tabs, Image, Flex } from 'antd';
+import { Input, InputNumber, Tabs, } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import Header from "./header";
 import { getAllTeams } from './utils/tbaRequest';
