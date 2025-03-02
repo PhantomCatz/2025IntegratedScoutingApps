@@ -1,10 +1,37 @@
 import '../public/stylesheets/style.css';
-import { Button } from 'antd';
+import { Button, Tabs, TabsProps } from 'antd';
 import { useEffect } from 'react';
 import Header from "./header";
 
-function HomePage(props: any) {
+function Egg(props: any) {
   useEffect(() => { document.title = props.title; return () => { } }, [props.title]);
+
+  function hyoungjun() {
+    return (
+        <div>
+            
+        </div>
+    )
+  }
+  
+
+  const items: TabsProps['items'] = [
+    {
+      key: '1',
+      label: 'Tab 1',
+      children: 'Content of Tab Pane 1',
+    },
+    {
+      key: '2',
+      label: 'Tab 2',
+      children: 'Content of Tab Pane 2',
+    },
+    {
+      key: '3',
+      label: 'Tab 3',
+      children: 'Content of Tab Pane 3',
+    },
+  ];
 
   return (
     <div>
@@ -18,4 +45,4 @@ function HomePage(props: any) {
   );
 }
 
-export default HomePage;
+export default Egg;
