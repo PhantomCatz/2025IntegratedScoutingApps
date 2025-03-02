@@ -18,6 +18,7 @@ import WatchlistUpdate from './routes/watchlistUpdate';
 
 import Chart from './routes/chart';
 import QrCode from './routes/qrCodeViewer';
+import Egg from './routes/egg'
 
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
@@ -42,6 +43,7 @@ export default function App() {
         <Route path="/watchlist" element={<Watchlist title="2637 Watch List" />} />
         <Route path="/watchlist/:team_number" element={<WatchlistGet title="2637 Watch List" />} />
         <Route path="/watchlist/update/:question_info" element={<WatchlistUpdate title="2637 Watch List" />} />
+        <Route path="/egg" element={<Egg title="2637 GOATs" />}/>
         
 		<Route path="/scoutingapp/chart" element={<Chart />} />
         <Route path="/qrcode" element={<QrCode title="Qr Code" value={"aldshfglaierglkaheflkjghalfdgalwfghu"} />} />
