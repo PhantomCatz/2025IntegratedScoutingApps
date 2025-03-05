@@ -11,11 +11,11 @@ function ScoutingPage(props: any) {
       <meta name="viewport" content="maximum-scale=1.0" />
       <Header name={"Scouting App"} back={"#home"} />
       <div>
-        <Button className='mainbutton' href='#scoutingapp/match'>Match</Button>
-        <Button className='mainbutton' href='#scoutingapp/strategic'>Strategic</Button>
-        <Button className='mainbutton' href='#scoutingapp/pit'>Pit</Button>
-        <Button className='mainbutton' href='#scoutingapp/lookup'>Data Lookup</Button>
-        <Button className='mainbutton' href='#scoutingapp/picklist'>Picklist</Button>
+        <Button className='mainbutton' href='/scoutingapp/match'>Match</Button>
+        <Button className='mainbutton' href='/scoutingapp/strategic'>Strategic</Button>
+        <Button className='mainbutton' href='/scoutingapp/pit'>Pit</Button>
+        <Button className='mainbutton' href='/scoutingapp/lookup'>Data Lookup</Button>
+        {/* <Button className='mainbutton' href='/scoutingapp/picklist'>Picklist</Button> */}
       </div>
 	</div>
   );
