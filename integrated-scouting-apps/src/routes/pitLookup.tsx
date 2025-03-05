@@ -1,7 +1,7 @@
 import '../public/stylesheets/style.css';
 import '../public/stylesheets/pitLookup.css';
 import { useEffect, useState } from 'react';
-import { Checkbox, Input, InputNumber, Tabs, Image, Flex } from 'antd';
+import { Input, InputNumber, Tabs, } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import Header from "./header";
 import { getAllTeams } from './utils/tbaRequest';
@@ -111,6 +111,8 @@ function TeamData(props: any) {
       let index = 2;
 
       for (const pitInfo of response) {
+        pitInfo.comments = pitInfo.comments.replaceAll("\\n", "\n");
+
         match.push({
           key: `${pitInfo.scouter_initials.toUpperCase()}|${pitInfo.team_number}|${index}`,
           label: pitInfo.scouter_initials.toUpperCase() + ": " + pitInfo.team_number,
@@ -176,7 +178,7 @@ function TeamData(props: any) {
   return (
     <div>
       <meta name="viewport" content="maximum-scale=1.0" />
-      <Header name={"Pit Lookup"} back={"/scoutingapp/lookup"} />
+      <Header name={"Pit Lookup"} back={"#scoutingapp/lookup"} />
       <Tabs defaultActiveKey="1" activeKey={tabNum} items={items} centered className='tabs' onChange={async (key) => { setTabNum(key); }} />
     </div>
   );

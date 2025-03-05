@@ -36,6 +36,10 @@ function Strategic(props: any, text:any) {
     (async function() {
     let fetchLink = process.env.REACT_APP_SERVER_ADDRESS;
 
+    if(!team_number) {
+      return;
+    }
+
     if(!fetchLink) {
       console.error("Could not get fetch link. Check .env");
       return;
@@ -133,7 +137,6 @@ function Strategic(props: any, text:any) {
     catch (err) {
       console.log(err);
       window.alert("Error occured, please do not leave this message and notify a Webdev member immediately.");
-      window.alert(err);
     }
     finally {
       setLoading(false);
@@ -268,7 +271,7 @@ function Strategic(props: any, text:any) {
   return (
     <div>
       <meta name="viewport" content="maximum-scale=1.0" />
-      <Header name={"Strategic Scout"} back="/scoutingapp/" />
+      <Header name={"Strategic Scout"} back="#scoutingapp/" />
       <Form
         form={form}
         onFinish={runFormFinish}

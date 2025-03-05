@@ -69,6 +69,9 @@ function DTFTeams(props: any) {
   
   function aggregateData(k : any, v : any, data : any) {
     const l = data.match_count;
+    if(v === null && v === undefined) {
+      return;
+    }
     switch(k) {
     // Average values
     case "auton_coral_scored_l4":
@@ -305,13 +308,14 @@ function DTFTeams(props: any) {
         persistentData.push(data);
 
         const teamTabs = [
-          { key: "1", label: "Charts", children: (
-            <div>
-            <ChartComponent />
-            </div>  
-            )
-          },
-          { key: "2", label: "Auton", children: ( <div>
+          { key: "1", label: "Charts", children: ( 
+          <div>
+             <ChartComponent teamNumber={team} index={index} />
+          </div>  
+       )
+     },
+          { key: "2", label: "Auton", children: ( 
+          <div>
                <Flex justify='in-between'>
                  <Flex vertical align='flex-start'>
                    <h2>L1 avg</h2>
@@ -344,7 +348,8 @@ function DTFTeams(props: any) {
          </div>  
           )
         },
-          { key: "3", label: "Teleop/End", children:( <div> 
+          { key: "3", label: "Teleop/End", children:( 
+          <div> 
             <Flex justify='in-between'>
                  <Flex vertical align='flex-start'>
                    <h2>L1 avg</h2>
@@ -468,7 +473,7 @@ function DTFTeams(props: any) {
   }
   return (
     <div>
-    <Header name={"Drive Team Feeder"} back={"/home"} />
+    <Header name={"Drive Team Feeder"} back={"#home"} />
     <h2 style={{ display: loading ? 'inherit' : 'none' }}>Loading data...</h2>
     <Tabs defaultActiveKey="1" items={items} centered className='tabs' />
     </div>

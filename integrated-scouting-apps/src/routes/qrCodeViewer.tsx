@@ -2,7 +2,7 @@ import '../public/stylesheets/style.css';
 import '../public/stylesheets/qrcode.css';
 
 import {QRCode as AntQr} from 'antd';
-import {useState, useEffect} from 'react';
+import {useState, } from 'react';
 
 const sep = "\t";
 const defualtValue = <></>;
@@ -48,11 +48,12 @@ function QrCode(props : any) {
 		}
 	}
 
-	const shownValue = vals.join(sep);
+	const shownValue = vals.join(sep).replaceAll("\n", "\\n");
 	//if (shouldShow) {
 	//	console.log("Current key map: " + keys);
 	//	console.log("Current values: " + vals);
 	//}
+	
 	
 	const valuesToDisplay : {key : any, display : string}[] = [
 		{

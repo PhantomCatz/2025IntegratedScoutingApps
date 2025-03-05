@@ -1,7 +1,7 @@
 import '../public/stylesheets/style.css';
 import '../public/stylesheets/pit.css';
 import '../public/stylesheets/match.css';
-import { Checkbox, Form, Input, InputNumber, Select, Upload } from 'antd';
+import { Checkbox, Form, Input, InputNumber, Select, } from 'antd';
 import { useRef } from 'react';
 import { Button } from 'antd';
 import React, { useState, useEffect } from 'react';
@@ -9,7 +9,7 @@ import { ReactSketchCanvasRef } from 'react-sketch-canvas';
 import TextArea from 'antd/es/input/TextArea';
 import Header from './header';
 import QrCode from './qrCodeViewer';
-import {getAllTeams, getTeamsNotScouted} from './utils/tbaRequest';
+import { getTeamsNotScouted, } from './utils/tbaRequest';
 
 const formDefaultValues = {
   "match_event": null,
@@ -35,13 +35,26 @@ const formDefaultValues = {
   "comments": null,
 }
 
+// Debounce alerting because React runs it twice
+window.alert = (function() {
+  const alert = window.alert;
+  let id : any;
+
+  return function(...args) {
+    clearTimeout(id);
+
+    id = setTimeout(function() {
+      alert(...args);
+    }, 100);
+  }
+})();
+
 function PitScout(props: any) {
   const match_event = process.env.REACT_APP_EVENTNAME as string;
   const imageURI = useRef<string>();
   const canvasRef = useRef<ReactSketchCanvasRef>(null);
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
-  const [robotImageURI] = useState([""]);
   const [formValue, setFormValue] = useState(formDefaultValues);
   const [qrValue, setQrValue] = useState<any>();
   const [robotWeight, setRobotWeight] = useState(0);
@@ -76,11 +89,14 @@ function PitScout(props: any) {
   }, [formValue, form, robotWeight]);
   useEffect(() => {
     (async function() {
+      if(!match_event) {
+        return;
+      }
+
       const initialMessage = "Teams not scouted:";
       let message = initialMessage;
 
       try {
-
         const teamsNotScouted = await getTeamsNotScouted();
 
         if(teamsNotScouted === null || teamsNotScouted === undefined) {
@@ -240,58 +256,64 @@ function PitScout(props: any) {
           />
         </Form.Item>
         <h2>Team #</h2>
-        <Form.Item<FieldType> 
-          name="team_number" 
-          rules={[{ required: true, message: 'Please input the team number!' }]}>
-          <InputNumber 
-            controls 
-            min={1} 
-           max={99999} 
-           className="input"
-           onChange={(value) => {
-              if (value !== null) {
-               const limitedValue = Math.min(99999, value);
-                getPitScout(limitedValue);
-              }
-            }}
-            onKeyPress={(event) => {
-              const currentValue = event.currentTarget.value;
-              const charCode = event.which ? event.which : event.keyCode;
-              if (charCode > 31 && (charCode < '0'.charCodeAt(0) || charCode > '9'.charCodeAt(0))) {
-                  event.preventDefault();
-              }
-              if (currentValue.length >= 5) {
-                event.preventDefault();
-              }
-            }}
-          />
-        </Form.Item>
-        <h2>Robot Weight (lbs)</h2>
-        <Form.Item
-          name="robot_weight"
-          rules={[{ required: true, message: 'Please input the robot weight in lbs!' }]}
-        >
-          <InputNumber
-            min={0}
-            max={1000}
-            precision={0}
-            placeholder="0"
-            className="input robot-weight-input"
-            value={robotWeight}
-            onChange={(value) => {
-              const numValue = typeof value === 'number' ? value : 0;
-              setRobotWeight(numValue);
-            }}
-            onKeyPress={(event) => {
-              const charCode = event.which ? event.which : event.keyCode;
-              if (charCode > 31 && (charCode < 48 || charCode > 57)) {
-                event.preventDefault();
-              }
-            }}
-            formatter={(value) => `${value}`.replace(/^0+/, '')}
-            parser={(value) => value ? Math.round(parseFloat(value)) : 0}
-          />
-        </Form.Item>
+<Form.Item<FieldType> 
+  name="team_number" 
+  rules={[{ required: true, message: 'Please input the team number!' }]}>
+  <InputNumber 
+    controls 
+    min={1} 
+    max={99999} 
+    className="input"
+    type="number"
+    pattern="[0-9]*"
+    onChange={(value) => {
+      if (value !== null) {
+        const limitedValue = Math.min(99999, value);
+        getPitScout(limitedValue);
+      }
+    }}
+    onKeyPress={(event) => {
+      const currentValue = event.currentTarget.value;
+      const charCode = event.which ? event.which : event.keyCode;
+      if (charCode > 31 && (charCode < '0'.charCodeAt(0) || charCode > '9'.charCodeAt(0))) {
+        event.preventDefault();
+      }
+      if (currentValue.length >= 5) {
+        event.preventDefault();
+      }
+    }}
+    onWheel={(e) => (e.target as HTMLElement).blur()}
+  />
+</Form.Item>
+<h2>Robot Weight (lbs)</h2>
+<Form.Item
+  name="robot_weight"
+  rules={[{ required: true, message: 'Please input the robot weight in lbs!' }]}
+>
+  <InputNumber
+    min={0}
+    max={1000}
+    precision={0}
+    placeholder="0"
+    className="input robot-weight-input"
+    value={robotWeight}
+    type="number"
+    pattern="[0-9]*"
+    onChange={(value) => {
+      const numValue = typeof value === 'number' ? value : 0;
+      setRobotWeight(numValue);
+    }}
+    onKeyPress={(event) => {
+      const charCode = event.which ? event.which : event.keyCode;
+      if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+        event.preventDefault();
+      }
+    }}
+    formatter={(value) => `${value}`.replace(/^0+/, '')}
+    parser={(value) => value ? Math.round(parseFloat(value)) : 0}
+    onWheel={(e) => (e.target as HTMLElement).blur()}
+  />
+</Form.Item>
         <h2>Drive Train Type</h2>
         <Form.Item name="drive_train_type" rules={[{ required: true, message: 'Please input the drive train type!' }]}>
         <Select
@@ -490,7 +512,7 @@ function PitScout(props: any) {
   }
   return (
     <div>
-  <Header name={"Pit Scout"} back={"/scoutingapp"}/>
+	<Header name={"Pit Scout"} back={"#scoutingapp"}/>
       <Form
         form={form}
         initialValues={formDefaultValues}

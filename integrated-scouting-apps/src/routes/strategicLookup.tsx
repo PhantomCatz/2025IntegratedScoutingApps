@@ -115,6 +115,8 @@ function TeamData(props: any) {
       let index = 2;
 
       for (const strategicInfo of response) {
+        strategicInfo.comments = strategicInfo.comments.replaceAll("\\n", "\n");
+
         match.push({
           key: `${strategicInfo.scouter_initials.toUpperCase()}|${strategicInfo.team_number}|${index}`,
           label: strategicInfo.scouter_initials.toUpperCase() + ": " + strategicInfo.team_number,
@@ -154,7 +156,7 @@ function TeamData(props: any) {
   return (
     <div>
       <meta name="viewport" content="maximum-scale=1.0" />
-      <Header name={"Strategic Lookup"} back={"/scoutingapp/lookup/"} />
+      <Header name={"Strategic Lookup"} back={"#scoutingapp/lookup/"} />
       <Tabs defaultActiveKey="1" activeKey={tabNum} items={items} centered className='tabs' onChange={async (key) => { setTabNum(key); }} />
     </div>
   );
