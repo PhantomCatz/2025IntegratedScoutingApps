@@ -7,6 +7,7 @@ import { Footer } from 'antd/es/layout/layout';
 function Egg(props: any) {
   useEffect(() => { document.title = props.title; return () => { } }, [props.title]);
   const [tabNum, setTabNum] = useState("1");
+  const [showEgg, setShowEgg] = useState(false);
 
   function hyoungjun() {
     return (
@@ -17,11 +18,23 @@ function Egg(props: any) {
   }
 
   function rhys() {
+    
     return (
-        <div>
-            
-        </div>
-    )
+      <div style={{ textAlign: "center", padding: "20px" }}>
+        <h2>Don't Click!</h2>
+        <Button
+          onClick={() => setShowEgg(!showEgg)}
+          style={{ marginBottom: "20px" }}
+        >
+          Why'd You Click Me?
+        </Button>
+        {showEgg && (
+          <div style={{ fontSize: "48px", color: "green" }}>
+            🥚 Ok Buddy. 🎉 
+          </div>
+        )}
+      </div>
+    );
   }
 
   function isaac() {
