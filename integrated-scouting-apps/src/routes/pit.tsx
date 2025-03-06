@@ -512,7 +512,7 @@ function PitScout(props: any) {
   }
   return (
     <div>
-	<Header name={"Pit Scout"} back={"#scoutingapp"}/>
+	<Header name={"Pit Scout"} back={"/scoutingapp"}/>
       <Form
         form={form}
         initialValues={formDefaultValues}
