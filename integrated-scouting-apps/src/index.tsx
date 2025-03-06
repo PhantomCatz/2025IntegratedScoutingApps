@@ -10,7 +10,7 @@ import Lookup from './routes/lookup';
 import StrategicLookup from './routes/strategicLookup';
 import PitLookup from './routes/pitLookup';
 import PitScout from './routes/pit';
-import MatchLookup from './routes/matchLookup';
+import DataLookup from './routes/matchLookup';
 import TeamData from './routes/matchData';
 import Picklist from './routes/picklist';
 import Watchlist from './routes/watchlist';
@@ -19,14 +19,16 @@ import WatchlistUpdate from './routes/watchlistUpdate';
 
 import Chart from './routes/chart';
 import QrCode from './routes/qrCodeViewer';
-import Egg from './routes/egg'
 
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { HashRouter, Routes, Route } from 'react-router-dom';
 
-export default function App() {
-  return (
-    <BrowserRouter>
-     <Routes>
+const rootElement = document.getElementById('root') as HTMLElement;
+const root = ReactDOM.createRoot(rootElement);
+
+function App() {
+	return (
+    <HashRouter>
+      <Routes>
         <Route path="/" element={<HomePage title="2637 Strategy App" />} />
         <Route path="/home" element={<HomePage title="2637 Strategy App" />} />
         <Route path="/scoutingapp" element={<ScoutingApp title="2637 Scouting App" />} />
@@ -34,7 +36,7 @@ export default function App() {
         <Route path="/scoutingapp/strategic" element={<StrategicScout title="2637 Strategic Scout" />} />
         <Route path="/scoutingapp/lookup/" element={<Lookup title="2637 Lookup" />} />
         <Route path="/scoutingapp/lookup/strategic" element={<StrategicLookup title="2637 Strategic Lookup" />} />
-        <Route path="/scoutingapp/lookup/match" element={<MatchLookup title="2637 Match Lookup" />} />
+        <Route path="/scoutingapp/lookup/match" element={<DataLookup title="2637 Match Lookup" />} />
         <Route path="/scoutingapp/lookup/pit" element={<PitLookup title="2637 Pit Lookup" />} />
         <Route path="/scoutingapp/lookup/teamdata/:teamNumber" element={<TeamData title="2637 Data Lookup" />} />
         <Route path="/scoutingapp/pit" element={<PitScout title="2637 Pit Scout" />} />
@@ -44,14 +46,17 @@ export default function App() {
         <Route path="/watchlist" element={<Watchlist title="2637 Watch List" />} />
         <Route path="/watchlist/:team_number" element={<WatchlistGet title="2637 Watch List" />} />
         <Route path="/watchlist/update/:question_info" element={<WatchlistUpdate title="2637 Watch List" />} />
-        <Route path="/egg" element={<Egg title="2637 GOATs" />}/>
-
+        
         <Route path="/scoutingapp/chart" element={<Chart />} />
         <Route path="/qrcode" element={<QrCode title="Qr Code" value={"aldshfglaierglkaheflkjghalfdgalwfghu"} />} />
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 
-const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
-root.render(<App />);
+//root.render(<App />);
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);

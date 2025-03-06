@@ -271,7 +271,7 @@ function Strategic(props: any, text:any) {
   return (
     <div>
       <meta name="viewport" content="maximum-scale=1.0" />
-      <Header name={"Strategic Scout"} back="/scoutingapp/" />
+      <Header name={"Strategic Scout"} back="#scoutingapp/" />
       <Form
         form={form}
         onFinish={runFormFinish}
