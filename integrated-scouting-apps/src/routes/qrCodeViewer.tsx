@@ -2,7 +2,7 @@ import '../public/stylesheets/style.css';
 import '../public/stylesheets/qrcode.css';
 
 import {QRCode as AntQr} from 'antd';
-import {useState, useEffect} from 'react';
+import {useState, } from 'react';
 
 const sep = "\t";
 const defualtValue = <></>;
@@ -15,21 +15,20 @@ function QrCode(props : any) {
 
 	const newQrValue = props.value;
 
-	if(!Object.is(qrValue, newQrValue)) {
-		console.log("setting", qrValue, "from", newQrValue);
+	if(qrValue !== newQrValue) {
 		setQrValue(newQrValue);
 		setTimestamp(new Date());
 		return defualtValue;
 	}
 
+	if(!qrValue) {
+		return defualtValue;
+	}
 
 	const keys = [];
 	const vals = [];
 	if(shouldShow) {
-		//console.log(qrValue);
-
 		for(const [k,v] of Object.entries(qrValue)) {
-			//console.log(k + "," + v);
 			keys.push(k);
 			switch(v as any) {
 			case true:
@@ -49,44 +48,55 @@ function QrCode(props : any) {
 		}
 	}
 
-	const shownValue = vals.join(sep);
+	const shownValue = vals.join(sep).replaceAll("\n", "\\n");
 	//if (shouldShow) {
 	//	console.log("Current key map: " + keys);
 	//	console.log("Current values: " + vals);
 	//}
+	
+	
+	const valuesToDisplay : {key : any, display : string}[] = [
+		{
+			"key" : "round_number",
+			"display" : "Round Number:",
+		},
+		{
+			"key" : "scouter_initials",
+			"display" : "Scouter Initials:",
+		},
+		{
+			"key" : "match_event",
+			"display" : "Match Event:",
+		},
+		{
+			"key" : "match_number",
+			"display" : "Match Number:",
+		},
+		{
+			"key" : "team_number",
+			"display" : "Team Number:",
+		},
+	];
 
-	//shouldShow = true;
+	const qrInfo : any[] = [];
+	for(const value of valuesToDisplay) {
+		if(qrValue[value.key]) {
+			qrInfo.push(<p style={{fontSize:"300%"}} key={value.key}>{value.display} {qrValue[value.key]}</p>);
+		}
+	}
 
 	return (
 		<div>
 		{shouldShow && (
 			<div>
 				<h1 className={"qrTitle"}>{`Last submitted at ${timestamp}`}</h1>
+				{qrInfo}
 				<div className={"qrCodeHolder"}>
 					<div>
 						<AntQr value={
 							/*Limit: 2324 chars*/
-							/*
-							"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" + 
-							"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" + 
-							"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" + 
-							"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" + 
-							"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" + 
-							"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" + 
-							"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" + 
-							"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" + 
-							"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" + 
-							"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" + 
-							"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" + 
-							"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" + 
-							"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" + 
-							"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" + 
-							"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" + 
-							"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" +
-							"aaaaaaaaaaaaaaaaaaaaaaaa"
-							*/
 							shownValue
-						} size={500} type={"svg"} />
+						} size={800} type={"svg"} />
 					</div>
 				</div>
 				<h2>Please take a screenshot of this and show it to WebDev</h2>

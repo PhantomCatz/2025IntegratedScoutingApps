@@ -5,7 +5,7 @@ import Column from 'antd/es/table/Column';
 import { Table } from 'antd';
 import Header from "./header";
 
-function Picklists(props: any) {
+function Picklist(props: any) {
   const [loading, setLoading] = useState(false);
   const [fetchedData, setFetchedData] = useState<{ [x: string]: any; }[]>([]);
   // useEffect(() => { VerifyLogin.VerifyLogin(cookies.login); return () => { } }, [cookies.login]);
@@ -109,23 +109,24 @@ function Picklists(props: any) {
   }, []);
   return (
     <div>
-      <Header name="PickList" back="/scoutingapp" />
-        <h2 style={{ whiteSpace: 'pre-line' }}>{loading ? 'Loading Data...' : ''}</h2>
-        <Table dataSource={fetchedData} pagination={{ pageSize: 500 }}>
-          <Column title="Rank #" dataIndex="rank" sorter={(a: any, b: any) => a.rank - b.rank} defaultSortOrder={"ascend"} fixed="left" />
-          <Column title="Team #" dataIndex="team_number" sorter={(a: any, b: any) => a.team_number - b.team_number} />
-          <Column title="Overall Score" dataIndex="avg_score" sorter={(a: any, b: any) => a.avg_score - b.avg_score} />
-          <Column title="IEGR (Top 3)" dataIndex="iegr" sorter={(a: any, b: any) => a.iegr - b.iegr} />
-          <Column title="Auton Avg" dataIndex="auton_avg" sorter={(a: any, b: any) => a.auto_scored_pieces - b.auto_scored_pieces} />
-          <Column title="Teleop Avg" dataIndex="teleop_avg" sorter={(a: any, b: any) => a.auto_score_ratio.length - b.auto_score_ratio.length} />
-          <Column title="Coral Avg" dataIndex="coral_avg" sorter={(a: any, b: any) => a.auto_score_ratio.length - b.auto_score_ratio.length} />
-          <Column title="Algae Avg" dataIndex="algae_avg" sorter={(a: any, b: any) => a.teleop_amps_scored - b.teleop_amps_scored} />
-          <Column title="Robot Deaths" dataIndex="robot_deaths" sorter={(a: any, b: any) => a.amp_score_ratio.length - b.amp_score_ratio.length} />
-          <Column title="Watchlist Reason" dataIndex="watchlist_reason" sorter={(a: any, b: any) => a.teleop_speaker_scored - b.teleop_speaker_scored} />
-        </Table>
-      </div>
+      <Header name="PickList" back="#scoutingapp" />
+      <h2 style={{ whiteSpace: 'pre-line' }}>{loading ? 'Loading Data...' : ''}</h2>
+      <Table dataSource={fetchedData} pagination={{ pageSize: 500 }}>
+        <Column title="Rank #" dataIndex="rank" sorter={(a: any, b: any) => a.rank - b.rank} defaultSortOrder={"ascend"} fixed="left" />
+        <Column title="Team #" dataIndex="team_number" sorter={(a: any, b: any) => a.team_number - b.team_number} />
+        <Column title="Overall Score" dataIndex="avg_score" sorter={(a: any, b: any) => a.avg_score - b.avg_score} />
+        <Column title="IEGR (Top 3)" dataIndex="iegr" sorter={(a: any, b: any) => a.iegr - b.iegr} />
+        <Column title="Auton Avg" dataIndex="auton_avg" sorter={(a: any, b: any) => a.auto_scored_pieces - b.auto_scored_pieces} />
+        <Column title="Teleop Avg" dataIndex="teleop_avg" sorter={(a: any, b: any) => a.auto_score_ratio.length - b.auto_score_ratio.length} />
+        <Column title="Coral Avg" dataIndex="coral_avg" sorter={(a: any, b: any) => a.auto_score_ratio.length - b.auto_score_ratio.length} />
+        <Column title="Algae Avg" dataIndex="algae_avg" sorter={(a: any, b: any) => a.teleop_amps_scored - b.teleop_amps_scored} />
+        <Column title="Robot Deaths" dataIndex="robot_deaths" sorter={(a: any, b: any) => a.amp_score_ratio.length - b.amp_score_ratio.length} />
+        <Column title="Watchlist Reason" dataIndex="watchlist_reason" sorter={(a: any, b: any) => a.teleop_speaker_scored - b.teleop_speaker_scored} />
+      </Table>
+      <div style={{display: "block", height:"300vh"}}></div>
+    </div>
   );
 
 }
 
-export default Picklists;
+export default Picklist;
