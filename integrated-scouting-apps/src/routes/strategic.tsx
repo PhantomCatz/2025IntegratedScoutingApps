@@ -27,35 +27,54 @@ function Strategic(props: any, text:any) {
   const [roundIsVisible, setRoundIsVisible] = useState(false);
   const [qrValue, setQrValue] = useState<any>();
   const [shouldRetrySubmit, setShouldRetrySubmit] = useState(false);
+  const [lastFormValue, setLastFormValue] = useState<any>(null);
+  const [teamData, setTeamData] = useState<any>(null);
 
   useEffect(() => { document.title = props.title; return () => { } }, [props.title]);
   // useEffect(() => { getComments(team_number); return () => {}}, [team_number]);
   // useEffect(() => { calculateMatchLevel(); return () => {}}, [form, calculateMatchLevel()]);
   useEffect(() => {
-    if(!shouldRetrySubmit) {
+    (async function() {
+    let fetchLink = process.env.REACT_APP_SERVER_ADDRESS;
+
+    if(!team_number) {
       return;
     }
-    runFormFinish(undefined)
+
+    if(!fetchLink) {
+      console.error("Could not get fetch link. Check .env");
+      return;
+    }
+
+    fetchLink += "reqType=getTeamStrategic";
+
+    fetchLink += `&team=${team_number}`;
+
+    fetch(fetchLink)
+      .then((res) => {
+        const value = res.json();
+        return value;
+      })
+      .then((data) => {
+        console.log("data=", data);
+        
+        if(!Object.keys(data).length) {
+          setTeamData(null);
+          throw new Error("No data");
+        }
+
+        console.log(data, Object.keys(data).length);
+
+        setTeamData(data);
+      })
+      .catch((err) => {
+        console.log("Error fetching data. Is server on?", err);
+      });
+    })();
   }, [team_number]);
+
   const match_event = process.env.REACT_APP_EVENTNAME;
   
-  async function setNewStrategicScout(event: any) {
-    const body = {
-      "match_event": match_event,
-      "team_number": team_number,
-      "scouter_initials": event.scouter_initials.toLowerCase(),
-      "match_level": event.match_level,
-      "match_number": event.match_number,
-      "robot_position": event.robot_position,
-      "comments": event.comments,
-    };
-    if (!team_number) {
-      //window.alert("Team number is 0, please check in Pre.");
-      throw new Error("bad team number");
-    }
-    
-    setQrValue(body);
-  }
   async function updateTeamNumber() {
     try {
       const matchLevel = form.getFieldValue('match_level');
@@ -71,9 +90,58 @@ function Strategic(props: any, text:any) {
       console.log(err)
     }
   }
+  async function setNewStrategicScout(event: any) {
+    const body = {
+      "match_event": match_event,
+      "team_number": team_number,
+      "scouter_initials": event.scouter_initials.toLowerCase(),
+      "match_level": event.match_level,
+      "match_number": event.match_number,
+      "robot_position": event.robot_position,
+      "comments": event.comments,
+    };
+    
+    setQrValue(body);
+  }
   function calculateMatchLevel() {
     const isVisible = isMatchVisible(form.getFieldValue('match_level'));
     setRoundIsVisible(isVisible);
+  }
+  async function trySubmit(event : any) {
+    await setNewStrategicScout(event);
+
+    const scouter_initials = form.getFieldValue('scouter_initials');
+    const match_number = form.getFieldValue('match_number');
+    const match_level = form.getFieldValue('match_level');
+    const robot_position = form.getFieldValue('robot_position');
+
+    form.setFieldsValue({...formDefaultValues});
+    form.setFieldValue('scouter_initials', scouter_initials);
+    form.setFieldValue('match_number', match_number + 1);
+    form.setFieldValue('match_level', match_level);
+    form.setFieldValue('robot_position', robot_position);
+
+    await calculateMatchLevel();
+    await updateTeamNumber();
+  }
+  async function runFormFinish(event? : any) {
+
+    setLoading(true);
+    if(event !== undefined) {
+      setLastFormValue(event);
+    } else {
+      event = lastFormValue;
+    }
+    try {
+      trySubmit(event);
+    }
+    catch (err) {
+      console.log(err);
+      window.alert("Error occured, please do not leave this message and notify a Webdev member immediately.");
+    }
+    finally {
+      setLoading(false);
+    }
   }
   function preMatch() {
     type FieldType = {
@@ -85,18 +153,18 @@ function Strategic(props: any, text:any) {
       robot_position: string;
     };
     const rounds = [
-      { label: "Qualifications", value: "qm" },
-      { label: "Quarter-Finals", value: "qf" },
-      { label: "Semi-Finals", value: "sf" },
-      { label: "Finals", value: "f" },
+      { label: "Qualifications", value: "Qualifications" },
+      { label: "Quarter-Finals", value: "Quarter-Finals" },
+      { label: "Semi-Finals", value: "Semi-Finals" },
+      { label: "Finals", value: "Finals" },
     ];
     const robot_position = [
-      { label: "R1", value: "red_1" },
-      { label: "R2", value: "red_2" },
-      { label: "R3", value: 'red_3' },
-      { label: "B1", value: "blue_1" },
-      { label: "B2", value: "blue_2" },
-      { label: "B3", value: 'blue_3' },
+      { label: "R1", value: "R1" },
+      { label: "R2", value: "R2" },
+      { label: "R3", value: 'R3' },
+      { label: "B1", value: "B1" },
+      { label: "B2", value: "B2" },
+      { label: "B3", value: 'B3' },
     ];
     return (
       <div>
@@ -128,59 +196,51 @@ function Strategic(props: any, text:any) {
     );
   } 
 
-  
   function comment() {
+    let prevComments = null;
     type FieldType = {
       comments: string;
-    
     };
 
-    const columns = [{
-      title:'Scouter Initials',
-      dataIndex:'si',
-      width: '1300px',
-    },
-    {
-      title:'Match #',
-      dataIndex:'match',
-      width:'200px',
-    },
-    ]
-    const dataSource = []
-    for (let index = 1; index < 7; index++) {
-      dataSource.push
-      ({
-        key: index,
-        si:'Scouter Initials' + index,
-        match:index,
-        comment:"Comment" + index
-             },
-    //  {
-    //    key: 1,
-    //    si:'JD',
-    //    match:'0',
-    //    comment: 
-    //      'This is where to pull comments from backend.
-    //      The key shows what row is being used.  
-    //      When you have the backend data to input, you can make seperate keys for each.   
-    //      So they wont all just say 'comment1' etc, etc. 
-    //      After that, you can remove the key:index as it's just a placeholder.
-    //      You may still want to keep the + index though. '
-    //  }      
-            )
+    if(!teamData) {
+      prevComments =  <p style={{fontSize:"300%"}}>This team has not been scouted yet.</p>;
+    } else {
+      const columns = [
+        {
+          "title" : 'Scouter Initials',
+          "dataIndex" : 'scouter_initials',
+          "width": '70vw',
+        }, {
+          "title" : 'Match #',
+          "dataIndex" : 'match_number',
+          "width" : '10vw',
+        },
+      ];
+
+      const dataSource = [];
+    
+      for (const match of teamData) {
+        dataSource.push({
+          "key": `${match.match_event}|${match.match_level}|${match.match_number}|${match.scouter_initials}`,
+          "scouter_initials" : `Scouter Initials: ${match.scouter_initials}`,
+          "match_number" : match.match_number,
+          "comment" : match.comments,
+        });
+      }
       
-    }
- 
-    return (
-      <div>
-        <Table columns = {columns} dataSource = {dataSource} 
-        expandable = {{rowExpandable:(record) => true, 
-         expandedRowRender:(record) => {
+      prevComments = 
+        <Table columns = {columns} dataSource = {dataSource} expandable = {{rowExpandable:(record) => true,
+          expandedRowRender:(record) => {
             return <p>{record.comment}</p>
           },
          expandRowByClick: true
         }}>
-        </Table>
+        </Table>;
+    }
+
+    return (
+      <div>
+        {prevComments}
         <h2>Comments</h2>
         <Form.Item<FieldType> name="comments" rules={[{ required: true, message: "Please input some comments!" }]}>
           <TextArea style={{ verticalAlign: 'center' }} className='strategic-input' />
@@ -205,45 +265,11 @@ function Strategic(props: any, text:any) {
       children: comment(),
     },
   ];
-  async function runFormFinish(event : any) {
-    setLoading(true);
-    try {
-      try {
-        console.log(event);
-        console.log(form);
-        await setNewStrategicScout(event);
-      } catch(err : any) {
-        if(err.message === "bad team number") {
-          const num = Number(prompt("Could not get team number. Please input the team that you are scouting."));
-          console.log(team_number);
-          setTeamNum(num);
-          console.log(team_number);
-          await setNewStrategicScout(event);
-        } else {
-          throw err;
-        }
-      }
-      const scouter_initials = form.getFieldValue('scouter_initials');
-      const match_number = form.getFieldValue('match_number');
-      const match_level = form.getFieldValue('match_level');
-      const robot_position = form.getFieldValue('robot_position');
-      form.setFieldsValue({...formDefaultValues})
-      form.setFieldValue('scouter_initials', scouter_initials);
-      form.setFieldValue('match_number', match_number + 1);
-      form.setFieldValue('match_level', match_level);
-      form.setFieldValue('robot_position', robot_position);
-      await calculateMatchLevel();
-      await updateTeamNumber();
-    }
-    catch (err) {
-      console.log(err);
-      window.alert("Error occured, please do not leave this message and notify a Webdev member immediately.");
-      window.alert(err);
-    }
-    finally {
-      setLoading(false);
-    }
+
+  if(shouldRetrySubmit) {
+    runFormFinish();
   }
+
   return (
     <div>
       <meta name="viewport" content="maximum-scale=1.0" />

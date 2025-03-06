@@ -36,7 +36,14 @@ function TeamData(props: any) {
           for (const field in match) {
             switch(field) {
             case "auton_leave_starting_line":
+            case "endgame_climb_successful":
+            case "overall_robot_died":
+            case "overall_defended_others":
+            case "overall_was_defended":
               row[field] = (<div className={`boolean_${!!match[field]}`}>&nbsp;</div>);
+              break;
+            case "overall_comments":
+              row[field] = match[field].replaceAll("\\n", "\n");
               break;
             default:
               row[field] = match[field].toString();
@@ -47,7 +54,6 @@ function TeamData(props: any) {
           table.push(row);
         }
 
-        console.log("table=", table);
         setMatchData(table);
       }
       catch (err) {

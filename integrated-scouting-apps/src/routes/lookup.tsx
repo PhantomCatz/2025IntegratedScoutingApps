@@ -14,8 +14,6 @@ function Lookup(props: any) {
 				<Button className='mainbutton' href='/scoutingapp/lookup/match'>Match</Button>
 				<Button className='mainbutton' href='/scoutingapp/lookup/strategic'>Strategic</Button>
 				<Button className='mainbutton' href='/scoutingapp/lookup/pit'>Pit</Button>
-				<Button className='mainbutton' href='/scoutingapp/lookup/pitpicture'>Pit Picture</Button>
-				{/* <Button className='mainbutton' href='/scoutingapp/strategic/driverskill'>Driver Skill</Button> */}
 			</div>
 		</div>
 	);
