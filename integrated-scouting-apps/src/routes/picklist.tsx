@@ -109,7 +109,7 @@ function Picklist(props: any) {
   }, []);
   return (
     <div>
-      <Header name="PickList" back="#scoutingapp" />
+      <Header name="PickList" back="/scoutingapp" />
       <h2 style={{ whiteSpace: 'pre-line' }}>{loading ? 'Loading Data...' : ''}</h2>
       <Table dataSource={fetchedData} pagination={{ pageSize: 500 }}>
         <Column title="Rank #" dataIndex="rank" sorter={(a: any, b: any) => a.rank - b.rank} defaultSortOrder={"ascend"} fixed="left" />
