@@ -15,7 +15,7 @@ function ScoutingPage(props: any) {
         <Button className='mainbutton' href='#scoutingapp/strategic'>Strategic</Button>
         <Button className='mainbutton' href='#scoutingapp/pit'>Pit</Button>
         <Button className='mainbutton' href='#scoutingapp/lookup'>Data Lookup</Button>
-        <Button className='mainbutton' href='#scoutingapp/picklist'>Picklist</Button>
+        {/* <Button className='mainbutton' href='#scoutingapp/picklist'>Picklist</Button> */}
       </div>
 	</div>
   );
