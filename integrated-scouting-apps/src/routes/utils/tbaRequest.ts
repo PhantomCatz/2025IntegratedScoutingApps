@@ -83,7 +83,7 @@ async function getTeamsNotScouted() {
 
 		if(!fetchLink) {
 			console.error("Could not get fetch link. Check .env");
-			return;
+			return null;
 		}
 
 		fetchLink += "reqType=teamsScouted";
