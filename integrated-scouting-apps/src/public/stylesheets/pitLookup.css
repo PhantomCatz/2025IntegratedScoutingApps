@@ -15,10 +15,10 @@
 	border-radius: 25px;
 }
 .booleanValue__true {
-	background-color: #ff0000;
+	background-color: #00ff00;
 }
 .booleanValue__false {
-	background-color: #00ff00;
+	background-color: #ff0000;
 }
 .centered {
 	display: flex;
