@@ -16,18 +16,18 @@ if(!connectionData || !process.env.DB_USERNAME) {
 
 async function requestDatabase(query, substitution, forEach) {
 	let result = [];
-	
+
 	const sqlQuery = query;
 
 	try {
 		const mysql = getMysql();
 		const conn = await mysql.createConnection(connectionData);
 		// do await conn.query(QUERY) for each sql command, below line would give results of query
-		
+
 		if(Array.isArray(substitution)) {
 			for(const val of substitution) {
 				const [res, fields] = await conn.query(sqlQuery, [val]);
-				
+
 				if(forEach) {
 					await forEach(val, res, fields);
 				} else {
@@ -36,6 +36,10 @@ async function requestDatabase(query, substitution, forEach) {
 			}
 		} else {
 			const [res, fields] = await conn.query(sqlQuery, [substitution]);
+
+			//if(forEach) {
+			//	res.map((x) => forEach(x, fields));
+			//}
 
 			result = res;
 		}
@@ -52,9 +56,14 @@ async function requestDatabase(query, substitution, forEach) {
 async function getTeamsScouted() {
 	let result = {};
 	const sqlQuery = "SELECT DISTINCT team_number FROM pit_data";
+
 	const res = await requestDatabase(sqlQuery);
 
-	return res;
+	const teams = res.map((x) => x.team_number);
+
+	result = teams;
+
+	return result;
 }
 async function getTeamInfo(queries) {
 	const teams = [];

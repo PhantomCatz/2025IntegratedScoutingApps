@@ -1304,22 +1304,22 @@ function MatchScout(props: any) {
             </Flex>
           </Flex>
         <Flex justify='in-between'>
-          <Flex vertical align='flex-start'>
-            <h2 style={{display: penaltiesIsVisible ? 'inherit' : 'none'}}>Match</h2>
-            <Form.Item<FieldType> name="matchpen" valuePropName="checked" style={{ display: penaltiesIsVisible ? 'inherit' : 'none'}}>
+          <Flex vertical align='flex-start' style={{ display: penaltiesIsVisible ? 'inherit' : 'none'}}>
+            <h2>Match</h2>
+            <Form.Item<FieldType> name="matchpen" valuePropName="checked" >
               <Checkbox className='input_checkbox' />
             </Form.Item>
           </Flex>
-          <Flex vertical align='flex-start'>
-            <h2 style={{display: penaltiesIsVisible ? 'inherit' : 'none'}}>Tech</h2>
-            <Form.Item<FieldType> name="techpen" valuePropName="checked" style={{ display: penaltiesIsVisible ? 'inherit' : 'none'}}>
+          <Flex vertical align='flex-start' style={{ display: penaltiesIsVisible ? 'inherit' : 'none'}}>
+            <h2>Tech</h2>
+            <Form.Item<FieldType> name="techpen" valuePropName="checked">
               <Checkbox className='input_checkbox' />
             </Form.Item>
           </Flex>
         </Flex>
         
         <h2>Penalties Incurred</h2>
-        <Form.Item<FieldType> name="overall_penalties_incurred">
+        <Form.Item<FieldType> name="overall_penalties_incurred" rules={[{ required: penaltiesIsVisible, message: 'Please enter the penalty(s)' }]}>
           <TextArea style={{ verticalAlign: 'center' }} className='textbox_input' />
         </Form.Item>
         <h2>Comments</h2>
