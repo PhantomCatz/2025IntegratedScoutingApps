@@ -82,7 +82,7 @@ const formDefaultValues = {
 
 function MatchScout(props: any) {
   const [form] = Form.useForm();
-  const [color, setColor] = useState(true);
+  const [color, setColor] = useState('');
   const [roundIsVisible, setRoundIsVisible] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const [usChecked, setUSChecked] = useState(false);
@@ -357,8 +357,14 @@ function MatchScout(props: any) {
       const matchNumber = form.getFieldValue('match_number');
       const roundNumber = form.getFieldValue('round_number');
       const robotPosition = form.getFieldValue('robot_position');
+      if (robotPosition == 'R1' || robotPosition == 'R2' || robotPosition == 'R3') {
+        setColor('red');
+      }
+      else {
+        setColor('blue');
+      }
 
-      const team = await getTeam(roundIsVisible, matchLevel, matchNumber, roundNumber, color ? 'red' : 'blue');
+      const team = await getTeam(roundIsVisible, matchLevel, matchNumber, roundNumber, color);
 
       setOpposingTeamNum(team);
     }
