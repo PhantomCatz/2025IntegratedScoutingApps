@@ -311,16 +311,16 @@ function MatchScout(props: any) {
       const match_level = form.getFieldValue("match_level");
       const robot_position = form.getFieldValue("robot_position");
       
+      setWasDefendedIsVisible(false);
+      setDefendedIsVisible(false);
+      setPenaltiesIsVisible(false);
+
       form.resetFields();
       setFormValue(formDefaultValues);
       form.setFieldValue("scouter_initials", scouter_initials);
       form.setFieldValue("match_number", match_number + 1);
       form.setFieldValue("match_level", match_level);
       form.setFieldValue("robot_position", robot_position);
-      
-      setWasDefendedIsVisible(false);
-      setDefendedIsVisible(false);
-      setPenaltiesIsVisible(false);
 
       await calculateMatchLevel();
       await updateTeamNumber();
@@ -378,6 +378,13 @@ function MatchScout(props: any) {
       }
 
       const team = await getTeam(matchLevel, matchNumber, roundNumber, color, allianceNumber);
+
+      if(!team) {
+        console.log("Got undefined from team");
+        console.log("Current opposing team is ", opposingTeamNum);
+        return;
+      }
+      console.log(team);
 
       setOpposingTeamNum(team);
     }
