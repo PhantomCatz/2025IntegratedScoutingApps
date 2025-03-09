@@ -5,8 +5,17 @@ import { useParams } from "react-router-dom";
 import { Checkbox, Flex, Input, Tabs } from "antd";
 import TextArea from 'antd/es/input/TextArea';
 import Header from "./header";
+import Chart from 'chart.js/auto';
+import ChartComponent from "./chart"; 
 
 const MAX_NUM_TEAMS = 3;
+
+function round(num : number, prec? : number) {
+  if(prec === undefined) {
+    prec = 3;
+  }
+  return Math.round(num * 10 ** prec) / 10 ** prec;
+}
 
 function DTFTeams(props: any) {
   const { teamParams } = useParams();
@@ -47,10 +56,11 @@ function DTFTeams(props: any) {
         return value;
       })
       .then((data) => {
-        setTeamData(data)
+        setTeamData(data);
       })
       .catch((err) => {
         console.log("Error fetching data. Is server on?", err);
+        //throw err;
       });
   }, [teamList]);
   useEffect(() => {
@@ -59,6 +69,9 @@ function DTFTeams(props: any) {
   
   function aggregateData(k : any, v : any, data : any) {
     const l = data.match_count;
+    if(v === null && v === undefined) {
+      return;
+    }
     switch(k) {
     // Average values
     case "auton_coral_scored_l4":
@@ -253,6 +266,12 @@ function DTFTeams(props: any) {
       }
     }
     data.average_score = data.total_score / l;
+
+    for(const [k, v] of Object.entries(data)) {
+      if(typeof v === "number") {
+        data[k] = round(v);
+      }
+    }
     return data;
   }
 
@@ -289,7 +308,14 @@ function DTFTeams(props: any) {
         persistentData.push(data);
 
         const teamTabs = [
-          { key: "1", label: "Auton", children: ( <div>
+          { key: "1", label: "Charts", children: ( 
+          <div>
+             <ChartComponent teamNumber={team} index={index} />
+          </div>  
+       )
+     },
+          { key: "2", label: "Auton", children: ( 
+          <div>
                <Flex justify='in-between'>
                  <Flex vertical align='flex-start'>
                    <h2>L1 avg</h2>
@@ -322,7 +348,8 @@ function DTFTeams(props: any) {
          </div>  
           )
         },
-          { key: "2", label: "Teleop/End", children:( <div> 
+          { key: "3", label: "Teleop/End", children:( 
+          <div> 
             <Flex justify='in-between'>
                  <Flex vertical align='flex-start'>
                    <h2>L1 avg</h2>
@@ -358,7 +385,7 @@ function DTFTeams(props: any) {
          </div> 
          )
         },
-          { key: "3", label: "OA", children: (
+          { key: "4", label: "OA", children: (
               <div>
                 <h2>Matches Played</h2>
                 <Input className="input" disabled value={data.match_count}  /> 
@@ -446,7 +473,7 @@ function DTFTeams(props: any) {
   }
   return (
     <div>
-    <Header name={"Drive Team Feeder"} back={"/home"} />
+    <Header name={"Drive Team Feeder"} back={"#home"} />
     <h2 style={{ display: loading ? 'inherit' : 'none' }}>Loading data...</h2>
     <Tabs defaultActiveKey="1" items={items} centered className='tabs' />
     </div>

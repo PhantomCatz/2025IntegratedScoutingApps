@@ -128,6 +128,7 @@ h3 {
     color: white !important;
     text-align: center !important;
 }
+<<<<<<< HEAD
 
 .map_checkbox {
     width: 3.13vw; /* 60px / 1920px ≈ 3.13vw */
@@ -243,3 +244,9 @@ h3 {
     margin-left: auto !important;
 }
 
+=======
+.fieldTitle {
+	text-align: center;
+	width: 100%;
+}
+>>>>>>> origin/main

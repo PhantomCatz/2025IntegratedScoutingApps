@@ -2,15 +2,12 @@
 .ant-table-tbody,
 .ant-table-cell {
   font-size: 36px !important;
-  background-color: #32A7DC !important;
-  color: white !important;
-  font-family: Figtree !important;
+  background-color: var(--pc-blue) !important;
   border: 4px solid white !important;
   font-weight: bold !important;
 }
 
 .ant-empty-description {
-  font-family: Figtree !important;
   font-weight: bold !important;
   font-size: 48px !important;
 

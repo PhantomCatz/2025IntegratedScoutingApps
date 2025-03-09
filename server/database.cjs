@@ -7,9 +7,6 @@ const connectionData = {
 	"host" : process.env.DB_HOST, 
 	"port" : process.env.DB_PORT, 
 	"database" : process.env.DB_DATABASE, 
-	//"ssl" : {
-	//	"rejectUnauthorized" : false,
-	//},
 };
 
 if(!connectionData || !process.env.DB_USERNAME) {
@@ -17,24 +14,38 @@ if(!connectionData || !process.env.DB_USERNAME) {
 	console.log("Check .env");
 }
 
-function test(n) {
-	console.log(`Got to ${n}`);
-}
+async function requestDatabase(query, substitution, forEach) {
+	let result = [];
 
-async function requestDatabase(query) {
-	let result = {};
 	const sqlQuery = query;
 
 	try {
 		const mysql = getMysql();
 		const conn = await mysql.createConnection(connectionData);
 		// do await conn.query(QUERY) for each sql command, below line would give results of query
-		await conn.query("show tables");
-		const [res, fields] = await conn.query(sqlQuery);
+
+		if(Array.isArray(substitution)) {
+			for(const val of substitution) {
+				const [res, fields] = await conn.query(sqlQuery, [val]);
+
+				if(forEach) {
+					await forEach(val, res, fields);
+				} else {
+					result.push(res);
+				}
+			}
+		} else {
+			const [res, fields] = await conn.query(sqlQuery, [substitution]);
+
+			//if(forEach) {
+			//	res.map((x) => forEach(x, fields));
+			//}
+
+			result = res;
+		}
 
 		await conn.end();
 
-		result = res
 		return result;
 	} catch(err) {
 		console.log("Failed to resolve request:");
@@ -42,7 +53,18 @@ async function requestDatabase(query) {
 	}
 	return result;
 }
-// Not implemented
+async function getTeamsScouted() {
+	let result = {};
+	const sqlQuery = "SELECT DISTINCT team_number FROM pit_data";
+
+	const res = await requestDatabase(sqlQuery);
+
+	const teams = res.map((x) => x.team_number);
+
+	result = teams;
+
+	return result;
+}
 async function getTeamInfo(queries) {
 	const teams = [];
 	for(let i = 1; i <= 3; i++) {
@@ -51,60 +73,74 @@ async function getTeamInfo(queries) {
 		}
 	}
  
+	let result = {};
+
 	if(teams.length == 0) {
 		console.log("Error: No teams queried");
+		return result;
+	}
+
+	const sqlQuery = "SELECT * FROM match_data WHERE team_number=?";
+
+	await requestDatabase(sqlQuery, teams, function(val, res) {
+		//console.log(res);
+		result[val] = res;
+	});
+
+	return result;
+}
+async function getTeamPitInfo(queries) {
+	const team = queries.team;
+
+	if(!team) {
+		console.log("Error: bad team input: ", team);
 		return {};
 	}
 
-	const result = {};
-	const sqlQuery = "SELECT * FROM match_data WHERE team_number=?";
+	const sqlQuery = "SELECT * FROM pit_data WHERE team_number=?";
 
-	try {
-		const mysql = getMysql();
-		const conn = await mysql.createConnection(connectionData);
-		//await conn.query("USE ?;");
+	const result = await requestDatabase(sqlQuery, team);
 
-		for(team of teams) {
-			const [res, fields] = await conn.query(sqlQuery, [team]);
-			console.log("team=", team);
-			result[team] = res;
-		}
-
-		await conn.end();
-
-		return result;
-	} catch(err) {
-		console.log("Failed to resolve request:");
-		console.dir(err);
-	}
 	return result;
 }
-async function hasTeam() {
+async function getTeamStrategicInfo(queries) {
+	const team = queries.team;
+
 	let result = {};
-	const sqlQuery = "SELECT * FROM pit_data WHERE ";
 
-	try {
-		const mysql = getMysql();
-		const conn = await mysql.createConnection(connectionData);
-		await conn.query("USE testdb");
-		const [r1, f1] = await conn.query("SHOW TABLES");
-		console.log(r1);
-		const [res, fields] = await conn.query(sqlQuery);
-
-		await conn.end();
-
-		result = res
+	if(!team) {
+		console.log("Error: bad team input: ", team);
 		return result;
-	} catch(err) {
-		console.log("Failed to resolve request:");
-		console.dir(err);
 	}
+
+	const sqlQuery = "SELECT * FROM strategic_data WHERE team_number=?";
+
+	result = await requestDatabase(sqlQuery, team);
+
 	return result;
 }
 
 function getMysql() {
 	const mysql = require("mysql2/promise");
-	return mysql;
+
+	const errorConnection = {
+		query : function(...args) { return [{}, {}]; },
+		end: function(...args) { },
+	};
+
+	const res = {
+		createConnection : async function(connectionData) {
+			try {
+				const conn = await mysql.createConnection(connectionData);
+				return conn;
+			} catch (err) {
+				console.log("Error occurred: ", err);
+				return errorConnection;
+			}
+		},
+	};
+
+	return res;
 }
 function verifyConnection(connection) {
 	if(connection.state === "disconnected") {
@@ -114,4 +150,6 @@ function verifyConnection(connection) {
 
 module.exports.requestDatabase = requestDatabase;
 module.exports.getTeamInfo = getTeamInfo;
-//export {requestDatabase, getTeamInfo};
+module.exports.getTeamsScouted = getTeamsScouted;
+module.exports.getTeamPitInfo = getTeamPitInfo;
+module.exports.getTeamStrategicInfo = getTeamStrategicInfo;
