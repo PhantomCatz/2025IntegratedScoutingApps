@@ -6,7 +6,7 @@ import TextArea from 'antd/es/input/TextArea';
 import { saveAs } from 'file-saver';
 import Header from "./header";
 import QrCode from "./qrCodeViewer";
-import {getTeamNumber, isMatchVisible} from './utils/tbaRequest';
+import {getTeamNumber, isRoundNumberVisible, isInPlayoffs} from './utils/tbaRequest';
 
 const formDefaultValues = {
   "match_event": null,
@@ -16,6 +16,8 @@ const formDefaultValues = {
   "match_number": 0,
   "robot_position": null,
   "comments": null,
+  "red_alliance": [],
+  "blue_alliance": [],
 }
 
 function Strategic(props: any, text:any) {
@@ -28,6 +30,7 @@ function Strategic(props: any, text:any) {
   const [shouldRetrySubmit, setShouldRetrySubmit] = useState(false);
   const [lastFormValue, setLastFormValue] = useState<any>(null);
   const [teamData, setTeamData] = useState<any>(null);
+  const [inPlayoffs, setInPlayoffs] = useState(false);
 
   useEffect(() => { document.title = props.title; return () => { } }, [props.title]);
   // useEffect(() => { getComments(team_number); return () => {}}, [team_number]);
@@ -80,8 +83,9 @@ function Strategic(props: any, text:any) {
       const matchNumber = form.getFieldValue('match_number');
       const robotPosition = form.getFieldValue('robot_position');
       const roundNumber = form.getFieldValue('round_number');
+      const allianceNumber = form.getFieldValue(robotPosition[0] === "R" ? 'red_alliance' : 'blue_alliance');
 
-      const teamNumber = await getTeamNumber(roundIsVisible, matchLevel, matchNumber, roundNumber, robotPosition);
+      const teamNumber = await getTeamNumber(matchLevel, matchNumber, roundNumber, robotPosition, allianceNumber);
 
       setTeamNum(teamNumber);
     }
@@ -103,8 +107,14 @@ function Strategic(props: any, text:any) {
     setQrValue(body);
   }
   function calculateMatchLevel() {
-    const isVisible = isMatchVisible(form.getFieldValue('match_level'));
+    const matchLevel = form.getFieldValue('match_level');
+    const isVisible = isRoundNumberVisible(matchLevel);
+
     setRoundIsVisible(isVisible);
+
+    const inPlayoffs = isInPlayoffs(matchLevel);
+
+    setInPlayoffs(inPlayoffs);
   }
   async function trySubmit(event : any) {
     await setNewStrategicScout(event);
@@ -150,6 +160,8 @@ function Strategic(props: any, text:any) {
       match_number: number;
       round_number: number;
       robot_position: string;
+      red_alliance: string;
+      blue_alliance: string;
     };
     const rounds = [
       { label: "Qualifications", value: "Qualifications" },
@@ -165,6 +177,17 @@ function Strategic(props: any, text:any) {
       { label: "B2", value: "B2" },
       { label: "B3", value: 'B3' },
     ];
+    const playoff_alliances = [
+      { label: "Alliance 1", value: "Alliance 1" },
+      { label: "Alliance 2", value: "Alliance 2" },
+      { label: "Alliance 3", value: "Alliance 3" },
+      { label: "Alliance 4", value: "Alliance 4" },
+      { label: "Alliance 5", value: "Alliance 5" },
+      { label: "Alliance 6", value: "Alliance 6" },
+      { label: "Alliance 7", value: "Alliance 7" },
+      { label: "Alliance 8", value: "Alliance 8" },
+    ];
+
     return (
       <div>
         <h2>Team: {team_number}</h2>
@@ -176,6 +199,17 @@ function Strategic(props: any, text:any) {
         <Form.Item<FieldType> name="match_level" rules={[{ required: true, message: 'Please input the match level!' }]}>
           <Select options={rounds} className="input" onChange={() => { calculateMatchLevel(); updateTeamNumber(); }} />
         </Form.Item>
+        <div className={"playoff-alliances"} style={{ display: inPlayoffs ? 'inherit' : 'none' }}>
+          <h2>Blue Alliance</h2>
+          <Form.Item<FieldType> name="blue_alliance" rules={[{ required: inPlayoffs ? true : false, message: 'Enter the blue alliance' }]}>
+            <Select options={playoff_alliances} onChange={() => { calculateMatchLevel(); updateTeamNumber(); }} className="input" />
+          </Form.Item>
+          
+          <h2>Red Alliance</h2>
+          <Form.Item<FieldType> name="red_alliance" rules={[{ required: true, message: 'Enter the red alliance' }]}>
+            <Select options={playoff_alliances} onChange={() => { calculateMatchLevel(); updateTeamNumber(); }} className="input" />
+          </Form.Item>
+        </div>
         <h2>Match #</h2>
         <Form.Item<FieldType> name="match_number" rules={[{ required: true, message: 'Please input the match number!',  }]}>
           <InputNumber min={1} className = "input" onChange={() => { updateTeamNumber(); }} type='number' /> 
