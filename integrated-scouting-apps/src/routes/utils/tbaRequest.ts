@@ -41,7 +41,7 @@ async function getTeamNumber(matchLevel? : string,
 		const teamNum = position[1];
 		const fullTeam = data.alliances[teamColor].team_keys[teamNum];
 		const teamNumber = parseInt(fullTeam.substring(3));
-
+		console.log(response)
 		return teamNumber;
 	} catch (err) {
 		console.log("caught err");
@@ -74,7 +74,8 @@ async function getTeam(matchLevel? : string,
 
 		const data = await response.json();
 		const fullTeam = data.alliances[alliance].team_keys.map((x : string) => x.substring(3));
-
+		console.log(fullTeam)
+		console.log(fullTeam || [])
 		return fullTeam || [];
 	} catch (err) {
 		return await getTeamOffline(roundIsVisible, matchLevel, matchNumber, roundNumber || 0, alliance);
