@@ -11,7 +11,7 @@ import { Footer } from 'antd/es/layout/layout';
 import Header from "./header";
 import { Radio } from 'antd';
 import QrCode from './qrCodeViewer';
-import {getTeamNumber, isMatchVisible, getTeam} from './utils/tbaRequest';
+import {getTeamNumber, isInPlayoffs, getTeam, isRoundNumberVisible} from './utils/tbaRequest';
 import type { RadioChangeEvent } from "antd";
 
 interface SpacerProps {
@@ -78,6 +78,9 @@ const formDefaultValues = {
   "overall_num_penalties": 0,
   "overall_penalties_incurred": null,
   "overall_comments": null,
+  // Playoffs
+  "red_alliance": [],
+  "blue_alliance": [],
 };
 
 function MatchScout(props: any) {
@@ -100,6 +103,7 @@ function MatchScout(props: any) {
   const [formValue, setFormValue] = useState<any>(formDefaultValues);
   const [shouldRetrySubmit, setShouldRetrySubmit] = useState(true);
   const [lastFormValue, setLastFormValue] = useState<any>(null);
+  const [inPlayoffs, setInPlayoffs] = useState(false);
 
   const handleStartPosChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRobot_starting_position(event.target.value);
@@ -336,20 +340,27 @@ function MatchScout(props: any) {
       const matchNumber = form.getFieldValue('match_number');
       const roundNumber = form.getFieldValue('round_number');
       const robotPosition = form.getFieldValue('robot_position');
+      const allianceNumber = form.getFieldValue(robotPosition[0] === "R" ? 'red_alliance' : 'blue_alliance');
 
-      const teamNumber = await getTeamNumber(roundIsVisible, matchLevel, matchNumber, roundNumber, robotPosition);
+      const teamNumber = await getTeamNumber(matchLevel, matchNumber, roundNumber, robotPosition, allianceNumber);
 
       setTeam_number(teamNumber);
 
       await updateDefendedList();
     }
     catch (err) {
-      console.error("Failed to request TBA data when updating team number");
+      console.error("Failed to request TBA data when updating team number", err);
     }
   }
   function calculateMatchLevel() {
-    const isVisible = isMatchVisible(form.getFieldValue('match_level'));
+    const matchLevel = form.getFieldValue('match_level');
+    const isVisible = isRoundNumberVisible(matchLevel);
+
     setRoundIsVisible(isVisible);
+
+    const inPlayoffs = isInPlayoffs(matchLevel);
+
+    setInPlayoffs(inPlayoffs);
   }
   async function updateDefendedList() {
     try {
@@ -357,6 +368,8 @@ function MatchScout(props: any) {
       const matchNumber = form.getFieldValue('match_number');
       const roundNumber = form.getFieldValue('round_number');
       const robotPosition = form.getFieldValue('robot_position');
+      const allianceNumber = form.getFieldValue(robotPosition[0] === "R" ? 'blue_alliance' : 'red_alliance');
+
       if (robotPosition == 'R1' || robotPosition == 'R2' || robotPosition == 'R3') {
         setColor('red');
       }
@@ -364,12 +377,12 @@ function MatchScout(props: any) {
         setColor('blue');
       }
 
-      const team = await getTeam(roundIsVisible, matchLevel, matchNumber, roundNumber, color);
+      const team = await getTeam(matchLevel, matchNumber, roundNumber, color, allianceNumber);
 
       setOpposingTeamNum(team);
     }
     catch (err) {
-      console.error("Failed to request TBA data when updating opposing team");
+      console.error("Failed to request TBA data when updating opposing team", err);
     }
   }
 
@@ -381,11 +394,14 @@ function MatchScout(props: any) {
       robot_position: string,
       preloaded: boolean,
       round_number: number,
+	  red_alliance: string,
+	  blue_alliance: string,
     };
     const rounds = [
       { label: "Qualifications", value: "Qualifications" },
       { label: "Quarter-Finals", value: "Quarter-Finals" },
       { label: "Semi-Finals", value: "Semi-Finals" },
+      //{ label: "Eliminations", value: "Eliminations" },
       { label: "Finals", value: "Finals" },
     ];
     const robot_position = [
@@ -396,6 +412,17 @@ function MatchScout(props: any) {
       { label: "B2", value: "B2" },
       { label: "B3", value: 'B3' },
     ];
+    const playoff_alliances = [
+      { label: "Alliance 1", value: "Alliance 1" },
+      { label: "Alliance 2", value: "Alliance 2" },
+      { label: "Alliance 3", value: "Alliance 3" },
+      { label: "Alliance 4", value: "Alliance 4" },
+      { label: "Alliance 5", value: "Alliance 5" },
+      { label: "Alliance 6", value: "Alliance 6" },
+      { label: "Alliance 7", value: "Alliance 7" },
+      { label: "Alliance 8", value: "Alliance 8" },
+    ];
+
     return (
       <div>
 
@@ -428,16 +455,30 @@ function MatchScout(props: any) {
         <Form.Item<FieldType> name="match_level" rules={[{ required: true, message: 'Enter match level' }]}>
           <Select options={rounds} onChange={() => { calculateMatchLevel(); updateTeamNumber(); }} className="input" />
         </Form.Item>
+
+        <div className={"playoff-alliances"} style={{ display: inPlayoffs ? 'inherit' : 'none' }}>
+          <h2>Blue Alliance</h2>
+          <Form.Item<FieldType> name="blue_alliance" rules={[{ required: inPlayoffs ? true : false, message: 'Enter the blue alliance' }]}>
+            <Select options={playoff_alliances} onChange={() => { calculateMatchLevel(); updateTeamNumber(); }} className="input" />
+          </Form.Item>
+          
+          <h2>Red Alliance</h2>
+          <Form.Item<FieldType> name="red_alliance" rules={[{ required: true, message: 'Enter the red alliance' }]}>
+            <Select options={playoff_alliances} onChange={() => { calculateMatchLevel(); updateTeamNumber(); }} className="input" />
+          </Form.Item>
+        </div>
         
         <h2>Match #</h2>
-		<Form.Item<FieldType> name="match_number" rules={[{ required: true, message: 'Enter match #' }]}>
+        <Form.Item<FieldType> name="match_number" rules={[{ required: true, message: 'Enter match #' }]}>
           <InputNumber min={1} onChange={updateTeamNumber} className="input" type='number' pattern="\d*" onWheel={(e) => (e.target as HTMLElement).blur()}/>
         </Form.Item>
 
-        <h2 style={{ display: roundIsVisible ? 'inherit' : 'none' }}>Round #</h2>
-        <Form.Item<FieldType> name="round_number" rules={[{ required: roundIsVisible ? true : false, message: 'Enter round #' }]} style={{ display: roundIsVisible ? 'inherit' : 'none' }}>
-          <InputNumber min={1} onChange={updateTeamNumber} style={{ display: roundIsVisible ? 'inherit' : 'none' }} className="input" type='number' pattern="\d*" onWheel={(e) => (e.target as HTMLElement).blur()}/>
-        </Form.Item>
+        <div style={{ display: roundIsVisible ? 'inherit' : 'none' }}>
+          <h2 >Round #</h2>
+          <Form.Item<FieldType> name="round_number" rules={[{ required: roundIsVisible ? true : false, message: 'Enter round #' }]} >
+          <InputNumber min={1} onChange={updateTeamNumber} className="input" type='number' pattern="\d*" onWheel={(e) => (e.target as HTMLElement).blur()}/>
+          </Form.Item>
+        </div>
 
         <h2>Robot Position:</h2>
         <Form.Item<FieldType> name="robot_position" rules={[{ required: true, message: 'Enter robot position' }]}>
