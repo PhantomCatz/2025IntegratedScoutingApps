@@ -377,7 +377,7 @@ function MatchScout(props: any) {
         setColor('blue');
       }
 
-      const team = await getTeam(roundIsVisible, matchLevel, matchNumber, roundNumber, color, allianceNumber);
+      const team = await getTeam(matchLevel, matchNumber, roundNumber, color, allianceNumber);
 
       setOpposingTeamNum(team);
     }
