@@ -191,10 +191,14 @@ function PitScout(props: any) {
       { label: "Neither", value: "Neither" },
     ];
     const algaeintakeCap = [
-      { label: "Reef Zone", value: "Reef Zone" },
-      { label: "Coral", value: "Coral" },
+      { label: "Station", value: "Station" },
+      { label: "Ground", value: "Ground" },
       { label: "Both", value: "Both" },
       { label: "Neither", value: "Neither" },
+
+
+
+      
     ];
     const algaescoringCap = [
       { label: "Net", value: "Net" },

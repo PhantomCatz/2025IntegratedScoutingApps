@@ -396,21 +396,21 @@ function MatchScout(props: any) {
 
           <Form.Item name="robot_starting_position">
           <div className='radioLabel'> 
-            <h3>BS1</h3> 
+            <h3>B&Sigma;1</h3> 
             <input type="radio" name="robot_starting_position" value="BS1" className="robot_starting_position_radio" onChange={handleStartPosChange}/> 
           </div> 
           </Form.Item>
 
           <Form.Item name="robot_starting_position">
           <div className='radioLabel'> 
-            <h3>BS2</h3> 
+            <h3>B&Sigma;2</h3> 
             <input type="radio" name="robot_starting_position" value="BS2" className="robot_starting_position_radio" onChange={handleStartPosChange}/> 
           </div> 
           </Form.Item>
 
           <Form.Item name="robot_starting_position">
           <div className='radioLabel'> 
-            <h3>BS3</h3> 
+            <h3>B&Sigma;3</h3> 
             <input type="radio" name="robot_starting_position" value="BS3" className="robot_starting_position_radio" onChange={handleStartPosChange}/> 
           </div> 
           </Form.Item>
@@ -431,21 +431,21 @@ function MatchScout(props: any) {
         <Form.Item name="robot_starting_position">
           <div className='radioLabel'> 
             <input type="radio" name="robot_starting_position" value="RS3" className="robot_starting_position_radio" onChange={handleStartPosChange}/> 
-            <h3>RS3</h3> 
+            <h3>R&Sigma;3</h3> 
           </div> 
         </Form.Item>
 
         <Form.Item name="robot_starting_position">
           <div className='radioLabel'> 
             <input type="radio" name="robot_starting_position" value="RS2" className="robot_starting_position_radio" onChange={handleStartPosChange}/> 
-            <h3>RS2</h3>
+            <h3>R&Sigma;2</h3>
           </div> 
         </Form.Item>
 
         <Form.Item name="robot_starting_position">
           <div className='radioLabel'> 
             <input type="radio" name="robot_starting_position" value="RS1" className="robot_starting_position_radio" onChange={handleStartPosChange}/> 
-            <h3>RS1</h3> 
+            <h3>R&Sigma;1</h3> 
           </div>
         </Form.Item>
 
