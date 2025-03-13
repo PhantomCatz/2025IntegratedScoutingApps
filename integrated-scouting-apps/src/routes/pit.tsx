@@ -53,6 +53,7 @@ window.alert = (function() {
 
 function PitScout(props: any) {
   const match_event = process.env.REACT_APP_EVENTNAME as string;
+  const [isRampSelected, setIsRampSelected] = useState(false);
   const imageURI = useRef<string>();
   const canvasRef = useRef<ReactSketchCanvasRef>(null);
   const [form] = Form.useForm();
@@ -147,6 +148,7 @@ function PitScout(props: any) {
       "team_workmanship": event.team_workmanship,
       "gracious_professionalism": event.gracious_professionalism,
       "comments": event.comments,
+      "acceptance_angle": event.coral_intake_type === "Ramp" ? event.acceptance_angle : null,
     };
     setQrValue(body);
   };
@@ -381,14 +383,55 @@ function PitScout(props: any) {
           />
         </Form.Item>
         <h2>Coral Intake Type</h2>
-          <Form.Item name="coral_intake_type" rules={[{ required: true, message: 'Please input the coral intake type!' }]}>
-          <Select
-            options={coralIntType}
-            className="input"
-            dropdownMatchSelectWidth={false}
-            dropdownStyle={{ maxHeight: 'none' }}
-          />
+        <Form.Item name="coral_intake_type" rules={[{ required: true, message: 'Please input the coral intake type!' }]}>
+        <Select
+          options={coralIntType}
+          className="input"
+          dropdownMatchSelectWidth={false}
+          dropdownStyle={{ maxHeight: 'none' }}
+          onChange={(value) => setIsRampSelected(value === "Ramp")}
+        />
         </Form.Item>
+        {isRampSelected && (
+        <>
+          <h2>Coral Station Acceptance Angle</h2>
+          <Form.Item
+  name="acceptance_angle"
+  rules={[
+    { required: true, message: 'Please input the acceptance angle!' },
+    {
+      validator: (_, value) => {
+        if (value === undefined || value === null || value === '') {
+          return Promise.reject('Please enter a number');
+        }
+        if (!/^\d*\.?\d*$/.test(value.toString())) {
+          return Promise.reject('Please enter only numbers');
+        }
+        return Promise.resolve();
+      }
+    }
+  ]}
+>
+  <InputNumber
+    className="input"
+    placeholder="Enter angle in degrees"
+    onChange={(value) => {
+      const numValue = typeof value === 'number' ? value : 0;
+      setRobotWeight(numValue);
+    }}
+    onKeyPress={(event) => {
+      const charCode = event.which ? event.which : event.keyCode;
+      if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+        event.preventDefault();
+      }
+    }}
+    formatter={(value) => `${value}`.replace(/^0+/, '')}
+    parser={(value) => value ? Math.round(parseFloat(value)) : 0}
+    onWheel={(e) => (e.target as HTMLElement).blur()}
+  />
+</Form.Item>
+        </>
+      )}
         <h2>Coral Scoring</h2>
         <h2>L1</h2>
         <Form.Item<FieldType> valuePropName="checked" name="coral_scoring_l1">
