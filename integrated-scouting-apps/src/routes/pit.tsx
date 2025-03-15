@@ -35,6 +35,7 @@ const formDefaultValues = {
   "team_workmanship": 0,
   "gracious_professionalism": 0,
   "comments": null,
+  "acceptance_angle": 0,
 }
 
 // Debounce alerting because React runs it twice
@@ -60,12 +61,17 @@ function PitScout(props: any) {
   const [formValue, setFormValue] = useState(formDefaultValues);
   const [qrValue, setQrValue] = useState<any>();
   const [robotWeight, setRobotWeight] = useState(0);
+  const [acceptanceAngle, setAcceptanceAngle] = useState(0);
 
   useEffect(() => { document.title = props.title; return () => { } }, [props.title]);
   useEffect(() => {
     if ((document.getElementById("robot_weight") as HTMLInputElement) !== null) {
       (document.getElementById("robot_weight") as HTMLInputElement).value = robotWeight.toString();
       form.setFieldValue('robot_weight', robotWeight);
+    }
+    if ((document.getElementById("acceptance_angle") as HTMLInputElement) !== null) {
+      (document.getElementById("acceptance_angle") as HTMLInputElement).value = acceptanceAngle.toString();
+      form.setFieldValue('acceptance_angle', acceptanceAngle);
     }
     if ((document.getElementById("number_of_motors") as HTMLInputElement) !== null) {
       (document.getElementById("number_of_motors") as HTMLInputElement).value = formValue.number_of_motors.toString();
@@ -88,7 +94,7 @@ function PitScout(props: any) {
       form.setFieldValue('gracious_professionalism', formValue.gracious_professionalism);
     }
     return () => { };
-  }, [formValue, form, robotWeight]);
+  }, [formValue, form, robotWeight, acceptanceAngle]);
   useEffect(() => {
     (async function() {
       if(!match_event) {
@@ -174,6 +180,7 @@ function PitScout(props: any) {
       wheel_type: string;
       coral_intake_capability: string;
       coral_capability_type: string;
+      acceptance_angle: number;
       algae_intake_capability: string;
       algae_scoring_capability: string;
       coral_scoring_l1: boolean;
@@ -392,42 +399,35 @@ function PitScout(props: any) {
         />
         </Form.Item>
         {isRampSelected && (
-        <>
-          <h2>Coral Station Acceptance Angle</h2>
-          <Form.Item
-  name="acceptance_angle"
-  rules={[
-    { required: true, message: 'Please input the acceptance angle!' },
-    {
-      validator: (_, value) => {
-        if (value === undefined || value === null || value === '') {
-          return Promise.reject('Please enter a number');
-        }
-        if (!/^\d*\.?\d*$/.test(value.toString())) {
-          return Promise.reject('Please enter only numbers');
-        }
-        return Promise.resolve();
-      }
-    }
-  ]}
->
-  <InputNumber
-    className="input"
-    placeholder="Enter angle in degrees"
-    onChange={(value) => {
-      const numValue = typeof value === 'number' ? value : 0;
-      setRobotWeight(numValue);
-    }}
-    onKeyPress={(event) => {
-      const charCode = event.which ? event.which : event.keyCode;
-      if (charCode > 31 && (charCode < 48 || charCode > 57)) {
-        event.preventDefault();
-      }
-    }}
-    formatter={(value) => `${value}`.replace(/^0+/, '')}
-    parser={(value) => value ? Math.round(parseFloat(value)) : 0}
-    onWheel={(e) => (e.target as HTMLElement).blur()}
-  />
+  <>
+    <h2>Acceptance Angle (degrees)</h2>
+    <Form.Item
+      name="acceptance_angle"
+      rules={[{ required: true, message: 'Please input the acceptance angle in degrees!' }]}
+    >
+      <InputNumber
+        min={0}
+        max={360}
+        precision={0}
+        placeholder="0"
+        className="input acceptance-angle-input"
+        value={acceptanceAngle}
+        type="number"
+        pattern="[0-9]*"
+        onChange={(value) => {
+          const numValue = typeof value === 'number' ? value : 0;
+          setAcceptanceAngle(numValue);
+        }}
+        onKeyPress={(event) => {
+          const charCode = event.which ? event.which : event.keyCode;
+          if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+            event.preventDefault();
+          }
+        }}
+        formatter={(value) => `${value}`.replace(/^0+/, '')}
+        parser={(value) => value ? Math.round(parseFloat(value)) : 0}
+        onWheel={(e) => (e.target as HTMLElement).blur()}
+      />
 </Form.Item>
         </>
       )}
