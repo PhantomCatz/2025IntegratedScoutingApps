@@ -8,6 +8,7 @@ import Header from "./parts/header";
 import Chart from 'chart.js/auto';
 import ChartComponent from "./parts/chart"; 
 import PitTabs from "./parts/pitTabs"; 
+import StrategicTabs from './parts/strategicTabs';
 
 const MAX_NUM_TEAMS = 3;
 
@@ -309,6 +310,7 @@ function DTFTeams(props: any) {
         persistentData.push(data);
 
         let pitData = await PitTabs(Number(team)) || undefined;
+        let strategicData = await StrategicTabs(Number(team)) || undefined;
 
         const teamTabs = [
           { key: "1", label: "Charts", children:
@@ -410,7 +412,20 @@ function DTFTeams(props: any) {
           { key: "5", label: "Pit", children:
             (
               <>
+                { pitData &&
                 <Tabs items={pitData} centered className="tabs" />
+                || <p className={"errorLabel"}>No Pit Data</p>
+                }
+              </>
+            )
+          },
+          { key: "6", label: "Strategic", children:
+            (
+              <>
+                { strategicData &&
+                <Tabs items={strategicData} centered className="tabs" />
+                || <p className={"errorLabel"}>No Strategic Data</p>
+                }
               </>
             )
           },

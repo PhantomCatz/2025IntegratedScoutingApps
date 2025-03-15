@@ -5,6 +5,7 @@ import { Input, InputNumber, Tabs } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import Header from "./parts/header";
 import { getAllTeams } from './utils/tbaRequest';
+import StrategicTabs from './parts/strategicTabs';
 
 function TeamData(props: any) {
   const eventName = process.env.REACT_APP_EVENTNAME;
@@ -27,7 +28,7 @@ function TeamData(props: any) {
 
         const teamNumbers = data.map(function (team: any) { 
           return (<h2 key={team}>
-                  <a onClick={async () => {setTeamNumber(team); await getComments(team)}}>{team}</a>
+                  <a onClick={async () => {setTeamNumber(team); await setTabs(team)}}>{team}</a>
                   </h2>);
         });
 
@@ -68,7 +69,7 @@ function TeamData(props: any) {
         <div className={"centered"}>
           <button className={"submitButton"} onMouseDown={async function(event) {
             const input : any = document.querySelector("#teamNumber");
-            await getComments(input.ariaValueNow);
+            await setTabs(input.ariaValueNow);
           }}>Submit</button>
         </div>
         <h2>List of Teams</h2>
@@ -76,82 +77,25 @@ function TeamData(props: any) {
       </div>
     );
   }
-
-  async function getComments(team_number: number, inCallback? : boolean) {
-    const window = {
-      alert : function(...args : any[]) {
-        if(!!inCallback) {
-          return;
-        }
-        globalThis.window.alert(...args);
-      }
-    };
+  
+  async function setTabs(team_number : number, inCallback? : boolean) {
     try {
-      if (!team_number) {
-        return;
-      }
-      
-      let fetchLink = process.env.REACT_APP_SERVER_ADDRESS;
+      const tabs = await StrategicTabs(team_number, inCallback);
 
-      if(!fetchLink) {
-        console.error("Could not get fetch link. Check .env");
-        return;
-      }
-
-      fetchLink += "reqType=getTeamStrategic";
-
-      fetchLink += `&team=${team_number}`;
-
-      const response = await(await fetch(fetchLink)).json();
-
-      if(!response.length) {
-        window.alert("This team has not been scouted.");
+      if(tabs !== null) {
+        setItems([initialState(), ...tabs]);
+      } else {
         setItems([initialState()]);
-        return;
       }
-
-
-      const match: { key: string; label: string; children: JSX.Element; }[] = [];
-      let index = 2;
-
-      for (const strategicInfo of response) {
-        strategicInfo.comments = strategicInfo.comments.replaceAll("\\n", "\n");
-
-        match.push({
-          key: `${strategicInfo.scouter_initials.toUpperCase()}|${strategicInfo.team_number}|${index}`,
-          label: strategicInfo.scouter_initials.toUpperCase() + ": " + strategicInfo.team_number,
-          children: (
-              <div>
-                <h2>Scouter Initials</h2>
-                <Input className="input" disabled value={strategicInfo.match_event} />
-                <h2>Scouter Initials</h2>
-                <Input className="input" disabled value={strategicInfo.scouter_initials} />
-                <h2>Match Level</h2>
-                <Input className="input" disabled value={strategicInfo.match_level} />
-                <h2>Match #</h2>
-                <Input className="input" disabled value={strategicInfo.match_number} />
-                <h2>Round #</h2>
-                <Input className="input" disabled value={strategicInfo.round_number} />
-                <h2>Robot Position</h2>
-                <Input className="input" disabled value={strategicInfo.robot_position} />
-                <h2>Comments</h2>
-                <TextArea className="strategic-input" disabled value={strategicInfo.comments} style={{marginBottom: '5%'}} />
-              </div>
-          )
-        });
-        index++;
-      }
-      match.sort((a, b) => parseInt(a.key) - parseInt(b.key));
-      setItems([initialState(), ...match]);
     } catch (err) {
       console.log(err);
     }
-
   }
+
   // Hack to circumvent bug
   if(shouldRetryLoading) {
     setShouldRetryLoading(false);
-    getComments(teamNumber, true);
+    setTabs(teamNumber, true);
   }
   return (
     <div>

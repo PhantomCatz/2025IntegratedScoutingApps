@@ -28,7 +28,7 @@ async function PitTabs(team_number: number, inCallback? : boolean) {
   const response = await(await fetch(fetchLink)).json();
 
   if(!response.length) {
-    window.alert("This team has not been scouted.");
+    //window.alert("This team has not been scouted.");
     return null;
   }
 
@@ -44,7 +44,7 @@ async function PitTabs(team_number: number, inCallback? : boolean) {
       label: `${pitInfo.scouter_initials.toUpperCase()} : ${pitInfo.team_number}`,
       children: (
         <>
-          <h2>matches Event</h2>
+          <h2>Match Event</h2>
           <Input className="input" disabled value={pitInfo.match_event} />
           <h2>Scouter Initials</h2>
           <Input className="input" disabled value={pitInfo.scouter_initials} />
