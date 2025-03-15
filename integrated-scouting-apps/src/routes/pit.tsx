@@ -25,14 +25,17 @@ const formDefaultValues = {
   "coral_scoring_l2": false,
   "coral_scoring_l3": false,
   "coral_scoring_l4": false,
+  "can_remove_algae": false,
   "algae_intake_capability": null,
   "algae_scoring_capability": null,
   "climbing_capability": null,
+  "coral_intake_type": null,
   "pit_organization": 0,
   "team_safety": 0,
   "team_workmanship": 0,
   "gracious_professionalism": 0,
   "comments": null,
+  "acceptance_angle": 0,
 }
 
 // Debounce alerting because React runs it twice
@@ -48,9 +51,9 @@ window.alert = (function() {
     }, 100);
   }
 })();
-
-function PitScout(props: any) {
+function PitScout(props: any) { 
   const match_event = process.env.REACT_APP_EVENTNAME as string;
+  const [isRampSelected, setIsRampSelected] = useState(false);
   const imageURI = useRef<string>();
   const canvasRef = useRef<ReactSketchCanvasRef>(null);
   const [form] = Form.useForm();
@@ -58,12 +61,17 @@ function PitScout(props: any) {
   const [formValue, setFormValue] = useState(formDefaultValues);
   const [qrValue, setQrValue] = useState<any>();
   const [robotWeight, setRobotWeight] = useState(0);
+  const [acceptanceAngle, setAcceptanceAngle] = useState(0);
 
   useEffect(() => { document.title = props.title; return () => { } }, [props.title]);
   useEffect(() => {
     if ((document.getElementById("robot_weight") as HTMLInputElement) !== null) {
       (document.getElementById("robot_weight") as HTMLInputElement).value = robotWeight.toString();
       form.setFieldValue('robot_weight', robotWeight);
+    }
+    if ((document.getElementById("acceptance_angle") as HTMLInputElement) !== null) {
+      (document.getElementById("acceptance_angle") as HTMLInputElement).value = acceptanceAngle.toString();
+      form.setFieldValue('acceptance_angle', acceptanceAngle);
     }
     if ((document.getElementById("number_of_motors") as HTMLInputElement) !== null) {
       (document.getElementById("number_of_motors") as HTMLInputElement).value = formValue.number_of_motors.toString();
@@ -86,7 +94,7 @@ function PitScout(props: any) {
       form.setFieldValue('gracious_professionalism', formValue.gracious_professionalism);
     }
     return () => { };
-  }, [formValue, form, robotWeight]);
+  }, [formValue, form, robotWeight, acceptanceAngle]);
   useEffect(() => {
     (async function() {
       if(!match_event) {
@@ -135,14 +143,17 @@ function PitScout(props: any) {
       "coral_scoring_l2": event.coral_scoring_l2 || false,
       "coral_scoring_l3": event.coral_scoring_l3 || false,
       "coral_scoring_l4": event.coral_scoring_l4 || false,
+      "can_remove_algae": event.can_remove_algae || false,
       "algae_intake_capability": event.algae_intake_capability,
       "algae_scoring_capability": event.algae_scoring_capability,
       "climbing_capability": event.climbing_capability,
+      "coral_intake_type": event.coral_intake_type,
       "pit_organization": event.pit_organization,
       "team_safety": event.team_safety,
       "team_workmanship": event.team_workmanship,
       "gracious_professionalism": event.gracious_professionalism,
       "comments": event.comments,
+      "acceptance_angle": event.coral_intake_type === "Ramp" ? event.acceptance_angle : null,
     };
     setQrValue(body);
   };
@@ -168,12 +179,15 @@ function PitScout(props: any) {
       number_of_motors: number;
       wheel_type: string;
       coral_intake_capability: string;
+      coral_capability_type: string;
+      acceptance_angle: number;
       algae_intake_capability: string;
       algae_scoring_capability: string;
       coral_scoring_l1: boolean;
       coral_scoring_l2: boolean;
       coral_scoring_l3: boolean;
       coral_scoring_l4: boolean;
+      can_remove_algae: boolean;
       climbing_capability: string;
       pit_organization: number;
       team_safety: number;
@@ -214,7 +228,7 @@ function PitScout(props: any) {
     ];
     const algaeintakeCap = [
       { label: "Reef Zone", value: "Reef Zone" },
-      { label: "Coral", value: "Coral" },
+      { label: "Ground", value: "Ground" },
       { label: "Both", value: "Both" },
       { label: "Neither", value: "Neither" },
     ];
@@ -230,6 +244,11 @@ function PitScout(props: any) {
       { label: "Both", value: "Both" },
       { label: "Neither", value: "Neither" },
     ];
+    const coralIntType = [
+      { label: "Ramp", value: "Ramp" },
+      { label: "Claw", value: "Claw"},
+      { label: "Ground", value: "Ground"},
+    ]
     return (
       <div>
         <h2>Scouter Initials</h2>
@@ -369,6 +388,49 @@ function PitScout(props: any) {
             dropdownStyle={{ maxHeight: 'none' }}
           />
         </Form.Item>
+        <h2>Coral Intake Type</h2>
+        <Form.Item name="coral_intake_type" rules={[{ required: true, message: 'Please input the coral intake type!' }]}>
+        <Select
+          options={coralIntType}
+          className="input"
+          dropdownMatchSelectWidth={false}
+          dropdownStyle={{ maxHeight: 'none' }}
+          onChange={(value) => setIsRampSelected(value === "Ramp")}
+        />
+        </Form.Item>
+        {isRampSelected && (
+  <>
+    <h2>Acceptance Angle (degrees)</h2>
+    <Form.Item
+      name="acceptance_angle"
+      rules={[{ required: true, message: 'Please input the acceptance angle in degrees!' }]}
+    >
+      <InputNumber
+        min={0}
+        max={360}
+        precision={0}
+        placeholder="0"
+        className="input acceptance-angle-input"
+        value={acceptanceAngle}
+        type="number"
+        pattern="[0-9]*"
+        onChange={(value) => {
+          const numValue = typeof value === 'number' ? value : 0;
+          setAcceptanceAngle(numValue);
+        }}
+        onKeyPress={(event) => {
+          const charCode = event.which ? event.which : event.keyCode;
+          if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+            event.preventDefault();
+          }
+        }}
+        formatter={(value) => `${value}`.replace(/^0+/, '')}
+        parser={(value) => value ? Math.round(parseFloat(value)) : 0}
+        onWheel={(e) => (e.target as HTMLElement).blur()}
+      />
+</Form.Item>
+        </>
+      )}
         <h2>Coral Scoring</h2>
         <h2>L1</h2>
         <Form.Item<FieldType> valuePropName="checked" name="coral_scoring_l1">
@@ -395,6 +457,10 @@ function PitScout(props: any) {
           dropdownStyle={{ maxHeight: 'none' }}
         />
       </Form.Item>
+      <h2>Can Remove Algae</h2>
+        <Form.Item<FieldType> valuePropName="checked" name="can_remove_algae">
+          <Checkbox className='input_checkbox' />
+        </Form.Item>
         <h2>Algae Scoring Capability</h2>
               <Form.Item name="algae_scoring_capability" rules={[{ required: true, message: 'Please input the Algae Scoring capability!' }]}>
         <Select
