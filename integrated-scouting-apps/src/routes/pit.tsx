@@ -50,8 +50,7 @@ window.alert = (function() {
     }, 100);
   }
 })();
-
-function PitScout(props: any) {
+function PitScout(props: any) { 
   const match_event = process.env.REACT_APP_EVENTNAME as string;
   const [isRampSelected, setIsRampSelected] = useState(false);
   const imageURI = useRef<string>();
