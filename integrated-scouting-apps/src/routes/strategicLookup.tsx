@@ -3,7 +3,7 @@ import '../public/stylesheets/strategic.css';
 import { useEffect, useState } from 'react';
 import { Input, InputNumber, Tabs } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
-import Header from "./header";
+import Header from "./parts/header";
 import { getAllTeams } from './utils/tbaRequest';
 
 function TeamData(props: any) {

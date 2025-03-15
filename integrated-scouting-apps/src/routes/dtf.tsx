@@ -1,7 +1,7 @@
 import '../public/stylesheets/dtf.css';
 import { useEffect } from 'react';
 import { Input, Form, InputNumber } from 'antd';
-import Header from "./header";
+import Header from "./parts/header";
 
 function DTF(props: any) {
 	const [form] = Form.useForm();

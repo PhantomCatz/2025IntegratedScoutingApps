@@ -4,9 +4,10 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Checkbox, Flex, Input, Tabs } from "antd";
 import TextArea from 'antd/es/input/TextArea';
-import Header from "./header";
+import Header from "./parts/header";
 import Chart from 'chart.js/auto';
-import ChartComponent from "./chart"; 
+import ChartComponent from "./parts/chart"; 
+import PitTabs from "./parts/pitTabs"; 
 
 const MAX_NUM_TEAMS = 3;
 
@@ -145,7 +146,6 @@ function DTFTeams(props: any) {
         break;
       default:
         console.error(`Team has conflicting ${k} types: `, data[k], v);
-        //console.log(data);
         data[k] = "Both";
         break;
       }
@@ -241,6 +241,8 @@ function DTFTeams(props: any) {
         "overall_num_penalties": 0,
         "overall_penalties_incurred": null,
         "overall_comments": "",
+        
+        "robot_played": true,
 
         "total_score" : 0,
         "average_score" : 0,
@@ -303,19 +305,22 @@ function DTFTeams(props: any) {
           index++;
           continue;
         }
-        //console.log(data);
 
         persistentData.push(data);
 
+        let pitData = await PitTabs(Number(team)) || undefined;
+
         const teamTabs = [
-          { key: "1", label: "Charts", children: ( 
-          <div>
-             <ChartComponent teamNumber={team} index={index} />
-          </div>  
-       )
-     },
-          { key: "2", label: "Auton", children: ( 
-          <div>
+          { key: "1", label: "Charts", children:
+            ( 
+             <>
+               <ChartComponent teamNumber={team} index={index} />
+             </>  
+            )
+          },
+          { key: "2", label: "Auton", children:
+            ( 
+             <>
                <Flex justify='in-between'>
                  <Flex vertical align='flex-start'>
                    <h2>L1 avg</h2>
@@ -345,48 +350,50 @@ function DTFTeams(props: any) {
                <Input className="input" disabled value={data.auton_coral_missed} />
                <h2>Missed Algae</h2>
                <Input className="input" disabled value={data.auton_algae_missed_net} />
-         </div>  
-          )
-        },
-          { key: "3", label: "Teleop/End", children:( 
-          <div> 
-            <Flex justify='in-between'>
-                 <Flex vertical align='flex-start'>
-                   <h2>L1 avg</h2>
-                   <Input className="dtf-input" disabled value={data.teleop_coral_scored_l1} />
-                 </Flex>
-                 <Flex vertical align='flex-start'>
-                   <h2>L2 avg</h2>
-                   <Input className="dtf-input" disabled value={data.teleop_coral_scored_l2} /> 
-                 </Flex>
-               </Flex>
-               <Flex justify='in-between'>
-                 <Flex vertical align='flex-start'>
-                   <h2>L3 avg</h2>
-                   <Input className="dtf-input" disabled value={data.teleop_coral_scored_l3} /> 
-                 </Flex>
-                 <Flex vertical align='flex-start'>
-                   <h2>L4 avg</h2>
-                   <Input className="dtf-input" disabled value={data.teleop_coral_scored_l4} />
-                 </Flex>
-               </Flex>
-               <h2>Avg Algae Processed</h2>
-               <Input className="input" disabled value={data.teleop_algae_scored_processor} /> 
-               <h2>Avg Algae Net</h2>
-               <Input className="input" disabled value={data.teleop_algae_scored_net}  /> 
-               <h2>Missed Coral</h2>
-               <Input className="input" disabled value={data.teleop_coral_missed} />
-               <h2>Missed Algae</h2>
-               <Input className="input" disabled value={data.teleop_algae_missed_net} />
-               <h2>Climb Type</h2>
-               <Input className="input" disabled value={data.endgame_climb_type} /> 
-               <h2>Avg Climb Time</h2>
-               <Input className="input" disabled value={data.endgame_climb_time} /> 
-         </div> 
-         )
-        },
-          { key: "4", label: "OA", children: (
-              <div>
+             </>  
+            )
+          },
+          { key: "3", label: "Teleop/End", children:
+            (
+              <> 
+                <Flex justify='in-between'>
+                  <Flex vertical align='flex-start'>
+                    <h2>L1 avg</h2>
+                    <Input className="dtf-input" disabled value={data.teleop_coral_scored_l1} />
+                  </Flex>
+                  <Flex vertical align='flex-start'>
+                    <h2>L2 avg</h2>
+                    <Input className="dtf-input" disabled value={data.teleop_coral_scored_l2} /> 
+                  </Flex>
+                </Flex>
+                <Flex justify='in-between'>
+                  <Flex vertical align='flex-start'>
+                    <h2>L3 avg</h2>
+                    <Input className="dtf-input" disabled value={data.teleop_coral_scored_l3} /> 
+                  </Flex>
+                  <Flex vertical align='flex-start'>
+                    <h2>L4 avg</h2>
+                    <Input className="dtf-input" disabled value={data.teleop_coral_scored_l4} />
+                  </Flex>
+                </Flex>
+                <h2>Avg Algae Processed</h2>
+                <Input className="input" disabled value={data.teleop_algae_scored_processor} /> 
+                <h2>Avg Algae Net</h2>
+                <Input className="input" disabled value={data.teleop_algae_scored_net}  /> 
+                <h2>Missed Coral</h2>
+                <Input className="input" disabled value={data.teleop_coral_missed} />
+                <h2>Missed Algae</h2>
+                <Input className="input" disabled value={data.teleop_algae_missed_net} />
+                <h2>Climb Type</h2>
+                <Input className="input" disabled value={data.endgame_climb_type} /> 
+                <h2>Avg Climb Time</h2>
+                <Input className="input" disabled value={data.endgame_climb_time} /> 
+              </> 
+            )
+          },
+          { key: "4", label: "OA", children:
+            (
+              <>
                 <h2>Matches Played</h2>
                 <Input className="input" disabled value={data.match_count}  /> 
                 <h2>Robot Died (counter: matches)</h2>
@@ -397,9 +404,16 @@ function DTFTeams(props: any) {
                 <Input className="input" disabled value={data.endgame_coral_intake_capability}  /> 
                 <h2>Robot Comments</h2>
                 <TextArea disabled className="textbox_input" value={data.overall_comments} /> 
-              </div>
-            ) },
-            
+              </>
+            )
+          },
+          { key: "5", label: "Pit", children:
+            (
+              <>
+                <Tabs items={pitData} centered className="tabs" />
+              </>
+            )
+          },
         ];
 
         match.push({
@@ -419,50 +433,51 @@ function DTFTeams(props: any) {
         key: "1",
         label: "Summary",
         children:
-        <div> 
-        <h2>Average Alliance Score</h2> 
-        <Input className="input" disabled value={totalAverage} />
-        {persistentData[0]?.match_count > 0 && (
-          <>
-            <h2>Team {teams[0]} Avg Score</h2>
-            <Input className="input" disabled value={persistentData[0].average_score} /> 
-          </>
-        )}
-        {persistentData[1]?.match_count > 0 && (
-          <>
-            <h2>Team {teams[1]} Avg Score</h2>
-            <Input className="input" disabled value={persistentData[1].average_score} /> 
-          </>
-        )}
-        {persistentData[2]?.match_count > 0 && (
-          <>
-            <h2>Team {teams[2]} Avg Score</h2>
-            <Input className="input" disabled value={persistentData[2].average_score} /> 
-          </>
-        )}
-        <h2>Driver Skill</h2>
-        <Flex justify='in-between'>
-          {persistentData[0]?.match_count > 0 && (
-            <Flex vertical align='center'>
-              <h2 className='summary_text'>{teams[0]}</h2>
-              <Input className="dtf-input" disabled value={persistentData[0].overall_driver_skill} /> 
-            </Flex>
-          )}
-          {persistentData[1]?.match_count > 0 && (
-            <Flex vertical align='center'>
-              <h2 className='summary_text'>{teams[1]}</h2>
-              <Input className="dtf-input" disabled value={persistentData[1].overall_driver_skill} /> 
-            </Flex>
-          )}
-          {persistentData[2]?.match_count > 0 && (
-            <Flex vertical align='center'>
-              <h2 className='summary_text'>{teams[2]}</h2>
-              <Input className="dtf-input" disabled value={persistentData[2].overall_driver_skill} />
-            </Flex>
-          )}
-        </Flex>
-      </div>
-        
+          (
+            <> 
+              <h2>Average Alliance Score</h2> 
+              <Input className="input" disabled value={totalAverage} />
+              {persistentData[0]?.match_count > 0 && (
+                <>
+                  <h2>Team {teams[0]} Avg Score</h2>
+                  <Input className="input" disabled value={persistentData[0].average_score} /> 
+                </>
+              )}
+              {persistentData[1]?.match_count > 0 && (
+                <>
+                  <h2>Team {teams[1]} Avg Score</h2>
+                  <Input className="input" disabled value={persistentData[1].average_score} /> 
+                </>
+              )}
+              {persistentData[2]?.match_count > 0 && (
+                <>
+                  <h2>Team {teams[2]} Avg Score</h2>
+                  <Input className="input" disabled value={persistentData[2].average_score} /> 
+                </>
+              )}
+              <h2>Driver Skill</h2>
+              <Flex justify='in-between'>
+                {persistentData[0]?.match_count > 0 && (
+                  <Flex vertical align='center'>
+                    <h2 className='summary_text'>{teams[0]}</h2>
+                    <Input className="dtf-input" disabled value={persistentData[0].overall_driver_skill} /> 
+                  </Flex>
+                )}
+                {persistentData[1]?.match_count > 0 && (
+                  <Flex vertical align='center'>
+                    <h2 className='summary_text'>{teams[1]}</h2>
+                    <Input className="dtf-input" disabled value={persistentData[1].overall_driver_skill} /> 
+                  </Flex>
+                )}
+                {persistentData[2]?.match_count > 0 && (
+                  <Flex vertical align='center'>
+                    <h2 className='summary_text'>{teams[2]}</h2>
+                    <Input className="dtf-input" disabled value={persistentData[2].overall_driver_skill} />
+                  </Flex>
+                )}
+              </Flex>
+            </>
+          )
       });
 
       setItems(match);
@@ -472,11 +487,11 @@ function DTFTeams(props: any) {
     setLoading(false);
   }
   return (
-    <div>
-    <Header name={"Drive Team Feeder"} back={"#home"} />
-    <h2 style={{ display: loading ? 'inherit' : 'none' }}>Loading data...</h2>
-    <Tabs defaultActiveKey="1" items={items} centered className='tabs' />
-    </div>
+    <>
+      <Header name={"Drive Team Feeder"} back={"#home"} />
+      <h2 style={{ display: loading ? 'inherit' : 'none' }}>Loading data...</h2>
+      <Tabs defaultActiveKey="1" items={items} centered className='tabs' />
+    </>
   );
 }
 export default DTFTeams;

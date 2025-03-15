@@ -62,9 +62,13 @@ a {
 	padding-right: 5% !important;
 }
 .ant-layout-footer {
-	background-color: #ffffff !important;
+	background-color: var(--pc-blue) !important;
 	padding: 0 !important;
 	border-top: 4px solid white !important;
+	width: 100vw;
+	margin-left: -5vw;
+	/*bottom: 0px;*/
+	/*left: 0px;*/
 }
 .ant-btn-default:hover, .ant-input-outlined:hover {
 	background-color: transparent !important;

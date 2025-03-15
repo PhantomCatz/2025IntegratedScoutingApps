@@ -1,8 +1,8 @@
-import '../public/stylesheets/style.css';
-import '../public/stylesheets/qrcode.css';
+import '../../public/stylesheets/style.css';
+import '../../public/stylesheets/qrcode.css';
 
 import {QRCode as AntQr} from 'antd';
-import {useState, } from 'react';
+import {useState, useEffect} from 'react';
 
 const sep = "\t";
 const defualtValue = <></>;
@@ -10,6 +10,14 @@ const defualtValue = <></>;
 function QrCode(props : any) {
 	const [qrValue, setQrValue] = useState<string>("");
 	const [timestamp, setTimestamp] = useState<Date>(new Date());
+
+	useEffect(() => {
+		try {
+		(window as any).scrollByPages(100);
+		} catch (err) {
+
+		}
+	}, [qrValue]);
 
 	let shouldShow = !!qrValue;
 

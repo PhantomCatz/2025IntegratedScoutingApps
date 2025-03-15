@@ -17,8 +17,8 @@ import Watchlist from './routes/watchlist';
 import WatchlistGet from './routes/watchlistData';
 import WatchlistUpdate from './routes/watchlistUpdate';
 
-import Chart from './routes/chart';
-import QrCode from './routes/qrCodeViewer';
+import Chart from './routes/parts/chart';
+import QrCode from './routes/parts/qrCodeViewer';
 
 import { HashRouter, Routes, Route } from 'react-router-dom';
 

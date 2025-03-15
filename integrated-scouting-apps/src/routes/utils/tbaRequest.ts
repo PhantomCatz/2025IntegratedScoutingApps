@@ -20,6 +20,7 @@ async function getTeamNumber(matchLevel? : string,
 
 
 	if(allianceNumber) {
+		console.log("allianceNumber=", allianceNumber);
 		return await getTeamNumberPlayoffs(matchLevel, matchNumber, roundNumber, robotPosition, allianceNumber);
 	}
 

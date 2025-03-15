@@ -4,8 +4,8 @@ import { useEffect, useState} from 'react';
 import { Tabs, Input, Form, Select, InputNumber, Button, Flex, Table } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import { saveAs } from 'file-saver';
-import Header from "./header";
-import QrCode from "./qrCodeViewer";
+import Header from "./parts/header";
+import QrCode from "./parts/qrCodeViewer";
 import {getTeamNumber, isRoundNumberVisible, isInPlayoffs} from './utils/tbaRequest';
 
 const formDefaultValues = {

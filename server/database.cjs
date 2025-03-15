@@ -22,7 +22,6 @@ async function requestDatabase(query, substitution, forEach) {
 	try {
 		const mysql = getMysql();
 		const conn = await mysql.createConnection(connectionData);
-		// do await conn.query(QUERY) for each sql command, below line would give results of query
 
 		if(Array.isArray(substitution)) {
 			for(const val of substitution) {
@@ -115,6 +114,8 @@ async function getTeamStrategicInfo(queries) {
 
 	const sqlQuery = "SELECT * FROM strategic_data WHERE team_number=?";
 
+	console.log(sqlQuery, team);
+
 	result = await requestDatabase(sqlQuery, team);
 
 	return result;
@@ -124,7 +125,7 @@ function getMysql() {
 	const mysql = require("mysql2/promise");
 
 	const errorConnection = {
-		query : function(...args) { return [{}, {}]; },
+		query : function(...args) { return [null, null]; },
 		end: function(...args) { },
 	};
 
@@ -148,8 +149,11 @@ function verifyConnection(connection) {
 	}
 }
 
-module.exports.requestDatabase = requestDatabase;
-module.exports.getTeamInfo = getTeamInfo;
-module.exports.getTeamsScouted = getTeamsScouted;
-module.exports.getTeamPitInfo = getTeamPitInfo;
-module.exports.getTeamStrategicInfo = getTeamStrategicInfo;
+
+module.exports = {
+	"requestDatabase" : requestDatabase,
+	"getTeamInfo" : getTeamInfo,
+	"getTeamsScouted" : getTeamsScouted,
+	"getTeamPitInfo" : getTeamPitInfo,
+	"getTeamStrategicInfo" : getTeamStrategicInfo,
+};

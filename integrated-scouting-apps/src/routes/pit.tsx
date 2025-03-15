@@ -7,8 +7,8 @@ import { Button } from 'antd';
 import React, { useState, useEffect } from 'react';
 import { ReactSketchCanvasRef } from 'react-sketch-canvas';
 import TextArea from 'antd/es/input/TextArea';
-import Header from './header';
-import QrCode from './qrCodeViewer';
+import Header from './parts/header';
+import QrCode from './parts/qrCodeViewer';
 import { getTeamsNotScouted, } from './utils/tbaRequest';
 
 const formDefaultValues = {
@@ -37,7 +37,7 @@ const formDefaultValues = {
 
 // Debounce alerting because React runs it twice
 window.alert = (function() {
-  const alert = window.alert;
+  const alert = globalThis.window.alert;
   let id : any;
 
   return function(...args) {
@@ -59,33 +59,27 @@ function PitScout(props: any) {
   const [qrValue, setQrValue] = useState<any>();
   const [robotWeight, setRobotWeight] = useState(0);
 
-  useEffect(() => { document.title = props.title; return () => { } }, [props.title]);
   useEffect(() => {
-    if ((document.getElementById("robot_weight") as HTMLInputElement) !== null) {
-      (document.getElementById("robot_weight") as HTMLInputElement).value = robotWeight.toString();
-      form.setFieldValue('robot_weight', robotWeight);
+    document.title = props.title;
+  }, [props.title]);
+  useEffect(() => {
+    const updateFields = [
+      "robot_weight",
+      "number_of_motors",
+      "pit_organization",
+      "team_safety",
+      "team_workmanship",
+      "gracious_professionalism",
+    ];
+    for(const field of updateFields) {
+      const element = document.getElementById(field);
+      if (element === null) {
+        continue;
+      }
+
+      element.ariaValueNow = (formValue as any)[field].toString();
+      form.setFieldValue(field, (formValue as any)[field]);
     }
-    if ((document.getElementById("number_of_motors") as HTMLInputElement) !== null) {
-      (document.getElementById("number_of_motors") as HTMLInputElement).value = formValue.number_of_motors.toString();
-      form.setFieldValue('number_of_motors', formValue.number_of_motors);
-    }
-    if ((document.getElementById("pit_organization") as HTMLInputElement) !== null) {
-      (document.getElementById("pit_organization") as HTMLInputElement).value = formValue.pit_organization.toString();
-      form.setFieldValue('pit_organization', formValue.pit_organization);
-    }
-    if ((document.getElementById("team_safety") as HTMLInputElement) !== null) {
-      (document.getElementById("team_safety") as HTMLInputElement).value = formValue.team_safety.toString();
-      form.setFieldValue('team_safety', formValue.team_safety);
-    }
-    if ((document.getElementById("team_workmanship") as HTMLInputElement) !== null) {
-      (document.getElementById("team_workmanship") as HTMLInputElement).value = formValue.team_workmanship.toString();
-      form.setFieldValue('team_workmanship', formValue.team_workmanship);
-    }
-    if ((document.getElementById("gracious_professionalism") as HTMLInputElement) !== null) {
-      (document.getElementById("gracious_professionalism") as HTMLInputElement).value = formValue.gracious_professionalism.toString();
-      form.setFieldValue('gracious_professionalism', formValue.gracious_professionalism);
-    }
-    return () => { };
   }, [formValue, form, robotWeight]);
   useEffect(() => {
     (async function() {
@@ -182,20 +176,20 @@ function PitScout(props: any) {
       robot_images: string;
       comments: string;
     };
-    const drive_train = [
+    const drive_train_options = [
       { label: "Tank", value: "Tank" },
       { label: "Swerve", value: "Swerve" },
       { label: "H-Drive", value: "H-Drive" },
       { label: "Other", value: "Other" },
     ];
-    const motor_type = [
+    const motor_type_options = [
       { label: "Falcon 500", value: "Falcon 500" },
       { label: "Kraken", value: "Kraken" },
       { label: "NEO", value: "NEO" },
       { label: "CIM", value: "CIM" },
       { label: "Other", value: "Other" },
     ];
-    const wheel_type = [
+    const wheel_type_options = [
       { label: "Nitrile / Neoprene / Plaction", value: "Nitrile_Neoprene_Plaction" },
       { label: "HiGrip", value: "HiGrip" },
       { label: "Colson", value: 'Colson' },
@@ -206,25 +200,31 @@ function PitScout(props: any) {
       { label: "TPU", value: "TPU" },
       { label: "Other", value: "Other" },
     ];
-    const coralIntakeCap = [
+    const coral_intake_capability_options = [
       { label: "Coral Station", value: "Coral Station" },
       { label: "Ground", value: "Ground" },
       { label: "Both", value: "Both" },
       { label: "Neither", value: "Neither" },
     ];
-    const algaeintakeCap = [
-      { label: "Reef Zone", value: "Reef Zone" },
-      { label: "Coral", value: "Coral" },
+    const algae_removal_capability_options = [
+      { label: "L2", value: "L2" },
+      { label: "L3", value: "L3" },
       { label: "Both", value: "Both" },
       { label: "Neither", value: "Neither" },
     ];
-    const algaescoringCap = [
+    const algae_intake_capability_options = [
+      { label: "Reef Zone", value: "Reef Zone" },
+      { label: "Ground", value: "Ground" },
+      { label: "Both", value: "Both" },
+      { label: "Neither", value: "Neither" },
+    ];
+    const algae_scoring_capability_options = [
       { label: "Net", value: "Net" },
       { label: "Processor", value: "Processor" },
       { label: "Both", value: "Both" },
       { label: "Neither", value: "Neither" },
     ];
-    const climbingCap = [
+    const climbing_capability_options = [
       { label: "Shallow", value: "Shallow" },
       { label: "Deep", value: "Deep" },
       { label: "Both", value: "Both" },
@@ -256,68 +256,68 @@ function PitScout(props: any) {
           />
         </Form.Item>
         <h2>Team #</h2>
-<Form.Item<FieldType> 
-  name="team_number" 
-  rules={[{ required: true, message: 'Please input the team number!' }]}>
-  <InputNumber 
-    controls 
-    min={1} 
-    max={99999} 
-    className="input"
-    type="number"
-    pattern="[0-9]*"
-    onChange={(value) => {
-      if (value !== null) {
-        const limitedValue = Math.min(99999, value);
-        getPitScout(limitedValue);
-      }
-    }}
-    onKeyPress={(event) => {
-      const currentValue = event.currentTarget.value;
-      const charCode = event.which ? event.which : event.keyCode;
-      if (charCode > 31 && (charCode < '0'.charCodeAt(0) || charCode > '9'.charCodeAt(0))) {
-        event.preventDefault();
-      }
-      if (currentValue.length >= 5) {
-        event.preventDefault();
-      }
-    }}
-    onWheel={(e) => (e.target as HTMLElement).blur()}
-  />
-</Form.Item>
-<h2>Robot Weight (lbs)</h2>
-<Form.Item
-  name="robot_weight"
-  rules={[{ required: true, message: 'Please input the robot weight in lbs!' }]}
->
-  <InputNumber
-    min={0}
-    max={1000}
-    precision={0}
-    placeholder="0"
-    className="input robot-weight-input"
-    value={robotWeight}
-    type="number"
-    pattern="[0-9]*"
-    onChange={(value) => {
-      const numValue = typeof value === 'number' ? value : 0;
-      setRobotWeight(numValue);
-    }}
-    onKeyPress={(event) => {
-      const charCode = event.which ? event.which : event.keyCode;
-      if (charCode > 31 && (charCode < 48 || charCode > 57)) {
-        event.preventDefault();
-      }
-    }}
-    formatter={(value) => `${value}`.replace(/^0+/, '')}
-    parser={(value) => value ? Math.round(parseFloat(value)) : 0}
-    onWheel={(e) => (e.target as HTMLElement).blur()}
-  />
-</Form.Item>
+        <Form.Item<FieldType> 
+          name="team_number" 
+          rules={[{ required: true, message: 'Please input the team number!' }]}>
+          <InputNumber 
+            controls 
+            min={1} 
+            max={99999} 
+            className="input"
+            type="number"
+            pattern="[0-9]*"
+            onChange={(value) => {
+              if (value !== null) {
+                const limitedValue = Math.min(99999, value);
+                getPitScout(limitedValue);
+              }
+            }}
+            onKeyPress={(event) => {
+              const currentValue = event.currentTarget.value;
+              const charCode = event.which ? event.which : event.keyCode;
+              if (charCode > 31 && (charCode < '0'.charCodeAt(0) || charCode > '9'.charCodeAt(0))) {
+                event.preventDefault();
+              }
+              if (currentValue.length >= 5) {
+                event.preventDefault();
+              }
+            }}
+            onWheel={(e) => (e.target as HTMLElement).blur()}
+          />
+        </Form.Item>
+        <h2>Robot Weight (lbs)</h2>
+        <Form.Item
+          name="robot_weight"
+          rules={[{ required: true, message: 'Please input the robot weight in lbs!' }]}
+        >
+          <InputNumber
+            min={0}
+            max={1000}
+            precision={0}
+            placeholder="0"
+            className="input robot-weight-input"
+            value={robotWeight}
+            type="number"
+            pattern="[0-9]*"
+            onChange={(value) => {
+              const numValue = typeof value === 'number' ? value : 0;
+              setRobotWeight(numValue);
+            }}
+            onKeyPress={(event) => {
+              const charCode = event.which ? event.which : event.keyCode;
+              if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+                event.preventDefault();
+              }
+            }}
+            formatter={(value) => `${value}`.replace(/^0+/, '')}
+            parser={(value) => value ? Math.round(parseFloat(value)) : 0}
+            onWheel={(e) => (e.target as HTMLElement).blur()}
+          />
+        </Form.Item>
         <h2>Drive Train Type</h2>
         <Form.Item name="drive_train_type" rules={[{ required: true, message: 'Please input the drive train type!' }]}>
         <Select
-          options={drive_train}
+          options={drive_train_options}
           className="input"
           dropdownMatchSelectWidth={false}
           dropdownStyle={{ maxHeight: 'none' }}
@@ -326,7 +326,7 @@ function PitScout(props: any) {
         <h2>Motor Type</h2>
         <Form.Item name="motor_type" rules={[{ required: true, message: 'Please input the motor type!' }]}>
         <Select
-          options={motor_type}
+          options={motor_type_options}
           className="input"
           dropdownMatchSelectWidth={false}
           dropdownStyle={{ maxHeight: 'none' }}
@@ -354,16 +354,16 @@ function PitScout(props: any) {
         <Form.Item name="wheel_type" rules={[{ required: true, message: 'Please input the wheel type!' }]}>
         <Select
           placeholder=""
-          options={wheel_type}
+          options={wheel_type_options}
           className="input"
           dropdownMatchSelectWidth={false}
           dropdownStyle={{ maxHeight: 'none' }}
         />
         </Form.Item>
         <h2>Coral Intake Capability</h2>
-          <Form.Item name="coral_intake_capability" rules={[{ required: true, message: 'Please input the intake capability!' }]}>
+          <Form.Item name="coral_intake_capability" rules={[{ required: true, message: 'Please input the coral intake capability!' }]}>
           <Select
-            options={coralIntakeCap}
+            options={coral_intake_capability_options}
             className="input"
             dropdownMatchSelectWidth={false}
             dropdownStyle={{ maxHeight: 'none' }}
@@ -387,26 +387,26 @@ function PitScout(props: any) {
           <Checkbox className='input_checkbox' />
         </Form.Item>
         <h2>Algae Intake Capability</h2>
-              <Form.Item name="algae_intake_capability" rules={[{ required: true, message: 'Please input the Algae intake capability!' }]}>
+              <Form.Item name="algae_intake_capability" rules={[{ required: true, message: 'Please input the algae intake capability!' }]}>
         <Select
-          options={algaeintakeCap}
+          options={algae_intake_capability_options}
           className="input"
           dropdownMatchSelectWidth={false}
           dropdownStyle={{ maxHeight: 'none' }}
         />
-      </Form.Item>
-        <h2>Algae Scoring Capability</h2>
-              <Form.Item name="algae_scoring_capability" rules={[{ required: true, message: 'Please input the Algae Scoring capability!' }]}>
-        <Select
-          options={algaescoringCap}
-          className="input"
-          dropdownMatchSelectWidth={false}
-          dropdownStyle={{ maxHeight: 'none' }}
-        />
-      </Form.Item>
+        </Form.Item>
+          <h2>Algae Scoring Capability</h2>
+                <Form.Item name="algae_scoring_capability" rules={[{ required: true, message: 'Please input the algae Scoring capability!' }]}>
+          <Select
+            options={algae_scoring_capability_options}
+            className="input"
+            dropdownMatchSelectWidth={false}
+            dropdownStyle={{ maxHeight: 'none' }}
+          />
+        </Form.Item>
         <h2>Climbing Capability</h2>
         <Form.Item<FieldType> name="climbing_capability" rules={[{ required: true, message: 'Please input the climbing capability!' }]}>
-          <Select options={climbingCap} className="input" />
+          <Select options={climbing_capability_options} className="input" />
         </Form.Item>
 
         <Form.Item>
@@ -512,7 +512,7 @@ function PitScout(props: any) {
   }
   return (
     <div>
-	<Header name={"Pit Scout"} back={"#scoutingapp"}/>
+      <Header name={"Pit Scout"} back={"#scoutingapp"}/>
       <Form
         form={form}
         initialValues={formDefaultValues}
@@ -523,7 +523,7 @@ function PitScout(props: any) {
             const initials = form.getFieldValue("scouter_initials");
             form.resetFields();
             setRobotWeight(0);
-			setFormValue(formDefaultValues);
+      setFormValue(formDefaultValues);
             form.setFieldsValue({...formDefaultValues, "scouter_initials": initials});
           }
           catch (err) {
@@ -542,4 +542,5 @@ function PitScout(props: any) {
     </div>
   );
 }
+
 export default PitScout;

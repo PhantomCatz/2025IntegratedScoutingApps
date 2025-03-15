@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom';
 import { Table } from 'antd';
 import Column from 'antd/es/table/Column';
 import ColumnGroup from 'antd/es/table/ColumnGroup';
-import Header from "./header";
+import Header from "./parts/header";
 
 function TeamData(props: any) {
   const { teamNumber } = useParams();

@@ -8,9 +8,9 @@ import { Tabs, Input, Form, Select, Checkbox, InputNumber, Flex, Button} from 'a
 import type { TabsProps } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import { Footer } from 'antd/es/layout/layout';
-import Header from "./header";
+import Header from "./parts/header";
 import { Radio } from 'antd';
-import QrCode from './qrCodeViewer';
+import QrCode from './parts/qrCodeViewer';
 import {getTeamNumber, isInPlayoffs, getTeam, isRoundNumberVisible} from './utils/tbaRequest';
 import type { RadioChangeEvent } from "antd";
 
@@ -24,16 +24,14 @@ const Spacer: React.FC<SpacerProps> = ({ height = '0px', width = '0px' }) => {
 };
 
 const formDefaultValues = {
-  /*
   // Pre-match
-  "match_event": match_event,
-  "team_number": team_number,
-  "scouter_initials": event.scouter_initials.toLowerCase(),
-  "match_level": event.match_level + (event.round_number !== undefined ? event.round_number : ""),
-  "match_number": event.match_number,
-  "robot_position": event.robot_position,
-  "robot_starting_position": event.robot_starting_position,
-  */
+  "match_event": "",
+  "team_number": 0,
+  "scouter_initials": "",
+  "match_level": "",
+  "match_number": 0,
+  "robot_position": "",
+  "robot_starting_position": "",
   // Auton
   "auton_leave_starting_line": false,
   "auton_coral_scored_l4": 0,
@@ -78,14 +76,14 @@ const formDefaultValues = {
   "overall_num_penalties": 0,
   "overall_penalties_incurred": null,
   "overall_comments": null,
+  //"no_show": false,
   // Playoffs
-  "red_alliance": [],
-  "blue_alliance": [],
+  "red_alliance": "",
+  "blue_alliance": "",
 };
 
 function MatchScout(props: any) {
   const [form] = Form.useForm();
-  const [color, setColor] = useState('');
   const [roundIsVisible, setRoundIsVisible] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const [usChecked, setUSChecked] = useState(false);
@@ -111,119 +109,53 @@ function MatchScout(props: any) {
   
   const match_event = process.env.REACT_APP_EVENTNAME;
 
-  useEffect(() => { document.title = props.title; return () => { }; }, [props.title]);
   useEffect(() => {
-    if ((document.getElementById("auton_coral_scored_l4") as HTMLInputElement) !== null) {
-      (document.getElementById("auton_coral_scored_l4") as HTMLInputElement).value = formValue.auton_coral_scored_l4.toString();
-      form.setFieldValue('auton_coral_scored_l4', formValue.auton_coral_scored_l4);
-    }
-    if ((document.getElementById("auton_coral_scored_l3") as HTMLInputElement) !== null) {
-      (document.getElementById("auton_coral_scored_l3") as HTMLInputElement).value = formValue.auton_coral_scored_l3.toString();
-      form.setFieldValue('auton_coral_scored_l3', formValue.auton_coral_scored_l3);
-    }
-    if ((document.getElementById("auton_coral_scored_l2") as HTMLInputElement) !== null) {
-      (document.getElementById("auton_coral_scored_l2") as HTMLInputElement).value = formValue.auton_coral_scored_l2.toString();
-      form.setFieldValue('auton_coral_scored_l2', formValue.auton_coral_scored_l2);
-    }
-    if ((document.getElementById("auton_coral_scored_l1") as HTMLInputElement) !== null) {
-      (document.getElementById("auton_coral_scored_l1") as HTMLInputElement).value = formValue.auton_coral_scored_l1.toString();
-      form.setFieldValue('auton_coral_scored_l1', formValue.auton_coral_scored_l1);
-    }
-    if ((document.getElementById("auton_coral_missed_l4") as HTMLInputElement) !== null) {
-      (document.getElementById("auton_coral_missed_l4") as HTMLInputElement).value = formValue.auton_coral_missed_l4.toString();
-      form.setFieldValue('auton_coral_missed_l4', formValue.auton_coral_missed_l4);
-    }
-    if ((document.getElementById("auton_coral_missed_l3") as HTMLInputElement) !== null) {
-      (document.getElementById("auton_coral_missed_l3") as HTMLInputElement).value = formValue.auton_coral_missed_l3.toString();
-      form.setFieldValue('auton_coral_missed_l3', formValue.auton_coral_missed_l3);
-    }
-    if ((document.getElementById("auton_coral_missed_l2") as HTMLInputElement) !== null) {
-      (document.getElementById("auton_coral_missed_l2") as HTMLInputElement).value = formValue.auton_coral_missed_l2.toString();
-      form.setFieldValue('auton_coral_missed_l2', formValue.auton_coral_missed_l2);
-    }
-    if ((document.getElementById("auton_coral_missed_l1") as HTMLInputElement) !== null) {
-      (document.getElementById("auton_coral_missed_l1") as HTMLInputElement).value = formValue.auton_coral_missed_l1.toString();
-      form.setFieldValue('auton_coral_missed_l1', formValue.auton_coral_missed_l1);
-    }
-    if ((document.getElementById("auton_algae_scored_net") as HTMLInputElement) !== null) {
-      (document.getElementById("auton_algae_scored_net") as HTMLInputElement).value = formValue.auton_algae_scored_net.toString();
-      form.setFieldValue('auton_algae_scored_net', formValue.auton_algae_scored_net);
-    }
-    if ((document.getElementById("auton_algae_missed_net") as HTMLInputElement) !== null) {
-      (document.getElementById("auton_algae_missed_net") as HTMLInputElement).value = formValue.auton_algae_missed_net.toString();
-      form.setFieldValue('auton_algae_missed_net', formValue.auton_algae_missed_net);
-    }
-    if ((document.getElementById("auton_algae_scored_processor") as HTMLInputElement) !== null) {
-      (document.getElementById("auton_algae_scored_processor") as HTMLInputElement).value = formValue.auton_algae_scored_processor.toString();
-      form.setFieldValue('auton_algae_scored_processor', formValue.auton_algae_scored_processor);
-    }
-    if ((document.getElementById("teleop_coral_scored_l4") as HTMLInputElement) !== null) {
-      (document.getElementById("teleop_coral_scored_l4") as HTMLInputElement).value = formValue.teleop_coral_scored_l4.toString();
-      form.setFieldValue('teleop_coral_scored_l4', formValue.teleop_coral_scored_l4);
-    }
-    if ((document.getElementById("teleop_coral_scored_l3") as HTMLInputElement) !== null) {
-      (document.getElementById("teleop_coral_scored_l3") as HTMLInputElement).value = formValue.teleop_coral_scored_l3.toString();
-      form.setFieldValue('teleop_coral_scored_l3', formValue.teleop_coral_scored_l3);
-    }
-    if ((document.getElementById("teleop_coral_scored_l2") as HTMLInputElement) !== null) {
-      (document.getElementById("teleop_coral_scored_l2") as HTMLInputElement).value = formValue.teleop_coral_scored_l2.toString();
-      form.setFieldValue('teleop_coral_scored_l2', formValue.teleop_coral_scored_l2);
-    }
-    if ((document.getElementById("teleop_coral_scored_l1") as HTMLInputElement) !== null) {
-      (document.getElementById("teleop_coral_scored_l1") as HTMLInputElement).value = formValue.teleop_coral_scored_l1.toString();
-      form.setFieldValue('teleop_coral_scored_l1', formValue.teleop_coral_scored_l1);
-    }
-    if ((document.getElementById("teleop_coral_missed_l4") as HTMLInputElement) !== null) {
-      (document.getElementById("teleop_coral_missed_l4") as HTMLInputElement).value = formValue.teleop_coral_missed_l4.toString();
-      form.setFieldValue('teleop_coral_missed_l4', formValue.teleop_coral_missed_l4);
-    }
-    if ((document.getElementById("teleop_coral_missed_l3") as HTMLInputElement) !== null) {
-      (document.getElementById("teleop_coral_missed_l3") as HTMLInputElement).value = formValue.teleop_coral_missed_l3.toString();
-      form.setFieldValue('teleop_coral_missed_l3', formValue.teleop_coral_missed_l3);
-    }
-    if ((document.getElementById("teleop_coral_missed_l2") as HTMLInputElement) !== null) {
-      (document.getElementById("teleop_coral_missed_l2") as HTMLInputElement).value = formValue.teleop_coral_missed_l2.toString();
-      form.setFieldValue('teleop_coral_missed_l2', formValue.teleop_coral_missed_l2);
-    }
-    if ((document.getElementById("teleop_coral_missed_l1") as HTMLInputElement) !== null) {
-      (document.getElementById("teleop_coral_missed_l1") as HTMLInputElement).value = formValue.teleop_coral_missed_l1.toString();
-      form.setFieldValue('teleop_coral_missed_l1', formValue.teleop_coral_missed_l1);
-    }
-    if ((document.getElementById("teleop_algae_scored_net") as HTMLInputElement) !== null) {
-      (document.getElementById("teleop_algae_scored_net") as HTMLInputElement).value = formValue.teleop_algae_scored_net.toString();
-      form.setFieldValue('teleop_algae_scored_net', formValue.teleop_algae_scored_net);
-    }
-    if ((document.getElementById("teleop_algae_missed_net") as HTMLInputElement) !== null) {
-      (document.getElementById("teleop_algae_missed_net") as HTMLInputElement).value = formValue.teleop_algae_missed_net.toString();
-      form.setFieldValue('teleop_algae_missed_net', formValue.teleop_algae_missed_net);
-    }
-    if ((document.getElementById("teleop_algae_scored_processor") as HTMLInputElement) !== null) {
-      (document.getElementById("teleop_algae_scored_processor") as HTMLInputElement).value = formValue.teleop_algae_scored_processor.toString();
-      form.setFieldValue('teleop_algae_scored_processor', formValue.teleop_algae_scored_processor);
-    }
-    if ((document.getElementById("overall_num_penalties") as HTMLElement) !== null) {
-      (document.getElementById("overall_num_penalties") as HTMLInputElement).value = formValue.overall_num_penalties.toString();
-      form.setFieldValue('overall_num_penalties', formValue.overall_num_penalties);
-    }
-    if ((document.getElementById("overall_pushing") as HTMLElement) !== null) {
-      (document.getElementById("overall_pushing") as HTMLInputElement).value = formValue.overall_pushing.toString();
-      form.setFieldValue('overall_pushing', formValue.overall_pushing);
-    }
-    if ((document.getElementById("overall_counter_defense") as HTMLElement) !== null) {
-      (document.getElementById("overall_counter_defense") as HTMLInputElement).value = formValue.overall_counter_defense.toString();
-      form.setFieldValue('overall_counter_defense', formValue.overall_counter_defense);
-    }
-    if ((document.getElementById("overall_driver_skill") as HTMLElement) !== null) {
-      (document.getElementById("overall_driver_skill") as HTMLInputElement).value = formValue.overall_driver_skill.toString();
-      form.setFieldValue('overall_driver_skill', formValue.overall_driver_skill);
-    }
-    return () => {};
+    document.title = props.title;
+  }, [props.title]);
+  useEffect(() => {
+    const updateFields = [
+      "auton_coral_scored_l4",
+      "auton_coral_scored_l3",
+      "auton_coral_scored_l2",
+      "auton_coral_scored_l1",
+      "auton_coral_missed_l4",
+      "auton_coral_missed_l3",
+      "auton_coral_missed_l2",
+      "auton_coral_missed_l1",
+      "auton_algae_scored_net",
+      "auton_algae_missed_net",
+      "auton_algae_scored_processor",
+      "teleop_coral_scored_l4",
+      "teleop_coral_scored_l3",
+      "teleop_coral_scored_l2",
+      "teleop_coral_scored_l1",
+      "teleop_coral_missed_l4",
+      "teleop_coral_missed_l3",
+      "teleop_coral_missed_l2",
+      "teleop_coral_missed_l1",
+      "teleop_algae_scored_net",
+      "teleop_algae_missed_net",
+      "teleop_algae_scored_processor",
+      "overall_num_penalties",
+      "overall_pushing",
+      "overall_counter_defense",
+      "overall_driver_skill",
+    ];
+    for(const field of updateFields) {
+      const element = document.getElementById(field);
+      if (element === null) {
+        continue;
+      }
 
+      element.ariaValueNow = (formValue as any)[field].toString();
+      form.setFieldValue(field, (formValue as any)[field]);
+    }
   }, [formValue, form]);
+  
   async function setNewMatchScout(event: any) {
     if (team_number === 0) {
       window.alert("Team number is 0, please check in Pre.");
-	  return;
+      return;
     }
     const body = {
       // Pre-match
@@ -311,6 +243,8 @@ function MatchScout(props: any) {
       const match_level = form.getFieldValue("match_level");
       const robot_position = form.getFieldValue("robot_position");
       
+      console.log(form.getFieldValue("red_alliance"));
+
       setWasDefendedIsVisible(false);
       setDefendedIsVisible(false);
       setPenaltiesIsVisible(false);
@@ -370,13 +304,15 @@ function MatchScout(props: any) {
       const robotPosition = form.getFieldValue('robot_position');
       const allianceNumber = form.getFieldValue(robotPosition[0] === "R" ? 'blue_alliance' : 'red_alliance');
 
-      if (robotPosition == 'R1' || robotPosition == 'R2' || robotPosition == 'R3') {
-        setColor('red');
+      let color = "";
+      if (robotPosition[0] === "R") {
+        color = "blue";
       }
       else {
-        setColor('blue');
+        color = "red";
       }
 
+      console.log(color);
       const team = await getTeam(matchLevel, matchNumber, roundNumber, color, allianceNumber);
 
       if(!team) {
@@ -401,8 +337,8 @@ function MatchScout(props: any) {
       robot_position: string,
       preloaded: boolean,
       round_number: number,
-	  red_alliance: string,
-	  blue_alliance: string,
+      red_alliance: string,
+      blue_alliance: string,
     };
     const rounds = [
       { label: "Qualifications", value: "Qualifications" },
@@ -432,21 +368,20 @@ function MatchScout(props: any) {
 
     return (
       <div>
-
         <h2>Team: {team_number}</h2>
 
         <h2>Scouter Initials</h2>
         <Form.Item<FieldType>
-                  name="scouter_initials"
-                  rules={[
-                    { required: true, message: 'Please input your initials!' },
-                    {
-                      pattern: /^[A-Za-z]{1,2}$/,
-                      message: 'Please enter only letters (max 2)',
-                    },
-                  ]}
-                >
-            <Input
+          name="scouter_initials"
+          rules={[
+            { required: true, message: 'Please input your initials!' },
+            {
+              pattern: /^[A-Za-z]{1,2}$/,
+              message: 'Please enter only letters (max 2)',
+            },
+          ]}
+        >
+          <Input
             maxLength={2}
             className="input"
             onKeyPress={(event) => {
@@ -483,7 +418,7 @@ function MatchScout(props: any) {
         <div style={{ display: roundIsVisible ? 'inherit' : 'none' }}>
           <h2 >Round #</h2>
           <Form.Item<FieldType> name="round_number" rules={[{ required: roundIsVisible ? true : false, message: 'Enter round #' }]} >
-          <InputNumber min={1} onChange={updateTeamNumber} className="input" type='number' pattern="\d*" onWheel={(e) => (e.target as HTMLElement).blur()}/>
+            <InputNumber min={1} onChange={updateTeamNumber} className="input" type='number' pattern="\d*" onWheel={(e) => (e.target as HTMLElement).blur()}/>
           </Form.Item>
         </div>
 
@@ -492,71 +427,15 @@ function MatchScout(props: any) {
           <Select options={robot_position} onChange={updateTeamNumber} className="input"  listItemHeight={10} listHeight={500} placement='bottomLeft'/>
         </Form.Item>
 
-        <div className='divdivdiv'> 
-        <h2>Robot Starting Position</h2>
-        <div className='radioRow'> 
-          <div className='radioColumn'>
-
-          <Form.Item name="robot_starting_position">
-          <div className='radioLabel'> 
-            <h3>BS1</h3> 
-            <input type="radio" name="robot_starting_position" value="BS1" className="robot_starting_position_radio" onChange={handleStartPosChange}/> 
-          </div> 
-          </Form.Item>
-
-          <Form.Item name="robot_starting_position">
-          <div className='radioLabel'> 
-            <h3>BS2</h3> 
-            <input type="radio" name="robot_starting_position" value="BS2" className="robot_starting_position_radio" onChange={handleStartPosChange}/> 
-          </div> 
-          </Form.Item>
-
-          <Form.Item name="robot_starting_position">
-          <div className='radioLabel'> 
-            <h3>BS3</h3> 
-            <input type="radio" name="robot_starting_position" value="BS3" className="robot_starting_position_radio" onChange={handleStartPosChange}/> 
-          </div> 
-          </Form.Item>
-
-
-        </div> 
-
-        <Spacer width="30px"/> 
-        <div className="boxes"> 
-          <div className='blueBox'></div> 
-          <div className='redBox'></div>
-        </div> 
-
-      
-        <Spacer width="30px"/>
-        <div className='radioColumn'> 
-
-        <Form.Item name="robot_starting_position">
-          <div className='radioLabel'> 
-            <input type="radio" name="robot_starting_position" value="RS3" className="robot_starting_position_radio" onChange={handleStartPosChange}/> 
-            <h3>RS3</h3> 
-          </div> 
-        </Form.Item>
-
-        <Form.Item name="robot_starting_position">
-          <div className='radioLabel'> 
-            <input type="radio" name="robot_starting_position" value="RS2" className="robot_starting_position_radio" onChange={handleStartPosChange}/> 
-            <h3>RS2</h3>
-          </div> 
-        </Form.Item>
-
-        <Form.Item name="robot_starting_position">
-          <div className='radioLabel'> 
-            <input type="radio" name="robot_starting_position" value="RS1" className="robot_starting_position_radio" onChange={handleStartPosChange}/> 
-            <h3>RS1</h3> 
-          </div>
-        </Form.Item>
-
-        </div>
-        </div>
-        <Spacer height="30px"/>
-        </div>
-        
+       <button
+         className={"noShowButton"}
+         onMouseDown={() => {
+           const noShowData = {
+             ...formDefaultValues,
+             no_show : true,
+           };
+         }}
+       >No Show</button>
         
       </div>
     );
@@ -578,16 +457,15 @@ function MatchScout(props: any) {
       auton_leave_starting_line: boolean,
     };
     return (
-      <div>
-         <div style={{ alignContent: 'center' }}>
-          
-          <h2>Leave Starting Line?</h2>
-          <Form.Item<FieldType> name="auton_leave_starting_line" valuePropName="checked">
-            <Checkbox className='input_checkbox' />
-          </Form.Item>
+      <div style={{ alignContent: 'center' }}>
+
+        <h2>Leave Starting Line?</h2>
+        <Form.Item<FieldType> name="auton_leave_starting_line" valuePropName="checked">
+          <Checkbox className='input_checkbox' />
+        </Form.Item>
         <div className = 'radioRColumn'> 
           <div className = 'radioRow'>
-          <Flex vertical align='flex-start'>
+            <Flex vertical align='flex-start'>
               <h2>#Coral Scored L4</h2>
               <Form.Item<FieldType> name="auton_coral_scored_l4" rules={[{ required: true, message: 'Enter # of Coral Score L4' }]}>
                 <InputNumber
@@ -608,8 +486,8 @@ function MatchScout(props: any) {
                 />
               </Form.Item>
             </Flex>
-            
-          <Flex vertical align='flex-start'>
+              
+            <Flex vertical align='flex-start'>
               <h2>#Coral Missed L4</h2>
               <Form.Item<FieldType> name="auton_coral_missed_l4" rules={[{ required: true, message: 'Enter # of Coral Missed L4' }]}>
                 <InputNumber
@@ -635,7 +513,7 @@ function MatchScout(props: any) {
             
         <div className = 'radioRColumn'> 
           <div className = 'radioRow'>
-          <Flex vertical align='flex-start'>
+            <Flex vertical align='flex-start'>
               <h2>#Coral Scored L3</h2>
               <Form.Item<FieldType> name="auton_coral_scored_l3" rules={[{ required: true, message: 'Enter # of Coral Scored L3' }]}>
                 <InputNumber
@@ -656,8 +534,8 @@ function MatchScout(props: any) {
                 />
               </Form.Item>
             </Flex>
-            
-          <Flex vertical align='flex-start'>
+              
+            <Flex vertical align='flex-start'>
               <h2>#Coral Missed L3</h2>
               <Form.Item<FieldType> name="auton_coral_missed_l3" rules={[{ required: true, message: 'Enter # of Coral Missed L3' }]}>
                 <InputNumber
@@ -683,7 +561,7 @@ function MatchScout(props: any) {
         
         <div className = 'radioRColumn'> 
           <div className = 'radioRow'>
-          <Flex vertical align='flex-start'>
+            <Flex vertical align='flex-start'>
               <h2>#Coral Scored L2</h2>
               <Form.Item<FieldType> name="auton_coral_scored_l2" rules={[{ required: true, message: 'Enter # of Coral Scored L2' }]}>
                 <InputNumber
@@ -705,7 +583,7 @@ function MatchScout(props: any) {
               </Form.Item>
             </Flex>
             
-          <Flex vertical align='flex-start'>
+            <Flex vertical align='flex-start'>
               <h2>#Coral Missed L2</h2>
               <Form.Item<FieldType> name="auton_coral_missed_l2" rules={[{ required: true, message: 'Enter # of Coral Missed L2' }]}>
                 <InputNumber
@@ -731,7 +609,7 @@ function MatchScout(props: any) {
 
         <div className = 'radioRColumn'> 
           <div className = 'radioRow'>
-          <Flex vertical align='flex-start'>
+            <Flex vertical align='flex-start'>
               <h2>#Coral Scored L1</h2>
               <Form.Item<FieldType> name="auton_coral_scored_l1" rules={[{ required: true, message: 'Enter # of Coral Scored L1' }]}>
                 <InputNumber
@@ -753,7 +631,7 @@ function MatchScout(props: any) {
               </Form.Item>
             </Flex>
             
-          <Flex vertical align='flex-start'>
+            <Flex vertical align='flex-start'>
               <h2>#Coral Missed L1</h2>
               <Form.Item<FieldType> name="auton_coral_missed_l1" rules={[{ required: true, message: 'Enter # of Coral Missed L1' }]}>
                 <InputNumber
@@ -779,7 +657,7 @@ function MatchScout(props: any) {
 
         <div className = 'radioRColumn'> 
           <div className = 'radioRow'>
-          <Flex vertical align='flex-start'>
+            <Flex vertical align='flex-start'>
               <h2>#Algae Scored in Net</h2>
               <Form.Item<FieldType> name="auton_algae_scored_net" rules={[{ required: true, message: 'Enter # of Algae Scored in Net' }]}>
                 <InputNumber
@@ -801,7 +679,7 @@ function MatchScout(props: any) {
               </Form.Item>
             </Flex>
             
-          <Flex vertical align='flex-start'>
+            <Flex vertical align='flex-start'>
               <h2>#Algae Missed in Net</h2>
               <Form.Item<FieldType> name="auton_algae_missed_net" rules={[{ required: true, message: 'Enter # of Net Missed in Net' }]}>
                 <InputNumber
@@ -827,7 +705,7 @@ function MatchScout(props: any) {
 
         <div className = 'radioRColumn'> 
           <div className = 'radioRow'>
-          <Flex vertical align='flex-start'>
+            <Flex vertical align='flex-start'>
               <h2>#Algae Processor</h2>
               <Form.Item<FieldType> name="auton_algae_scored_processor" rules={[{ required: true, message: 'Enter # of Algae Processor' }]}>
                 <InputNumber
@@ -852,7 +730,6 @@ function MatchScout(props: any) {
           </div>
         </div>
             
-        </div>
       </div>
     );
   }
@@ -1177,29 +1054,29 @@ function MatchScout(props: any) {
       <>
         <h2>Coral Intake Capability:</h2>
         <Form.Item name="endgame_coral_intake_capability" rules={[{ required: true, message: 'Enter Coral Intake Capability' }]}>
-        <Select options={endgame_coral_intake_capability} className="input" />
+          <Select options={endgame_coral_intake_capability} className="input" />
         </Form.Item>
 
         <h2>Coral Station:</h2>
         <Form.Item name="endgame_coral_station" rules={[{ required: true, message: 'Enter Coral Station' }]}>
-        <Select options={endgame_coral_station} className="input" />
+          <Select options={endgame_coral_station} className="input" />
         </Form.Item>
 
         <h2>Algae Intake Capability:</h2>
         <Form.Item name="endgame_algae_intake_capability" rules={[{ required: true, message: 'Enter Algae Intake Capability' }]}>
-        <Select options={endgame_algae_intake_capability} className="input" />
+          <Select options={endgame_algae_intake_capability} className="input" />
         </Form.Item>
         <h2>Climb Successful?</h2>
         <Form.Item<FieldType> name ="endgame_climb_successful" valuePropName="checked">
-        <Checkbox className='input_checkbox' />
+          <Checkbox className='input_checkbox' />
         </Form.Item>
         <h2>Climb Type:</h2>
         <Form.Item name="endgame_climb_type" rules={[{ required: true, message: 'Enter Climb Type' }]}>
-        <Select options={endgame_climb_type} className="input" />
+          <Select options={endgame_climb_type} className="input" />
         </Form.Item>
         <h2>Climb Time (Seconds):</h2>
         <Form.Item<FieldType> name="endgame_climb_time" rules={[{ required: true, message: 'Enter Climb Time (Seconds)' }]}>
-        <InputNumber min={1} className="input" type='number' pattern="\d*" onWheel={(e) => (e.target as HTMLElement).blur()}/>
+          <InputNumber min={1} className="input" type='number' pattern="\d*" onWheel={(e) => (e.target as HTMLElement).blur()}/>
         </Form.Item>
       </>
   )}
