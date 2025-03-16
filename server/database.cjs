@@ -9,10 +9,15 @@ const connectionData = {
 	"database" : process.env.DB_DATABASE, 
 };
 
-if(!connectionData || !process.env.DB_USERNAME) {
+const NUM_ALLIANCES = 2;
+const TEAMS_PER_ALLIANCE = 3;
+
+if(!connectionData || !process.env.DB_DATABASE) {
 	console.log("connectionData=", connectionData);
 	console.log("Check .env");
 }
+
+console.log("Using Database " + process.env.DB_DATABASE);
 
 async function requestDatabase(query, substitution, forEach) {
 	let result = [];
@@ -66,10 +71,14 @@ async function getTeamsScouted() {
 }
 async function getTeamInfo(queries) {
 	const teams = [];
-	for(let i = 1; i <= 3; i++) {
-		if(queries[`team${i}`]) {
-			teams.push(queries[`team${i}`]);
+	const inverse = {};
+	for(let i = 1; i <= NUM_ALLIANCES * TEAMS_PER_ALLIANCE; i++) {
+		const num = queries[`team${i}`];
+		if(!num) {
+			continue;
 		}
+		teams.push(num);
+		inverse[num] = i;
 	}
  
 	let result = {};
@@ -81,9 +90,10 @@ async function getTeamInfo(queries) {
 
 	const sqlQuery = "SELECT * FROM match_data WHERE team_number=?";
 
+	// val=team number, res=match data
 	await requestDatabase(sqlQuery, teams, function(val, res) {
-		//console.log(res);
-		result[val] = res;
+		const index = inverse[val];
+		result[index] = res;
 	});
 
 	return result;
@@ -121,6 +131,29 @@ async function getTeamStrategicInfo(queries) {
 	return result;
 }
 
+// Please do not do SQL injection attack
+async function submitPitData(data) {
+	const keys = Object.keys(data);
+	const sqlQuery = `INSERT INTO pit_data (${keys.join(",")}) values`
+		+ `(${keys.map((x) => "?").join(",")})`;
+	const values = Object.values(data);
+
+	let result = {};
+
+	try {
+		const mysql = getMysql();
+		const conn = await mysql.createConnection(connectionData);
+
+		const [res, fields] = await conn.query(sqlQuery, values);
+
+		result = res;
+	} catch(err) {
+		console.log("Failed to resolve request:");
+		console.dir(err);
+	}
+	return result;
+}
+
 function getMysql() {
 	const mysql = require("mysql2/promise");
 
@@ -150,10 +183,12 @@ function verifyConnection(connection) {
 }
 
 
+
 module.exports = {
 	"requestDatabase" : requestDatabase,
 	"getTeamInfo" : getTeamInfo,
 	"getTeamsScouted" : getTeamsScouted,
 	"getTeamPitInfo" : getTeamPitInfo,
 	"getTeamStrategicInfo" : getTeamStrategicInfo,
+	"submitPitData" : submitPitData,
 };

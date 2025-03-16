@@ -1,7 +1,7 @@
 import '../public/stylesheets/style.css';
 import '../public/stylesheets/pit.css';
 import '../public/stylesheets/match.css';
-import { Checkbox, Form, Input, InputNumber, Select, } from 'antd';
+import { Checkbox, Form, Input, InputNumber, Select, Upload, } from 'antd';
 import { useRef } from 'react';
 import { Button } from 'antd';
 import React, { useState, useEffect } from 'react';
@@ -35,6 +35,8 @@ const formDefaultValues = {
   "comments": null,
 }
 
+const IMAGE_DELIMITER = "$";
+
 // Debounce alerting because React runs it twice
 window.alert = (function() {
   const alert = globalThis.window.alert;
@@ -48,16 +50,18 @@ window.alert = (function() {
     }, 100);
   }
 })();
+window.alert = () => {};
 
 function PitScout(props: any) {
   const match_event = process.env.REACT_APP_EVENTNAME as string;
-  const imageURI = useRef<string>();
-  const canvasRef = useRef<ReactSketchCanvasRef>(null);
+  //const imageURI = useRef<string>();
+  //const canvasRef = useRef<ReactSketchCanvasRef>(null);
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [formValue, setFormValue] = useState(formDefaultValues);
   const [qrValue, setQrValue] = useState<any>();
   const [robotWeight, setRobotWeight] = useState(0);
+  const [robotImageURI, setRobotImageURI] = useState<string[]>([]);
 
   useEffect(() => {
     document.title = props.title;
@@ -114,7 +118,7 @@ function PitScout(props: any) {
   }, [match_event]);
 
   async function submitData(event: any) {
-    await canvasRef.current?.exportImage('png').then((data) => { imageURI.current = data; });
+    //await canvasRef.current?.exportImage('png').then((data) => { imageURI.current = data; });
     const body = {
       "match_event": match_event,
       "team_number": event.team_number,
@@ -138,18 +142,39 @@ function PitScout(props: any) {
       "gracious_professionalism": event.gracious_professionalism,
       "comments": event.comments,
     };
-    setQrValue(body);
-  };
-  async function getPitScout(team_number: number) {
-    try {
-      const response = await fetch(process.env.REACT_APP_PIT_LOOKUP_URL as string + "?team_number=" + team_number);
-      const data = await response.json();
-      if (data.documents[0] !== undefined) {
-        window.alert("This team has already been scouted! You are still able to rescout.");
-      }
+    const status = await tryFetch(body);
+
+    if(status) {
+      return;
     }
-    catch (err) {
-      console.log("Could not fetch team data:",err);
+
+    setQrValue(body);
+  }
+  async function tryFetch(body : any) {
+    let fetchLink = process.env.REACT_APP_SERVER_ADDRESS;
+
+    if(!fetchLink) {
+      console.error("Could not get fetch link; Check .env");
+      return;
+    }
+    const imageData = robotImageURI.join(IMAGE_DELIMITER);
+
+    const submitBody = {
+      ...body,
+      robotImageURI: imageData,
+    };
+    
+    try {
+      await fetch(fetchLink, {
+        method: "POST",
+        body: JSON.stringify(submitBody),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      return true;
+    } catch (err) {
+      return false;
     }
   }
   function Pit() {
@@ -266,12 +291,6 @@ function PitScout(props: any) {
             className="input"
             type="number"
             pattern="[0-9]*"
-            onChange={(value) => {
-              if (value !== null) {
-                const limitedValue = Math.min(99999, value);
-                getPitScout(limitedValue);
-              }
-            }}
             onKeyPress={(event) => {
               const currentValue = event.currentTarget.value;
               const charCode = event.which ? event.which : event.keyCode;
@@ -336,7 +355,7 @@ function PitScout(props: any) {
         <Form.Item<FieldType> name="number_of_motors" rules={[{ required: true, message: 'Please input the number of motors!' }]}>
           <InputNumber
             controls
-            min={0} // Modified: can start from 0
+            min={0}
             className="input"
             value={formValue.number_of_motors}
             onChange={(value) => {
@@ -346,7 +365,7 @@ function PitScout(props: any) {
               setFormValue(prevFormValue => ({ ...prevFormValue, number_of_motors: prevFormValue.number_of_motors + 1 }));
             }} className='incrementbutton'>+</Button>}
             addonBefore={<Button onMouseDown={() => {
-              setFormValue(prevFormValue => ({ ...prevFormValue, number_of_motors: Math.max(0, prevFormValue.number_of_motors - 1) })); //Modified
+              setFormValue(prevFormValue => ({ ...prevFormValue, number_of_motors: Math.max(0, prevFormValue.number_of_motors - 1) }));
             }} className='decrementbutton'>-</Button>}
           />
         </Form.Item>
@@ -431,7 +450,6 @@ function PitScout(props: any) {
             />
           </Form.Item>
 
-          <Form.Item>
             <h2>Team Safety(0-4)</h2>
           <Form.Item<FieldType> name="team_safety" rules={[{ required: true, message: 'Please input the team safety rating!' }]}>
             <InputNumber
@@ -452,9 +470,7 @@ function PitScout(props: any) {
               }} className='decrementbutton'>-</Button>}
             />
           </Form.Item>
-          </Form.Item>
         
-          <Form.Item>
             <h2>Team Workmanship(0-4)</h2>
           <Form.Item<FieldType> name="team_workmanship" rules={[{ required: true, message: 'Please input the team workmanship rating!' }]}>
             <InputNumber
@@ -475,10 +491,8 @@ function PitScout(props: any) {
               }} className='decrementbutton'>-</Button>}
             />
           </Form.Item>
-          </Form.Item>
 
-          <Form.Item>
-            <h2>Gracious Professionalism(0-4)</h2>
+          <h2>Gracious Professionalism(0-4)</h2>
           <Form.Item<FieldType> name="gracious_professionalism" rules={[{ required: true, message: 'Please input the GP rating!' }]}>
             <InputNumber
                   min={0}
@@ -498,7 +512,6 @@ function PitScout(props: any) {
               }} className='decrementbutton'>-</Button>}
             />
           </Form.Item>
-          </Form.Item>
 
         </Form.Item>
         <h2>Comments</h2>
@@ -506,12 +519,46 @@ function PitScout(props: any) {
           <TextArea style={{ verticalAlign: 'center' }} className='textbox_input' />
         </Form.Item>
         <h2 style={{ display: loading ? 'inherit' : 'none' }}>Submitting data...</h2>
+        <Form.Item<FieldType> name="robot_images">
+          <Upload
+            beforeUpload={(file) => {
+              const isImage = file.type.startsWith("image");
+              if (!isImage) {
+                window.alert(`${file.name} is not an image`);
+                return Upload.LIST_IGNORE;
+              }
+              return true;
+            }}
+            onChange={async function(info) {
+              if(info.event) {
+                return;
+              }
+
+              const files : string[] = [];
+              const fileList = info.fileList;
+
+              for(let i = 0; i < fileList.length; i++) {
+                const image : string = await readImage(fileList[i].originFileObj);
+
+                files.push(image);
+              }
+
+              //const fileSet = new Set<string>(files);
+              //setRobotImageURI(fileSet);
+              setRobotImageURI(files);
+            }}
+            style={{ width: '100%' }}
+            name='robot_images'
+          >
+            <Button className='input' style={{ marginBottom: '5%' }}>Upload Images</Button>
+          </Upload>
+        </Form.Item>
         <Input type="submit" value="Submit" className='submit' style={{ marginBottom: '5%' }} />
       </div>
     );
   }
   return (
-    <div>
+    <>
       <Header name={"Pit Scout"} back={"#scoutingapp"}/>
       <Form
         form={form}
@@ -523,12 +570,12 @@ function PitScout(props: any) {
             const initials = form.getFieldValue("scouter_initials");
             form.resetFields();
             setRobotWeight(0);
-      setFormValue(formDefaultValues);
+            setFormValue(formDefaultValues);
             form.setFieldsValue({...formDefaultValues, "scouter_initials": initials});
           }
           catch (err) {
             // console.log(err);
-            // window.alert("Error occured, please do not do leave this message and notify a Webdev member immediately.");
+            // window.alert("Error occured, please do not leave this message and notify a Webdev member immediately.");
             // window.alert(err);
           }
           finally {
@@ -539,8 +586,23 @@ function PitScout(props: any) {
         {Pit()}
       </Form>
       <QrCode value={qrValue} />
-    </div>
+    </>
   );
+}
+
+async function readImage(blob : any) : Promise<string> {
+  return new Promise(function(resolve, reject) {
+    const reader = new FileReader();
+    reader.readAsDataURL(blob);
+    reader.onload = () => {
+      const base64Image : string = reader.result as string;
+
+      resolve(base64Image);
+    };
+    reader.onerror = () => {
+      reject("Could not read image");
+    }
+  });
 }
 
 export default PitScout;

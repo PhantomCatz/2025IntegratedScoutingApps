@@ -1,13 +1,19 @@
-import { getTeamInfo, getTeamsScouted, getTeamPitInfo, getTeamStrategicInfo } from "./database.cjs";
+import { getTeamInfo, getTeamsScouted, getTeamPitInfo, getTeamStrategicInfo, submitPitData, } from "./database.cjs";
 import express from "express";
 
 const PORT = process.env.PORT || 3001;
 
 const app = express();
 
+app.use(express.json({
+	limit: "16mb",
+}));
 
+app.listen(PORT, () => {
+	console.log(`Server listening on ${PORT}`);
+});
 
-app.get("/api", async (req, res) => {
+app.get("/api", async function(req, res) {
 	const queryString = req.url.split("?")[1];
 	const queries = Object.fromEntries(new URLSearchParams(queryString));
 	
@@ -44,6 +50,16 @@ app.get("/api", async (req, res) => {
 	return res;
 });
 
-app.listen(PORT, () => {
-	console.log(`Server listening on ${PORT}`);
+app.post("/api", async function(req, res) {
+	const data = req.body;
+
+	const result = await submitPitData(data);
+
+	console.log(result);
+	
+	await res.status(200);
+	await res.append("Access-Control-Allow-Origin", "*");
+	await res.json({});
+	return res;
 });
+

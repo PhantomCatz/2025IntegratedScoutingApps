@@ -45,6 +45,7 @@ function ChartComponent(props : any) {
 
   const teamNumber = props.teamNumber;
   const index = props.index;
+  const data = props.data;
   
   useEffect(() => {
     (async function() {
@@ -220,19 +221,6 @@ function ChartComponent(props : any) {
 
     try {
       const table = [];
-
-      let fetchLink = process.env.REACT_APP_SERVER_ADDRESS;
-
-      if(!fetchLink) {
-        console.error("Could not get fetch link. Check .env");
-        return total;
-      }
-
-      fetchLink += "reqType=getTeam";
-      fetchLink += `&team1=${teamNumber}`;
-
-      const response = await fetch(fetchLink);
-      const data : any[] = (await response.json())[teamNumber];
 
       for (const match of data) {
         for(let [field, value] of Object.entries(match)) {

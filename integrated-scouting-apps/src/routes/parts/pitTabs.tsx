@@ -1,6 +1,8 @@
 import { Input, InputNumber, Tabs, } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 
+const IMAGE_DELIMITER = "$";
+
 async function PitTabs(team_number: number, inCallback? : boolean) {
   const window = {
     alert : function(...args : any[]) {
@@ -38,6 +40,20 @@ async function PitTabs(team_number: number, inCallback? : boolean) {
 
   for (const pitInfo of response) {
     pitInfo.comments = pitInfo.comments.replaceAll("\\n", "\n");
+
+    const images = pitInfo.robotImageURI.split(IMAGE_DELIMITER);
+    console.log("images=", images);
+
+    const pictures = [];
+
+    for(let i = 0; i < images.length; i++) {
+      pictures.push(
+        <div key={`pitImage${i}`}>
+          <h3>Picture {i + 1}</h3>
+          <img src={images[i]}></img>
+        </div>
+      );
+    }
 
     matches.push({
       key: `${pitInfo.scouter_initials.toUpperCase()}|${pitInfo.team_number}|${index}`,
@@ -84,6 +100,9 @@ async function PitTabs(team_number: number, inCallback? : boolean) {
           <Input className="input" disabled value={pitInfo.gracious_professionalism} />
           <h2>Comments</h2>
           <TextArea className="pit-comments" disabled value={pitInfo.comments} style={{marginBottom: '5%'}} />
+
+          <h2>Pit Pictures</h2>
+          {pictures}
         </>
       )
     });
