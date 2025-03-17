@@ -124,8 +124,6 @@ async function getTeamStrategicInfo(queries) {
 
 	const sqlQuery = "SELECT * FROM strategic_data WHERE team_number=?";
 
-	console.log(sqlQuery, team);
-
 	result = await requestDatabase(sqlQuery, team);
 
 	return result;

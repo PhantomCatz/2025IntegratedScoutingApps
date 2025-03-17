@@ -263,22 +263,6 @@ function ChartComponent(props : any) {
 
       total.algae_overall_total = (total.algae_scored + total.algae_missed);
 
-      // debug code. 
-      /*
-      console.log("total.coral_missed_l1: ", total.coral_missed_l1);
-      console.log("total.coral_missed_l2: ", total.coral_missed_l2);
-      console.log("total.coral_missed_l3: ", total.coral_missed_l3);
-      console.log("total.coral_missed_l4: ", total.coral_missed_l4);
-      console.log("total.coral_scored_l1: ", total.coral_scored_l1);
-      console.log("total.coral_scored_l2: ", total.coral_scored_l2);
-      console.log("total.coral_scored_l3: ", total.coral_scored_l3);
-      console.log("total.coral_scored_l4: ", total.coral_scored_l4);
-      console.log("total.algae_missed: ", total.algae_missed);
-      console.log("total.algae_scored: ", total.algae_scored);
-      console.log("total.coral_overall_total: ", total.coral_overall_total);
-      console.log("total.algae_overall_total: ", total.algae_overall_total);
-      */
-
       return total;
     }
     catch (err) {

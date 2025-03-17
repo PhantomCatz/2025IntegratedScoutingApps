@@ -18,7 +18,6 @@ function DTF(props: any) {
 
     for(let teamNumber = 1; teamNumber <= TEAMS_PER_ALLIANCE; teamNumber++) {
       const teamNumberId = `team${teamNumber + TEAMS_PER_ALLIANCE * (allianceNumber - 1)}Num`;
-      console.log(teamNumberId);
 
       teamNumberInput.push(
         <div key={teamNumberId}>
@@ -52,7 +51,6 @@ function DTF(props: any) {
 
           for(let i = 1; i <= NUM_ALLIANCES * TEAMS_PER_ALLIANCE; i++) {
             const number = event[`team${i}Num`];
-            console.log(number);
             teamNums.push(number);
           }
 

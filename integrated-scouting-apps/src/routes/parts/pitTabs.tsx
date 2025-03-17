@@ -42,7 +42,6 @@ async function PitTabs(team_number: number, inCallback? : boolean) {
     pitInfo.comments = pitInfo.comments.replaceAll("\\n", "\n");
 
     const images = pitInfo.robotImageURI.split(IMAGE_DELIMITER);
-    console.log("images=", images);
 
     const pictures = [];
 

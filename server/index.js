@@ -19,8 +19,6 @@ app.get("/api", async function(req, res) {
 	
 	let result = undefined;
 
-	console.log(queries);
-
 	switch(queries.reqType) {
 	//case "hasTeam":
 	//	result = await hasTeam(queries);
@@ -43,8 +41,6 @@ app.get("/api", async function(req, res) {
 		break;
 	}
 
-	//console.log(result);
-
 	await res.append("Access-Control-Allow-Origin", "*");
 	await res.json(result);
 	return res;
@@ -54,8 +50,6 @@ app.post("/api", async function(req, res) {
 	const data = req.body;
 
 	const result = await submitPitData(data);
-
-	console.log(result);
 	
 	await res.status(200);
 	await res.append("Access-Control-Allow-Origin", "*");

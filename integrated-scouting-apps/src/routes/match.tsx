@@ -11,7 +11,7 @@ import { Footer } from 'antd/es/layout/layout';
 import Header from "./parts/header";
 import { Radio } from 'antd';
 import QrCode from './parts/qrCodeViewer';
-import {getTeamNumber, isInPlayoffs, getTeam, isRoundNumberVisible} from './utils/tbaRequest';
+import {getTeamNumber, isInPlayoffs, getTeam, isRoundNumberVisible, getTeamsPlaying} from './utils/tbaRequest';
 import type { RadioChangeEvent } from "antd";
 
 interface SpacerProps {
@@ -92,6 +92,7 @@ function MatchScout(props: any) {
   const [lChecked, setLChecked] = useState(false);
   const [tabNum, setTabNum] = useState("1");
   const [team_number, setTeam_number] = useState(0);
+  const [teamsList, setTeamsList] = useState<string[]>([]);
   const [qrValue, setQrValue] = useState<any>();
   const [defendedIsVisible, setDefendedIsVisible] = useState(false);
   const [wasDefendedIsVisible, setWasDefendedIsVisible] = useState(false);
@@ -272,12 +273,16 @@ function MatchScout(props: any) {
     try {
       const matchLevel = form.getFieldValue('match_level');
       const matchNumber = form.getFieldValue('match_number');
-      const roundNumber = form.getFieldValue('round_number');
       const robotPosition = form.getFieldValue('robot_position');
+      const roundNumber = form.getFieldValue('round_number');
+      const allianceNumber1 = form.getFieldValue('red_alliance');
+      const allianceNumber2 = form.getFieldValue('blue_alliance');
+
+      const teams = await getTeamsPlaying(matchLevel, matchNumber, roundNumber, allianceNumber1, allianceNumber2);
+      setTeamsList(teams);
+
       const allianceNumber = form.getFieldValue(robotPosition[0] === "R" ? 'red_alliance' : 'blue_alliance');
-
       const teamNumber = await getTeamNumber(matchLevel, matchNumber, roundNumber, robotPosition, allianceNumber);
-
       setTeam_number(teamNumber);
 
       await updateDefendedList();
@@ -348,12 +353,12 @@ function MatchScout(props: any) {
       { label: "Finals", value: "Finals" },
     ];
     const robot_position = [
-      { label: "R1", value: "R1" },
-      { label: "R2", value: "R2" },
-      { label: "R3", value: 'R3' },
-      { label: "B1", value: "B1" },
-      { label: "B2", value: "B2" },
-      { label: "B3", value: 'B3' },
+      { label: `R1: ${teamsList[0]}`, value: "R1" },
+      { label: `R2: ${teamsList[1]}`, value: "R2" },
+      { label: `R3: ${teamsList[2]}`, value: 'R3' },
+      { label: `B1: ${teamsList[3]}`, value: "B1" },
+      { label: `B2: ${teamsList[4]}`, value: "B2" },
+      { label: `B3: ${teamsList[5]}`, value: 'B3' },
     ];
     const playoff_alliances = [
       { label: "Alliance 1", value: "Alliance 1" },
@@ -405,7 +410,7 @@ function MatchScout(props: any) {
           </Form.Item>
           
           <h2>Red Alliance</h2>
-          <Form.Item<FieldType> name="red_alliance" rules={[{ required: true, message: 'Enter the red alliance' }]}>
+          <Form.Item<FieldType> name="red_alliance" rules={[{ required: inPlayoffs ? true : false, message: 'Enter the red alliance' }]}>
             <Select options={playoff_alliances} onChange={() => { calculateMatchLevel(); updateTeamNumber(); }} className="input" />
           </Form.Item>
         </div>
