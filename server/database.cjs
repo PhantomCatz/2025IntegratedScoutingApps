@@ -130,13 +130,13 @@ async function getTeamStrategicInfo(queries) {
 }
 
 // Please do not do SQL injection attack
-async function submitPitData(data) {
+async function submitData(data, table) {
 	const keys = Object.keys(data);
-	const sqlQuery = `INSERT INTO pit_data (${keys.join(",")}) values`
+	const sqlQuery = `INSERT INTO ${table} (${keys.join(",")}) values`
 		+ `(${keys.map((x) => "?").join(",")})`;
 	const values = Object.values(data);
 
-	let result = {};
+	let result = null;
 
 	try {
 		const mysql = getMysql();
@@ -146,10 +146,19 @@ async function submitPitData(data) {
 
 		result = res;
 	} catch(err) {
-		console.log("Failed to resolve request:");
+		console.log(`Failed to resolve request to ${table}:`);
 		console.dir(err);
 	}
 	return result;
+}
+async function submitPitData(data) {
+	return await submitData(data, "pit_data");
+}
+async function submitMatchData(data) {
+	return await submitData(data, "match_data");
+}
+async function submitStrategicData(data) {
+	return await submitData(data, "strategic_data");
 }
 
 function getMysql() {
@@ -166,7 +175,7 @@ function getMysql() {
 				const conn = await mysql.createConnection(connectionData);
 				return conn;
 			} catch (err) {
-				console.log("Error occurred: ", err);
+				console.log("Error in mysql occurred: ", err);
 				return errorConnection;
 			}
 		},
@@ -189,4 +198,6 @@ module.exports = {
 	"getTeamPitInfo" : getTeamPitInfo,
 	"getTeamStrategicInfo" : getTeamStrategicInfo,
 	"submitPitData" : submitPitData,
+	"submitMatchData" : submitMatchData,
+	"submitStrategicData" : submitStrategicData,
 };

@@ -37,21 +37,6 @@ const formDefaultValues = {
 
 const IMAGE_DELIMITER = "$";
 
-// Debounce alerting because React runs it twice
-window.alert = (function() {
-  const alert = globalThis.window.alert;
-  let id : any;
-
-  return function(...args) {
-    clearTimeout(id);
-
-    id = setTimeout(function() {
-      alert(...args);
-    }, 100);
-  }
-})();
-window.alert = () => {};
-
 function PitScout(props: any) {
   const match_event = process.env.REACT_APP_EVENTNAME as string;
   //const imageURI = useRef<string>();
@@ -145,8 +130,11 @@ function PitScout(props: any) {
     const status = await tryFetch(body);
 
     if(status) {
+      window.alert("Successfully submitted data.");
       return;
     }
+
+    window.alert("Could not submit data. Please show QR to Webdev. Please submit pictures manually.");
 
     setQrValue(body);
   }
@@ -157,6 +145,9 @@ function PitScout(props: any) {
       console.error("Could not get fetch link; Check .env");
       return;
     }
+
+    fetchLink += "reqType=submitPitData";
+
     const imageData = robotImageURI.join(IMAGE_DELIMITER);
 
     const submitBody = {
@@ -165,14 +156,15 @@ function PitScout(props: any) {
     };
     
     try {
-      await fetch(fetchLink, {
+      const res = await fetch(fetchLink, {
         method: "POST",
         body: JSON.stringify(submitBody),
         headers: {
           "Content-Type": "application/json",
         },
       });
-      return true;
+
+      return !!res.ok;
     } catch (err) {
       return false;
     }

@@ -19,7 +19,7 @@ async function getTeamNumber(matchLevel? : string,
 	const roundIsVisible = isRoundNumberVisible(matchLevel);
 
 
-	if(allianceNumber) {
+	if(isInPlayoffs(matchLevel)) {
 		return await getTeamNumberPlayoffs(matchLevel, matchNumber, roundNumber, robotPosition, allianceNumber);
 	}
 
@@ -55,7 +55,7 @@ async function getTeam(matchLevel? : string,
 					   allianceNumber? : string) : Promise<string[]> {
 	const roundIsVisible = isRoundNumberVisible(matchLevel);
 
-	if(allianceNumber) {
+	if(isInPlayoffs(matchLevel)) {
 		return await getTeamPlayoffs(matchLevel, matchNumber, roundNumber, alliance, allianceNumber);
 	}
 
@@ -193,12 +193,15 @@ async function getTeamsPlaying(matchLevel? : string,
 					   allianceNumber2? : string) : Promise<string[]> {
 	const roundIsVisible = isRoundNumberVisible(matchLevel);
 
+	if(isInPlayoffs(matchLevel)) {
+		return await await getTeamsPlayingOffline(roundIsVisible, matchLevel || "", matchNumber || 0, roundNumber || 0,
+			   allianceNumber1 || "", allianceNumber2 || "");
+	}
+
 	try {
 		if (!matchLevel ||
 			!matchNumber ||
-			(roundIsVisible && !roundNumber) ||
-			allianceNumber1 || 
-			allianceNumber2
+			(roundIsVisible && !roundNumber)
 		    ) {
 			throw new Error();
 		}
@@ -216,6 +219,7 @@ async function getTeamsPlaying(matchLevel? : string,
 
 		return fullTeams || [];
 	} catch (err) {
+		console.log("err=", err);
 		const returnVal = await getTeamsPlayingOffline(roundIsVisible, matchLevel || "", matchNumber || 0, roundNumber || 0,
 			   allianceNumber1 || "", allianceNumber2 || "");
 		return returnVal || [];
@@ -363,6 +367,8 @@ async function getTeamsPlayingOffline(roundIsVisible : boolean,
 									  roundNumber : number,
 									  allianceNumber1 : string,
 									  allianceNumber2 : string) {
+	console.log("allianceNumber1=", allianceNumber1);
+	console.log("allianceNumber2=", allianceNumber2);
 	if(allianceNumber1 || allianceNumber2) {
 		const alliance1 = tbaData[allianceNumber1];
 		const alliance2 = tbaData[allianceNumber2];

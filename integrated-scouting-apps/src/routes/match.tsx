@@ -1,18 +1,13 @@
 import '../public/stylesheets/style.css';
 import '../public/stylesheets/match.css';
-import field_blue from '../public/images/field_blue.png';
-import field_red from '../public/images/field_red.png';
-
 import { useEffect, useState } from 'react';
-import { Tabs, Input, Form, Select, Checkbox, InputNumber, Flex, Button} from 'antd';
-import type { TabsProps } from 'antd';
+import { Tabs, Input, Form, Select, Checkbox, InputNumber, Flex, Button, Radio} from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import { Footer } from 'antd/es/layout/layout';
 import Header from "./parts/header";
-import { Radio } from 'antd';
 import QrCode from './parts/qrCodeViewer';
 import {getTeamNumber, isInPlayoffs, getTeam, isRoundNumberVisible, getTeamsPlaying} from './utils/tbaRequest';
-import type { RadioChangeEvent } from "antd";
+import type { TabsProps, RadioChangeEvent } from "antd";
 
 interface SpacerProps {
   height?: string;
@@ -28,10 +23,9 @@ const formDefaultValues = {
   "match_event": "",
   "team_number": 0,
   "scouter_initials": "",
-  "match_level": "",
-  "match_number": 0,
+  //"match_level": "",
+  //"match_number": 0,
   "robot_position": "",
-  "robot_starting_position": "",
   // Auton
   "auton_leave_starting_line": false,
   "auton_coral_scored_l4": 0,
@@ -98,16 +92,12 @@ function MatchScout(props: any) {
   const [wasDefendedIsVisible, setWasDefendedIsVisible] = useState(false);
   const [penaltiesIsVisible, setPenaltiesIsVisible] = useState(false);
   const [opposingTeamNum, setOpposingTeamNum] = useState([""]);
-  const [robot_starting_position, setRobot_starting_position] = useState("")
   const [formValue, setFormValue] = useState<any>(formDefaultValues);
   const [shouldRetrySubmit, setShouldRetrySubmit] = useState(true);
   const [lastFormValue, setLastFormValue] = useState<any>(null);
   const [inPlayoffs, setInPlayoffs] = useState(false);
+  const [robot_appeared, setRobot_appeared] = useState(true);
 
-  const handleStartPosChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRobot_starting_position(event.target.value);
-  };
-  
   const match_event = process.env.REACT_APP_EVENTNAME;
 
   useEffect(() => {
@@ -166,7 +156,6 @@ function MatchScout(props: any) {
       "match_level": event.match_level + (roundIsVisible && event.round_number !== undefined ? event.round_number : ""),
       "match_number": event.match_number,
       "robot_position": event.robot_position,
-      "robot_starting_position": robot_starting_position,
       // Auton
       "auton_leave_starting_line": event.auton_leave_starting_line,
       "auton_coral_scored_l4": event.auton_coral_scored_l4,
@@ -203,21 +192,54 @@ function MatchScout(props: any) {
       "overall_robot_died": event.overall_robot_died,
       "overall_defended_others": event.overall_defended_others,
       "overall_was_defended": event.overall_was_defended,
-      "overall_defended": event.overall_defended.sort(),
-      "overall_defended_by": event.overall_defended_by.sort(),
+      "overall_defended": event.overall_defended.sort().join(","),
+      "overall_defended_by": event.overall_defended_by.sort().join(","),
       "overall_pushing": event.overall_pushing,
       "overall_counter_defense": event.overall_counter_defense,
       "overall_driver_skill": event.overall_driver_skill,
       "overall_num_penalties": event.overall_num_penalties,
       "overall_penalties_incurred": event.overall_penalties_incurred,
       "overall_comments": event.overall_comments,
+      "robot_appeared": robot_appeared,
     };
+    const status = await tryFetch(body);
 
-    const qrBody : any = {};
-    for (const [field, value] of Object.entries(body)) {
-      qrBody[field] = value;
+    if(status) {
+      window.alert("Successfully submitted data.");
+      return;
     }
-    setQrValue(qrBody);
+
+    window.alert("Could not submit data. Please show QR to Webdev.");
+
+    setQrValue(body);
+  }
+  async function tryFetch(body : any) {
+    let fetchLink = process.env.REACT_APP_SERVER_ADDRESS;
+
+    if(!fetchLink) {
+      console.error("Could not get fetch link; Check .env");
+      return;
+    }
+
+    fetchLink += "reqType=submitMatchData";
+
+    const submitBody = {
+      ...body,
+    };
+    
+    try {
+      const res = await fetch(fetchLink, {
+        method: "POST",
+        body: JSON.stringify(submitBody),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      return !!res.ok;
+    } catch (err) {
+      return false;
+    }
   }
 
   async function trySubmit(event : any) {
@@ -229,11 +251,6 @@ function MatchScout(props: any) {
       event = lastFormValue;
     } else {
       setLastFormValue(event);
-    }
-
-    if(!robot_starting_position) {
-      window.alert("Please enter the robot's starting position!");
-      return;
     }
 
     try {
@@ -349,16 +366,18 @@ function MatchScout(props: any) {
       { label: "Qualifications", value: "Qualifications" },
       { label: "Quarter-Finals", value: "Quarter-Finals" },
       { label: "Semi-Finals", value: "Semi-Finals" },
-      //{ label: "Eliminations", value: "Eliminations" },
       { label: "Finals", value: "Finals" },
     ];
+    function getNum(n : number) {
+      return teamsList[n] ? `: ${teamsList[n]}` : "";
+    }
     const robot_position = [
-      { label: `R1: ${teamsList[0]}`, value: "R1" },
-      { label: `R2: ${teamsList[1]}`, value: "R2" },
-      { label: `R3: ${teamsList[2]}`, value: 'R3' },
-      { label: `B1: ${teamsList[3]}`, value: "B1" },
-      { label: `B2: ${teamsList[4]}`, value: "B2" },
-      { label: `B3: ${teamsList[5]}`, value: 'B3' },
+      { label: `R1${getNum(0)}`, value: "R1" },
+      { label: `R2${getNum(1)}`, value: "R2" },
+      { label: `R3${getNum(2)}`, value: 'R3' },
+      { label: `B1${getNum(3)}`, value: "B1" },
+      { label: `B2${getNum(4)}`, value: "B2" },
+      { label: `B3${getNum(5)}`, value: 'B3' },
     ];
     const playoff_alliances = [
       { label: "Alliance 1", value: "Alliance 1" },
@@ -404,15 +423,28 @@ function MatchScout(props: any) {
         </Form.Item>
 
         <div className={"playoff-alliances"} style={{ display: inPlayoffs ? 'inherit' : 'none' }}>
-          <h2>Blue Alliance</h2>
-          <Form.Item<FieldType> name="blue_alliance" rules={[{ required: inPlayoffs ? true : false, message: 'Enter the blue alliance' }]}>
-            <Select options={playoff_alliances} onChange={() => { calculateMatchLevel(); updateTeamNumber(); }} className="input" />
-          </Form.Item>
-          
           <h2>Red Alliance</h2>
           <Form.Item<FieldType> name="red_alliance" rules={[{ required: inPlayoffs ? true : false, message: 'Enter the red alliance' }]}>
-            <Select options={playoff_alliances} onChange={() => { calculateMatchLevel(); updateTeamNumber(); }} className="input" />
+            <Select
+              options={playoff_alliances}
+              onChange={() => { calculateMatchLevel(); updateTeamNumber(); }}
+              className="input"
+              dropdownMatchSelectWidth={false}
+              dropdownStyle={{ maxHeight: 'none' }}
+            />
           </Form.Item>
+          
+          <h2>Blue Alliance</h2>
+          <Form.Item<FieldType> name="blue_alliance" rules={[{ required: inPlayoffs ? true : false, message: 'Enter the blue alliance' }]}>
+            <Select
+              options={playoff_alliances}
+              onChange={() => { calculateMatchLevel(); updateTeamNumber(); }}
+              className="input"
+              dropdownMatchSelectWidth={false}
+              dropdownStyle={{ maxHeight: 'none' }}
+            />
+          </Form.Item>
+          
         </div>
         
         <h2>Match #</h2>
@@ -439,6 +471,9 @@ function MatchScout(props: any) {
              ...formDefaultValues,
              no_show : true,
            };
+
+           form.resetFields();
+           setFormValue(formDefaultValues);
          }}
        >No Show</button>
         

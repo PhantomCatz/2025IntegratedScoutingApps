@@ -32,6 +32,7 @@ function Strategic(props: any, text:any) {
   const [lastFormValue, setLastFormValue] = useState<any>(null);
   const [teamData, setTeamData] = useState<any>(null);
   const [inPlayoffs, setInPlayoffs] = useState(false);
+  const [robot_appeared, setRobot_appeared] = useState(true);
 
   useEffect(() => { document.title = props.title; return () => { } }, [props.title]);
   // useEffect(() => { getComments(team_number); return () => {}}, [team_number]);
@@ -104,9 +105,46 @@ function Strategic(props: any, text:any) {
       "match_number": event.match_number,
       "robot_position": event.robot_position,
       "comments": event.comments,
+      "robot_appeared": robot_appeared,
     };
+    const status = await tryFetch(body);
+
+    if(status) {
+      window.alert("Successfully submitted data.");
+      return;
+    }
+
+    window.alert("Could not submit data. Please show QR to Webdev.");
     
     setQrValue(body);
+  }
+  async function tryFetch(body : any) {
+    let fetchLink = process.env.REACT_APP_SERVER_ADDRESS;
+
+    if(!fetchLink) {
+      console.error("Could not get fetch link; Check .env");
+      return;
+    }
+
+    fetchLink += "reqType=submitStrategicData";
+
+    const submitBody = {
+      ...body,
+    };
+    
+    try {
+      const res = await fetch(fetchLink, {
+        method: "POST",
+        body: JSON.stringify(submitBody),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      return !!res.ok;
+    } catch (err) {
+      return false;
+    }
   }
   function calculateMatchLevel() {
     const matchLevel = form.getFieldValue('match_level');
@@ -171,13 +209,16 @@ function Strategic(props: any, text:any) {
       { label: "Semi-Finals", value: "Semi-Finals" },
       { label: "Finals", value: "Finals" },
     ];
+    function getNum(n : number) {
+      return teamsList[n] ? `: ${teamsList[n]}` : "";
+    }
     const robot_position = [
-      { label: `R1: ${teamsList[0]}`, value: "R1" },
-      { label: `R2: ${teamsList[1]}`, value: "R2" },
-      { label: `R3: ${teamsList[2]}`, value: 'R3' },
-      { label: `B1: ${teamsList[3]}`, value: "B1" },
-      { label: `B2: ${teamsList[4]}`, value: "B2" },
-      { label: `B3: ${teamsList[5]}`, value: 'B3' },
+      { label: `R1${getNum(0)}`, value: "R1" },
+      { label: `R2${getNum(1)}`, value: "R2" },
+      { label: `R3${getNum(2)}`, value: 'R3' },
+      { label: `B1${getNum(3)}`, value: "B1" },
+      { label: `B2${getNum(4)}`, value: "B2" },
+      { label: `B3${getNum(5)}`, value: 'B3' },
     ];
     const playoff_alliances = [
       { label: "Alliance 1", value: "Alliance 1" },
@@ -202,8 +243,9 @@ function Strategic(props: any, text:any) {
           <Select options={rounds} className="input" onChange={() => { calculateMatchLevel(); updateTeamNumber(); }} />
         </Form.Item>
         <div className={"playoff-alliances"} style={{ display: inPlayoffs ? 'inherit' : 'none' }}>
-          <h2>Blue Alliance</h2>
-          <Form.Item<FieldType> name="blue_alliance" rules={[{ required: inPlayoffs ? true : false, message: 'Enter the blue alliance' }]}>
+          
+          <h2>Red Alliance</h2>
+          <Form.Item<FieldType> name="red_alliance" rules={[{ required: inPlayoffs ? true : false, message: 'Enter the red alliance' }]}>
             <Select options={playoff_alliances}
               onChange={() => { calculateMatchLevel(); updateTeamNumber(); }}
               className="input"
@@ -211,9 +253,8 @@ function Strategic(props: any, text:any) {
               dropdownStyle={{ maxHeight: 'none' }}
             />
           </Form.Item>
-          
-          <h2>Red Alliance</h2>
-          <Form.Item<FieldType> name="red_alliance" rules={[{ required: inPlayoffs ? true : false, message: 'Enter the red alliance' }]}>
+          <h2>Blue Alliance</h2>
+          <Form.Item<FieldType> name="blue_alliance" rules={[{ required: inPlayoffs ? true : false, message: 'Enter the blue alliance' }]}>
             <Select options={playoff_alliances}
               onChange={() => { calculateMatchLevel(); updateTeamNumber(); }}
               className="input"

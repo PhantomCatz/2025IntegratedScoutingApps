@@ -25,6 +25,21 @@ import { HashRouter, Routes, Route } from 'react-router-dom';
 const rootElement = document.getElementById('root') as HTMLElement;
 const root = ReactDOM.createRoot(rootElement);
 
+// Debounce alerting because React runs it twice
+window.alert = (function() {
+  const alert = globalThis.window.alert;
+  let id : any;
+
+  return function(...args) {
+    clearTimeout(id);
+
+    id = setTimeout(function() {
+      alert(...args);
+    }, 100);
+  }
+})();
+//window.alert = () => {};
+
 function App() {
 	return (
     <HashRouter>
