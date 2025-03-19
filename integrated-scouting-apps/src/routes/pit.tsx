@@ -225,6 +225,10 @@ function PitScout(props: any) {
       { label: "L3", value: "L3" },
       { label: "Both", value: "Both" },
       { label: "Neither", value: "Neither" },
+
+
+
+      
     ];
     const algae_intake_capability_options = [
       { label: "Reef Zone", value: "Reef Zone" },

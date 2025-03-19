@@ -97,6 +97,8 @@ function MatchScout(props: any) {
   const [lastFormValue, setLastFormValue] = useState<any>(null);
   const [inPlayoffs, setInPlayoffs] = useState(false);
   const [robot_appeared, setRobot_appeared] = useState(true);
+  const [leftStartPos, setLeftStartPos] = useState(false);
+  const [autonPoints, setAutonPoints] = useState(0);
 
   const match_event = process.env.REACT_APP_EVENTNAME;
 
@@ -241,6 +243,19 @@ function MatchScout(props: any) {
       return false;
     }
   }
+  useEffect(() => {
+    if (autonPoints > 0)
+    {
+      form.setFieldValue("auton_leave_starting_line", true);
+    }
+    // else {
+    //   form.setFieldValue("auton_leave_starting_line", false)
+    // }
+    
+
+  }, [autonPoints]);
+
+  
 
   async function trySubmit(event : any) {
     if(isLoading) {
@@ -475,7 +490,7 @@ function MatchScout(props: any) {
     );
   }
   
-  function autonMatch() {
+  function AutonMatch() {
     type FieldType = {
       auton_coral_scored_l4: number,
       auton_coral_scored_l3: number,
@@ -490,6 +505,11 @@ function MatchScout(props: any) {
       auton_algae_scored_processor: number,
       auton_leave_starting_line: boolean,
     };
+    
+    useEffect(() => {
+      setLeftStartPos(autonPoints > 0);
+    }, [autonPoints, leftStartPos]);
+
     return (
       <div style={{ alignContent: 'center' }}>
 
@@ -511,10 +531,20 @@ function MatchScout(props: any) {
                   className="input"
                   addonAfter={<Button onMouseDown={() => {
                     setFormValue({ ...formValue, auton_coral_scored_l4: formValue.auton_coral_scored_l4 + 1 });
+                    setAutonPoints(prevPoints => {
+                      const newPoints = prevPoints + 1;
+                      return newPoints;
+                    });
+                    
                   }} className='incrementbutton'>+</Button>}
                   addonBefore={<Button onMouseDown={() => {
                     if (Number(formValue.auton_coral_scored_l4) > 0) {
                       setFormValue({ ...formValue, auton_coral_scored_l4: formValue.auton_coral_scored_l4 - 1 });
+                      setAutonPoints(prevPoints => {
+                        const newPoints = prevPoints - 1;
+                        return newPoints;
+                      });
+                      
                     }
                   }} className='decrementbutton'>-</Button>}
                 />
@@ -533,10 +563,18 @@ function MatchScout(props: any) {
                   className="input"
                   addonAfter={<Button onMouseDown={() => {
                     setFormValue({ ...formValue, auton_coral_missed_l4: formValue.auton_coral_missed_l4 + 1 });
+                    setAutonPoints(prevPoints => {
+                      const newPoints = prevPoints + 1;
+                      return newPoints;
+                    });
                   }} className='incrementbutton'>+</Button>}
                   addonBefore={<Button onMouseDown={() => {
                     if (Number(formValue.auton_coral_missed_l4) > 0) {
                       setFormValue({ ...formValue, auton_coral_missed_l4: formValue.auton_coral_missed_l4 - 1 });
+                      setAutonPoints(prevPoints => {
+                        const newPoints = prevPoints - 1;
+                        return newPoints;
+                      });
                     }
                   }} className='decrementbutton'>-</Button>}
                 />
@@ -559,10 +597,18 @@ function MatchScout(props: any) {
                   className="input"
                   addonAfter={<Button onMouseDown={() => {
                     setFormValue({ ...formValue, auton_coral_scored_l3: formValue.auton_coral_scored_l3 + 1 });
+                    setAutonPoints(prevPoints => {
+                      const newPoints = prevPoints + 1;
+                      return newPoints;
+                    });
                   }} className='incrementbutton'>+</Button>}
                   addonBefore={<Button onMouseDown={() => {
                     if (Number(formValue.auton_coral_scored_l3) > 0) {
                       setFormValue({ ...formValue, auton_coral_scored_l3: formValue.auton_coral_scored_l3 - 1 });
+                      setAutonPoints(prevPoints => {
+                        const newPoints = prevPoints - 1;
+                        return newPoints;
+                      });
                     }
                   }} className='decrementbutton'>-</Button>}
                 />
@@ -581,10 +627,18 @@ function MatchScout(props: any) {
                   className="input"
                   addonAfter={<Button onMouseDown={() => {
                     setFormValue({ ...formValue, auton_coral_missed_l3: formValue.auton_coral_missed_l3 + 1 });
+                    setAutonPoints(prevPoints => {
+                      const newPoints = prevPoints + 1;
+                      return newPoints;
+                    });
                   }} className='incrementbutton'>+</Button>}
                   addonBefore={<Button onMouseDown={() => {
                     if (Number(formValue.auton_coral_missed_l3) > 0) {
                       setFormValue({ ...formValue, auton_coral_missed_l3: formValue.auton_coral_missed_l3 - 1 });
+                      setAutonPoints(prevPoints => {
+                        const newPoints = prevPoints - 1;
+                        return newPoints;
+                      });
                     }
                   }} className='decrementbutton'>-</Button>}
                 />
@@ -607,10 +661,18 @@ function MatchScout(props: any) {
                   className="input"
                   addonAfter={<Button onMouseDown={() => {
                     setFormValue({ ...formValue, auton_coral_scored_l2: formValue.auton_coral_scored_l2 + 1 });
+                    setAutonPoints(prevPoints => {
+                      const newPoints = prevPoints + 1;
+                      return newPoints;
+                    });
                   }} className='incrementbutton'>+</Button>}
                   addonBefore={<Button onMouseDown={() => {
                     if (Number(formValue.auton_coral_scored_l2) > 0) {
                       setFormValue({ ...formValue, auton_coral_scored_l2: formValue.auton_coral_scored_l2 - 1 });
+                      setAutonPoints(prevPoints => {
+                        const newPoints = prevPoints - 1;
+                        return newPoints;
+                      });
                     }
                   }} className='decrementbutton'>-</Button>}
                 />
@@ -629,10 +691,18 @@ function MatchScout(props: any) {
                   className="input"
                   addonAfter={<Button onMouseDown={() => {
                     setFormValue({ ...formValue, auton_coral_missed_l2: formValue.auton_coral_missed_l2 + 1 });
+                    setAutonPoints(prevPoints => {
+                      const newPoints = prevPoints + 1;
+                      return newPoints;
+                    });
                   }} className='incrementbutton'>+</Button>}
                   addonBefore={<Button onMouseDown={() => {
                     if (Number(formValue.auton_coral_missed_l2) > 0) {
                       setFormValue({ ...formValue, auton_coral_missed_l2: formValue.auton_coral_missed_l2 - 1 });
+                      setAutonPoints(prevPoints => {
+                        const newPoints = prevPoints - 1;
+                        return newPoints;
+                      });
                     }
                   }} className='decrementbutton'>-</Button>}
                 />
@@ -655,10 +725,18 @@ function MatchScout(props: any) {
                   className="input"
                   addonAfter={<Button onMouseDown={() => {
                     setFormValue({ ...formValue, auton_coral_scored_l1: formValue.auton_coral_scored_l1 + 1 });
+                    setAutonPoints(prevPoints => {
+                      const newPoints = prevPoints + 1;
+                      return newPoints;
+                    });
                   }} className='incrementbutton'>+</Button>}
                   addonBefore={<Button onMouseDown={() => {
                     if (Number(formValue.auton_coral_scored_l1) > 0) {
                       setFormValue({ ...formValue, auton_coral_scored_l1: formValue.auton_coral_scored_l1 - 1 });
+                      setAutonPoints(prevPoints => {
+                        const newPoints = prevPoints - 1;
+                        return newPoints;
+                      });
                     }
                   }} className='decrementbutton'>-</Button>}
                 />
@@ -677,10 +755,18 @@ function MatchScout(props: any) {
                   className="input"
                   addonAfter={<Button onMouseDown={() => {
                     setFormValue({ ...formValue, auton_coral_missed_l1: formValue.auton_coral_missed_l1 + 1 });
+                    setAutonPoints(prevPoints => {
+                      const newPoints = prevPoints + 1;
+                      return newPoints;
+                    });
                   }} className='incrementbutton'>+</Button>}
                   addonBefore={<Button onMouseDown={() => {
                     if (Number(formValue.auton_coral_missed_l1) > 0) {
                       setFormValue({ ...formValue, auton_coral_missed_l1: formValue.auton_coral_missed_l1 - 1 });
+                      setAutonPoints(prevPoints => {
+                        const newPoints = prevPoints - 1;
+                        return newPoints;
+                      });
                     }
                   }} className='decrementbutton'>-</Button>}
                 />
@@ -703,10 +789,18 @@ function MatchScout(props: any) {
                   className="input"
                   addonAfter={<Button onMouseDown={() => {
                     setFormValue({ ...formValue, auton_algae_scored_net: formValue.auton_algae_scored_net + 1 });
+                    setAutonPoints(prevPoints => {
+                      const newPoints = prevPoints + 1;
+                      return newPoints;
+                    });
                   }} className='incrementbutton'>+</Button>}
                   addonBefore={<Button onMouseDown={() => {
                     if (Number(formValue.auton_algae_scored_net) > 0) {
                       setFormValue({ ...formValue, auton_algae_scored_net: formValue.auton_algae_scored_net - 1 });
+                      setAutonPoints(prevPoints => {
+                        const newPoints = prevPoints - 1;
+                        return newPoints;
+                      });
                     }
                   }} className='decrementbutton'>-</Button>}
                 />
@@ -725,10 +819,18 @@ function MatchScout(props: any) {
                   className="input"
                   addonAfter={<Button onMouseDown={() => {
                     setFormValue({ ...formValue, auton_algae_missed_net: formValue.auton_algae_missed_net + 1 });
+                    setAutonPoints(prevPoints => {
+                      const newPoints = prevPoints + 1;
+                      return newPoints;
+                    });
                   }} className='incrementbutton'>+</Button>}
                   addonBefore={<Button onMouseDown={() => {
                     if (Number(formValue.auton_algae_missed_net) > 0) {
                       setFormValue({ ...formValue, auton_algae_missed_net: formValue.auton_algae_missed_net - 1 });
+                      setAutonPoints(prevPoints => {
+                        const newPoints = prevPoints - 1;
+                        return newPoints;
+                      });
                     }
                   }} className='decrementbutton'>-</Button>}
                 />
@@ -751,10 +853,18 @@ function MatchScout(props: any) {
                   className="input"
                   addonAfter={<Button onMouseDown={() => {
                     setFormValue({ ...formValue, auton_algae_scored_processor: formValue.auton_algae_scored_processor + 1 });
+                    setAutonPoints(prevPoints => {
+                      const newPoints = prevPoints + 1;
+                      return newPoints;
+                    });
                   }} className='incrementbutton'>+</Button>}
                   addonBefore={<Button onMouseDown={() => {
                     if (Number(formValue.auton_algae_scored_processor) > 0) {
                       setFormValue({ ...formValue, auton_algae_scored_processor: formValue.auton_algae_scored_processor - 1 });
+                      setAutonPoints(prevPoints => {
+                        const newPoints = prevPoints - 1;
+                        return newPoints;
+                      });
                     }
                   }} className='decrementbutton'>-</Button>}
                 />
@@ -1304,7 +1414,7 @@ function MatchScout(props: any) {
     {
       key: '2',
       label: 'Auton',
-      children: autonMatch(),
+      children: AutonMatch(),
     },
     {
       key: '3',
