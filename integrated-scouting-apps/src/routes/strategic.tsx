@@ -6,7 +6,7 @@ import TextArea from 'antd/es/input/TextArea';
 import { saveAs } from 'file-saver';
 import Header from "./parts/header";
 import QrCode from "./parts/qrCodeViewer";
-import {getTeamNumber, isRoundNumberVisible, isInPlayoffs, getTeamsPlaying} from './utils/tbaRequest';
+import { isRoundNumberVisible, isInPlayoffs, getTeamsPlaying, getIndexNumber } from './utils/tbaRequest';
 
 const formDefaultValues = {
   "match_event": null,
@@ -35,8 +35,6 @@ function Strategic(props: any, text:any) {
   const [robot_appeared, setRobot_appeared] = useState(true);
 
   useEffect(() => { document.title = props.title; return () => { } }, [props.title]);
-  // useEffect(() => { getComments(team_number); return () => {}}, [team_number]);
-  // useEffect(() => { calculateMatchLevel(); return () => {}}, [form, calculateMatchLevel()]);
   useEffect(() => {
     (async function() {
     let fetchLink = process.env.REACT_APP_SERVER_ADDRESS;
@@ -61,14 +59,16 @@ function Strategic(props: any, text:any) {
       })
       .then((data) => {
         
-        if(!Object.keys(data).length) {
+        if(!data?.length) {
+          console.log(`No data for team ${team_number}`);
           setTeamData(null);
-          throw new Error("No data");
+          return;
         }
 
         setTeamData(data);
       })
       .catch((err) => {
+        console.log("team_number=", team_number);
         console.log("Error fetching data. Is server on?", err);
       });
     })();
@@ -88,12 +88,16 @@ function Strategic(props: any, text:any) {
       const teams = await getTeamsPlaying(matchLevel, matchNumber, roundNumber, allianceNumber1, allianceNumber2);
       setTeamsList(teams);
 
-      const allianceNumber = form.getFieldValue(robotPosition[0] === "R" ? 'red_alliance' : 'blue_alliance');
-      const teamNumber = await getTeamNumber(matchLevel, matchNumber, roundNumber, robotPosition, allianceNumber);
-      setTeamNum(teamNumber);
-    }
-    catch (err) {
-      console.log(err)
+      if(robotPosition) {
+        const index = getIndexNumber(robotPosition);
+        const teamNumber = Number(teams[index]);
+        setTeamNum(teamNumber);
+      } else {
+        setTeamNum(0);
+      }
+
+    } catch (err) {
+      console.error("Failed to request TBA data when updating team number", err);
     }
   }
   async function setNewStrategicScout(event: any) {
@@ -210,6 +214,9 @@ function Strategic(props: any, text:any) {
       { label: "Finals", value: "Finals" },
     ];
     function getNum(n : number) {
+      if(!teamsList) {
+        return "";
+      }
       return teamsList[n] ? `: ${teamsList[n]}` : "";
     }
     const robot_position = [

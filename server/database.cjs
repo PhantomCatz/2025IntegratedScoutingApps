@@ -175,7 +175,15 @@ function getMysql() {
 				const conn = await mysql.createConnection(connectionData);
 				return conn;
 			} catch (err) {
-				console.log("Error in mysql occurred: ", err);
+				switch(err.code) {
+				case "ENOTFOUND":
+					console.log("Could not find database server. Check wifi connection.");
+					break;
+				default:
+					console.log("Error in mysql occurred: ", err);
+					break;
+				}
+
 				return errorConnection;
 			}
 		},

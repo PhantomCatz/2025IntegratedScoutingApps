@@ -39,13 +39,10 @@ const IMAGE_DELIMITER = "$";
 
 function PitScout(props: any) {
   const match_event = process.env.REACT_APP_EVENTNAME as string;
-  //const imageURI = useRef<string>();
-  //const canvasRef = useRef<ReactSketchCanvasRef>(null);
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [formValue, setFormValue] = useState(formDefaultValues);
   const [qrValue, setQrValue] = useState<any>();
-  const [robotWeight, setRobotWeight] = useState(0);
   const [robotImageURI, setRobotImageURI] = useState<string[]>([]);
 
   useEffect(() => {
@@ -69,7 +66,7 @@ function PitScout(props: any) {
       element.ariaValueNow = (formValue as any)[field].toString();
       form.setFieldValue(field, (formValue as any)[field]);
     }
-  }, [formValue, form, robotWeight]);
+  }, [formValue, form]);
   useEffect(() => {
     (async function() {
       if(!match_event) {
@@ -103,7 +100,7 @@ function PitScout(props: any) {
   }, [match_event]);
 
   async function submitData(event: any) {
-    //await canvasRef.current?.exportImage('png').then((data) => { imageURI.current = data; });
+    console.log("event=", event);
     const body = {
       "match_event": match_event,
       "team_number": event.team_number,
@@ -275,7 +272,8 @@ function PitScout(props: any) {
         <h2>Team #</h2>
         <Form.Item<FieldType> 
           name="team_number" 
-          rules={[{ required: true, message: 'Please input the team number!' }]}>
+          rules={[{ required: true, message: 'Please input the team number!' }]}
+        >
           <InputNumber 
             controls 
             min={1} 
@@ -297,22 +295,21 @@ function PitScout(props: any) {
           />
         </Form.Item>
         <h2>Robot Weight (lbs)</h2>
-        <Form.Item
+        <Form.Item<FieldType>
           name="robot_weight"
           rules={[{ required: true, message: 'Please input the robot weight in lbs!' }]}
         >
           <InputNumber
+            controls
             min={0}
             max={1000}
             precision={0}
             placeholder="0"
             className="input robot-weight-input"
-            value={robotWeight}
             type="number"
             pattern="[0-9]*"
-            onChange={(value) => {
-              const numValue = typeof value === 'number' ? value : 0;
-              setRobotWeight(numValue);
+            onChange={(event) => {
+              setFormValue((prevFormValue) => ({...prevFormValue, robot_weight: event || 0 }));
             }}
             onKeyPress={(event) => {
               const charCode = event.which ? event.which : event.keyCode;
@@ -320,8 +317,6 @@ function PitScout(props: any) {
                 event.preventDefault();
               }
             }}
-            formatter={(value) => `${value}`.replace(/^0+/, '')}
-            parser={(value) => value ? Math.round(parseFloat(value)) : 0}
             onWheel={(e) => (e.target as HTMLElement).blur()}
           />
         </Form.Item>
@@ -363,16 +358,16 @@ function PitScout(props: any) {
         </Form.Item>
         <h2>Wheel Type</h2>
         <Form.Item name="wheel_type" rules={[{ required: true, message: 'Please input the wheel type!' }]}>
-        <Select
-          placeholder=""
-          options={wheel_type_options}
-          className="input"
-          dropdownMatchSelectWidth={false}
-          dropdownStyle={{ maxHeight: 'none' }}
-        />
+          <Select
+            placeholder=""
+            options={wheel_type_options}
+            className="input"
+            dropdownMatchSelectWidth={false}
+            dropdownStyle={{ maxHeight: 'none' }}
+          />
         </Form.Item>
         <h2>Coral Intake Capability</h2>
-          <Form.Item name="coral_intake_capability" rules={[{ required: true, message: 'Please input the coral intake capability!' }]}>
+        <Form.Item name="coral_intake_capability" rules={[{ required: true, message: 'Please input the coral intake capability!' }]}>
           <Select
             options={coral_intake_capability_options}
             className="input"
@@ -398,16 +393,16 @@ function PitScout(props: any) {
           <Checkbox className='input_checkbox' />
         </Form.Item>
         <h2>Algae Intake Capability</h2>
-              <Form.Item name="algae_intake_capability" rules={[{ required: true, message: 'Please input the algae intake capability!' }]}>
-        <Select
-          options={algae_intake_capability_options}
-          className="input"
-          dropdownMatchSelectWidth={false}
-          dropdownStyle={{ maxHeight: 'none' }}
-        />
+        <Form.Item name="algae_intake_capability" rules={[{ required: true, message: 'Please input the algae intake capability!' }]}>
+          <Select
+            options={algae_intake_capability_options}
+            className="input"
+            dropdownMatchSelectWidth={false}
+            dropdownStyle={{ maxHeight: 'none' }}
+          />
         </Form.Item>
-          <h2>Algae Scoring Capability</h2>
-                <Form.Item name="algae_scoring_capability" rules={[{ required: true, message: 'Please input the algae Scoring capability!' }]}>
+        <h2>Algae Scoring Capability</h2>
+        <Form.Item name="algae_scoring_capability" rules={[{ required: true, message: 'Please input the algae Scoring capability!' }]}>
           <Select
             options={algae_scoring_capability_options}
             className="input"
@@ -420,91 +415,88 @@ function PitScout(props: any) {
           <Select options={climbing_capability_options} className="input" />
         </Form.Item>
 
-        <Form.Item>
-            <h2>Pit Organization(0-4)</h2>
-          <Form.Item<FieldType> name="pit_organization" rules={[{ required: true, message: 'Please input the pit organization rating!' }]}>
-            <InputNumber
-                  min={0}
-                  max={4}
-                  className="input"
-                addonAfter={<Button onMouseDown={() => {
-                  setFormValue(prevValue => ({
-                    ...prevValue,
-                    pit_organization: Math.min(4, (prevValue.pit_organization || 0) + 1)
+        <h2>Pit Organization(0-4)</h2>
+        <Form.Item<FieldType> name="pit_organization" rules={[{ required: true, message: 'Please input the pit organization rating!' }]}>
+          <InputNumber
+            min={0}
+            max={4}
+            className="input"
+            addonAfter={<Button onMouseDown={() => {
+                setFormValue(prevValue => ({
+                  ...prevValue,
+                  pit_organization: Math.min(4, (prevValue.pit_organization || 0) + 1)
                 }));
               }} className='incrementbutton'>+</Button>}
-              addonBefore={<Button onMouseDown={() => {
+            addonBefore={<Button onMouseDown={() => {
                 setFormValue(prevValue => ({
                     ...prevValue,
                     pit_organization: Math.max(0, (prevValue.pit_organization || 0) - 1)
                   }));
               }} className='decrementbutton'>-</Button>}
-            />
-          </Form.Item>
+          />
+        </Form.Item>
 
-            <h2>Team Safety(0-4)</h2>
-          <Form.Item<FieldType> name="team_safety" rules={[{ required: true, message: 'Please input the team safety rating!' }]}>
-            <InputNumber
-                  min={0}
-                  max={4}
-                  className="input"
-                addonAfter={<Button onMouseDown={() => {
-                  setFormValue(prevValue => ({
-                    ...prevValue,
-                    team_safety: Math.min(4, (prevValue.team_safety || 0) + 1)
-                }));
-              }} className='incrementbutton'>+</Button>}
-              addonBefore={<Button onMouseDown={() => {
+        <h2>Team Safety(0-4)</h2>
+        <Form.Item<FieldType> name="team_safety" rules={[{ required: true, message: 'Please input the team safety rating!' }]}>
+          <InputNumber
+                min={0}
+                max={4}
+                className="input"
+              addonAfter={<Button onMouseDown={() => {
                 setFormValue(prevValue => ({
-                    ...prevValue,
-                    team_safety: Math.max(0, (prevValue.team_safety || 0) - 1)
-                  }));
-              }} className='decrementbutton'>-</Button>}
-            />
-          </Form.Item>
-        
-            <h2>Team Workmanship(0-4)</h2>
-          <Form.Item<FieldType> name="team_workmanship" rules={[{ required: true, message: 'Please input the team workmanship rating!' }]}>
-            <InputNumber
-                  min={0}
-                  max={4}
-                  className="input"
-                addonAfter={<Button onMouseDown={() => {
-                  setFormValue(prevValue => ({
-                    ...prevValue,
-                    team_workmanship: Math.min(4, (prevValue.team_workmanship || 0) + 1)
+                  ...prevValue,
+                  team_safety: Math.min(4, (prevValue.team_safety || 0) + 1)
+              }));
+            }} className='incrementbutton'>+</Button>}
+            addonBefore={<Button onMouseDown={() => {
+              setFormValue(prevValue => ({
+                  ...prevValue,
+                  team_safety: Math.max(0, (prevValue.team_safety || 0) - 1)
                 }));
-              }} className='incrementbutton'>+</Button>}
-              addonBefore={<Button onMouseDown={() => {
+            }} className='decrementbutton'>-</Button>}
+          />
+        </Form.Item>
+      
+        <h2>Team Workmanship(0-4)</h2>
+        <Form.Item<FieldType> name="team_workmanship" rules={[{ required: true, message: 'Please input the team workmanship rating!' }]}>
+          <InputNumber
+                min={0}
+                max={4}
+                className="input"
+              addonAfter={<Button onMouseDown={() => {
                 setFormValue(prevValue => ({
-                    ...prevValue,
-                    team_workmanship: Math.max(0, (prevValue.team_workmanship || 0) - 1)
-                  }));
-              }} className='decrementbutton'>-</Button>}
-            />
-          </Form.Item>
+                  ...prevValue,
+                  team_workmanship: Math.min(4, (prevValue.team_workmanship || 0) + 1)
+              }));
+            }} className='incrementbutton'>+</Button>}
+            addonBefore={<Button onMouseDown={() => {
+              setFormValue(prevValue => ({
+                  ...prevValue,
+                  team_workmanship: Math.max(0, (prevValue.team_workmanship || 0) - 1)
+                }));
+            }} className='decrementbutton'>-</Button>}
+          />
+        </Form.Item>
 
-          <h2>Gracious Professionalism(0-4)</h2>
-          <Form.Item<FieldType> name="gracious_professionalism" rules={[{ required: true, message: 'Please input the GP rating!' }]}>
-            <InputNumber
-                  min={0}
-                  max={4}
-                  className="input"
-                addonAfter={<Button onMouseDown={() => {
-                  setFormValue(prevValue => ({
-                    ...prevValue,
-                    gracious_professionalism: Math.min(4, (prevValue.gracious_professionalism || 0) + 1)
-                }));
-              }} className='incrementbutton'>+</Button>}
-              addonBefore={<Button onMouseDown={() => {
+        <h2>Gracious Professionalism(0-4)</h2>
+        <Form.Item<FieldType> name="gracious_professionalism" rules={[{ required: true, message: 'Please input the GP rating!' }]}>
+          <InputNumber
+                min={0}
+                max={4}
+                className="input"
+              addonAfter={<Button onMouseDown={() => {
                 setFormValue(prevValue => ({
-                    ...prevValue,
-                    gracious_professionalism: Math.max(0, (prevValue.gracious_professionalism || 0) - 1)
-                  }));
-              }} className='decrementbutton'>-</Button>}
-            />
-          </Form.Item>
-
+                  ...prevValue,
+                  gracious_professionalism: Math.min(4, (prevValue.gracious_professionalism || 0) + 1)
+              }));
+            }} className='incrementbutton'>+</Button>}
+            addonBefore={<Button onMouseDown={() => {
+              setFormValue(prevValue => ({
+                  ...prevValue,
+                  gracious_professionalism: Math.max(0, (prevValue.gracious_professionalism || 0) - 1)
+                }));
+            }} className='decrementbutton'>-</Button>}
+          />
         </Form.Item>
         <h2>Comments</h2>
         <Form.Item<FieldType> name="comments">
@@ -558,10 +550,12 @@ function PitScout(props: any) {
         onFinish={async (event) => {
           try {
             setLoading(true);
+            
             await submitData(event);
+            
             const initials = form.getFieldValue("scouter_initials");
+
             form.resetFields();
-            setRobotWeight(0);
             setFormValue(formDefaultValues);
             form.setFieldsValue({...formDefaultValues, "scouter_initials": initials});
           }
@@ -575,7 +569,7 @@ function PitScout(props: any) {
           }
         }}
       >
-        {Pit()}
+        <Pit />
       </Form>
       <QrCode value={qrValue} />
     </>

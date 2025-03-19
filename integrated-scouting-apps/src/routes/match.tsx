@@ -6,7 +6,7 @@ import TextArea from 'antd/es/input/TextArea';
 import { Footer } from 'antd/es/layout/layout';
 import Header from "./parts/header";
 import QrCode from './parts/qrCodeViewer';
-import {getTeamNumber, isInPlayoffs, getTeam, isRoundNumberVisible, getTeamsPlaying} from './utils/tbaRequest';
+import {isInPlayoffs, isRoundNumberVisible, getTeamsPlaying, getIndexNumber, getAllianceOffset } from './utils/tbaRequest';
 import type { TabsProps, RadioChangeEvent } from "antd";
 
 interface SpacerProps {
@@ -276,7 +276,7 @@ function MatchScout(props: any) {
 
       await calculateMatchLevel();
       await updateTeamNumber();
-      await updateDefendedList();
+      await updateDefendedList(robot_position);
     }
     catch (err) {
       console.log(err);
@@ -298,13 +298,16 @@ function MatchScout(props: any) {
       const teams = await getTeamsPlaying(matchLevel, matchNumber, roundNumber, allianceNumber1, allianceNumber2);
       setTeamsList(teams);
 
-      const allianceNumber = form.getFieldValue(robotPosition[0] === "R" ? 'red_alliance' : 'blue_alliance');
-      const teamNumber = await getTeamNumber(matchLevel, matchNumber, roundNumber, robotPosition, allianceNumber);
-      setTeam_number(teamNumber);
+      if(robotPosition) {
+        const index = getIndexNumber(robotPosition);
+        const teamNumber = Number(teams[index]);
+        setTeam_number(teamNumber);
+        await updateDefendedList(robotPosition);
+      } else {
+        setTeam_number(0);
+      }
 
-      await updateDefendedList();
-    }
-    catch (err) {
+    } catch (err) {
       console.error("Failed to request TBA data when updating team number", err);
     }
   }
@@ -318,31 +321,19 @@ function MatchScout(props: any) {
 
     setInPlayoffs(inPlayoffs);
   }
-  async function updateDefendedList() {
+  async function updateDefendedList(robotPosition : string) {
     try {
-      const matchLevel = form.getFieldValue('match_level');
-      const matchNumber = form.getFieldValue('match_number');
-      const roundNumber = form.getFieldValue('round_number');
-      const robotPosition = form.getFieldValue('robot_position');
-      const allianceNumber = form.getFieldValue(robotPosition[0] === "R" ? 'blue_alliance' : 'red_alliance');
+      const color = robotPosition[0] === "R" ?
+        "blue" :
+        "red";
 
-      let color = "";
-      if (robotPosition[0] === "R") {
-        color = "blue";
-      }
-      else {
-        color = "red";
-      }
+      const indexOffset = getAllianceOffset(color);
+      const team = [];
 
-      console.log(color);
-      const team = await getTeam(matchLevel, matchNumber, roundNumber, color, allianceNumber);
-
-      if(!team) {
-        console.log("Got undefined from team");
-        console.log("Current opposing team is ", opposingTeamNum);
-        return;
+      for(let i = 0; i < 3; i++) {
+        const num = teamsList[indexOffset + i];
+        team.push(num);
       }
-      console.log(team);
 
       setOpposingTeamNum(team);
     }
@@ -369,6 +360,9 @@ function MatchScout(props: any) {
       { label: "Finals", value: "Finals" },
     ];
     function getNum(n : number) {
+      if(!teamsList) {
+        return "";
+      }
       return teamsList[n] ? `: ${teamsList[n]}` : "";
     }
     const robot_position = [

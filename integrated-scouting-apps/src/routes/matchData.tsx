@@ -28,8 +28,8 @@ function TeamData(props: any) {
         fetchLink += "reqType=getTeam";
         fetchLink += `&team1=${teamNumber}`;
 
-        const response = await fetch(fetchLink);
-        const data : any[] = (await response.json())[teamNumber];
+        const response = await (await fetch(fetchLink)).json();
+        const data : any[] = response[1];
 
         for (const match of data) {
           const row:  { [key: string]: any } = {};
@@ -67,67 +67,88 @@ function TeamData(props: any) {
       fetchData(parseInt(teamNumber));
     }
   }, [teamNumber]);
+  const columns = {
+    "Match Identifier": {
+      "Match Event": "match_event",
+      "Scouter Initials": "scouter_initials",
+      "Match Level": "match_level",
+      "Match #": "match_number",
+      "Robot Starting Position": "robot_starting_position",
+    },
+    "Auton": {
+      "Left Starting Line": "auton_leave_starting_line",
+      "Coral Scored L4": "auton_coral_scored_l4",
+      "Coral Missed L4": "auton_coral_missed_l4",
+      "Coral Scored L3": "auton_coral_scored_l3",
+      "Coral Missed L3": "auton_coral_missed_l3",
+      "Coral Scored L2": "auton_coral_scored_l2",
+      "Coral Missed L2": "auton_coral_missed_l2",
+      "Coral Scored L1": "auton_coral_scored_l1",
+      "Coral Missed L1": "auton_coral_missed_l1",
+      "Algae Scored Net": "auton_algae_scored_net",
+      "Algae Missed Net": "auton_algae_missed_net",
+      "Algae Scored Processor": "auton_algae_scored_processor",
+    },
+    "Teleop": {
+      "Coral Scored L4": "teleop_coral_scored_l4",
+      "Coral Missed L4": "teleop_coral_missed_l4",
+      "Coral Scored L3": "teleop_coral_scored_l3",
+      "Coral Missed L3": "teleop_coral_missed_l3",
+      "Coral Scored L2": "teleop_coral_scored_l2",
+      "Coral Missed L2": "teleop_coral_missed_l2",
+      "Coral Scored L1": "teleop_coral_scored_l1",
+      "Coral Missed L1": "teleop_coral_missed_l1",
+      "Algae Scored Net": "teleop_algae_scored_net",
+      "Algae Missed Net": "teleop_algae_missed_net",
+      "Algae Scored Processor": "teleop_algae_scored_processor",
+    },
+    "Endgame": {
+      "Coral Intake": "endgame_coral_intake_capability",
+      "Coral Station": "endgame_coral_station",
+      "Algae Intake": "endgame_algae_intake_capability",
+      "Climb Successful": "endgame_climb_successful",
+      "Climb Type": "endgame_climb_type",
+      "Climb Time": "endgame_climb_time",
+    },
+    "Overall": {
+      "Robot Died": "overall_robot_died",
+      "Defended Others": "overall_defended_others",
+      "Was Defended": "overall_was_defended",
+      "Defended": "overall_defended",
+      "Defended by": "overall_defended_by",
+      "Pushing": "overall_pushing",
+      "Counter Defense": "overall_counter_defense",
+      "Driver Skill": "overall_driver_skill",
+      "# Penalties": "overall_num_penalties",
+      "Penalties Incurred": "overall_penalties_incurred",
+      "Comments": "overall_comments",
+    },
+  };
+  function makeColumns() {
+    const groups = [];
+    for(const [section, fields] of Object.entries(columns)) {
+      const group = [];
+      for(const [title, field] of Object.entries(fields)) {
+        group.push(
+          <Column title={title} dataIndex={field} key={field} />
+        );
+      }
+      groups.push(
+        <ColumnGroup title={section} key={section}>
+          {group}
+        </ColumnGroup>
+      );
+    }
+
+    return groups;
+  }
   return (
     <>
       <meta name="viewport" content="maximum-scale=1.0" />
       <Header name={`Data for ${teamNumber}`} back="#scoutingapp/lookup/match" />
       <h2 style={{ whiteSpace: 'pre-line' }}>{loading ? "Loading..." : ""}</h2>
       <Table dataSource={matchData} >
-        <ColumnGroup title="Match Identifier">
-          <Column title="Match Event" dataIndex="match_event" key="match_event"/>
-          <Column title="Scouter Initials" dataIndex="scouter_initials" key="scouter_initials"/>
-          <Column title="Match Level" dataIndex="match_level" key="match_level"/>
-          <Column title="Match #" dataIndex="match_number" key="match_number"/>
-          <Column title="Robot Starting Position" dataIndex="robot_starting_position" key="robot_starting_position"/>
-        </ColumnGroup>
-        <ColumnGroup title="Auton">
-          <Column title="Left Starting Line" dataIndex="auton_leave_starting_line" key="auton_leave_starting_line"/>
-          <Column title="Coral Scored L4" dataIndex="auton_coral_scored_l4" key="auton_coral_scored_l4"/>
-          <Column title="Coral Missed L4" dataIndex="auton_coral_missed_l4" key="auton_coral_missed_l4"/>
-          <Column title="Coral Scored L3" dataIndex="auton_coral_scored_l3" key="auton_coral_scored_l3"/>
-          <Column title="Coral Missed L3" dataIndex="auton_coral_missed_l3" key="auton_coral_missed_l3"/>
-          <Column title="Coral Scored L2" dataIndex="auton_coral_scored_l2" key="auton_coral_scored_l2"/>
-          <Column title="Coral Missed L2" dataIndex="auton_coral_missed_l2" key="auton_coral_missed_l2"/>
-          <Column title="Coral Scored L1" dataIndex="auton_coral_scored_l1" key="auton_coral_scored_l1"/>
-          <Column title="Coral Missed L1" dataIndex="auton_coral_missed_l1" key="auton_coral_missed_l1"/>
-          <Column title="Algae Scored Net" dataIndex="auton_algae_scored_net" key="auton_algae_scored_net"/>
-          <Column title="Algae Missed Net" dataIndex="auton_algae_missed_net" key="auton_algae_missed_net"/>
-          <Column title="Algae Scored Processor" dataIndex="auton_algae_scored_processor" key="auton_algae_scored_processor"/>
-        </ColumnGroup>
-        <ColumnGroup title="Teleop">
-          <Column title="Coral Scored L4" dataIndex="teleop_coral_scored_l4" key="teleop_coral_scored_l4"/>
-          <Column title="Coral Missed L4" dataIndex="teleop_coral_missed_l4" key="teleop_coral_missed_l4"/>
-          <Column title="Coral Scored L3" dataIndex="teleop_coral_scored_l3" key="teleop_coral_scored_l3"/>
-          <Column title="Coral Missed L3" dataIndex="teleop_coral_missed_l3" key="teleop_coral_missed_l3"/>
-          <Column title="Coral Scored L2" dataIndex="teleop_coral_scored_l2" key="teleop_coral_scored_l2"/>
-          <Column title="Coral Missed L2" dataIndex="teleop_coral_missed_l2" key="teleop_coral_missed_l2"/>
-          <Column title="Coral Scored L1" dataIndex="teleop_coral_scored_l1" key="teleop_coral_scored_l1"/>
-          <Column title="Coral Missed L1" dataIndex="teleop_coral_missed_l1" key="teleop_coral_missed_l1"/>
-          <Column title="Algae Scored Net" dataIndex="teleop_algae_scored_net" key="teleop_algae_scored_net"/>
-          <Column title="Algae Missed Net" dataIndex="teleop_algae_missed_net" key="teleop_algae_missed_net"/>
-          <Column title="Algae Scored Processor" dataIndex="teleop_algae_scored_processor" key="teleop_algae_scored_processor"/>
-        </ColumnGroup>
-        <ColumnGroup title="Endgame">
-          <Column title="Coral Intake" dataIndex="endgame_coral_intake_capability" key="endgame_coral_intake_capability"/>
-          <Column title="Coral Station" dataIndex="endgame_coral_station" key="endgame_coral_station"/>
-          <Column title="Algae Intake" dataIndex="endgame_algae_intake_capability" key="endgame_algae_intake_capability"/>
-          <Column title="Climb Successful" dataIndex="endgame_climb_successful" key="endgame_climb_successful"/>
-          <Column title="Climb Type" dataIndex="endgame_climb_type" key="endgame_climb_type"/>
-          <Column title="Climb Time" dataIndex="endgame_climb_time" key="endgame_climb_time"/>
-        </ColumnGroup>
-        <ColumnGroup title="Overall">
-          <Column title="Robot Died" dataIndex="overall_robot_died" key="overall_robot_died"/>
-          <Column title="Defended Others" dataIndex="overall_defended_others" key="overall_defended_others"/>
-          <Column title="Was Defended" dataIndex="overall_was_defended" key="overall_was_defended"/>
-          <Column title="Defended" dataIndex="overall_defended" key="overall_defended"/>
-          <Column title="Defended by" dataIndex="overall_defended_by" key="overall_defended_by"/>
-          <Column title="Pushing" dataIndex="overall_pushing" key="overall_pushing"/>
-          <Column title="Counter Defense" dataIndex="overall_counter_defense" key="overall_counter_defense"/>
-          <Column title="Driver Skill" dataIndex="overall_driver_skill" key="overall_driver_skill"/>
-          <Column title="# Penalties" dataIndex="overall_num_penalties" key="overall_num_penalties"/>
-          <Column title="Penalties Incurred" dataIndex="overall_penalties_incurred" key="overall_penalties_incurred"/>
-          <Column title="Comments" dataIndex="overall_comments" key="overall_comments"/>
-        </ColumnGroup>
+        {makeColumns()}
       </Table>
     </>
   );

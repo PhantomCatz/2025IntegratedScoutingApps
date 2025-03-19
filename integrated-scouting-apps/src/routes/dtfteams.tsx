@@ -415,7 +415,7 @@ function DTFTeams(props: any) {
           </>
         });
       } else {
-        teamTabs.push({ key: "NoData", label: "NoData", children:
+        teamTabs.push({ key: "NoData", label: "No Data", children:
           <p className={"errorLabel"}>No Data for team {team}</p>,
         });
       }
