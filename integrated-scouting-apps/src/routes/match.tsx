@@ -293,9 +293,7 @@ function MatchScout(props: any) {
     //   form.setFieldValue("auton_leave_starting_line", false)
     // }
     
-    console.log("effect activated!")
-    console.log("autonPoints =", autonPoints )
-    console.log("leftStartPos after update =", leftStartPos);
+
   }, [autonPoints]);
 
   
@@ -461,7 +459,7 @@ function MatchScout(props: any) {
           <Select options={robot_position} onChange={updateTeamNumber} className="input"  listItemHeight={10} listHeight={500} placement='bottomLeft'/>
         </Form.Item>
 
-        <div className='divdivdiv'> 
+        {/* <div className='divdivdiv'> 
         <h2>Robot Starting Position</h2>
         <div className='radioRow'> 
           <div className='radioColumn'>
@@ -525,7 +523,7 @@ function MatchScout(props: any) {
         </div>
         <Spacer height="30px"/>
         </div>
-        
+         */}
         
       </div>
     );
@@ -549,9 +547,6 @@ function MatchScout(props: any) {
     
     useEffect(() => {
       setLeftStartPos(autonPoints > 0);
-      console.log("effect activated!")
-      console.log("autonPoints =", autonPoints )
-      console.log("leftStartPos after update =", leftStartPos);
     }, [autonPoints, leftStartPos]);
 
     return (
