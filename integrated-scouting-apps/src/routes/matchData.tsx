@@ -7,10 +7,99 @@ import Column from 'antd/es/table/Column';
 import ColumnGroup from 'antd/es/table/ColumnGroup';
 import Header from "./parts/header";
 
+const DATA_COLUMNS = {
+  "Match Identifier": {
+    "Match Event": "match_event",
+    "Scouter Initials": "scouter_initials",
+    "Match Level": "match_level",
+    "Match #": "match_number",
+    "Robot Starting Position": "robot_starting_position",
+  },
+  "Teleop": {
+    "Coral Scored L4": "teleop_coral_scored_l4",
+    "Coral Missed L4": "teleop_coral_missed_l4",
+    "Coral Scored L3": "teleop_coral_scored_l3",
+    "Coral Missed L3": "teleop_coral_missed_l3",
+    "Coral Scored L2": "teleop_coral_scored_l2",
+    "Coral Missed L2": "teleop_coral_missed_l2",
+    "Coral Scored L1": "teleop_coral_scored_l1",
+    "Coral Missed L1": "teleop_coral_missed_l1",
+    "Algae Scored Net": "teleop_algae_scored_net",
+    "Algae Missed Net": "teleop_algae_missed_net",
+    "Algae Scored Processor": "teleop_algae_scored_processor",
+  },
+  "Auton": {
+    "Left Starting Line": "auton_leave_starting_line",
+    "Coral Scored L4": "auton_coral_scored_l4",
+    "Coral Missed L4": "auton_coral_missed_l4",
+    "Coral Scored L3": "auton_coral_scored_l3",
+    "Coral Missed L3": "auton_coral_missed_l3",
+    "Coral Scored L2": "auton_coral_scored_l2",
+    "Coral Missed L2": "auton_coral_missed_l2",
+    "Coral Scored L1": "auton_coral_scored_l1",
+    "Coral Missed L1": "auton_coral_missed_l1",
+    "Algae Scored Net": "auton_algae_scored_net",
+    "Algae Missed Net": "auton_algae_missed_net",
+    "Algae Scored Processor": "auton_algae_scored_processor",
+  },
+  "Endgame": {
+    "Coral Intake": "endgame_coral_intake_capability",
+    "Coral Station": "endgame_coral_station",
+    "Algae Intake": "endgame_algae_intake_capability",
+    "Climb Successful": "endgame_climb_successful",
+    "Climb Type": "endgame_climb_type",
+    "Climb Time": "endgame_climb_time",
+  },
+  "Overall": {
+    "Robot Died": "overall_robot_died",
+    "Defended Others": "overall_defended_others",
+    "Was Defended": "overall_was_defended",
+    "Defended": "overall_defended",
+    "Defended by": "overall_defended_by",
+    "Pushing": "overall_pushing",
+    "Counter Defense": "overall_counter_defense",
+    "Driver Skill": "overall_driver_skill",
+    "# Penalties": "overall_num_penalties",
+    "Penalties Incurred": "overall_penalties_incurred",
+    "Comments": "overall_comments",
+  },
+};
+
+const HIDABLE_FIELDS : any = {
+  "teleop_coral_scored_l4": false,
+  "teleop_coral_missed_l4": false,
+  "teleop_coral_scored_l3": false,
+  "teleop_coral_missed_l3": false,
+  "teleop_coral_scored_l2": false,
+  "teleop_coral_missed_l2": false,
+  "teleop_coral_scored_l1": false,
+  "teleop_coral_missed_l1": false,
+  "teleop_algae_scored_net": false,
+  "teleop_algae_missed_net": false,
+  "teleop_algae_scored_processor": false,
+
+  "auton_coral_scored_l4": false,
+  "auton_coral_missed_l4": false,
+  "auton_coral_scored_l3": false,
+  "auton_coral_missed_l3": false,
+  "auton_coral_scored_l2": false,
+  "auton_coral_missed_l2": false,
+  "auton_coral_scored_l1": false,
+  "auton_coral_missed_l1": false,
+  "auton_algae_scored_net": false,
+  "auton_algae_missed_net": false,
+  "auton_algae_scored_processor": false,
+};
+
+const FIXED_FIELDS : any = {
+    "match_number": true,
+};
+
 function TeamData(props: any) {
   const { teamNumber } = useParams();
   const [loading, setLoading] = useState(true);
   const [matchData, setMatchData] = useState<{ [x: string]: any; }[]>([]);
+  const [hiddenColumns, setHiddenColumns] = useState({...HIDABLE_FIELDS});
 
   useEffect(() => { document.title = props.title }, [props.title]);
   useEffect(() => {
@@ -49,6 +138,9 @@ function TeamData(props: any) {
               row[field] = match[field].toString();
               break;
             }
+            if(hiddenColumns[field] === false && match[field]) {
+              hiddenColumns[field] = true;
+            }
           }
           row["key"] = `${match.match_event}|${match.match_level}|${match.match_number}|${match.scouter_initials}`;
           table.push(row);
@@ -67,71 +159,30 @@ function TeamData(props: any) {
       fetchData(parseInt(teamNumber));
     }
   }, [teamNumber]);
-  const columns = {
-    "Match Identifier": {
-      "Match Event": "match_event",
-      "Scouter Initials": "scouter_initials",
-      "Match Level": "match_level",
-      "Match #": "match_number",
-      "Robot Starting Position": "robot_starting_position",
-    },
-    "Teleop": {
-      "Coral Scored L4": "teleop_coral_scored_l4",
-      "Coral Missed L4": "teleop_coral_missed_l4",
-      "Coral Scored L3": "teleop_coral_scored_l3",
-      "Coral Missed L3": "teleop_coral_missed_l3",
-      "Coral Scored L2": "teleop_coral_scored_l2",
-      "Coral Missed L2": "teleop_coral_missed_l2",
-      "Coral Scored L1": "teleop_coral_scored_l1",
-      "Coral Missed L1": "teleop_coral_missed_l1",
-      "Algae Scored Net": "teleop_algae_scored_net",
-      "Algae Missed Net": "teleop_algae_missed_net",
-      "Algae Scored Processor": "teleop_algae_scored_processor",
-    },
-    "Auton": {
-      "Left Starting Line": "auton_leave_starting_line",
-      "Coral Scored L4": "auton_coral_scored_l4",
-      "Coral Missed L4": "auton_coral_missed_l4",
-      "Coral Scored L3": "auton_coral_scored_l3",
-      "Coral Missed L3": "auton_coral_missed_l3",
-      "Coral Scored L2": "auton_coral_scored_l2",
-      "Coral Missed L2": "auton_coral_missed_l2",
-      "Coral Scored L1": "auton_coral_scored_l1",
-      "Coral Missed L1": "auton_coral_missed_l1",
-      "Algae Scored Net": "auton_algae_scored_net",
-      "Algae Missed Net": "auton_algae_missed_net",
-      "Algae Scored Processor": "auton_algae_scored_processor",
-    },
-    "Endgame": {
-      "Coral Intake": "endgame_coral_intake_capability",
-      "Coral Station": "endgame_coral_station",
-      "Algae Intake": "endgame_algae_intake_capability",
-      "Climb Successful": "endgame_climb_successful",
-      "Climb Type": "endgame_climb_type",
-      "Climb Time": "endgame_climb_time",
-    },
-    "Overall": {
-      "Robot Died": "overall_robot_died",
-      "Defended Others": "overall_defended_others",
-      "Was Defended": "overall_was_defended",
-      "Defended": "overall_defended",
-      "Defended by": "overall_defended_by",
-      "Pushing": "overall_pushing",
-      "Counter Defense": "overall_counter_defense",
-      "Driver Skill": "overall_driver_skill",
-      "# Penalties": "overall_num_penalties",
-      "Penalties Incurred": "overall_penalties_incurred",
-      "Comments": "overall_comments",
-    },
-  };
+  useEffect(() => {
+    fixFields();
+  }, [matchData]);
+
+  const fixedFields : number[] = [];
+
+  let titleCount = 0;
+
   function makeColumns() {
     const groups = [];
-    for(const [section, fields] of Object.entries(columns)) {
+    for(const [section, fields] of Object.entries(DATA_COLUMNS)) {
       const group = [];
       for(const [title, field] of Object.entries(fields)) {
+        if(hiddenColumns[field] === false) {
+          continue;
+        }
+
+        if(FIXED_FIELDS[field] === true) {
+          fixedFields.push(titleCount);
+        }
         group.push(
           <Column title={title} dataIndex={field} key={field} />
         );
+        titleCount++;
       }
       groups.push(
         <ColumnGroup title={section} key={section}>
@@ -140,14 +191,26 @@ function TeamData(props: any) {
       );
     }
 
+    fixFields();
     return groups;
   }
+
+  function fixFields() {
+    console.log("fixedFields=", fixedFields);
+    for(const num of fixedFields) {
+      document.querySelectorAll(`.matchDataTable table tr > :nth-child(${num + 1}):not([scope=colgroup])`)
+      .forEach((x : any) => {
+        x.classList.add("cell__fixed");
+      });
+    }
+  }
+  
   return (
     <>
       <meta name="viewport" content="maximum-scale=1.0" />
       <Header name={`Data for ${teamNumber}`} back="#scoutingapp/lookup/match" />
       <h2 style={{ whiteSpace: 'pre-line' }}>{loading ? "Loading..." : ""}</h2>
-      <Table dataSource={matchData} >
+      <Table dataSource={matchData} className={"matchDataTable"}>
         {makeColumns()}
       </Table>
     </>
