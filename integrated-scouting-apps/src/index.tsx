@@ -17,13 +17,28 @@ import Watchlist from './routes/watchlist';
 import WatchlistGet from './routes/watchlistData';
 import WatchlistUpdate from './routes/watchlistUpdate';
 
-import Chart from './routes/chart';
-import QrCode from './routes/qrCodeViewer';
+import Chart from './routes/parts/chart';
+import QrCode from './routes/parts/qrCodeViewer';
 
 import { HashRouter, Routes, Route } from 'react-router-dom';
 
 const rootElement = document.getElementById('root') as HTMLElement;
 const root = ReactDOM.createRoot(rootElement);
+
+// Debounce alerting because React runs it twice
+window.alert = (function() {
+  const alert = globalThis.window.alert;
+  let id : any;
+
+  return function(...args) {
+    clearTimeout(id);
+
+    id = setTimeout(function() {
+      alert(...args);
+    }, 100);
+  }
+})();
+//window.alert = () => {};
 
 function App() {
 	return (

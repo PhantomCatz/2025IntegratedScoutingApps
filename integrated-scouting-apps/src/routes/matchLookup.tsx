@@ -2,7 +2,7 @@ import '../public/stylesheets/style.css';
 import '../public/stylesheets/lookup.css';
 import { useEffect, useState } from 'react';
 import { Input, Form, InputNumber } from 'antd';
-import Header from './header';
+import Header from './parts/header';
 import { getAllTeams } from './utils/tbaRequest';
 
 function TeamData(props: any) {

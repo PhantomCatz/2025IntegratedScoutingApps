@@ -45,6 +45,7 @@ function ChartComponent(props : any) {
 
   const teamNumber = props.teamNumber;
   const index = props.index;
+  const data = props.data;
   
   useEffect(() => {
     (async function() {
@@ -221,19 +222,6 @@ function ChartComponent(props : any) {
     try {
       const table = [];
 
-      let fetchLink = process.env.REACT_APP_SERVER_ADDRESS;
-
-      if(!fetchLink) {
-        console.error("Could not get fetch link. Check .env");
-        return total;
-      }
-
-      fetchLink += "reqType=getTeam";
-      fetchLink += `&team1=${teamNumber}`;
-
-      const response = await fetch(fetchLink);
-      const data : any[] = (await response.json())[teamNumber];
-
       for (const match of data) {
         for(let [field, value] of Object.entries(match)) {
           if(value === null || value === undefined) {
@@ -274,22 +262,6 @@ function ChartComponent(props : any) {
                                   total.coral_missed_l3 + total.coral_missed_l4;
 
       total.algae_overall_total = (total.algae_scored + total.algae_missed);
-
-      // debug code. 
-      /*
-      console.log("total.coral_missed_l1: ", total.coral_missed_l1);
-      console.log("total.coral_missed_l2: ", total.coral_missed_l2);
-      console.log("total.coral_missed_l3: ", total.coral_missed_l3);
-      console.log("total.coral_missed_l4: ", total.coral_missed_l4);
-      console.log("total.coral_scored_l1: ", total.coral_scored_l1);
-      console.log("total.coral_scored_l2: ", total.coral_scored_l2);
-      console.log("total.coral_scored_l3: ", total.coral_scored_l3);
-      console.log("total.coral_scored_l4: ", total.coral_scored_l4);
-      console.log("total.algae_missed: ", total.algae_missed);
-      console.log("total.algae_scored: ", total.algae_scored);
-      console.log("total.coral_overall_total: ", total.coral_overall_total);
-      console.log("total.algae_overall_total: ", total.algae_overall_total);
-      */
 
       return total;
     }
