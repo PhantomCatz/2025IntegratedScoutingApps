@@ -9,9 +9,16 @@ app.use(express.json({
 	limit: "16mb",
 }));
 
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  next();
+});
+
 app.listen(PORT, () => {
 	console.log(`Server listening on ${PORT}`);
 });
+
 
 app.get("/api", async function(req, res) {
 	const queryString = req.url.split("?")[1];
@@ -21,9 +28,6 @@ app.get("/api", async function(req, res) {
 
 	try {
 		switch(queries.reqType) {
-		//case "hasTeam":
-		//	result = await hasTeam(queries);
-		//	break;
 		case "teamsScouted":
 			result = await getTeamsScouted();
 			break;
@@ -45,7 +49,6 @@ app.get("/api", async function(req, res) {
 		result = null
 	}
 
-	await res.append("Access-Control-Allow-Origin", "*");
 	await res.json(result);
 	return res;
 });
@@ -53,6 +56,8 @@ app.get("/api", async function(req, res) {
 app.post("/api", async function(req, res) {
 	const queryString = req.url.split("?")[1];
 	const queries = Object.fromEntries(new URLSearchParams(queryString));
+
+	console.log("Querying", queries);
 	
 	const data = req.body;
 
@@ -83,14 +88,12 @@ app.post("/api", async function(req, res) {
 	
 	if(result) {
 		await res.status(200);
-		await res.append("Access-Control-Allow-Origin", "*");
 		await res.json({});
 		return res;
 	}
 
 	console.log("Could not submit data.", queries);
 	await res.status(500);
-	await res.append("Access-Control-Allow-Origin", "*");
 	await res.json(result);
 	return res;
 });

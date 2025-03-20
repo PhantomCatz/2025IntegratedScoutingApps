@@ -1277,126 +1277,128 @@ function MatchScout(props: any) {
         </Form.Item>
 
         <Flex justify='in-between'>
-            <Flex vertical align='flex-start'>
-              <h2 className="fieldTitle">Pushing</h2>
-              <h2 className="fieldTitle">(1 - 4)</h2>
-              <Form.Item<FieldType> name="overall_pushing" rules={[{ required: true, message: 'Please input the pushing rating!' }]}>
-                <InputNumber
-                  type='number'
-                  pattern="\d*"
-                  min={0} max={4}
-                  onWheel={(e) => (e.target as HTMLElement).blur()}
-                  className="input"
-                  addonAfter={<Button onMouseDown={() => {
-                    if (Number(formValue.overall_pushing) < 4) {
-                      setFormValue({ ...formValue, overall_pushing: formValue.overall_pushing + 1 });
-                    }
-                  }} className='incrementbutton'>+</Button>}
-                  addonBefore={<Button onMouseDown={() => {
-                    if (Number(formValue.overall_pushing) > 0) {
-                      setFormValue({ ...formValue, overall_pushing: formValue.overall_pushing - 1 });
-                    }
-                  }} className='decrementbutton'>-</Button>}
-                />
-              </Form.Item>
-            </Flex>
-            <Flex vertical align='flex-start'>
-              <h2 className="fieldTitle">Counter Defense</h2>
-              <h2 className="fieldTitle">(1 - 4)</h2>
-              <Form.Item<FieldType> name="overall_counter_defense" rules={[{ required: true, message: 'Please input the counter-defense rating!' }]}>
-                <InputNumber
-                  type='number'
-                  pattern="\d*"
-                  min={0} max={4}
-                  onWheel={(e) => (e.target as HTMLElement).blur()}
-                  className="input"
-                  addonAfter={<Button onMouseDown={() => {
-                    if (Number(formValue.overall_counter_defense) < 4) {
-                      setFormValue({ ...formValue, overall_counter_defense: formValue.overall_counter_defense + 1 });
-                    }
-                  }} className='incrementbutton'>+</Button>}
-                  addonBefore={<Button onMouseDown={() => {
-                    if (Number(formValue.overall_counter_defense) > 0) {
-                      setFormValue({ ...formValue, overall_counter_defense: formValue.overall_counter_defense - 1 });
-                    }
-                  }} className='decrementbutton'>-</Button>}
-                />
-              </Form.Item>
-            </Flex>
+          <Flex vertical align='flex-start'>
+            <h2 className="fieldTitle">Pushing</h2>
+            <h2 className="fieldTitle">(1 - 4)</h2>
+            <Form.Item<FieldType> name="overall_pushing" rules={[{ required: true, message: 'Please input the pushing rating!' }]}>
+              <InputNumber
+                type='number'
+                pattern="\d*"
+                min={0} max={4}
+                onWheel={(e) => (e.target as HTMLElement).blur()}
+                className="input"
+                addonAfter={<Button onMouseDown={() => {
+                  if (Number(formValue.overall_pushing) < 4) {
+                    setFormValue({ ...formValue, overall_pushing: formValue.overall_pushing + 1 });
+                  }
+                }} className='incrementbutton'>+</Button>}
+                addonBefore={<Button onMouseDown={() => {
+                  if (Number(formValue.overall_pushing) > 0) {
+                    setFormValue({ ...formValue, overall_pushing: formValue.overall_pushing - 1 });
+                  }
+                }} className='decrementbutton'>-</Button>}
+              />
+            </Form.Item>
           </Flex>
-          <Flex justify='in-between'>
-            <Flex vertical align='flex-start'>
-              <h2 className="fieldTitle">Driver Skill</h2>
-              <h2 className="fieldTitle">(1 - 4)</h2>
-              <Form.Item<FieldType> name="overall_driver_skill" rules={[{ required: true, message: 'Please input the driver skill rating!' }]}>
-                <InputNumber
-                  type='number'
-                  pattern="\d*"
-                  min={0} max={4}
-                  onWheel={(e) => (e.target as HTMLElement).blur()}
-                  className="input"
-                  addonAfter={<Button onMouseDown={() => {
-                    if (Number(formValue.overall_driver_skill) < 4) {
-                      setFormValue({ ...formValue, overall_driver_skill: formValue.overall_driver_skill + 1 });
-                    }
-                  }} className='incrementbutton'>+</Button>}
-                  addonBefore={<Button onMouseDown={() => {
-                    if (Number(formValue.overall_driver_skill) > 0) {
-                      setFormValue({ ...formValue, overall_driver_skill: formValue.overall_driver_skill - 1 });
-                    }
-                  }} className='decrementbutton'>-</Button>}
-                />
-              </Form.Item>
-            </Flex>
-            <Flex vertical align='flex-start'>
-            <h2 className="fieldTitle">Num Penalties</h2>
-            <h2 className="fieldTitle">&nbsp;</h2>
-              <Form.Item<FieldType> name="overall_num_penalties" rules={[{ required: true, message: 'Enter # of incurred penalties' }]}>
-                <InputNumber
-                  type='number'
-                  pattern="\d*"
-                  min={0}
-                  onWheel={(e) => (e.target as HTMLElement).blur()}
-                  className="input"
-                  addonAfter={<Button onMouseDown={() => {
-                    setFormValue({ ...formValue, overall_num_penalties: formValue.overall_num_penalties + 1 });
-                    setPenaltiesIsVisible(true);
-                  }} className='incrementbutton'>+</Button>}
-                  addonBefore={<Button onMouseDown={() => {
-                    if (Number(formValue.overall_num_penalties) > 1) {
-                      setFormValue({ ...formValue, overall_num_penalties: formValue.overall_num_penalties - 1 });
-                    }
-                    else if (Number(formValue.overall_num_penalties) <= 1 && Number(formValue.overall_num_penalties) > 0) {
-                      setFormValue({ ...formValue, overall_num_penalties: formValue.overall_num_penalties - 1 });
-                      setPenaltiesIsVisible(false);
-                    }
-                    else {
-                      setPenaltiesIsVisible(false);
-                    }
-                  }} className='decrementbutton'>-</Button>}
-                />
-              </Form.Item>
-            </Flex>
+          <Flex vertical align='flex-start'>
+            <h2 className="fieldTitle">Counter Defense</h2>
+            <h2 className="fieldTitle">(1 - 4)</h2>
+            <Form.Item<FieldType> name="overall_counter_defense" rules={[{ required: true, message: 'Please input the counter-defense rating!' }]}>
+              <InputNumber
+                type='number'
+                pattern="\d*"
+                min={0} max={4}
+                onWheel={(e) => (e.target as HTMLElement).blur()}
+                className="input"
+                addonAfter={<Button onMouseDown={() => {
+                  if (Number(formValue.overall_counter_defense) < 4) {
+                    setFormValue({ ...formValue, overall_counter_defense: formValue.overall_counter_defense + 1 });
+                  }
+                }} className='incrementbutton'>+</Button>}
+                addonBefore={<Button onMouseDown={() => {
+                  if (Number(formValue.overall_counter_defense) > 0) {
+                    setFormValue({ ...formValue, overall_counter_defense: formValue.overall_counter_defense - 1 });
+                  }
+                }} className='decrementbutton'>-</Button>}
+              />
+            </Form.Item>
           </Flex>
+        </Flex>
         <Flex justify='in-between'>
-          <Flex vertical align='flex-start' style={{ display: penaltiesIsVisible ? 'inherit' : 'none'}}>
+          <Flex vertical align='flex-start'>
+            <h2 className="fieldTitle">Driver Skill</h2>
+            <h2 className="fieldTitle">(1 - 4)</h2>
+            <Form.Item<FieldType> name="overall_driver_skill" rules={[{ required: true, message: 'Please input the driver skill rating!' }]}>
+              <InputNumber
+                type='number'
+                pattern="\d*"
+                min={0} max={4}
+                onWheel={(e) => (e.target as HTMLElement).blur()}
+                className="input"
+                addonAfter={<Button onMouseDown={() => {
+                  if (Number(formValue.overall_driver_skill) < 4) {
+                    setFormValue({ ...formValue, overall_driver_skill: formValue.overall_driver_skill + 1 });
+                  }
+                }} className='incrementbutton'>+</Button>}
+                addonBefore={<Button onMouseDown={() => {
+                  if (Number(formValue.overall_driver_skill) > 0) {
+                    setFormValue({ ...formValue, overall_driver_skill: formValue.overall_driver_skill - 1 });
+                  }
+                }} className='decrementbutton'>-</Button>}
+              />
+            </Form.Item>
+          </Flex>
+          <Flex vertical align='flex-start'>
+          <h2 className="fieldTitle">Num Penalties</h2>
+          <h2 className="fieldTitle">&nbsp;</h2>
+            <Form.Item<FieldType> name="overall_num_penalties" rules={[{ required: true, message: 'Enter # of incurred penalties' }]}>
+              <InputNumber
+                type='number'
+                pattern="\d*"
+                min={0}
+                onWheel={(e) => (e.target as HTMLElement).blur()}
+                className="input"
+                addonAfter={<Button onMouseDown={() => {
+                  setFormValue({ ...formValue, overall_num_penalties: formValue.overall_num_penalties + 1 });
+                  setPenaltiesIsVisible(true);
+                }} className='incrementbutton'>+</Button>}
+                addonBefore={<Button onMouseDown={() => {
+                  if (Number(formValue.overall_num_penalties) > 1) {
+                    setFormValue({ ...formValue, overall_num_penalties: formValue.overall_num_penalties - 1 });
+                  }
+                  else if (Number(formValue.overall_num_penalties) <= 1 && Number(formValue.overall_num_penalties) > 0) {
+                    setFormValue({ ...formValue, overall_num_penalties: formValue.overall_num_penalties - 1 });
+                    setPenaltiesIsVisible(false);
+                  }
+                  else {
+                    setPenaltiesIsVisible(false);
+                  }
+                }} className='decrementbutton'>-</Button>}
+              />
+            </Form.Item>
+          </Flex>
+        </Flex>
+        <Flex justify='in-between' style={{ display: penaltiesIsVisible ? 'inherit' : 'none'}}>
+          <Flex vertical align='flex-start'>
             <h2>Match</h2>
             <Form.Item<FieldType> name="matchpen" valuePropName="checked" >
               <Checkbox className='input_checkbox' />
             </Form.Item>
           </Flex>
-          <Flex vertical align='flex-start' style={{ display: penaltiesIsVisible ? 'inherit' : 'none'}}>
+          <Flex vertical align='flex-start'>
             <h2>Tech</h2>
             <Form.Item<FieldType> name="techpen" valuePropName="checked">
               <Checkbox className='input_checkbox' />
             </Form.Item>
           </Flex>
         </Flex>
+        <div style={{ display: penaltiesIsVisible ? 'inherit' : 'none'}}>
+          <h2>Penalties Incurred</h2>
+          <Form.Item<FieldType> name="overall_penalties_incurred" rules={[{ required: penaltiesIsVisible, message: 'Please enter the penalty(s)' }]}>
+            <TextArea style={{ verticalAlign: 'center' }} className='textbox_input' />
+          </Form.Item>
+        </div>
         
-        <h2>Penalties Incurred</h2>
-        <Form.Item<FieldType> name="overall_penalties_incurred" rules={[{ required: penaltiesIsVisible, message: 'Please enter the penalty(s)' }]}>
-          <TextArea style={{ verticalAlign: 'center' }} className='textbox_input' />
-        </Form.Item>
         <h2>Comments</h2>
         <Form.Item<FieldType> name="overall_comments" rules={[{required : true, message : "Please enter some comments!"}]}>
           <TextArea style={{ verticalAlign: 'center' }} className='textbox_input' />

@@ -39,9 +39,24 @@ window.alert = (function() {
   }
 })();
 //window.alert = () => {};
+/*
+globalThis.fetch = (() => {
+  const originalFetch = globalThis.fetch;
+
+  return async function(link : any, args : any) {
+      const rest = args || {};
+      const options = {
+        mode: "no-cors",
+        ...rest
+      };
+
+      return originalFetch(link, options);
+    }
+})();
+//*/
 
 function App() {
-	return (
+  return (
     <HashRouter>
       <Routes>
         <Route path="/" element={<HomePage title="2637 Strategy App" />} />

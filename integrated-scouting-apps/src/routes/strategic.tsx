@@ -248,6 +248,7 @@ function Strategic(props: any, text:any) {
         <h2>Match Level</h2>
         <Form.Item<FieldType> name="match_level" rules={[{ required: true, message: 'Please input the match level!' }]}>
           <Select options={rounds} className="input" onChange={() => { calculateMatchLevel(); updateTeamNumber(); }} />
+                  
         </Form.Item>
         <div className={"playoff-alliances"} style={{ display: inPlayoffs ? 'inherit' : 'none' }}>
           
@@ -272,7 +273,8 @@ function Strategic(props: any, text:any) {
         </div>
         <h2>Match #</h2>
         <Form.Item<FieldType> name="match_number" rules={[{ required: true, message: 'Please input the match number!',  }]}>
-          <InputNumber min={1} className = "input" onChange={() => { updateTeamNumber(); }} type='number' /> 
+          <InputNumber min={1} className="input" onWheel={(e) => (e.target as HTMLElement).blur()} onChange={() => { updateTeamNumber(); }} type='number' /> 
+                  
         </Form.Item>
         <h2 style={{ display: roundIsVisible ? 'inherit' : 'none' }}>Round #</h2>
         <Form.Item<FieldType> name="round_number" rules={[{ required: roundIsVisible ? true : false, message: 'Please input the round number!' }]} style={{ display: roundIsVisible ? 'inherit' : 'none' }}>
@@ -323,7 +325,7 @@ function Strategic(props: any, text:any) {
     
       for (const match of teamData) {
         dataSource.push({
-          "key": `${match.match_event}|${match.match_level}|${match.match_number}|${match.scouter_initials}`,
+          "key": `${match.id}`,
           "scouter_initials" : `Scouter Initials: ${match.scouter_initials}`,
           "match_number" : match.match_number,
           "comment" : match.comments,
