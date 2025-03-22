@@ -70,6 +70,7 @@ const formDefaultValues = {
   "overall_num_penalties": 0,
   "overall_penalties_incurred": null,
   "overall_comments": null,
+  "overall_defense_quality" : 0,
   //"no_show": false,
   // Playoffs
   "red_alliance": "",
@@ -103,6 +104,117 @@ function MatchScout(props: any) {
   const match_event = process.env.REACT_APP_EVENTNAME;
 
   useEffect(() => {
+    if ((document.getElementById("auton_coral_scored_l4") as HTMLInputElement) !== null) {
+      (document.getElementById("auton_coral_scored_l4") as HTMLInputElement).value = formValue.auton_coral_scored_l4.toString();
+      form.setFieldValue('auton_coral_scored_l4', formValue.auton_coral_scored_l4);
+    }
+    if ((document.getElementById("auton_coral_scored_l3") as HTMLInputElement) !== null) {
+      (document.getElementById("auton_coral_scored_l3") as HTMLInputElement).value = formValue.auton_coral_scored_l3.toString();
+      form.setFieldValue('auton_coral_scored_l3', formValue.auton_coral_scored_l3);
+    }
+    if ((document.getElementById("auton_coral_scored_l2") as HTMLInputElement) !== null) {
+      (document.getElementById("auton_coral_scored_l2") as HTMLInputElement).value = formValue.auton_coral_scored_l2.toString();
+      form.setFieldValue('auton_coral_scored_l2', formValue.auton_coral_scored_l2);
+    }
+    if ((document.getElementById("auton_coral_scored_l1") as HTMLInputElement) !== null) {
+      (document.getElementById("auton_coral_scored_l1") as HTMLInputElement).value = formValue.auton_coral_scored_l1.toString();
+      form.setFieldValue('auton_coral_scored_l1', formValue.auton_coral_scored_l1);
+    }
+    if ((document.getElementById("auton_coral_missed_l4") as HTMLInputElement) !== null) {
+      (document.getElementById("auton_coral_missed_l4") as HTMLInputElement).value = formValue.auton_coral_missed_l4.toString();
+      form.setFieldValue('auton_coral_missed_l4', formValue.auton_coral_missed_l4);
+    }
+    if ((document.getElementById("auton_coral_missed_l3") as HTMLInputElement) !== null) {
+      (document.getElementById("auton_coral_missed_l3") as HTMLInputElement).value = formValue.auton_coral_missed_l3.toString();
+      form.setFieldValue('auton_coral_missed_l3', formValue.auton_coral_missed_l3);
+    }
+    if ((document.getElementById("auton_coral_missed_l2") as HTMLInputElement) !== null) {
+      (document.getElementById("auton_coral_missed_l2") as HTMLInputElement).value = formValue.auton_coral_missed_l2.toString();
+      form.setFieldValue('auton_coral_missed_l2', formValue.auton_coral_missed_l2);
+    }
+    if ((document.getElementById("auton_coral_missed_l1") as HTMLInputElement) !== null) {
+      (document.getElementById("auton_coral_missed_l1") as HTMLInputElement).value = formValue.auton_coral_missed_l1.toString();
+      form.setFieldValue('auton_coral_missed_l1', formValue.auton_coral_missed_l1);
+    }
+    if ((document.getElementById("auton_algae_scored_net") as HTMLInputElement) !== null) {
+      (document.getElementById("auton_algae_scored_net") as HTMLInputElement).value = formValue.auton_algae_scored_net.toString();
+      form.setFieldValue('auton_algae_scored_net', formValue.auton_algae_scored_net);
+    }
+    if ((document.getElementById("auton_algae_missed_net") as HTMLInputElement) !== null) {
+      (document.getElementById("auton_algae_missed_net") as HTMLInputElement).value = formValue.auton_algae_missed_net.toString();
+      form.setFieldValue('auton_algae_missed_net', formValue.auton_algae_missed_net);
+    }
+    if ((document.getElementById("auton_algae_scored_processor") as HTMLInputElement) !== null) {
+      (document.getElementById("auton_algae_scored_processor") as HTMLInputElement).value = formValue.auton_algae_scored_processor.toString();
+      form.setFieldValue('auton_algae_scored_processor', formValue.auton_algae_scored_processor);
+    }
+    if ((document.getElementById("teleop_coral_scored_l4") as HTMLInputElement) !== null) {
+      (document.getElementById("teleop_coral_scored_l4") as HTMLInputElement).value = formValue.teleop_coral_scored_l4.toString();
+      form.setFieldValue('teleop_coral_scored_l4', formValue.teleop_coral_scored_l4);
+    }
+    if ((document.getElementById("teleop_coral_scored_l3") as HTMLInputElement) !== null) {
+      (document.getElementById("teleop_coral_scored_l3") as HTMLInputElement).value = formValue.teleop_coral_scored_l3.toString();
+      form.setFieldValue('teleop_coral_scored_l3', formValue.teleop_coral_scored_l3);
+    }
+    if ((document.getElementById("teleop_coral_scored_l2") as HTMLInputElement) !== null) {
+      (document.getElementById("teleop_coral_scored_l2") as HTMLInputElement).value = formValue.teleop_coral_scored_l2.toString();
+      form.setFieldValue('teleop_coral_scored_l2', formValue.teleop_coral_scored_l2);
+    }
+    if ((document.getElementById("teleop_coral_scored_l1") as HTMLInputElement) !== null) {
+      (document.getElementById("teleop_coral_scored_l1") as HTMLInputElement).value = formValue.teleop_coral_scored_l1.toString();
+      form.setFieldValue('teleop_coral_scored_l1', formValue.teleop_coral_scored_l1);
+    }
+    if ((document.getElementById("teleop_coral_missed_l4") as HTMLInputElement) !== null) {
+      (document.getElementById("teleop_coral_missed_l4") as HTMLInputElement).value = formValue.teleop_coral_missed_l4.toString();
+      form.setFieldValue('teleop_coral_missed_l4', formValue.teleop_coral_missed_l4);
+    }
+    if ((document.getElementById("teleop_coral_missed_l3") as HTMLInputElement) !== null) {
+      (document.getElementById("teleop_coral_missed_l3") as HTMLInputElement).value = formValue.teleop_coral_missed_l3.toString();
+      form.setFieldValue('teleop_coral_missed_l3', formValue.teleop_coral_missed_l3);
+    }
+    if ((document.getElementById("teleop_coral_missed_l2") as HTMLInputElement) !== null) {
+      (document.getElementById("teleop_coral_missed_l2") as HTMLInputElement).value = formValue.teleop_coral_missed_l2.toString();
+      form.setFieldValue('teleop_coral_missed_l2', formValue.teleop_coral_missed_l2);
+    }
+    if ((document.getElementById("teleop_coral_missed_l1") as HTMLInputElement) !== null) {
+      (document.getElementById("teleop_coral_missed_l1") as HTMLInputElement).value = formValue.teleop_coral_missed_l1.toString();
+      form.setFieldValue('teleop_coral_missed_l1', formValue.teleop_coral_missed_l1);
+    }
+    if ((document.getElementById("teleop_algae_scored_net") as HTMLInputElement) !== null) {
+      (document.getElementById("teleop_algae_scored_net") as HTMLInputElement).value = formValue.teleop_algae_scored_net.toString();
+      form.setFieldValue('teleop_algae_scored_net', formValue.teleop_algae_scored_net);
+    }
+    if ((document.getElementById("teleop_algae_missed_net") as HTMLInputElement) !== null) {
+      (document.getElementById("teleop_algae_missed_net") as HTMLInputElement).value = formValue.teleop_algae_missed_net.toString();
+      form.setFieldValue('teleop_algae_missed_net', formValue.teleop_algae_missed_net);
+    }
+    if ((document.getElementById("teleop_algae_scored_processor") as HTMLInputElement) !== null) {
+      (document.getElementById("teleop_algae_scored_processor") as HTMLInputElement).value = formValue.teleop_algae_scored_processor.toString();
+      form.setFieldValue('teleop_algae_scored_processor', formValue.teleop_algae_scored_processor);
+    }
+    if ((document.getElementById("overall_num_penalties") as HTMLElement) !== null) {
+      (document.getElementById("overall_num_penalties") as HTMLInputElement).value = formValue.overall_num_penalties.toString();
+      form.setFieldValue('overall_num_penalties', formValue.overall_num_penalties);
+    }
+    if ((document.getElementById("overall_pushing") as HTMLElement) !== null) {
+      (document.getElementById("overall_pushing") as HTMLInputElement).value = formValue.overall_pushing.toString();
+      form.setFieldValue('overall_pushing', formValue.overall_pushing);
+    }
+    if ((document.getElementById("overall_defense_quality") as HTMLElement) !== null) {
+      (document.getElementById("overall_defense_quality") as HTMLInputElement).value = formValue.overall_defense_quality.toString();
+      form.setFieldValue('overall_defense_quality', formValue.overall_defense_quality);
+    }
+    
+    if ((document.getElementById("overall_counter_defense") as HTMLElement) !== null) {
+      (document.getElementById("overall_counter_defense") as HTMLInputElement).value = formValue.overall_counter_defense.toString();
+      form.setFieldValue('overall_counter_defense', formValue.overall_counter_defense);
+    }
+    if ((document.getElementById("overall_driver_skill") as HTMLElement) !== null) {
+      (document.getElementById("overall_driver_skill") as HTMLInputElement).value = formValue.overall_driver_skill.toString();
+      form.setFieldValue('overall_driver_skill', formValue.overall_driver_skill);
+    }
+    return () => {};
+
     document.title = props.title;
   }, [props.title]);
   useEffect(() => {
@@ -197,6 +309,7 @@ function MatchScout(props: any) {
       "overall_defended": event.overall_defended.sort().join(","),
       "overall_defended_by": event.overall_defended_by.sort().join(","),
       "overall_pushing": event.overall_pushing,
+      "overall_defense_quality" : event.overall_defense_quality,
       "overall_counter_defense": event.overall_counter_defense,
       "overall_driver_skill": event.overall_driver_skill,
       "overall_num_penalties": event.overall_num_penalties,
@@ -1171,17 +1284,17 @@ function MatchScout(props: any) {
       endgame_climb_time: number,
     };
     const endgame_coral_intake_capability = [
-      { label: "Ground", value: "Ground" },
       { label: "Station", value: "Station" },
+      { label: "Ground", value: "Ground" },
       { label: "Both", value: "Both" },
       { label: "Neither", value: "Neither" },
     ];
-    const endgame_coral_station = [
-      { label: "Top Station", value: "Top Station" },
-      { label: "Bottom Station", value: "Bottom Station" },
-      { label: "Both", value: "Both" },
-      { label: "Neither", value: "Neither"}
-    ];
+    // const endgame_coral_station = [
+    //   { label: "Top Station", value: "Top Station" },
+    //   { label: "Bottom Station", value: "Bottom Station" },
+    //   { label: "Both", value: "Both" },
+    //   { label: "Neither", value: "Neither"}
+    // ];
     const endgame_algae_intake_capability = [
       { label: "Reef Zone", value: "Reef Zone" },
       { label: "Ground", value: "Ground" },
@@ -1201,10 +1314,11 @@ function MatchScout(props: any) {
           <Select options={endgame_coral_intake_capability} className="input" />
         </Form.Item>
 
-        <h2>Coral Station:</h2>
+        {/* <h2>Coral Station:</h2>
         <Form.Item name="endgame_coral_station" rules={[{ required: true, message: 'Enter Coral Station' }]}>
-          <Select options={endgame_coral_station} className="input" />
-        </Form.Item>
+        <Select options={endgame_coral_station} className="input" />
+        </Form.Item> */}
+
 
         <h2>Algae Intake Capability:</h2>
         <Form.Item name="endgame_algae_intake_capability" rules={[{ required: true, message: 'Enter Algae Intake Capability' }]}>
@@ -1241,6 +1355,7 @@ function MatchScout(props: any) {
       overall_pushing: number;
       overall_driver_skill: number;
       overall_counter_defense: number;
+      overall_defense_quality: number;
     };
     return (
       <div className='matchbody'>
@@ -1270,6 +1385,29 @@ function MatchScout(props: any) {
             rules={[{required: defendedIsVisible, message : "Please select the teams it defended!"}]}>
           <Select mode='multiple' options={opposingTeamNum.map((team) => ({ label: team, value: team }))} className="input" showSearch={false} style={{ display: defendedIsVisible ? 'inherit' : 'none' }} />
         </Form.Item>
+
+        <h2 style={{ display: defendedIsVisible ? 'inherit' : 'none' }}>Defense Quality (1 - 4):</h2>
+        <Form.Item<FieldType> name="overall_defense_quality"style={{ display: defendedIsVisible ? 'inherit' : 'none' }}
+            rules={[{required: defendedIsVisible, message : "Please input defene quality!"}]}>
+                <InputNumber
+                  type='number'
+                  pattern="\d*"
+                  min={0} max={4}
+                  onWheel={(e) => (e.target as HTMLElement).blur()}
+                  className="input"
+                  addonAfter={<Button onMouseDown={() => {
+                    if (Number(formValue.overall_defense_quality) < 4) {
+                      setFormValue({ ...formValue, overall_defense_quality: formValue.overall_defense_quality + 1 });
+                    }
+                  }} className='incrementbutton'>+</Button>}
+                  addonBefore={<Button onMouseDown={() => {
+                    if (Number(formValue.overall_defense_quality) > 0) {
+                      setFormValue({ ...formValue, overall_defense_quality: formValue.overall_defense_quality - 1 });
+                    }
+                  }} className='decrementbutton'>-</Button>}
+                />
+              </Form.Item>
+
         <h2 style={{ display: wasDefendedIsVisible ? 'inherit' : 'none' }}>Defended By:</h2>
         <Form.Item<FieldType> name="overall_defended_by" valuePropName="checked" style={{ display: wasDefendedIsVisible ? 'inherit' : 'none' }}
               rules={[{required: wasDefendedIsVisible, message : "Please select the teams it was defended by!"}]}>
