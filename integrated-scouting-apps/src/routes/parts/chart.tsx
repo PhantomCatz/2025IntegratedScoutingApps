@@ -13,7 +13,8 @@ const chartOptions : any = {
     },
     tooltip: {
       titleFont: {
-        size: 18 // Title font size
+        size: 18, // Title font size
+        color: 'white' 
       },
       bodyFont: {
         size: 16 // Data font size

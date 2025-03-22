@@ -30,7 +30,7 @@ async function PitTabs(team_number: number, inCallback? : boolean) {
   const response = await(await fetch(fetchLink)).json();
 
   if(!response.length) {
-    //window.alert("This team has not been scouted.");
+    window.alert(`Team ${team_number} has not been pit scouted.`);
     return null;
   }
 
@@ -55,7 +55,7 @@ async function PitTabs(team_number: number, inCallback? : boolean) {
     }
 
     matches.push({
-      key: `${pitInfo.scouter_initials.toUpperCase()}|${pitInfo.team_number}|${index}`,
+      key: `${pitInfo.id}`,
       label: `${pitInfo.scouter_initials.toUpperCase()} : ${pitInfo.team_number}`,
       children: (
         <>

@@ -3,18 +3,18 @@
     min-width: 100%;
     height: 250px !important;
     min-height: 250px !important;
-    border: 4px solid white !important;
+    border: 4px solid var(--font-color) !important;
     border-radius: 25px;
     background-color: #32A7DC;
     font-size: 500% !important;
     font-family: Figtree !important;
     font-weight: bold;
-    color: white !important;
+    color: var(--font-color) !important;
     text-align: center !important;
 	background: transparent !important;
 }
 .ant-input-number .ant-input-number-input::placeholder {
-	color: white !important;
+	color: var(--font-color) !important;
 	font-weight: bold !important;
 	opacity: 1.0 !important;
 }
