@@ -3,7 +3,7 @@ import '../public/stylesheets/picklist.css';
 import { useEffect, useState } from 'react';
 import Column from 'antd/es/table/Column';
 import { Table } from 'antd';
-import Header from "./header";
+import Header from "./parts/header";
 
 function Picklist(props: any) {
   const [loading, setLoading] = useState(false);

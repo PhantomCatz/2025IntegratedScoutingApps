@@ -4,9 +4,9 @@ import { useEffect, useState} from 'react';
 import { Tabs, Input, Form, Select, InputNumber, Button, Flex, Table } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import { saveAs } from 'file-saver';
-import Header from "./header";
-import QrCode from "./qrCodeViewer";
-import {getTeamNumber, isMatchVisible} from './utils/tbaRequest';
+import Header from "./parts/header";
+import QrCode from "./parts/qrCodeViewer";
+import { isRoundNumberVisible, isInPlayoffs, getTeamsPlaying, getIndexNumber } from './utils/tbaRequest';
 
 const formDefaultValues = {
   "match_event": null,
@@ -16,22 +16,25 @@ const formDefaultValues = {
   "match_number": 0,
   "robot_position": null,
   "comments": null,
+  "red_alliance": [],
+  "blue_alliance": [],
 }
 
 function Strategic(props: any, text:any) {
   const [form] = Form.useForm();
   const [tabNum, setTabNum] = useState("1");
   const [team_number, setTeamNum] = useState(0);
+  const [teamsList, setTeamsList] = useState<string[]>([]);
   const [isLoading, setLoading] = useState(false);
   const [roundIsVisible, setRoundIsVisible] = useState(false);
   const [qrValue, setQrValue] = useState<any>();
   const [shouldRetrySubmit, setShouldRetrySubmit] = useState(false);
   const [lastFormValue, setLastFormValue] = useState<any>(null);
   const [teamData, setTeamData] = useState<any>(null);
+  const [inPlayoffs, setInPlayoffs] = useState(false);
+  const [robot_appeared, setRobot_appeared] = useState(true);
 
   useEffect(() => { document.title = props.title; return () => { } }, [props.title]);
-  // useEffect(() => { getComments(team_number); return () => {}}, [team_number]);
-  // useEffect(() => { calculateMatchLevel(); return () => {}}, [form, calculateMatchLevel()]);
   useEffect(() => {
     (async function() {
     let fetchLink = process.env.REACT_APP_SERVER_ADDRESS;
@@ -55,18 +58,17 @@ function Strategic(props: any, text:any) {
         return value;
       })
       .then((data) => {
-        console.log("data=", data);
         
-        if(!Object.keys(data).length) {
+        if(!data?.length) {
+          console.log(`No data for team ${team_number}`);
           setTeamData(null);
-          throw new Error("No data");
+          return;
         }
-
-        console.log(data, Object.keys(data).length);
 
         setTeamData(data);
       })
       .catch((err) => {
+        console.log("team_number=", team_number);
         console.log("Error fetching data. Is server on?", err);
       });
     })();
@@ -80,13 +82,22 @@ function Strategic(props: any, text:any) {
       const matchNumber = form.getFieldValue('match_number');
       const robotPosition = form.getFieldValue('robot_position');
       const roundNumber = form.getFieldValue('round_number');
+      const allianceNumber1 = form.getFieldValue('red_alliance');
+      const allianceNumber2 = form.getFieldValue('blue_alliance');
 
-      const teamNumber = await getTeamNumber(roundIsVisible, matchLevel, matchNumber, roundNumber, robotPosition);
+      const teams = await getTeamsPlaying(matchLevel, matchNumber, roundNumber, allianceNumber1, allianceNumber2);
+      setTeamsList(teams);
 
-      setTeamNum(teamNumber);
-    }
-    catch (err) {
-      console.log(err)
+      if(robotPosition) {
+        const index = getIndexNumber(robotPosition);
+        const teamNumber = Number(teams[index]);
+        setTeamNum(teamNumber);
+      } else {
+        setTeamNum(0);
+      }
+
+    } catch (err) {
+      console.error("Failed to request TBA data when updating team number", err);
     }
   }
   async function setNewStrategicScout(event: any) {
@@ -98,13 +109,56 @@ function Strategic(props: any, text:any) {
       "match_number": event.match_number,
       "robot_position": event.robot_position,
       "comments": event.comments,
+      "robot_appeared": robot_appeared,
     };
+    const status = await tryFetch(body);
+
+    if(status) {
+      window.alert("Successfully submitted data.");
+      return;
+    }
+
+    window.alert("Could not submit data. Please show QR to Webdev.");
     
     setQrValue(body);
   }
+  async function tryFetch(body : any) {
+    let fetchLink = process.env.REACT_APP_SERVER_ADDRESS;
+
+    if(!fetchLink) {
+      console.error("Could not get fetch link; Check .env");
+      return;
+    }
+
+    fetchLink += "reqType=submitStrategicData";
+
+    const submitBody = {
+      ...body,
+    };
+    
+    try {
+      const res = await fetch(fetchLink, {
+        method: "POST",
+        body: JSON.stringify(submitBody),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      return !!res.ok;
+    } catch (err) {
+      return false;
+    }
+  }
   function calculateMatchLevel() {
-    const isVisible = isMatchVisible(form.getFieldValue('match_level'));
+    const matchLevel = form.getFieldValue('match_level');
+    const isVisible = isRoundNumberVisible(matchLevel);
+
     setRoundIsVisible(isVisible);
+
+    const inPlayoffs = isInPlayoffs(matchLevel);
+
+    setInPlayoffs(inPlayoffs);
   }
   async function trySubmit(event : any) {
     await setNewStrategicScout(event);
@@ -124,8 +178,8 @@ function Strategic(props: any, text:any) {
     await updateTeamNumber();
   }
   async function runFormFinish(event? : any) {
-
     setLoading(true);
+
     if(event !== undefined) {
       setLastFormValue(event);
     } else {
@@ -150,6 +204,8 @@ function Strategic(props: any, text:any) {
       match_number: number;
       round_number: number;
       robot_position: string;
+      red_alliance: string;
+      blue_alliance: string;
     };
     const rounds = [
       { label: "Qualifications", value: "Qualifications" },
@@ -157,14 +213,31 @@ function Strategic(props: any, text:any) {
       { label: "Semi-Finals", value: "Semi-Finals" },
       { label: "Finals", value: "Finals" },
     ];
+    function getNum(n : number) {
+      if(!teamsList) {
+        return "";
+      }
+      return teamsList[n] ? `: ${teamsList[n]}` : "";
+    }
     const robot_position = [
-      { label: "R1", value: "R1" },
-      { label: "R2", value: "R2" },
-      { label: "R3", value: 'R3' },
-      { label: "B1", value: "B1" },
-      { label: "B2", value: "B2" },
-      { label: "B3", value: 'B3' },
+      { label: `R1${getNum(0)}`, value: "R1" },
+      { label: `R2${getNum(1)}`, value: "R2" },
+      { label: `R3${getNum(2)}`, value: 'R3' },
+      { label: `B1${getNum(3)}`, value: "B1" },
+      { label: `B2${getNum(4)}`, value: "B2" },
+      { label: `B3${getNum(5)}`, value: 'B3' },
     ];
+    const playoff_alliances = [
+      { label: "Alliance 1", value: "Alliance 1" },
+      { label: "Alliance 2", value: "Alliance 2" },
+      { label: "Alliance 3", value: "Alliance 3" },
+      { label: "Alliance 4", value: "Alliance 4" },
+      { label: "Alliance 5", value: "Alliance 5" },
+      { label: "Alliance 6", value: "Alliance 6" },
+      { label: "Alliance 7", value: "Alliance 7" },
+      { label: "Alliance 8", value: "Alliance 8" },
+    ];
+
     return (
       <div>
         <h2>Team: {team_number}</h2>
@@ -176,6 +249,27 @@ function Strategic(props: any, text:any) {
         <Form.Item<FieldType> name="match_level" rules={[{ required: true, message: 'Please input the match level!' }]}>
           <Select options={rounds} className="input" onChange={() => { calculateMatchLevel(); updateTeamNumber(); }} />
         </Form.Item>
+        <div className={"playoff-alliances"} style={{ display: inPlayoffs ? 'inherit' : 'none' }}>
+          
+          <h2>Red Alliance</h2>
+          <Form.Item<FieldType> name="red_alliance" rules={[{ required: inPlayoffs ? true : false, message: 'Enter the red alliance' }]}>
+            <Select options={playoff_alliances}
+              onChange={() => { calculateMatchLevel(); updateTeamNumber(); }}
+              className="input"
+              dropdownMatchSelectWidth={false}
+              dropdownStyle={{ maxHeight: 'none' }}
+            />
+          </Form.Item>
+          <h2>Blue Alliance</h2>
+          <Form.Item<FieldType> name="blue_alliance" rules={[{ required: inPlayoffs ? true : false, message: 'Enter the blue alliance' }]}>
+            <Select options={playoff_alliances}
+              onChange={() => { calculateMatchLevel(); updateTeamNumber(); }}
+              className="input"
+              dropdownMatchSelectWidth={false}
+              dropdownStyle={{ maxHeight: 'none' }}
+            />
+          </Form.Item>
+        </div>
         <h2>Match #</h2>
         <Form.Item<FieldType> name="match_number" rules={[{ required: true, message: 'Please input the match number!',  }]}>
           <InputNumber min={1} className = "input" onChange={() => { updateTeamNumber(); }} type='number' /> 
@@ -186,7 +280,16 @@ function Strategic(props: any, text:any) {
         </Form.Item>
         <h2>Robot Position</h2>
         <Form.Item<FieldType> name="robot_position" rules={[{ required: true, message: 'Please input the robot position!' }]}>
-          <Select options={robot_position} onChange={() => { updateTeamNumber(); }} className='input' listItemHeight={10} listHeight={500} placement='bottomLeft'/>
+          <Select
+            options={robot_position}
+            onChange={() => { updateTeamNumber(); }}
+            className='input'
+            listItemHeight={10}
+            listHeight={500}
+            placement='bottomLeft'
+            dropdownMatchSelectWidth={false}
+            dropdownStyle={{ maxHeight: 'none' }}
+          />
         </Form.Item>
         <Flex justify='in-between' style={{ paddingBottom : '5%' }}>
           <Button onClick={() => setTabNum("2")} className='tabbutton'>Next</Button>

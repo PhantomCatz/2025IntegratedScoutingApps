@@ -4,7 +4,7 @@ import '../public/stylesheets/match.css';
 import { Button, Flex, Form, Input, InputNumber, Select, Tabs, TabsProps } from 'antd';
 import React, { useState, useEffect } from 'react';
 import TextArea from 'antd/es/input/TextArea';
-import Header from "./header";
+import Header from "./parts/header";
 
 function Watchlist(props: any) {
   type FieldType = {

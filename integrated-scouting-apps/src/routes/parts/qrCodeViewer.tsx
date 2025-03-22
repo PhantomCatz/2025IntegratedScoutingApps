@@ -1,8 +1,8 @@
-import '../public/stylesheets/style.css';
-import '../public/stylesheets/qrcode.css';
+import '../../public/stylesheets/style.css';
+import '../../public/stylesheets/qrcode.css';
 
 import {QRCode as AntQr} from 'antd';
-import {useState, } from 'react';
+import {useState, useEffect} from 'react';
 
 const sep = "\t";
 const defualtValue = <></>;
@@ -10,6 +10,14 @@ const defualtValue = <></>;
 function QrCode(props : any) {
 	const [qrValue, setQrValue] = useState<string>("");
 	const [timestamp, setTimestamp] = useState<Date>(new Date());
+
+	useEffect(() => {
+		try {
+		(window as any).scrollByPages(100);
+		} catch (err) {
+
+		}
+	}, [qrValue]);
 
 	let shouldShow = !!qrValue;
 
@@ -49,10 +57,10 @@ function QrCode(props : any) {
 	}
 
 	const shownValue = vals.join(sep).replaceAll("\n", "\\n");
-	//if (shouldShow) {
-	//	console.log("Current key map: " + keys);
-	//	console.log("Current values: " + vals);
-	//}
+	if (shouldShow) {
+		console.log("Current key map: " + keys);
+		console.log("Current values: " + vals);
+	}
 	
 	
 	const valuesToDisplay : {key : any, display : string}[] = [
