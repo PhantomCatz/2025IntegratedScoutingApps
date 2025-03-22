@@ -441,7 +441,7 @@ function PitScout(props: any) {
         <h2>Algae Scoring Capability</h2>
         <Form.Item name="algae_scoring_capability" rules={[{ required: true, message: 'Please input the Algae Scoring capability!' }]}>
         <Select
-          options={algaescoringCap}
+          options={algae_intake_capability_options}
           className="input"
           dropdownMatchSelectWidth={false}
           dropdownStyle={{ maxHeight: 'none' }}
