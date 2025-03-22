@@ -54,7 +54,6 @@ const formDefaultValues = {
   "teleop_algae_scored_processor": 0,
   // Endgame
   "endgame_coral_intake_capability": null,
-  "endgame_coral_station": null,
   "endgame_algae_intake_capability": null,
   "endgame_climb_successful": false,
   "endgame_climb_type": null,
@@ -192,6 +191,7 @@ function MatchScout(props: any) {
       "teleop_algae_missed_net",
       "teleop_algae_scored_processor",
       "overall_num_penalties",
+      "overall_defense_quality",
       "overall_pushing",
       "overall_counter_defense",
       "overall_driver_skill",
@@ -247,7 +247,6 @@ function MatchScout(props: any) {
       "teleop_algae_scored_processor": event.teleop_algae_scored_processor,
       // Endgame
       "endgame_coral_intake_capability": event.endgame_coral_intake_capability,
-      "endgame_coral_station": event.endgame_coral_station,
       "endgame_algae_intake_capability": event.endgame_algae_intake_capability,
       "endgame_climb_successful": event.endgame_climb_successful,
       "endgame_climb_type": event.endgame_climb_type,
@@ -910,7 +909,7 @@ function MatchScout(props: any) {
 
         <h2 style={{ display: defendedIsVisible ? 'inherit' : 'none' }}>Defense Quality (1 - 4):</h2>
         <Form.Item<FieldType> name="overall_defense_quality"style={{ display: defendedIsVisible ? 'inherit' : 'none' }}
-            rules={[{required: defendedIsVisible, message : "Please input defene quality!"}]}>
+            rules={[{required: defendedIsVisible, message : "Please input defend quality!"}]}>
                 <InputNumber
                   type='number'
                   pattern="\d*"
