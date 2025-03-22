@@ -114,8 +114,8 @@ function PitScout(props: any) {
       "motor_type": event.motor_type,
       "number_of_motors": event.number_of_motors,
       "wheel_type": event.wheel_type,
-      "coral_intake_capability": event.coral_intake_capability,
       "intake_width": event.intake_width,
+      "coral_intake_capability": event.coral_intake_capability,
       "coral_scoring_l1": event.coral_scoring_l1 || false,
       "coral_scoring_l2": event.coral_scoring_l2 || false,
       "coral_scoring_l3": event.coral_scoring_l3 || false,
@@ -183,17 +183,17 @@ function PitScout(props: any) {
       motor_type: string;
       number_of_motors: number;
       wheel_type: string;
-      coral_intake_capability: string;
       intake_width: string;
-      algae_intake_capability: string;
-      algae_scoring_capability: string;
-      score_aiming: string,
-      aiming_description: string,
+      coral_intake_capability: string;
       coral_scoring_l1: boolean;
       coral_scoring_l2: boolean;
       coral_scoring_l3: boolean;
       coral_scoring_l4: boolean;
       can_remove_algae: boolean;
+      algae_intake_capability: string;
+      algae_scoring_capability: string;
+      score_aiming: string,
+      aiming_description: string,
       climbing_capability: string;
       pit_organization: number;
       team_safety: number;
@@ -639,7 +639,7 @@ async function readImage(blob : any) : Promise<string> {
     reader.readAsDataURL(blob);
     reader.onload = () => {
       const base64Image : string = reader.result as string;
-
+      console.log(base64Image)
       resolve(base64Image);
     };
     reader.onerror = () => {
