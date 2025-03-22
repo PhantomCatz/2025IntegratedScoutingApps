@@ -1,4 +1,4 @@
 .ant-input {
     text-align: center !important;
-    color: white !important;
+    color: var(--font-color) !important;
 }
