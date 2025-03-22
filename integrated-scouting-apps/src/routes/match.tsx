@@ -1436,12 +1436,20 @@ function MatchScout(props: any) {
   
   ];
   return (
-    <div>
-    <Header name="Match Scout" back="#scoutingapp" />
+    <>
+      <Header name="Match Scout" back="#scoutingapp" />
       <Form
         form={form}
         initialValues={formDefaultValues}
         onFinish={trySubmit}
+        onFinishFailed={({values, errorFields, outOfDate}) => {
+          console.log("values=", values);
+          console.log("errorFields=", errorFields);
+          console.log("outOfDate=", outOfDate);
+          
+          const errorMessage = errorFields.map((x : any) => x.errors.join(", ")).join("\n");
+          window.alert(errorMessage);
+        }}
       >
         <Tabs defaultActiveKey="1" activeKey={tabNum} items={items} className='tabs' centered onChange={async (key) => { setTabNum(key) }} />
         <Footer style={{ position: "sticky", bottom: "0" }}>
@@ -1460,7 +1468,7 @@ function MatchScout(props: any) {
         </Footer>
       </Form>
       <QrCode value={qrValue} />
-    </div>
+    </>
   );
 }
 

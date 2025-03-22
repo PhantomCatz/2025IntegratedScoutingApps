@@ -374,17 +374,25 @@ function Strategic(props: any, text:any) {
   }
 
   return (
-    <div>
+    <>
       <meta name="viewport" content="maximum-scale=1.0" />
       <Header name={"Strategic Scout"} back="#scoutingapp/" />
       <Form
         form={form}
         onFinish={runFormFinish}
+        onFinishFailed={({values, errorFields, outOfDate}) => {
+          console.log("values=", values);
+          console.log("errorFields=", errorFields);
+          console.log("outOfDate=", outOfDate);
+          
+          const errorMessage = errorFields.map((x : any) => x.errors.join(", ")).join("\n");
+          window.alert(errorMessage);
+        }}
       >
         <Tabs defaultActiveKey="1" activeKey={tabNum} items={items} centered className='tabs' onChange={async (key) => { setTabNum(key); }} />
       </Form>
       <QrCode value={qrValue} />
-    </div>
+    </>
   );
 } 
 

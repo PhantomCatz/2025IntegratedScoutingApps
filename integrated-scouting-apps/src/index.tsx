@@ -29,12 +29,24 @@ const root = ReactDOM.createRoot(rootElement);
 window.alert = (function() {
   const alert = globalThis.window.alert;
   let id : any;
+  let lastMessage = "";
 
-  return function(...args) {
+  return function(message) {
     clearTimeout(id);
 
+    if(message !== lastMessage) {
+      lastMessage = lastMessage ?
+        `\n${message}` :
+        message;
+    }
+
     id = setTimeout(function() {
-      alert(...args);
+      if(!lastMessage) {
+        return;
+      }
+
+      alert(lastMessage);
+      lastMessage = "";
     }, 100);
   }
 })();
