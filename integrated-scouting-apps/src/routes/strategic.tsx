@@ -9,19 +9,31 @@ import QrCode from "./parts/qrCodeViewer";
 import { isRoundNumberVisible, isInPlayoffs, getTeamsPlaying, getIndexNumber } from './utils/tbaRequest';
 
 const formDefaultValues = {
-  "match_event": null,
+  //"match_event": null,
   "team_number": 0,
-  "scouter_initials": null,
-  "match_level": null,
+  "scouter_initials": "",
+  "match_level": "",
   "match_number": 0,
-  "robot_position": null,
-  "comments": null,
+  "robot_position": "",
+  "comments": "",
   "red_alliance": [],
   "blue_alliance": [],
+}
+const noShowValues = {
+  //"match_event": null,
+  //"team_number": 0,
+  //"scouter_initials": null,
+  //"match_level": null,
+  //"match_number": 0,
+  //"robot_position": null,
+  "comments": "",
+  //"red_alliance": [],
+  //"blue_alliance": [],
 }
 
 function Strategic(props: any, text:any) {
   const [form] = Form.useForm();
+  const [formValue, setFormValue] = useState(formDefaultValues);
   const [tabNum, setTabNum] = useState("1");
   const [team_number, setTeamNum] = useState(0);
   const [teamsList, setTeamsList] = useState<string[]>([]);
@@ -32,7 +44,7 @@ function Strategic(props: any, text:any) {
   const [lastFormValue, setLastFormValue] = useState<any>(null);
   const [teamData, setTeamData] = useState<any>(null);
   const [inPlayoffs, setInPlayoffs] = useState(false);
-  const [robot_appeared, setRobot_appeared] = useState(true);
+  //const [robot_appeared, setRobot_appeared] = useState(true);
 
   useEffect(() => { document.title = props.title; return () => { } }, [props.title]);
   useEffect(() => {
@@ -109,7 +121,7 @@ function Strategic(props: any, text:any) {
       "match_number": event.match_number,
       "robot_position": event.robot_position,
       "comments": event.comments,
-      "robot_appeared": robot_appeared,
+      //"robot_appeared": robot_appeared,
     };
     const status = await tryFetch(body);
 
@@ -248,6 +260,7 @@ function Strategic(props: any, text:any) {
         <h2>Match Level</h2>
         <Form.Item<FieldType> name="match_level" rules={[{ required: true, message: 'Please input the match level!' }]}>
           <Select options={rounds} className="input" onChange={() => { calculateMatchLevel(); updateTeamNumber(); }} />
+                  
         </Form.Item>
         <div className={"playoff-alliances"} style={{ display: inPlayoffs ? 'inherit' : 'none' }}>
           
@@ -272,7 +285,8 @@ function Strategic(props: any, text:any) {
         </div>
         <h2>Match #</h2>
         <Form.Item<FieldType> name="match_number" rules={[{ required: true, message: 'Please input the match number!',  }]}>
-          <InputNumber min={1} className = "input" onChange={() => { updateTeamNumber(); }} type='number' /> 
+          <InputNumber min={1} className="input" onWheel={(e) => (e.target as HTMLElement).blur()} onChange={() => { updateTeamNumber(); }} type='number' /> 
+                  
         </Form.Item>
         <h2 style={{ display: roundIsVisible ? 'inherit' : 'none' }}>Round #</h2>
         <Form.Item<FieldType> name="round_number" rules={[{ required: roundIsVisible ? true : false, message: 'Please input the round number!' }]} style={{ display: roundIsVisible ? 'inherit' : 'none' }}>
@@ -323,7 +337,7 @@ function Strategic(props: any, text:any) {
     
       for (const match of teamData) {
         dataSource.push({
-          "key": `${match.match_event}|${match.match_level}|${match.match_number}|${match.scouter_initials}`,
+          "key": `${match.id}`,
           "scouter_initials" : `Scouter Initials: ${match.scouter_initials}`,
           "match_number" : match.match_number,
           "comment" : match.comments,
@@ -372,17 +386,25 @@ function Strategic(props: any, text:any) {
   }
 
   return (
-    <div>
+    <>
       <meta name="viewport" content="maximum-scale=1.0" />
       <Header name={"Strategic Scout"} back="#scoutingapp/" />
       <Form
         form={form}
         onFinish={runFormFinish}
+        onFinishFailed={({values, errorFields, outOfDate}) => {
+          console.log("values=", values);
+          console.log("errorFields=", errorFields);
+          console.log("outOfDate=", outOfDate);
+          
+          const errorMessage = errorFields.map((x : any) => x.errors.join(", ")).join("\n");
+          window.alert(errorMessage);
+        }}
       >
         <Tabs defaultActiveKey="1" activeKey={tabNum} items={items} centered className='tabs' onChange={async (key) => { setTabNum(key); }} />
       </Form>
       <QrCode value={qrValue} />
-    </div>
+    </>
   );
 } 
 

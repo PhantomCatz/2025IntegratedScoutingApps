@@ -28,7 +28,7 @@ async function StrategicTabs(team_number: number, inCallback? : boolean) {
   const response = await(await fetch(fetchLink)).json();
 
   if(!response.length) {
-    //window.alert("This team has not been scouted.");
+    window.alert(`Team ${team_number} has not been strategic scouted.`);
     return null;
   }
 
@@ -40,7 +40,7 @@ async function StrategicTabs(team_number: number, inCallback? : boolean) {
     strategicInfo.comments = strategicInfo.comments.replaceAll("\\n", "\n");
 
     matches.push({
-      key: `${strategicInfo.scouter_initials.toUpperCase()}|${strategicInfo.team_number}|${index}`,
+      key: `${strategicInfo.id}`,
       label: `${strategicInfo.scouter_initials.toUpperCase()} : ${strategicInfo.team_number}`,
       children: (
         <>

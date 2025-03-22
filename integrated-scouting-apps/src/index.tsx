@@ -29,19 +29,46 @@ const root = ReactDOM.createRoot(rootElement);
 window.alert = (function() {
   const alert = globalThis.window.alert;
   let id : any;
+  let lastMessage = "";
 
-  return function(...args) {
+  return function(message) {
     clearTimeout(id);
 
+    if(message !== lastMessage) {
+      lastMessage = lastMessage ?
+        `\n${message}` :
+        message;
+    }
+
     id = setTimeout(function() {
-      alert(...args);
+      if(!lastMessage) {
+        return;
+      }
+
+      alert(lastMessage);
+      lastMessage = "";
     }, 100);
   }
 })();
 //window.alert = () => {};
+/*
+globalThis.fetch = (() => {
+  const originalFetch = globalThis.fetch;
+
+  return async function(link : any, args : any) {
+      const rest = args || {};
+      const options = {
+        mode: "no-cors",
+        ...rest
+      };
+
+      return originalFetch(link, options);
+    }
+})();
+//*/
 
 function App() {
-	return (
+  return (
     <HashRouter>
       <Routes>
         <Route path="/" element={<HomePage title="2637 Strategy App" />} />
