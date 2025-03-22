@@ -252,3 +252,26 @@ input[type="number"]::-webkit-inner-spin-button, .ant-input-number-handler-wrap 
 	background-color: transparent !important;
 	*/
 }
+
+.app {
+	display: none; /* Hide by default */
+	width: 375px; /* Mobile width */
+	height: 812px; /* Mobile height */
+	background: white;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+	border-radius: 8px; /* Optional */
+}
+
+@media (min-aspect-ratio: 1/1) {
+	/* When the screen width is greater than the height */
+	.app {
+		display: block;
+	}
+}
+
+@media (max-aspect-ratio: 1/1) {
+	/* When the screen height is greater than or equal to the width */
+	.app {
+		display: none; /* Hide the PC-styled container */
+	}
+}
