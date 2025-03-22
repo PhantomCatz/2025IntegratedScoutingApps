@@ -1,5 +1,5 @@
 import '../public/stylesheets/style.css';
-import '../public/stylesheets/teamdata.css';
+import '../public/stylesheets/matchData.css';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Table } from 'antd';
@@ -14,6 +14,7 @@ const DATA_COLUMNS = {
     "Match Level": "match_level",
     "Match #": "match_number",
     "Robot Starting Position": "robot_starting_position",
+    "Robot Appeared": "robot_appeared",
   },
   "Teleop": {
     "Coral L4": "teleop_coral_l4",
@@ -56,6 +57,8 @@ const DATA_COLUMNS = {
 };
 
 const HIDABLE_FIELDS : any = {
+  "robot_appeared": false,
+
   //"teleop_coral_scored_l4": false,
   //"teleop_coral_missed_l4": false,
   //"teleop_coral_scored_l3": false,
@@ -114,14 +117,14 @@ function TeamData(props: any) {
           const row : any = {};
 
           for (const field in match) {
-            const [result, location, empty] = getCellValue(field, match[field], match);
+            const [result, location, hasValue] = getCellValue(field, match[field], match);
 
             if(location === null) {
               continue;
             }
             row[location] = result;
 
-            if(hiddenColumns[location] === false && empty === false) {
+            if(hiddenColumns[location] === false && hasValue === true) {
               hiddenColumns[location] = true;
             }
           }
@@ -156,7 +159,7 @@ function TeamData(props: any) {
   function getCellValue(field : any, value : any, data : any) : any {
     let result = null;
     let location = null;
-    let empty = null;
+    let hasValue = null;
 
     switch(field) {
       case "auton_coral_scored_l4":
@@ -175,8 +178,9 @@ function TeamData(props: any) {
 
         result = `${scored}/${total}`;
         location = field.replace("_scored", "");
-        empty = false;
+        hasValue = true;
         break;
+      case "robot_appeared":
       case "auton_leave_starting_line":
       case "endgame_climb_successful":
       case "overall_robot_died":
@@ -184,11 +188,12 @@ function TeamData(props: any) {
       case "overall_was_defended":
         result = (<div className={`booleanValue booleanValue__${!!value}`} key={`field`}>&nbsp;</div>);
         location = field;
-        empty = !!value;
+        hasValue = !!value;
         break;
       case "overall_comments":
         result = value.replaceAll("\\n", "\n");
         location = field;
+        hasValue = !!value;
         break;
       case "match_event":
       case "scouter_initials":
@@ -210,8 +215,9 @@ function TeamData(props: any) {
       case "overall_driver_skill":
       case "overall_num_penalties":
       case "overall_penalties_incurred":
-        result = data[field].toString();
+        result = value.toString();
         location = field;
+        hasValue = !!value;
         break;
       case "team_number":
       case "auton_coral_missed_l4":
@@ -230,7 +236,7 @@ function TeamData(props: any) {
         break;
     }
 
-    return [result, location, empty];
+    return [result, location, hasValue];
   }
   function makeColumns() {
     const groups = [];

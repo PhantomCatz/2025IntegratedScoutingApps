@@ -40,8 +40,8 @@ const IMAGE_DELIMITER = "$";
 function PitScout(props: any) {
   const match_event = process.env.REACT_APP_EVENTNAME as string;
   const [form] = Form.useForm();
-  const [loading, setLoading] = useState(false);
   const [formValue, setFormValue] = useState(formDefaultValues);
+  const [loading, setLoading] = useState(false);
   const [qrValue, setQrValue] = useState<any>();
   const [robotImageURI, setRobotImageURI] = useState<string[]>([]);
 

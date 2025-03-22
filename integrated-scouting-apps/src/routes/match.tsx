@@ -8,6 +8,7 @@ import Header from "./parts/header";
 import QrCode from './parts/qrCodeViewer';
 import {isInPlayoffs, isRoundNumberVisible, getTeamsPlaying, getIndexNumber, getAllianceOffset } from './utils/tbaRequest';
 import type { TabsProps, RadioChangeEvent } from "antd";
+import { NumberInput, } from './parts/formItems';
 
 interface SpacerProps {
   height?: string;
@@ -68,16 +69,76 @@ const formDefaultValues = {
   "overall_counter_defense": 0,
   "overall_driver_skill": 0,
   "overall_num_penalties": 0,
+  "overall_tech_penalty": false,
+  "overall_match_penalty": false,
   "overall_penalties_incurred": null,
   "overall_comments": null,
-  //"no_show": false,
   // Playoffs
   "red_alliance": "",
   "blue_alliance": "",
 };
+const noShowValues = {
+  // Pre-match
+  //"match_event": "",
+  //"team_number": 0,
+  //"scouter_initials": "",
+  //"match_level": "",
+  //"match_number": 0,
+  //"robot_position": "",
+  // Auton
+  "auton_leave_starting_line": false,
+  "auton_coral_scored_l4": 0,
+  "auton_coral_missed_l4": 0,
+  "auton_coral_scored_l3": 0,
+  "auton_coral_missed_l3": 0,
+  "auton_coral_scored_l2": 0,
+  "auton_coral_missed_l2": 0,
+  "auton_coral_scored_l1": 0,
+  "auton_coral_missed_l1": 0,
+  "auton_algae_scored_net": 0,
+  "auton_algae_missed_net": 0,
+  "auton_algae_scored_processor": 0,
+  // Teleop
+  "teleop_coral_scored_l4": 0,
+  "teleop_coral_missed_l4": 0,
+  "teleop_coral_scored_l3": 0,
+  "teleop_coral_missed_l3": 0,
+  "teleop_coral_scored_l2": 0,
+  "teleop_coral_missed_l2": 0,
+  "teleop_coral_scored_l1": 0,
+  "teleop_coral_missed_l1": 0,
+  "teleop_algae_scored_net": 0,
+  "teleop_algae_missed_net": 0,
+  "teleop_algae_scored_processor": 0,
+  // Endgame
+  "endgame_coral_intake_capability": "Neither",
+  "endgame_coral_station": "Neither",
+  "endgame_algae_intake_capability": "Neither",
+  "endgame_climb_successful": false,
+  "endgame_climb_type": "Neither",
+  "endgame_climb_time": 0,
+  // Overall
+  "overall_robot_died": false,
+  "overall_defended_others": false,
+  "overall_was_defended": false,
+  "overall_defended": [],
+  "overall_defended_by": [],
+  "overall_pushing": 0,
+  "overall_counter_defense": 0,
+  "overall_driver_skill": 0,
+  "overall_num_penalties": 0,
+  "overall_tech_penalty": false,
+  "overall_match_penalty": false,
+  "overall_penalties_incurred": "",
+  "overall_comments": "",
+  // Playoffs
+  //"red_alliance": "",
+  //"blue_alliance": "",
+}
 
 function MatchScout(props: any) {
   const [form] = Form.useForm();
+  const [formValue, setFormValue] = useState<any>(formDefaultValues);
   const [roundIsVisible, setRoundIsVisible] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const [usChecked, setUSChecked] = useState(false);
@@ -92,7 +153,6 @@ function MatchScout(props: any) {
   const [wasDefendedIsVisible, setWasDefendedIsVisible] = useState(false);
   const [penaltiesIsVisible, setPenaltiesIsVisible] = useState(false);
   const [opposingTeamNum, setOpposingTeamNum] = useState([""]);
-  const [formValue, setFormValue] = useState<any>(formDefaultValues);
   const [shouldRetrySubmit, setShouldRetrySubmit] = useState(true);
   const [lastFormValue, setLastFormValue] = useState<any>(null);
   const [inPlayoffs, setInPlayoffs] = useState(false);
@@ -243,20 +303,11 @@ function MatchScout(props: any) {
       return false;
     }
   }
-  useEffect(() => {
-    if (autonPoints > 0)
-    {
-      form.setFieldValue("auton_leave_starting_line", true);
-    }
-    // else {
-    //   form.setFieldValue("auton_leave_starting_line", false)
-    // }
-    
-
-  }, [autonPoints]);
-
   
-
+  
+  function updateAutonValues() {
+    form.setFieldValue("auton_leave_starting_line", true);
+  }
   async function trySubmit(event : any) {
     if(isLoading) {
       return;
@@ -473,18 +524,24 @@ function MatchScout(props: any) {
           <Select options={robot_position} onChange={updateTeamNumber} className="input"  listItemHeight={10} listHeight={500} placement='bottomLeft'/>
         </Form.Item>
 
-       <button
+       <Button
          className={"noShowButton"}
-         onMouseDown={() => {
-           const noShowData = {
-             ...formDefaultValues,
-             no_show : true,
-           };
+         onMouseDown={async () => {
+           const values = {...noShowValues};
 
-           form.resetFields();
-           setFormValue(formDefaultValues);
+           setTabNum("1");
+           await sleep(100);
+           setTabNum("2");
+           await sleep(100);
+           setTabNum("3");
+           await sleep(100);
+           setTabNum("4");
+           await sleep(100);
+           setTabNum("5");
+           form.setFieldsValue(values);
+           setRobot_appeared(false);
          }}
-       >No Show</button>
+       >No Show</Button>
         
       </div>
     );
@@ -512,365 +569,119 @@ function MatchScout(props: any) {
 
     return (
       <div style={{ alignContent: 'center' }}>
-
         <h2>Leave Starting Line?</h2>
         <Form.Item<FieldType> name="auton_leave_starting_line" valuePropName="checked">
           <Checkbox className='input_checkbox' />
         </Form.Item>
         <div className = 'radioRColumn'> 
           <div className = 'radioRow'>
-            <Flex vertical align='flex-start'>
-              <h2>#Coral Scored L4</h2>
-              <Form.Item<FieldType> name="auton_coral_scored_l4" rules={[{ required: true, message: 'Enter # of Coral Score L4' }]}>
-                <InputNumber
-                  id="auton_coral_scored_l4"
-                  type='number'
-                  pattern="\d*"
-                  min={0}
-                  onWheel={(e) => (e.target as HTMLElement).blur()}
-                  className="input"
-                  addonAfter={<Button onMouseDown={() => {
-                    setFormValue({ ...formValue, auton_coral_scored_l4: formValue.auton_coral_scored_l4 + 1 });
-                    setAutonPoints(prevPoints => {
-                      const newPoints = prevPoints + 1;
-                      return newPoints;
-                    });
-                    
-                  }} className='incrementbutton'>+</Button>}
-                  addonBefore={<Button onMouseDown={() => {
-                    if (Number(formValue.auton_coral_scored_l4) > 0) {
-                      setFormValue({ ...formValue, auton_coral_scored_l4: formValue.auton_coral_scored_l4 - 1 });
-                      setAutonPoints(prevPoints => {
-                        const newPoints = prevPoints - 1;
-                        return newPoints;
-                      });
-                      
-                    }
-                  }} className='decrementbutton'>-</Button>}
-                />
-              </Form.Item>
-            </Flex>
+            <NumberInput
+              title={"#Coral Scored L4"}
+              name={"auton_coral_scored_l4"}
+              message={"Enter # coral scored for l4"}
+              onIncrease={updateAutonValues}
+              setForm={setFormValue}
+            />
               
-            <Flex vertical align='flex-start'>
-              <h2>#Coral Missed L4</h2>
-              <Form.Item<FieldType> name="auton_coral_missed_l4" rules={[{ required: true, message: 'Enter # of Coral Missed L4' }]}>
-                <InputNumber
-                  id="auton_coral_missed_l4"
-                  type='number'
-                  pattern="\d*"
-                  min={0}
-                  onWheel={(e) => (e.target as HTMLElement).blur()}
-                  className="input"
-                  addonAfter={<Button onMouseDown={() => {
-                    setFormValue({ ...formValue, auton_coral_missed_l4: formValue.auton_coral_missed_l4 + 1 });
-                    setAutonPoints(prevPoints => {
-                      const newPoints = prevPoints + 1;
-                      return newPoints;
-                    });
-                  }} className='incrementbutton'>+</Button>}
-                  addonBefore={<Button onMouseDown={() => {
-                    if (Number(formValue.auton_coral_missed_l4) > 0) {
-                      setFormValue({ ...formValue, auton_coral_missed_l4: formValue.auton_coral_missed_l4 - 1 });
-                      setAutonPoints(prevPoints => {
-                        const newPoints = prevPoints - 1;
-                        return newPoints;
-                      });
-                    }
-                  }} className='decrementbutton'>-</Button>}
-                />
-              </Form.Item>
-            </Flex>
+            <NumberInput
+              title={"#Coral Missed L4"}
+              name={"auton_coral_missed_l4"}
+              message={"Enter # coral missed for l4"}
+              onIncrease={updateAutonValues}
+              setForm={setFormValue}
+            />
           </div>
         </div>
             
         <div className = 'radioRColumn'> 
           <div className = 'radioRow'>
-            <Flex vertical align='flex-start'>
-              <h2>#Coral Scored L3</h2>
-              <Form.Item<FieldType> name="auton_coral_scored_l3" rules={[{ required: true, message: 'Enter # of Coral Scored L3' }]}>
-                <InputNumber
-                  id="auton_coral_scored_l3"
-                  type='number'
-                  pattern="\d*"
-                  min={0}
-                  onWheel={(e) => (e.target as HTMLElement).blur()}
-                  className="input"
-                  addonAfter={<Button onMouseDown={() => {
-                    setFormValue({ ...formValue, auton_coral_scored_l3: formValue.auton_coral_scored_l3 + 1 });
-                    setAutonPoints(prevPoints => {
-                      const newPoints = prevPoints + 1;
-                      return newPoints;
-                    });
-                  }} className='incrementbutton'>+</Button>}
-                  addonBefore={<Button onMouseDown={() => {
-                    if (Number(formValue.auton_coral_scored_l3) > 0) {
-                      setFormValue({ ...formValue, auton_coral_scored_l3: formValue.auton_coral_scored_l3 - 1 });
-                      setAutonPoints(prevPoints => {
-                        const newPoints = prevPoints - 1;
-                        return newPoints;
-                      });
-                    }
-                  }} className='decrementbutton'>-</Button>}
-                />
-              </Form.Item>
-            </Flex>
+            <NumberInput
+              title={"#Coral Scored L3"}
+              name={"auton_coral_scored_l3"}
+              message={"Enter # coral scored for l3"}
+              onIncrease={updateAutonValues}
+              setForm={setFormValue}
+            />
               
-            <Flex vertical align='flex-start'>
-              <h2>#Coral Missed L3</h2>
-              <Form.Item<FieldType> name="auton_coral_missed_l3" rules={[{ required: true, message: 'Enter # of Coral Missed L3' }]}>
-                <InputNumber
-                  id="auton_coral_missed_l3"
-                  type='number'
-                  pattern="\d*"
-                  min={0}
-                  onWheel={(e) => (e.target as HTMLElement).blur()}
-                  className="input"
-                  addonAfter={<Button onMouseDown={() => {
-                    setFormValue({ ...formValue, auton_coral_missed_l3: formValue.auton_coral_missed_l3 + 1 });
-                    setAutonPoints(prevPoints => {
-                      const newPoints = prevPoints + 1;
-                      return newPoints;
-                    });
-                  }} className='incrementbutton'>+</Button>}
-                  addonBefore={<Button onMouseDown={() => {
-                    if (Number(formValue.auton_coral_missed_l3) > 0) {
-                      setFormValue({ ...formValue, auton_coral_missed_l3: formValue.auton_coral_missed_l3 - 1 });
-                      setAutonPoints(prevPoints => {
-                        const newPoints = prevPoints - 1;
-                        return newPoints;
-                      });
-                    }
-                  }} className='decrementbutton'>-</Button>}
-                />
-              </Form.Item>
-            </Flex>
+            <NumberInput
+              title={"#Coral Missed L3"}
+              name={"auton_coral_missed_l3"}
+              message={"Enter # coral missed for l3"}
+              onIncrease={updateAutonValues}
+              setForm={setFormValue}
+            />
           </div>
         </div>
         
         <div className = 'radioRColumn'> 
           <div className = 'radioRow'>
-            <Flex vertical align='flex-start'>
-              <h2>#Coral Scored L2</h2>
-              <Form.Item<FieldType> name="auton_coral_scored_l2" rules={[{ required: true, message: 'Enter # of Coral Scored L2' }]}>
-                <InputNumber
-                  id="auton_coral_scored_l2"
-                  type='number'
-                  pattern="\d*"
-                  min={0}
-                  onWheel={(e) => (e.target as HTMLElement).blur()}
-                  className="input"
-                  addonAfter={<Button onMouseDown={() => {
-                    setFormValue({ ...formValue, auton_coral_scored_l2: formValue.auton_coral_scored_l2 + 1 });
-                    setAutonPoints(prevPoints => {
-                      const newPoints = prevPoints + 1;
-                      return newPoints;
-                    });
-                  }} className='incrementbutton'>+</Button>}
-                  addonBefore={<Button onMouseDown={() => {
-                    if (Number(formValue.auton_coral_scored_l2) > 0) {
-                      setFormValue({ ...formValue, auton_coral_scored_l2: formValue.auton_coral_scored_l2 - 1 });
-                      setAutonPoints(prevPoints => {
-                        const newPoints = prevPoints - 1;
-                        return newPoints;
-                      });
-                    }
-                  }} className='decrementbutton'>-</Button>}
-                />
-              </Form.Item>
-            </Flex>
-            
-            <Flex vertical align='flex-start'>
-              <h2>#Coral Missed L2</h2>
-              <Form.Item<FieldType> name="auton_coral_missed_l2" rules={[{ required: true, message: 'Enter # of Coral Missed L2' }]}>
-                <InputNumber
-                  id="auton_coral_missed_l2"
-                  type='number'
-                  pattern="\d*"
-                  min={0}
-                  onWheel={(e) => (e.target as HTMLElement).blur()}
-                  className="input"
-                  addonAfter={<Button onMouseDown={() => {
-                    setFormValue({ ...formValue, auton_coral_missed_l2: formValue.auton_coral_missed_l2 + 1 });
-                    setAutonPoints(prevPoints => {
-                      const newPoints = prevPoints + 1;
-                      return newPoints;
-                    });
-                  }} className='incrementbutton'>+</Button>}
-                  addonBefore={<Button onMouseDown={() => {
-                    if (Number(formValue.auton_coral_missed_l2) > 0) {
-                      setFormValue({ ...formValue, auton_coral_missed_l2: formValue.auton_coral_missed_l2 - 1 });
-                      setAutonPoints(prevPoints => {
-                        const newPoints = prevPoints - 1;
-                        return newPoints;
-                      });
-                    }
-                  }} className='decrementbutton'>-</Button>}
-                />
-              </Form.Item>
-            </Flex>
+            <NumberInput
+              title={"#Coral Scored L2"}
+              name={"auton_coral_scored_l2"}
+              message={"Enter # coral scored for l2"}
+              onIncrease={updateAutonValues}
+              setForm={setFormValue}
+            />
+              
+            <NumberInput
+              title={"#Coral Missed L2"}
+              name={"auton_coral_missed_l2"}
+              message={"Enter # coral missed for l2"}
+              onIncrease={updateAutonValues}
+              setForm={setFormValue}
+            />
           </div>
         </div>
 
         <div className = 'radioRColumn'> 
           <div className = 'radioRow'>
-            <Flex vertical align='flex-start'>
-              <h2>#Coral Scored L1</h2>
-              <Form.Item<FieldType> name="auton_coral_scored_l1" rules={[{ required: true, message: 'Enter # of Coral Scored L1' }]}>
-                <InputNumber
-                  id="auton_coral_scored_l1"
-                  type='number'
-                  pattern="\d*"
-                  min={0}
-                  onWheel={(e) => (e.target as HTMLElement).blur()}
-                  className="input"
-                  addonAfter={<Button onMouseDown={() => {
-                    setFormValue({ ...formValue, auton_coral_scored_l1: formValue.auton_coral_scored_l1 + 1 });
-                    setAutonPoints(prevPoints => {
-                      const newPoints = prevPoints + 1;
-                      return newPoints;
-                    });
-                  }} className='incrementbutton'>+</Button>}
-                  addonBefore={<Button onMouseDown={() => {
-                    if (Number(formValue.auton_coral_scored_l1) > 0) {
-                      setFormValue({ ...formValue, auton_coral_scored_l1: formValue.auton_coral_scored_l1 - 1 });
-                      setAutonPoints(prevPoints => {
-                        const newPoints = prevPoints - 1;
-                        return newPoints;
-                      });
-                    }
-                  }} className='decrementbutton'>-</Button>}
-                />
-              </Form.Item>
-            </Flex>
-            
-            <Flex vertical align='flex-start'>
-              <h2>#Coral Missed L1</h2>
-              <Form.Item<FieldType> name="auton_coral_missed_l1" rules={[{ required: true, message: 'Enter # of Coral Missed L1' }]}>
-                <InputNumber
-                  id="auton_coral_missed_l1"
-                  type='number'
-                  pattern="\d*"
-                  min={0}
-                  onWheel={(e) => (e.target as HTMLElement).blur()}
-                  className="input"
-                  addonAfter={<Button onMouseDown={() => {
-                    setFormValue({ ...formValue, auton_coral_missed_l1: formValue.auton_coral_missed_l1 + 1 });
-                    setAutonPoints(prevPoints => {
-                      const newPoints = prevPoints + 1;
-                      return newPoints;
-                    });
-                  }} className='incrementbutton'>+</Button>}
-                  addonBefore={<Button onMouseDown={() => {
-                    if (Number(formValue.auton_coral_missed_l1) > 0) {
-                      setFormValue({ ...formValue, auton_coral_missed_l1: formValue.auton_coral_missed_l1 - 1 });
-                      setAutonPoints(prevPoints => {
-                        const newPoints = prevPoints - 1;
-                        return newPoints;
-                      });
-                    }
-                  }} className='decrementbutton'>-</Button>}
-                />
-              </Form.Item>
-            </Flex>
+            <NumberInput
+              title={"#Coral Scored L1"}
+              name={"auton_coral_scored_l1"}
+              message={"Enter # coral scored for l1"}
+              onIncrease={updateAutonValues}
+              setForm={setFormValue}
+            />
+              
+            <NumberInput
+              title={"#Coral Missed L1"}
+              name={"auton_coral_missed_l1"}
+              message={"Enter # coral missed for l1"}
+              onIncrease={updateAutonValues}
+              setForm={setFormValue}
+            />
           </div>
         </div>
 
         <div className = 'radioRColumn'> 
           <div className = 'radioRow'>
-            <Flex vertical align='flex-start'>
-              <h2>#Algae Scored in Net</h2>
-              <Form.Item<FieldType> name="auton_algae_scored_net" rules={[{ required: true, message: 'Enter # of Algae Scored in Net' }]}>
-                <InputNumber
-                  id="auton_algae_scored_net"
-                  type='number'
-                  pattern="\d*"
-                  min={0}
-                  onWheel={(e) => (e.target as HTMLElement).blur()}
-                  className="input"
-                  addonAfter={<Button onMouseDown={() => {
-                    setFormValue({ ...formValue, auton_algae_scored_net: formValue.auton_algae_scored_net + 1 });
-                    setAutonPoints(prevPoints => {
-                      const newPoints = prevPoints + 1;
-                      return newPoints;
-                    });
-                  }} className='incrementbutton'>+</Button>}
-                  addonBefore={<Button onMouseDown={() => {
-                    if (Number(formValue.auton_algae_scored_net) > 0) {
-                      setFormValue({ ...formValue, auton_algae_scored_net: formValue.auton_algae_scored_net - 1 });
-                      setAutonPoints(prevPoints => {
-                        const newPoints = prevPoints - 1;
-                        return newPoints;
-                      });
-                    }
-                  }} className='decrementbutton'>-</Button>}
-                />
-              </Form.Item>
-            </Flex>
-            
-            <Flex vertical align='flex-start'>
-              <h2>#Algae Missed in Net</h2>
-              <Form.Item<FieldType> name="auton_algae_missed_net" rules={[{ required: true, message: 'Enter # of Net Missed in Net' }]}>
-                <InputNumber
-                  id="auton_algae_missed_net"
-                  type='number'
-                  pattern="\d*"
-                  min={0}
-                  onWheel={(e) => (e.target as HTMLElement).blur()}
-                  className="input"
-                  addonAfter={<Button onMouseDown={() => {
-                    setFormValue({ ...formValue, auton_algae_missed_net: formValue.auton_algae_missed_net + 1 });
-                    setAutonPoints(prevPoints => {
-                      const newPoints = prevPoints + 1;
-                      return newPoints;
-                    });
-                  }} className='incrementbutton'>+</Button>}
-                  addonBefore={<Button onMouseDown={() => {
-                    if (Number(formValue.auton_algae_missed_net) > 0) {
-                      setFormValue({ ...formValue, auton_algae_missed_net: formValue.auton_algae_missed_net - 1 });
-                      setAutonPoints(prevPoints => {
-                        const newPoints = prevPoints - 1;
-                        return newPoints;
-                      });
-                    }
-                  }} className='decrementbutton'>-</Button>}
-                />
-              </Form.Item>
-            </Flex>
+            <NumberInput
+              title={"#Algae Scored in Net"}
+              name={"auton_algae_scored_net"}
+              message={"Enter # of algae scored for net"}
+              onIncrease={updateAutonValues}
+              setForm={setFormValue}
+            />
+              
+            <NumberInput
+              title={"#Algae Missed in Net"}
+              name={"auton_algae_missed_net"}
+              message={"Enter # of algae missed for net"}
+              onIncrease={updateAutonValues}
+              setForm={setFormValue}
+            />
           </div>
         </div>
 
         <div className = 'radioRColumn'> 
           <div className = 'radioRow'>
-            <Flex vertical align='flex-start'>
-              <h2>#Algae Processor</h2>
-              <Form.Item<FieldType> name="auton_algae_scored_processor" rules={[{ required: true, message: 'Enter # of Algae Processor' }]}>
-                <InputNumber
-                  id="auton_algae_scored_processor"
-                  type='number'
-                  pattern="\d*"
-                  min={0}
-                  onWheel={(e) => (e.target as HTMLElement).blur()}
-                  className="input"
-                  addonAfter={<Button onMouseDown={() => {
-                    setFormValue({ ...formValue, auton_algae_scored_processor: formValue.auton_algae_scored_processor + 1 });
-                    setAutonPoints(prevPoints => {
-                      const newPoints = prevPoints + 1;
-                      return newPoints;
-                    });
-                  }} className='incrementbutton'>+</Button>}
-                  addonBefore={<Button onMouseDown={() => {
-                    if (Number(formValue.auton_algae_scored_processor) > 0) {
-                      setFormValue({ ...formValue, auton_algae_scored_processor: formValue.auton_algae_scored_processor - 1 });
-                      setAutonPoints(prevPoints => {
-                        const newPoints = prevPoints - 1;
-                        return newPoints;
-                      });
-                    }
-                  }} className='decrementbutton'>-</Button>}
-                />
-              </Form.Item>
-            </Flex>
-
+            <NumberInput
+              title={"#Algae Processor"}
+              name={"auton_algae_scored_processor"}
+              message={"Enter # of algae scored for processor"}
+              onIncrease={updateAutonValues}
+              setForm={setFormValue}
+            />
           </div>
         </div>
             
@@ -897,268 +708,102 @@ function MatchScout(props: any) {
       <div>
         <div className = 'radioRColumn'> 
           <div className = 'radioRow'>
-          <Flex vertical align='flex-start'>
-              <h2>#Coral Score L4</h2>
-              <Form.Item<FieldType> name="teleop_coral_scored_l4" rules={[{ required: true, message: 'Enter # of Coral Scored L4' }]}>
-                <InputNumber
-                  id="teleop_coral_scored_l4"
-                  type='number'
-                  pattern="\d*"
-                  min={0}
-                  onWheel={(e) => (e.target as HTMLElement).blur()}
-                  className="input"
-                  addonAfter={<Button onMouseDown={() => {
-                    setFormValue({ ...formValue, teleop_coral_scored_l4: formValue.teleop_coral_scored_l4 + 1 });
-                  }} className='incrementbutton'>+</Button>}
-                  addonBefore={<Button onMouseDown={() => {
-                    if (Number(formValue.teleop_coral_scored_l4) > 0) {
-                      setFormValue({ ...formValue, teleop_coral_scored_l4: formValue.teleop_coral_scored_l4 - 1 });
-                    }
-                  }} className='decrementbutton'>-</Button>}
-                />
-              </Form.Item>
-            </Flex>
-            
-          <Flex vertical align='flex-start'>
-              <h2>#Coral Missed L4</h2>
-              <Form.Item<FieldType> name="teleop_coral_missed_l4" rules={[{ required: true, message: 'Enter # of Coral Missed L4' }]}>
-                <InputNumber
-                  id="teleop_coral_missed_l4"
-                  type='number'
-                  pattern="\d*"
-                  min={0}
-                  onWheel={(e) => (e.target as HTMLElement).blur()}
-                  className="input"
-                  addonAfter={<Button onMouseDown={() => {
-                    setFormValue({ ...formValue, teleop_coral_missed_l4: formValue.teleop_coral_missed_l4 + 1 });
-                  }} className='incrementbutton'>+</Button>}
-                  addonBefore={<Button onMouseDown={() => {
-                    if (Number(formValue.teleop_coral_missed_l4) > 0) {
-                      setFormValue({ ...formValue, teleop_coral_missed_l4: formValue.teleop_coral_missed_l4 - 1 });
-                    }
-                  }} className='decrementbutton'>-</Button>}
-                />
-              </Form.Item>
-            </Flex>
+            <NumberInput
+              title={"#Coral Scored L4"}
+              name={"teleop_coral_scored_l4"}
+              message={"Enter # of coral scored for l4"}
+              setForm={setFormValue}
+            />
+              
+            <NumberInput
+              title={"#Coral Missed L4"}
+              name={"teleop_coral_missed_l4"}
+              message={"Enter # of coral missed for l4"}
+              setForm={setFormValue}
+            />
           </div>
         </div>
             
         <div className = 'radioRColumn'> 
           <div className = 'radioRow'>
-          <Flex vertical align='flex-start'>
-              <h2>#Coral Scored L3</h2>
-              <Form.Item<FieldType> name="teleop_coral_scored_l3" rules={[{ required: true, message: 'Enter # of Coral Scored L3' }]}>
-                <InputNumber
-                  id="teleop_coral_scored_l3"
-                  type='number'
-                  pattern="\d*"
-                  min={0}
-                  onWheel={(e) => (e.target as HTMLElement).blur()}
-                  className="input"
-                  addonAfter={<Button onMouseDown={() => {
-                    setFormValue({ ...formValue, teleop_coral_scored_l3: formValue.teleop_coral_scored_l3 + 1 });
-                  }} className='incrementbutton'>+</Button>}
-                  addonBefore={<Button onMouseDown={() => {
-                    if (Number(formValue.teleop_coral_scored_l3) > 0) {
-                      setFormValue({ ...formValue, teleop_coral_scored_l3: formValue.teleop_coral_scored_l3 - 1 });
-                    }
-                  }} className='decrementbutton'>-</Button>}
-                />
-              </Form.Item>
-            </Flex>
-            
-          <Flex vertical align='flex-start'>
-              <h2>#Coral Missed L3</h2>
-              <Form.Item<FieldType> name="teleop_coral_missed_l3" rules={[{ required: true, message: 'Enter # of Coral Missed L3' }]}>
-                <InputNumber
-                  id="teleop_coral_missed_l3"
-                  type='number'
-                  pattern="\d*"
-                  min={0}
-                  onWheel={(e) => (e.target as HTMLElement).blur()}
-                  className="input"
-                  addonAfter={<Button onMouseDown={() => {
-                    setFormValue({ ...formValue, teleop_coral_missed_l3: formValue.teleop_coral_missed_l3 + 1 });
-                  }} className='incrementbutton'>+</Button>}
-                  addonBefore={<Button onMouseDown={() => {
-                    if (Number(formValue.teleop_coral_missed_l3) > 0) {
-                      setFormValue({ ...formValue, teleop_coral_missed_l3: formValue.teleop_coral_missed_l3 - 1 });
-                    }
-                  }} className='decrementbutton'>-</Button>}
-                />
-              </Form.Item>
-            </Flex>
+            <NumberInput
+              title={"#Coral Scored L3"}
+              name={"teleop_coral_scored_l3"}
+              message={"Enter # of coral scored for l3"}
+              setForm={setFormValue}
+            />
+              
+            <NumberInput
+              title={"#Coral Missed L3"}
+              name={"teleop_coral_missed_l3"}
+              message={"Enter # of coral missed for l3"}
+              setForm={setFormValue}
+            />
           </div>
         </div>
         
         <div className = 'radioRColumn'> 
           <div className = 'radioRow'>
-          <Flex vertical align='flex-start'>
-              <h2>#Coral Scored L2</h2>
-              <Form.Item<FieldType> name="teleop_coral_scored_l2" rules={[{ required: true, message: 'Enter # of Coral Scored L2' }]}>
-                <InputNumber
-                  id="teleop_coral_scored_l2"
-                  type='number'
-                  pattern="\d*"
-                  min={0}
-                  onWheel={(e) => (e.target as HTMLElement).blur()}
-                  className="input"
-                  addonAfter={<Button onMouseDown={() => {
-                    setFormValue({ ...formValue, teleop_coral_scored_l2: formValue.teleop_coral_scored_l2 + 1 });
-                  }} className='incrementbutton'>+</Button>}
-                  addonBefore={<Button onMouseDown={() => {
-                    if (Number(formValue.teleop_coral_scored_l2) > 0) {
-                      setFormValue({ ...formValue, teleop_coral_scored_l2: formValue.teleop_coral_scored_l2 - 1 });
-                    }
-                  }} className='decrementbutton'>-</Button>}
-                />
-              </Form.Item>
-            </Flex>
-            
-          <Flex vertical align='flex-start'>
-              <h2>#Coral Missed L2</h2>
-              <Form.Item<FieldType> name="teleop_coral_missed_l2" rules={[{ required: true, message: 'Enter # of Coral Missed L2' }]}>
-                <InputNumber
-                  id="teleop_coral_missed_l2"
-                  type='number'
-                  pattern="\d*"
-                  min={0}
-                  onWheel={(e) => (e.target as HTMLElement).blur()}
-                  className="input"
-                  addonAfter={<Button onMouseDown={() => {
-                    setFormValue({ ...formValue, teleop_coral_missed_l2: formValue.teleop_coral_missed_l2 + 1 });
-                  }} className='incrementbutton'>+</Button>}
-                  addonBefore={<Button onMouseDown={() => {
-                    if (Number(formValue.teleop_coral_missed_l2) > 0) {
-                      setFormValue({ ...formValue, teleop_coral_missed_l2: formValue.teleop_coral_missed_l2 - 1 });
-                    }
-                  }} className='decrementbutton'>-</Button>}
-                />
-              </Form.Item>
-            </Flex>
+            <NumberInput
+              title={"#Coral Scored L2"}
+              name={"teleop_coral_scored_l2"}
+              message={"Enter # of coral scored for l2"}
+              setForm={setFormValue}
+            />
+              
+            <NumberInput
+              title={"#Coral Missed L2"}
+              name={"teleop_coral_missed_l2"}
+              message={"Enter # of coral missed for l2"}
+              setForm={setFormValue}
+            />
           </div>
         </div>
 
         <div className = 'radioRColumn'> 
           <div className = 'radioRow'>
-          <Flex vertical align='flex-start'>
-              <h2>#Coral Scored L1</h2>
-              <Form.Item<FieldType> name="teleop_coral_scored_l1" rules={[{ required: true, message: 'Enter # of Coral Scored L1' }]}>
-                <InputNumber
-                  id="teleop_coral_scored_l1"
-                  type='number'
-                  pattern="\d*"
-                  min={0}
-                  onWheel={(e) => (e.target as HTMLElement).blur()}
-                  className="input"
-                  addonAfter={<Button onMouseDown={() => {
-                    setFormValue({ ...formValue, teleop_coral_scored_l1: formValue.teleop_coral_scored_l1 + 1 });
-                  }} className='incrementbutton'>+</Button>}
-                  addonBefore={<Button onMouseDown={() => {
-                    if (Number(formValue.teleop_coral_scored_l1) > 0) {
-                      setFormValue({ ...formValue, teleop_coral_scored_l1: formValue.teleop_coral_scored_l1 - 1 });
-                    }
-                  }} className='decrementbutton'>-</Button>}
-                />
-              </Form.Item>
-            </Flex>
-            
-          <Flex vertical align='flex-start'>
-              <h2>#Coral Missed L1</h2>
-              <Form.Item<FieldType> name="teleop_coral_missed_l1" rules={[{ required: true, message: 'Enter # of Coral Missed L1' }]}>
-                <InputNumber
-                  id="teleop_coral_missed_l1"
-                  type='number'
-                  pattern="\d*"
-                  min={0}
-                  onWheel={(e) => (e.target as HTMLElement).blur()}
-                  className="input"
-                  addonAfter={<Button onMouseDown={() => {
-                    setFormValue({ ...formValue, teleop_coral_missed_l1: formValue.teleop_coral_missed_l1 + 1 });
-                  }} className='incrementbutton'>+</Button>}
-                  addonBefore={<Button onMouseDown={() => {
-                    if (Number(formValue.teleop_coral_missed_l1) > 0) {
-                      setFormValue({ ...formValue, teleop_coral_missed_l1: formValue.teleop_coral_missed_l1 - 1 });
-                    }
-                  }} className='decrementbutton'>-</Button>}
-                />
-              </Form.Item>
-            </Flex>
+            <NumberInput
+              title={"#Coral Scored L1"}
+              name={"teleop_coral_scored_l1"}
+              message={"Enter # of coral scored for l1"}
+              setForm={setFormValue}
+            />
+              
+            <NumberInput
+              title={"#Coral Missed L1"}
+              name={"teleop_coral_missed_l1"}
+              message={"Enter # of coral missed for l1"}
+              setForm={setFormValue}
+            />
           </div>
         </div>
 
         <div className = 'radioRColumn'> 
           <div className = 'radioRow'>
-          <Flex vertical align='flex-start'>
-              <h2>#Algae Scored in Net</h2>
-              <Form.Item<FieldType> name="teleop_algae_scored_net" rules={[{ required: true, message: 'Enter # of Algae Scored in Net' }]}>
-                <InputNumber
-                  id="teleop_algae_scored_net"
-                  type='number'
-                  pattern="\d*"
-                  min={0}
-                  onWheel={(e) => (e.target as HTMLElement).blur()}
-                  className="input"
-                  addonAfter={<Button onMouseDown={() => {
-                    setFormValue({ ...formValue, teleop_algae_scored_net: formValue.teleop_algae_scored_net + 1 });
-                  }} className='incrementbutton'>+</Button>}
-                  addonBefore={<Button onMouseDown={() => {
-                    if (Number(formValue.teleop_algae_scored_net) > 0) {
-                      setFormValue({ ...formValue, teleop_algae_scored_net: formValue.teleop_algae_scored_net - 1 });
-                    }
-                  }} className='decrementbutton'>-</Button>}
-                />
-              </Form.Item>
-            </Flex>
-            
-          <Flex vertical align='flex-start'>
-              <h2>#Algae Missed in Net</h2>
-              <Form.Item<FieldType> name="teleop_algae_missed_net" rules={[{ required: true, message: 'Enter # of Net Missed in Net' }]}>
-                <InputNumber
-                  id="teleop_algae_missed_net"
-                  type='number'
-                  pattern="\d*"
-                  min={0}
-                  onWheel={(e) => (e.target as HTMLElement).blur()}
-                  className="input"
-                  addonAfter={<Button onMouseDown={() => {
-                    setFormValue({ ...formValue, teleop_algae_missed_net: formValue.teleop_algae_missed_net + 1 });
-                  }} className='incrementbutton'>+</Button>}
-                  addonBefore={<Button onMouseDown={() => {
-                    if (Number(formValue.teleop_algae_missed_net) > 0) {
-                      setFormValue({ ...formValue, teleop_algae_missed_net: formValue.teleop_algae_missed_net - 1 });
-                    }
-                  }} className='decrementbutton'>-</Button>}
-                />
-              </Form.Item>
-            </Flex>
+            <NumberInput
+              title={"#Algae Scored in Net"}
+              name={"teleop_algae_scored_net"}
+              message={"Enter # of algae scored for net"}
+              setForm={setFormValue}
+            />
+              
+            <NumberInput
+              title={"#Algae Missed in Net"}
+              name={"teleop_algae_missed_net"}
+              message={"Enter # of algae missed for net"}
+              setForm={setFormValue}
+            />
           </div>
         </div>
 
         <div className = 'radioRColumn'> 
           <div className = 'radioRow'>
-          <Flex vertical align='flex-start'>
-              <h2>#Algae Processor</h2>
-              <Form.Item<FieldType> name="teleop_algae_scored_processor" rules={[{ required: true, message: 'Enter # of Algae Processor' }]}>
-                <InputNumber
-                  id="teleop_algae_scored_processor"
-                  type='number'
-                  pattern="\d*"
-                  min={0}
-                  onWheel={(e) => (e.target as HTMLElement).blur()}
-                  className="input"
-                  addonAfter={<Button onMouseDown={() => {
-                    setFormValue({ ...formValue, teleop_algae_scored_processor: formValue.teleop_algae_scored_processor + 1 });
-                  }} className='incrementbutton'>+</Button>}
-                  addonBefore={<Button onMouseDown={() => {
-                    if (Number(formValue.teleop_algae_scored_processor) > 0) {
-                      setFormValue({ ...formValue, teleop_algae_scored_processor: formValue.teleop_algae_scored_processor - 1 });
-                    }
-                  }} className='decrementbutton'>-</Button>}
-                />
-              </Form.Item>
-            </Flex>
-
+            <NumberInput
+              title={"#Algae Processor"}
+              name={"teleop_algae_scored_processor"}
+              message={"Enter # of algae scored for processor"}
+              setForm={setFormValue}
+            />
           </div>
         </div>
       </div>
@@ -1326,8 +971,7 @@ function MatchScout(props: any) {
         </Flex>
         <Flex justify='in-between'>
           <Flex vertical align='flex-start'>
-            <h2 className="fieldTitle">Driver Skill</h2>
-            <h2 className="fieldTitle">(1 - 4)</h2>
+            <h2 className="fieldTitle">Driver Skill<br/> (1 - 4)</h2>
             <Form.Item<FieldType> name="overall_driver_skill" rules={[{ required: true, message: 'Please input the driver skill rating!' }]}>
               <InputNumber
                 type='number'
@@ -1470,6 +1114,10 @@ function MatchScout(props: any) {
       <QrCode value={qrValue} />
     </>
   );
+}
+
+function sleep(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 export default MatchScout;

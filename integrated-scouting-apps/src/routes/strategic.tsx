@@ -9,19 +9,31 @@ import QrCode from "./parts/qrCodeViewer";
 import { isRoundNumberVisible, isInPlayoffs, getTeamsPlaying, getIndexNumber } from './utils/tbaRequest';
 
 const formDefaultValues = {
-  "match_event": null,
+  //"match_event": null,
   "team_number": 0,
-  "scouter_initials": null,
-  "match_level": null,
+  "scouter_initials": "",
+  "match_level": "",
   "match_number": 0,
-  "robot_position": null,
-  "comments": null,
+  "robot_position": "",
+  "comments": "",
   "red_alliance": [],
   "blue_alliance": [],
+}
+const noShowValues = {
+  //"match_event": null,
+  //"team_number": 0,
+  //"scouter_initials": null,
+  //"match_level": null,
+  //"match_number": 0,
+  //"robot_position": null,
+  "comments": "",
+  //"red_alliance": [],
+  //"blue_alliance": [],
 }
 
 function Strategic(props: any, text:any) {
   const [form] = Form.useForm();
+  const [formValue, setFormValue] = useState(formDefaultValues);
   const [tabNum, setTabNum] = useState("1");
   const [team_number, setTeamNum] = useState(0);
   const [teamsList, setTeamsList] = useState<string[]>([]);
@@ -32,7 +44,7 @@ function Strategic(props: any, text:any) {
   const [lastFormValue, setLastFormValue] = useState<any>(null);
   const [teamData, setTeamData] = useState<any>(null);
   const [inPlayoffs, setInPlayoffs] = useState(false);
-  const [robot_appeared, setRobot_appeared] = useState(true);
+  //const [robot_appeared, setRobot_appeared] = useState(true);
 
   useEffect(() => { document.title = props.title; return () => { } }, [props.title]);
   useEffect(() => {
@@ -109,7 +121,7 @@ function Strategic(props: any, text:any) {
       "match_number": event.match_number,
       "robot_position": event.robot_position,
       "comments": event.comments,
-      "robot_appeared": robot_appeared,
+      //"robot_appeared": robot_appeared,
     };
     const status = await tryFetch(body);
 
