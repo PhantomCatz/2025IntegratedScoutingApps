@@ -73,6 +73,8 @@ const formDefaultValues = {
   "overall_match_penalty": false,
   "overall_penalties_incurred": null,
   "overall_comments": null,
+  "overall_defense_quality" : 0,
+
   // Playoffs
   "red_alliance": "",
   "blue_alliance": "",
@@ -257,6 +259,7 @@ function MatchScout(props: any) {
       "overall_defended": event.overall_defended.sort().join(","),
       "overall_defended_by": event.overall_defended_by.sort().join(","),
       "overall_pushing": event.overall_pushing,
+      "overall_defense_quality" : event.overall_defense_quality,
       "overall_counter_defense": event.overall_counter_defense,
       "overall_driver_skill": event.overall_driver_skill,
       "overall_num_penalties": event.overall_num_penalties,
@@ -303,7 +306,6 @@ function MatchScout(props: any) {
       return false;
     }
   }
-  
   
   function updateAutonValues() {
     form.setFieldValue("auton_leave_starting_line", true);
@@ -816,16 +818,10 @@ function MatchScout(props: any) {
       endgame_climb_time: number,
     };
     const endgame_coral_intake_capability = [
-      { label: "Ground", value: "Ground" },
       { label: "Station", value: "Station" },
+      { label: "Ground", value: "Ground" },
       { label: "Both", value: "Both" },
       { label: "Neither", value: "Neither" },
-    ];
-    const endgame_coral_station = [
-      { label: "Top Station", value: "Top Station" },
-      { label: "Bottom Station", value: "Bottom Station" },
-      { label: "Both", value: "Both" },
-      { label: "Neither", value: "Neither"}
     ];
     const endgame_algae_intake_capability = [
       { label: "Reef Zone", value: "Reef Zone" },
@@ -844,11 +840,6 @@ function MatchScout(props: any) {
         <h2>Coral Intake Capability:</h2>
         <Form.Item name="endgame_coral_intake_capability" rules={[{ required: true, message: 'Enter Coral Intake Capability' }]}>
           <Select options={endgame_coral_intake_capability} className="input" />
-        </Form.Item>
-
-        <h2>Coral Station:</h2>
-        <Form.Item name="endgame_coral_station" rules={[{ required: true, message: 'Enter Coral Station' }]}>
-          <Select options={endgame_coral_station} className="input" />
         </Form.Item>
 
         <h2>Algae Intake Capability:</h2>
@@ -886,6 +877,7 @@ function MatchScout(props: any) {
       overall_pushing: number;
       overall_driver_skill: number;
       overall_counter_defense: number;
+      overall_defense_quality: number;
     };
     return (
       <div className='matchbody'>
@@ -915,6 +907,29 @@ function MatchScout(props: any) {
             rules={[{required: defendedIsVisible, message : "Please select the teams it defended!"}]}>
           <Select mode='multiple' options={opposingTeamNum.map((team) => ({ label: team, value: team }))} className="input" showSearch={false} style={{ display: defendedIsVisible ? 'inherit' : 'none' }} />
         </Form.Item>
+
+        <h2 style={{ display: defendedIsVisible ? 'inherit' : 'none' }}>Defense Quality (1 - 4):</h2>
+        <Form.Item<FieldType> name="overall_defense_quality"style={{ display: defendedIsVisible ? 'inherit' : 'none' }}
+            rules={[{required: defendedIsVisible, message : "Please input defene quality!"}]}>
+                <InputNumber
+                  type='number'
+                  pattern="\d*"
+                  min={0} max={4}
+                  onWheel={(e) => (e.target as HTMLElement).blur()}
+                  className="input"
+                  addonAfter={<Button onMouseDown={() => {
+                    if (Number(formValue.overall_defense_quality) < 4) {
+                      setFormValue({ ...formValue, overall_defense_quality: formValue.overall_defense_quality + 1 });
+                    }
+                  }} className='incrementbutton'>+</Button>}
+                  addonBefore={<Button onMouseDown={() => {
+                    if (Number(formValue.overall_defense_quality) > 0) {
+                      setFormValue({ ...formValue, overall_defense_quality: formValue.overall_defense_quality - 1 });
+                    }
+                  }} className='decrementbutton'>-</Button>}
+                />
+              </Form.Item>
+
         <h2 style={{ display: wasDefendedIsVisible ? 'inherit' : 'none' }}>Defended By:</h2>
         <Form.Item<FieldType> name="overall_defended_by" valuePropName="checked" style={{ display: wasDefendedIsVisible ? 'inherit' : 'none' }}
               rules={[{required: wasDefendedIsVisible, message : "Please select the teams it was defended by!"}]}>

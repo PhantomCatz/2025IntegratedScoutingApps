@@ -21,12 +21,16 @@ const formDefaultValues = {
   "number_of_motors": 0,
   "wheel_type": null,
   "coral_intake_capability": null,
+  "intake_width": null,
   "coral_scoring_l1": false,
   "coral_scoring_l2": false,
   "coral_scoring_l3": false,
   "coral_scoring_l4": false,
+  "can_remove_algae": false,
   "algae_intake_capability": null,
   "algae_scoring_capability": null,
+  "score_aiming": null,
+  "aiming_description": null,
   "climbing_capability": null,
   "pit_organization": 0,
   "team_safety": 0,
@@ -111,12 +115,16 @@ function PitScout(props: any) {
       "number_of_motors": event.number_of_motors,
       "wheel_type": event.wheel_type,
       "coral_intake_capability": event.coral_intake_capability,
+      "intake_width": event.intake_width,
       "coral_scoring_l1": event.coral_scoring_l1 || false,
       "coral_scoring_l2": event.coral_scoring_l2 || false,
       "coral_scoring_l3": event.coral_scoring_l3 || false,
       "coral_scoring_l4": event.coral_scoring_l4 || false,
+      "can_remove_algae": event.can_remove_algae || false,
       "algae_intake_capability": event.algae_intake_capability,
       "algae_scoring_capability": event.algae_scoring_capability,
+      "score_aiming": event.score_aiming,
+      "aiming_description": event.aiming_description,
       "climbing_capability": event.climbing_capability,
       "pit_organization": event.pit_organization,
       "team_safety": event.team_safety,
@@ -176,12 +184,16 @@ function PitScout(props: any) {
       number_of_motors: number;
       wheel_type: string;
       coral_intake_capability: string;
+      intake_width: string;
       algae_intake_capability: string;
       algae_scoring_capability: string;
+      score_aiming: string,
+      aiming_description: string,
       coral_scoring_l1: boolean;
       coral_scoring_l2: boolean;
       coral_scoring_l3: boolean;
       coral_scoring_l4: boolean;
+      can_remove_algae: boolean;
       climbing_capability: string;
       pit_organization: number;
       team_safety: number;
@@ -215,20 +227,23 @@ function PitScout(props: any) {
       { label: "Other", value: "Other" },
     ];
     const coral_intake_capability_options = [
-      { label: "Coral Station", value: "Coral Station" },
+      { label: "Coral Station - Small", value: "Coral Station - Small" },
+      { label: "Coral Station - Wide", value: "Coral Station - Wide" },
       { label: "Ground", value: "Ground" },
       { label: "Both", value: "Both" },
       { label: "Neither", value: "Neither" },
     ];
-    const algae_removal_capability_options = [
-      { label: "L2", value: "L2" },
-      { label: "L3", value: "L3" },
+    const intakeWidth = [
+      { label: "Full Width", value: "Full Width" },
+      { label: "Half Width", value: "Half Width" },
+      { label: "Claw/ Aiming", value: "Claw/ Aiming" },
+      { label: "Other", value: "Other" },
+    ];
+    const algaeintakeCap = [
+      { label: "Station", value: "Station" },
+      { label: "Ground", value: "Ground" },
       { label: "Both", value: "Both" },
       { label: "Neither", value: "Neither" },
-
-
-
-      
     ];
     const algae_intake_capability_options = [
       { label: "Reef Zone", value: "Reef Zone" },
@@ -241,6 +256,10 @@ function PitScout(props: any) {
       { label: "Processor", value: "Processor" },
       { label: "Both", value: "Both" },
       { label: "Neither", value: "Neither" },
+    ];
+    const scoreAiming = [
+      { label: "Auto", value: "Auto" },
+      { label: "Manual", value: "Manual" },
     ];
     const climbing_capability_options = [
       { label: "Shallow", value: "Shallow" },
@@ -370,8 +389,18 @@ function PitScout(props: any) {
             dropdownStyle={{ maxHeight: 'none' }}
           />
         </Form.Item>
-        <h2>Coral Intake Capability</h2>
-        <Form.Item name="coral_intake_capability" rules={[{ required: true, message: 'Please input the coral intake capability!' }]}>
+        <h2>Intake Width</h2>
+          <Form.Item name="intake_width" rules={[{ required: true, message: 'Please input the intake width!' }]}>
+          <Select
+            options={intakeWidth}
+            className="input"
+            dropdownMatchSelectWidth={false}
+            dropdownStyle={{ maxHeight: 'none' }}
+          />
+        </Form.Item>
+        <h2>Coral Intake Type</h2>
+          <Form.Item name="coral_intake_capability" rules={[{ required: true, message: 'Please input the intake type!' }]}>
+
           <Select
             options={coral_intake_capability_options}
             className="input"
@@ -396,24 +425,48 @@ function PitScout(props: any) {
         <Form.Item<FieldType> valuePropName="checked" name="coral_scoring_l4">
           <Checkbox className='input_checkbox' />
         </Form.Item>
+        <h2>Can Remove Algae</h2>
+        <Form.Item<FieldType> valuePropName="checked" name="can_remove_algae">
+          <Checkbox className='input_checkbox' />
+        </Form.Item>
         <h2>Algae Intake Capability</h2>
-        <Form.Item name="algae_intake_capability" rules={[{ required: true, message: 'Please input the algae intake capability!' }]}>
-          <Select
-            options={algae_intake_capability_options}
-            className="input"
-            dropdownMatchSelectWidth={false}
-            dropdownStyle={{ maxHeight: 'none' }}
-          />
-        </Form.Item>
+        <Form.Item name="algae_intake_capability" rules={[{ required: true, message: 'Please input the Algae intake capability!' }]}>
+        <Select
+          options={algaeintakeCap}
+          className="input"
+          dropdownMatchSelectWidth={false}
+          dropdownStyle={{ maxHeight: 'none' }}
+        />
+      </Form.Item>
         <h2>Algae Scoring Capability</h2>
-        <Form.Item name="algae_scoring_capability" rules={[{ required: true, message: 'Please input the algae Scoring capability!' }]}>
-          <Select
-            options={algae_scoring_capability_options}
-            className="input"
-            dropdownMatchSelectWidth={false}
-            dropdownStyle={{ maxHeight: 'none' }}
-          />
-        </Form.Item>
+        <Form.Item name="algae_scoring_capability" rules={[{ required: true, message: 'Please input the Algae Scoring capability!' }]}>
+        <Select
+          options={algae_intake_capability_options}
+          className="input"
+          dropdownMatchSelectWidth={false}
+          dropdownStyle={{ maxHeight: 'none' }}
+        />
+      </Form.Item>
+      <h2>Coral and Algae Score Aiming</h2>
+        <Form.Item name="score_aiming" rules={[{ required: true, message: 'Please input the Coral and Algae Score Aiming!' }]}>
+        <Select
+          options={scoreAiming}
+          className="input"
+          dropdownMatchSelectWidth={false}
+          dropdownStyle={{ maxHeight: 'none' }}
+        />
+      </Form.Item>
+
+        <h2>Aiming Description</h2>
+        <Form.Item<FieldType>
+          name="aiming_description"
+          rules={[
+            { required: true, message: 'Please input Aiming Description!' },
+          ]}
+        >
+         <TextArea style={{ verticalAlign: 'center' }} className='textbox_input' />
+         </Form.Item>
+
         <h2>Climbing Capability</h2>
         <Form.Item<FieldType> name="climbing_capability" rules={[{ required: true, message: 'Please input the climbing capability!' }]}>
           <Select options={climbing_capability_options} className="input" />
