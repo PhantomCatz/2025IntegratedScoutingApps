@@ -5,6 +5,7 @@ import darkLogo from '../../public/images/dark_logo.png';
 import '../../public/stylesheets/style.css';
 import '../../public/stylesheets/header.css';
 import React, { useState, useEffect } from 'react';
+import useLocalStorage from 'react-use/lib/useLocalStorage';
 
 /**
  * Delocalised header
@@ -17,9 +18,9 @@ function Header(props: any) {
 	const name = props.name || "No name set";
 	const backLink = props.back || "/";
 
-	const [theme, setTheme] = useState<'light' | 'dark' | 'pink'>('dark'); 
+	const [theme, setTheme] = useLocalStorage<any>('theme', 'dark'); 
 
-	const colors = {
+	const colors : any = {
 		light: {
 			'--pc-blue': ' #ffffff',// #32a7dc
 			'--font-color': '#000000',
@@ -30,10 +31,10 @@ function Header(props: any) {
 		},
 		pink: {
 			'--pc-blue': '#f79ac0',
-			'--font-color': ' #f1f3ffff',
+			'--font-color': 'rgb(255, 241, 248)',
 		},
 	};
-	const icons = {
+	const icons : any = {
 		light: {
 			icon: darkLogo,
 			back: darkBack,
@@ -65,7 +66,7 @@ function Header(props: any) {
 	useEffect(() => {
 		const root = document.documentElement;
 		for(const [variable, color] of Object.entries(colors[theme])) {
-			root.style.setProperty(variable, color); 
+			root.style.setProperty(variable, color as any); 
 		}
 	}, [theme]);
 
@@ -75,7 +76,7 @@ function Header(props: any) {
 			<a href={backLink}><img className={"backImg"} src={icons[theme].back} alt=''></img></a>}
 			<img
 				className={"logoImg"}
-				src={icons[theme].icon}
+				src={icons[theme].icon} 
 				onClick={handleLogoClick} 
 				onDoubleClick={handleLogoDoubleClick} 
 				alt="Logo"
