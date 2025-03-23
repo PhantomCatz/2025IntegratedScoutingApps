@@ -9,6 +9,7 @@
 	--pc-blue: #000000;
 	--font-color: #ffffff;
 }
+
 @font-face {
 	font-family: Audiowide;
 	src: url('../fonts/Audiowide-Regular.woff') format('woff');
