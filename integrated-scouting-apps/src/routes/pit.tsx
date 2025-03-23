@@ -48,6 +48,8 @@ function PitScout(props: any) {
   const [loading, setLoading] = useState(false);
   const [qrValue, setQrValue] = useState<any>();
   const [robotImageURI, setRobotImageURI] = useState<string[]>([]);
+  const [robotImages, setRobotImages] = useState<any>();
+  const robotImageInput = useRef(null);
 
   useEffect(() => {
     document.title = props.title;
@@ -102,6 +104,10 @@ function PitScout(props: any) {
         console.error("Error in fetching teams: ", err.message);
       }})();
   }, [match_event]);
+  useEffect(() => {
+
+    console.log(`robotImageURI=`, robotImageURI.map((x) => "adsf"));
+  }, [robotImageURI]);
 
   async function submitData(event: any) {
     console.log("event=", event);
@@ -560,39 +566,30 @@ function PitScout(props: any) {
           <TextArea style={{ verticalAlign: 'center' }} className='textbox_input' />
         </Form.Item>
         <h2 style={{ display: loading ? 'inherit' : 'none' }}>Submitting data...</h2>
+        
         <Form.Item<FieldType> name="robot_images">
-          <Upload
-            beforeUpload={(file) => {
-              const isImage = file.type.startsWith("image");
-              if (!isImage) {
-                window.alert(`${file.name} is not an image`);
-                return Upload.LIST_IGNORE;
-              }
-              return true;
-            }}
-            onChange={async function(info) {
-              if(info.event) {
-                return;
-              }
+          <>
+            <label className="robotImageLabel" htmlFor="robotImageInput">Select Image{robotImageURI.length ? ` (${robotImageURI.length} images)` : ""}</label>
+            <input
+              ref={robotImageInput}
+              id="robotImageInput"
+              type="file"
+              multiple
+              onChange={async (event) => {
+                const fileList = event.target.files || [];
+                const copy = [...(fileList as any)];
 
-              const files : string[] = [];
-              const fileList = info.fileList;
+                const files : string[] = [];
 
-              for(let i = 0; i < fileList.length; i++) {
-                const image : string = await readImage(fileList[i].originFileObj);
+                for(let i = 0; i < copy.length; i++) {
+                  const image : string = await readImage(copy[i]);
 
-                files.push(image);
-              }
+                  files.push(image);
+                }
 
-              //const fileSet = new Set<string>(files);
-              //setRobotImageURI(fileSet);
-              setRobotImageURI(files);
-            }}
-            style={{ width: '100%' }}
-            name='robot_images'
-          >
-            <Button className='input' style={{ marginBottom: '5%' }}>Upload Images</Button>
-          </Upload>
+                setRobotImageURI(files);
+            }}/>
+          </>
         </Form.Item>
         <Input type="submit" value="Submit" className='submit' style={{ marginBottom: '5%' }} />
       </div>
