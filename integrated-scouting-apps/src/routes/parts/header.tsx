@@ -5,7 +5,7 @@ import darkLogo from '../../public/images/dark_logo.png';
 import '../../public/stylesheets/style.css';
 import '../../public/stylesheets/header.css';
 import React, { useState, useEffect } from 'react';
-import useLocalStorage from 'react-use/lib/useLocalStorage';
+import {useLocalStorage, } from 'react-use';
 
 /**
  * Delocalised header

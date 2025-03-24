@@ -57,10 +57,10 @@ function QrCode(props : any) {
 	}
 
 	const shownValue = vals.join(sep).replaceAll("\n", "\\n");
-	if (shouldShow) {
-		console.log("Current key map: " + keys.join("$"));
-		console.log("Current values: " + vals.join("$"));
-	}
+	//if (shouldShow) {
+	//	console.log("Current key map: " + keys.join("$"));
+	//	console.log("Current values: " + vals.join("$"));
+	//}
 	
 	
 	const valuesToDisplay : {key : any, display : string}[] = [

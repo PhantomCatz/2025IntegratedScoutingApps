@@ -1,14 +1,14 @@
 import '../public/stylesheets/style.css';
 import '../public/stylesheets/match.css';
 import { useEffect, useState } from 'react';
-import { Tabs, Input, Form, Select, Checkbox, InputNumber, Flex, Button, Radio} from 'antd';
+import { Tabs, Input, Form, Checkbox, InputNumber, Flex, Button, Radio} from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import { Footer } from 'antd/es/layout/layout';
 import Header from "./parts/header";
 import QrCode from './parts/qrCodeViewer';
 import {isInPlayoffs, isRoundNumberVisible, getTeamsPlaying, getIndexNumber, getAllianceOffset } from './utils/tbaRequest';
 import type { TabsProps, RadioChangeEvent } from "antd";
-import { NumberInput, } from './parts/formItems';
+import { NumberInput, Select } from './parts/formItems';
 
 interface SpacerProps {
   height?: string;
@@ -65,6 +65,7 @@ const formDefaultValues = {
   "overall_defended": [],
   "overall_defended_by": [],
   "overall_pushing": 0,
+  "overall_defense_quality": 0,
   "overall_counter_defense": 0,
   "overall_driver_skill": 0,
   "overall_num_penalties": 0,
@@ -72,7 +73,6 @@ const formDefaultValues = {
   "overall_match_penalty": false,
   "overall_penalties_incurred": null,
   "overall_comments": null,
-  "overall_defense_quality" : 0,
 
   // Playoffs
   "red_alliance": "",
@@ -113,7 +113,6 @@ const noShowValues = {
   "teleop_algae_scored_processor": 0,
   // Endgame
   "endgame_coral_intake_capability": "Neither",
-  "endgame_coral_station": "Neither",
   "endgame_algae_intake_capability": "Neither",
   "endgame_climb_successful": false,
   "endgame_climb_type": "Neither",
@@ -125,6 +124,7 @@ const noShowValues = {
   "overall_defended": [],
   "overall_defended_by": [],
   "overall_pushing": 0,
+  "overall_defense_quality": 0,
   "overall_counter_defense": 0,
   "overall_driver_skill": 0,
   "overall_num_penalties": 0,
@@ -191,8 +191,8 @@ function MatchScout(props: any) {
       "teleop_algae_missed_net",
       "teleop_algae_scored_processor",
       "overall_num_penalties",
-      "overall_defense_quality",
       "overall_pushing",
+      "overall_defense_quality",
       "overall_counter_defense",
       "overall_driver_skill",
     ];
@@ -262,6 +262,8 @@ function MatchScout(props: any) {
       "overall_counter_defense": event.overall_counter_defense,
       "overall_driver_skill": event.overall_driver_skill,
       "overall_num_penalties": event.overall_num_penalties,
+      "overall_tech_penalty": event.overall_tech_penalty,
+      "overall_match_penalty": event.overall_match_penalty,
       "overall_penalties_incurred": event.overall_penalties_incurred,
       "overall_comments": event.overall_comments,
       "robot_appeared": robot_appeared,
@@ -340,6 +342,7 @@ function MatchScout(props: any) {
       form.setFieldValue("match_number", match_number + 1);
       form.setFieldValue("match_level", match_level);
       form.setFieldValue("robot_position", robot_position);
+      setRobot_appeared(true);
 
       await calculateMatchLevel();
       await updateTeamNumber();
@@ -478,52 +481,61 @@ function MatchScout(props: any) {
             }}
           /> 
         </Form.Item>
-        <h2>Match Level:</h2>
-        <Form.Item<FieldType> name="match_level" rules={[{ required: true, message: 'Enter match level' }]}>
-          <Select options={rounds} onChange={() => { calculateMatchLevel(); updateTeamNumber(); }} className="input" />
-        </Form.Item>
+        <Select
+          title={"Match Level"}
+          name={"match_level"}
+          options={rounds}
+          onChange={() => { calculateMatchLevel(); updateTeamNumber(); }}
+        />
 
         <div className={"playoff-alliances"} style={{ display: inPlayoffs ? 'inherit' : 'none' }}>
-          <h2>Red Alliance</h2>
-          <Form.Item<FieldType> name="red_alliance" rules={[{ required: inPlayoffs ? true : false, message: 'Enter the red alliance' }]}>
-            <Select
-              options={playoff_alliances}
-              onChange={() => { calculateMatchLevel(); updateTeamNumber(); }}
-              className="input"
-              dropdownMatchSelectWidth={false}
-              dropdownStyle={{ maxHeight: 'none' }}
-            />
-          </Form.Item>
+          <Select
+            title={"Red Alliance"}
+            name={"red_alliance"}
+            required={inPlayoffs}
+            message={"Enter the red alliance"}
+            options={playoff_alliances}
+            onChange={() => { calculateMatchLevel(); updateTeamNumber(); }}
+          />
           
-          <h2>Blue Alliance</h2>
-          <Form.Item<FieldType> name="blue_alliance" rules={[{ required: inPlayoffs ? true : false, message: 'Enter the blue alliance' }]}>
-            <Select
-              options={playoff_alliances}
-              onChange={() => { calculateMatchLevel(); updateTeamNumber(); }}
-              className="input"
-              dropdownMatchSelectWidth={false}
-              dropdownStyle={{ maxHeight: 'none' }}
-            />
-          </Form.Item>
-          
+          <Select
+            title={"Blue Alliance"}
+            name={"blue_alliance"}
+            required={inPlayoffs}
+            message={"Enter the blue alliance"}
+            options={playoff_alliances}
+            onChange={() => { calculateMatchLevel(); updateTeamNumber(); }}
+          />
         </div>
         
-        <h2>Match #</h2>
-        <Form.Item<FieldType> name="match_number" rules={[{ required: true, message: 'Enter match #' }]}>
-          <InputNumber min={1} onChange={updateTeamNumber} className="input" type='number' pattern="\d*" onWheel={(e) => (e.target as HTMLElement).blur()}/>
-        </Form.Item>
+        <NumberInput
+          title={"Match #"}
+          name={"match_number"}
+          message={"Enter match #"}
+          onChange={updateTeamNumber}
+          min={1}
+          setForm={setFormValue}
+          buttons={false}
+          align={"left"}
+        />
 
-        <div style={{ display: roundIsVisible ? 'inherit' : 'none' }}>
-          <h2 >Round #</h2>
-          <Form.Item<FieldType> name="round_number" rules={[{ required: roundIsVisible ? true : false, message: 'Enter round #' }]} >
-            <InputNumber min={1} onChange={updateTeamNumber} className="input" type='number' pattern="\d*" onWheel={(e) => (e.target as HTMLElement).blur()}/>
-          </Form.Item>
-        </div>
+        <NumberInput
+          title={"Round #"}
+          name={"round_number"}
+          message={"Enter round #"}
+          onChange={updateTeamNumber}
+          min={1}
+          setForm={setFormValue}
+          shown={roundIsVisible}
+        />
 
-        <h2>Robot Position:</h2>
-        <Form.Item<FieldType> name="robot_position" rules={[{ required: true, message: 'Enter robot position' }]}>
-          <Select options={robot_position} onChange={updateTeamNumber} className="input"  listItemHeight={10} listHeight={500} placement='bottomLeft'/>
-        </Form.Item>
+        <Select
+          title={"Robot Position"}
+          name={"robot_position"}
+          message={"Enter robot position"}
+          options={robot_position}
+          onChange={updateTeamNumber}
+        />
 
        <Button
          className={"noShowButton"}
@@ -836,23 +848,31 @@ function MatchScout(props: any) {
     ];
     return (
       <>
-        <h2>Coral Intake Capability:</h2>
-        <Form.Item name="endgame_coral_intake_capability" rules={[{ required: true, message: 'Enter Coral Intake Capability' }]}>
-          <Select options={endgame_coral_intake_capability} className="input" />
-        </Form.Item>
+        <Select
+          title={"Coral Intake Capability"}
+          name={"endgame_coral_intake_capability"}
+          message={"Enter coral intake capability"}
+          options={endgame_coral_intake_capability}
+        />
 
-        <h2>Algae Intake Capability:</h2>
-        <Form.Item name="endgame_algae_intake_capability" rules={[{ required: true, message: 'Enter Algae Intake Capability' }]}>
-          <Select options={endgame_algae_intake_capability} className="input" />
-        </Form.Item>
+        <Select
+          title={"Algae Intake Capability"}
+          name={"endgame_algae_intake_capability"}
+          message={"Enter algae intake capability"}
+          options={endgame_algae_intake_capability}
+        />
         <h2>Climb Successful?</h2>
         <Form.Item<FieldType> name ="endgame_climb_successful" valuePropName="checked">
           <Checkbox className='input_checkbox' />
         </Form.Item>
-        <h2>Climb Type:</h2>
-        <Form.Item name="endgame_climb_type" rules={[{ required: true, message: 'Enter Climb Type' }]}>
-          <Select options={endgame_climb_type} className="input" />
-        </Form.Item>
+
+        <Select
+          title={"Climb Type"}
+          name={"endgame_climb_type"}
+          message={"Enter climb type"}
+          options={endgame_climb_type}
+        />
+
         <h2>Climb Time (Seconds):</h2>
         <Form.Item<FieldType> name="endgame_climb_time" rules={[{ required: true, message: 'Enter Climb Time (Seconds)' }]}>
           <InputNumber min={1} className="input" type='number' pattern="\d*" onWheel={(e) => (e.target as HTMLElement).blur()}/>
@@ -869,15 +889,18 @@ function MatchScout(props: any) {
       overall_was_defended: boolean;
       overall_defended_by: string;
       overall_num_penalties: number;
+      overall_match_penalty: string;
+      overall_tech_penalty: string;
       overall_penalties_incurred: string;
-      overall_comments: string;
-      matchpen: string;
-      techpen: string;
       overall_pushing: number;
       overall_driver_skill: number;
       overall_counter_defense: number;
       overall_defense_quality: number;
+      overall_comments: string;
     };
+
+    const opposingTeams = opposingTeamNum.map((team) => ({ label: team, value: team }));
+
     return (
       <div className='matchbody'>
         <Flex justify='in-between'>
@@ -901,151 +924,95 @@ function MatchScout(props: any) {
           </Flex>
         </Flex>
 
-        <h2 style={{ display: defendedIsVisible ? 'inherit' : 'none' }}>Defended:</h2>
-        <Form.Item<FieldType> name="overall_defended" valuePropName="checked" style={{ display: defendedIsVisible ? 'inherit' : 'none' }}
-            rules={[{required: defendedIsVisible, message : "Please select the teams it defended!"}]}>
-          <Select mode='multiple' options={opposingTeamNum.map((team) => ({ label: team, value: team }))} className="input" showSearch={false} style={{ display: defendedIsVisible ? 'inherit' : 'none' }} />
-        </Form.Item>
+        <div
+          style={{
+            display: defendedIsVisible ? 'inherit' : 'none' ,
+          }}
+        >
+          <Select
+            title={"Defended"}
+            name={"overall_defended"}
+            required={defendedIsVisible}
+            message={"Please select the teams it defended"}
+            options={opposingTeams}
+            multiple
+          />
 
-        <h2 style={{ display: defendedIsVisible ? 'inherit' : 'none' }}>Defense Quality (1 - 4):</h2>
-        <Form.Item<FieldType> name="overall_defense_quality"style={{ display: defendedIsVisible ? 'inherit' : 'none' }}
-            rules={[{required: defendedIsVisible, message : "Please input defend quality!"}]}>
-                <InputNumber
-                  type='number'
-                  pattern="\d*"
-                  min={0} max={4}
-                  onWheel={(e) => (e.target as HTMLElement).blur()}
-                  className="input"
-                  addonAfter={<Button onMouseDown={() => {
-                    if (Number(formValue.overall_defense_quality) < 4) {
-                      setFormValue({ ...formValue, overall_defense_quality: formValue.overall_defense_quality + 1 });
-                    }
-                  }} className='incrementbutton'>+</Button>}
-                  addonBefore={<Button onMouseDown={() => {
-                    if (Number(formValue.overall_defense_quality) > 0) {
-                      setFormValue({ ...formValue, overall_defense_quality: formValue.overall_defense_quality - 1 });
-                    }
-                  }} className='decrementbutton'>-</Button>}
-                />
-              </Form.Item>
+          <NumberInput
+            title={"Defense Quality (1 - 4)"}
+            name={"overall_defense_quality"}
+            required={defendedIsVisible}
+            message={"Please input defense quality"}
+            min={0}
+            max={4}
+            setForm={setFormValue}
+          />
+        </div>
 
-        <h2 style={{ display: wasDefendedIsVisible ? 'inherit' : 'none' }}>Defended By:</h2>
-        <Form.Item<FieldType> name="overall_defended_by" valuePropName="checked" style={{ display: wasDefendedIsVisible ? 'inherit' : 'none' }}
-              rules={[{required: wasDefendedIsVisible, message : "Please select the teams it was defended by!"}]}>
-          <Select mode='multiple' options={opposingTeamNum.map((team) => ({ label: team, value: team }))} className="input" showSearch={false} style={{ display: wasDefendedIsVisible ? 'inherit' : 'none' }} />
-        </Form.Item>
+        <div
+          style={{
+            display: wasDefendedIsVisible ? 'inherit' : 'none' ,
+          }}
+        >
+          <Select
+            title={"Defended By"}
+            name={"overall_defended_by"}
+            required={wasDefendedIsVisible}
+            message={"Please select the teams it was defended by"}
+            options={opposingTeams}
+            multiple
+            shown={wasDefendedIsVisible}
+          />
+          <NumberInput
+            title={<>Counter Defense<br />(1 - 4)</>}
+            name={"overall_counter_defense"}
+            required={wasDefendedIsVisible}
+            message={"Please input the counter-defense rating"}
+            min={0}
+            max={4}
+            setForm={setFormValue}
+          />
+        </div>
 
         <Flex justify='in-between'>
-          <Flex vertical align='flex-start'>
-            <h2 className="fieldTitle">Pushing</h2>
-            <h2 className="fieldTitle">(1 - 4)</h2>
-            <Form.Item<FieldType> name="overall_pushing" rules={[{ required: true, message: 'Please input the pushing rating!' }]}>
-              <InputNumber
-                type='number'
-                pattern="\d*"
-                min={0} max={4}
-                onWheel={(e) => (e.target as HTMLElement).blur()}
-                className="input"
-                addonAfter={<Button onMouseDown={() => {
-                  if (Number(formValue.overall_pushing) < 4) {
-                    setFormValue({ ...formValue, overall_pushing: formValue.overall_pushing + 1 });
-                  }
-                }} className='incrementbutton'>+</Button>}
-                addonBefore={<Button onMouseDown={() => {
-                  if (Number(formValue.overall_pushing) > 0) {
-                    setFormValue({ ...formValue, overall_pushing: formValue.overall_pushing - 1 });
-                  }
-                }} className='decrementbutton'>-</Button>}
-              />
-            </Form.Item>
-          </Flex>
-          <Flex vertical align='flex-start'>
-            <h2 className="fieldTitle">Counter Defense</h2>
-            <h2 className="fieldTitle">(1 - 4)</h2>
-            <Form.Item<FieldType> name="overall_counter_defense" rules={[{ required: true, message: 'Please input the counter-defense rating!' }]}>
-              <InputNumber
-                type='number'
-                pattern="\d*"
-                min={0} max={4}
-                onWheel={(e) => (e.target as HTMLElement).blur()}
-                className="input"
-                addonAfter={<Button onMouseDown={() => {
-                  if (Number(formValue.overall_counter_defense) < 4) {
-                    setFormValue({ ...formValue, overall_counter_defense: formValue.overall_counter_defense + 1 });
-                  }
-                }} className='incrementbutton'>+</Button>}
-                addonBefore={<Button onMouseDown={() => {
-                  if (Number(formValue.overall_counter_defense) > 0) {
-                    setFormValue({ ...formValue, overall_counter_defense: formValue.overall_counter_defense - 1 });
-                  }
-                }} className='decrementbutton'>-</Button>}
-              />
-            </Form.Item>
-          </Flex>
+          <NumberInput
+            title={<>Pushing (1 - 4)</>}
+            name={"overall_pushing"}
+            message={"Please input the pushing rating"}
+            min={0}
+            max={4}
+            setForm={setFormValue}
+          />
+          <NumberInput
+            title={<>Driver Skill (1 - 4)</>}
+            name={"overall_driver_skill"}
+            message={"Please input the driver skill rating"}
+            min={0}
+            max={4}
+            setForm={setFormValue}
+          />
         </Flex>
         <Flex justify='in-between'>
-          <Flex vertical align='flex-start'>
-            <h2 className="fieldTitle">Driver Skill<br/> (1 - 4)</h2>
-            <Form.Item<FieldType> name="overall_driver_skill" rules={[{ required: true, message: 'Please input the driver skill rating!' }]}>
-              <InputNumber
-                type='number'
-                pattern="\d*"
-                min={0} max={4}
-                onWheel={(e) => (e.target as HTMLElement).blur()}
-                className="input"
-                addonAfter={<Button onMouseDown={() => {
-                  if (Number(formValue.overall_driver_skill) < 4) {
-                    setFormValue({ ...formValue, overall_driver_skill: formValue.overall_driver_skill + 1 });
-                  }
-                }} className='incrementbutton'>+</Button>}
-                addonBefore={<Button onMouseDown={() => {
-                  if (Number(formValue.overall_driver_skill) > 0) {
-                    setFormValue({ ...formValue, overall_driver_skill: formValue.overall_driver_skill - 1 });
-                  }
-                }} className='decrementbutton'>-</Button>}
-              />
-            </Form.Item>
-          </Flex>
-          <Flex vertical align='flex-start'>
-          <h2 className="fieldTitle">Num Penalties</h2>
-          <h2 className="fieldTitle">&nbsp;</h2>
-            <Form.Item<FieldType> name="overall_num_penalties" rules={[{ required: true, message: 'Enter # of incurred penalties' }]}>
-              <InputNumber
-                type='number'
-                pattern="\d*"
-                min={0}
-                onWheel={(e) => (e.target as HTMLElement).blur()}
-                className="input"
-                addonAfter={<Button onMouseDown={() => {
-                  setFormValue({ ...formValue, overall_num_penalties: formValue.overall_num_penalties + 1 });
-                  setPenaltiesIsVisible(true);
-                }} className='incrementbutton'>+</Button>}
-                addonBefore={<Button onMouseDown={() => {
-                  if (Number(formValue.overall_num_penalties) > 1) {
-                    setFormValue({ ...formValue, overall_num_penalties: formValue.overall_num_penalties - 1 });
-                  }
-                  else if (Number(formValue.overall_num_penalties) <= 1 && Number(formValue.overall_num_penalties) > 0) {
-                    setFormValue({ ...formValue, overall_num_penalties: formValue.overall_num_penalties - 1 });
-                    setPenaltiesIsVisible(false);
-                  }
-                  else {
-                    setPenaltiesIsVisible(false);
-                  }
-                }} className='decrementbutton'>-</Button>}
-              />
-            </Form.Item>
-          </Flex>
+          <NumberInput
+            title={<>Num Penalties</>}
+            name={"overall_num_penalties"}
+            message={"Enter # of incurred penalties"}
+            min={0}
+            onIncrease={() => setPenaltiesIsVisible(true)}
+            onDecrease={(num) => {setPenaltiesIsVisible((num || 0) > 0)}}
+            setForm={setFormValue}
+          />
         </Flex>
         <Flex justify='in-between' style={{ display: penaltiesIsVisible ? 'inherit' : 'none'}}>
           <Flex vertical align='flex-start'>
             <h2>Match</h2>
-            <Form.Item<FieldType> name="matchpen" valuePropName="checked" >
+            <Form.Item<FieldType> name="overall_match_penalty" valuePropName="checked" >
               <Checkbox className='input_checkbox' />
             </Form.Item>
           </Flex>
           <Flex vertical align='flex-start'>
             <h2>Tech</h2>
-            <Form.Item<FieldType> name="techpen" valuePropName="checked">
+            <Form.Item<FieldType> name="overall_tech_penalty" valuePropName="checked">
               <Checkbox className='input_checkbox' />
             </Form.Item>
           </Flex>
