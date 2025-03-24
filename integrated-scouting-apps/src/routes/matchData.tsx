@@ -197,7 +197,8 @@ function TeamData(props: any) {
       case "overall_match_penalty":
         result = (<div className={`booleanValue booleanValue__${!!value}`} key={`field`}>&nbsp;</div>);
         location = field;
-        hasValue = !!value;
+		// False for falsey values not in the list
+        hasValue = ["robot_appeared"].includes(field) != value;
         break;
       case "overall_comments":
         result = value.replaceAll("\\n", "\n");

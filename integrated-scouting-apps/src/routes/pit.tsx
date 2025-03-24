@@ -264,8 +264,10 @@ function PitScout(props: any) {
       { label: "Neither", value: "Neither" },
     ];
     const scoreAiming = [
-      { label: "Auto", value: "Auto" },
-      { label: "Manual", value: "Manual" },
+      { label: "Both", value: "Both" },
+      { label: "Only Coral", value: "Only Coral" },
+      { label: "Only Algae", value: "Only Algae" },
+      { label: "Neither", value: "Neither" },
     ];
     const climbing_capability_options = [
       { label: "Shallow", value: "Shallow" },
