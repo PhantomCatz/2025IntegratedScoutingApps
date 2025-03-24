@@ -50,6 +50,7 @@ async function requestDatabase(query, substitution, forEach) {
 
 		await conn.end();
 
+		//console.log(`result=`, result);
 		return result;
 	} catch(err) {
 		console.log("Failed to resolve request:");

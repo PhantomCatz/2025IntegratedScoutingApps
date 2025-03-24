@@ -25,29 +25,27 @@ import { HashRouter, Routes, Route } from 'react-router-dom';
 const rootElement = document.getElementById('root') as HTMLElement;
 const root = ReactDOM.createRoot(rootElement);
 
-// Debounce alerting because React runs it twice
+// Debounce alerting because React runs it twice and for less annoyance
 window.alert = (function() {
   const alert = globalThis.window.alert;
   let id : any;
-  let lastMessage = "";
+  let lastMessage : any[] = [];
 
   return function(message) {
     clearTimeout(id);
 
-    if(message !== lastMessage) {
-      lastMessage = lastMessage ?
-        `\n${message}` :
-        message;
+    if(!lastMessage.includes(message)) {
+      lastMessage.push(message);
     }
 
     id = setTimeout(function() {
-      if(!lastMessage) {
+      if(!lastMessage?.length) {
         return;
       }
 
-      alert(lastMessage);
-      lastMessage = "";
-    }, 100);
+      alert(lastMessage.join("\n"));
+      lastMessage = [];
+    }, 500);
   }
 })();
 //window.alert = () => {};

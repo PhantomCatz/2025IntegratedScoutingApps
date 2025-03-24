@@ -13,7 +13,6 @@ const DATA_COLUMNS = {
     "Scouter Initials": "scouter_initials",
     "Match Level": "match_level",
     "Match #": "match_number",
-    "Robot Starting Position": "robot_starting_position",
     "Robot Appeared": "robot_appeared",
   },
   "Teleop": {
@@ -48,6 +47,9 @@ const DATA_COLUMNS = {
     "Defended": "overall_defended",
     "Defended by": "overall_defended_by",
     "Pushing": "overall_pushing",
+    "Defense Quality": "overall_defense_quality",
+    "Tech Penalty": "overall_tech_penalty",
+    "Match Penalty": "overall_match_penalty",
     "Counter Defense": "overall_counter_defense",
     "Driver Skill": "overall_driver_skill",
     "# Penalties": "overall_num_penalties",
@@ -128,8 +130,8 @@ function TeamData(props: any) {
               hiddenColumns[location] = true;
             }
           }
-          //const key = `${match.id}`;
-          const key = `${match.match_event}|${match.match_level}|${match.match_number}|${match.scouter_initials}`;
+          const key = `${match.id}`;
+          //const key = `${match.match_event}|${match.match_level}|${match.match_number}|${match.scouter_initials}`;
           row["key"] = key;
 
           table.push(row);
@@ -161,6 +163,11 @@ function TeamData(props: any) {
     let location = null;
     let hasValue = null;
 
+    if(value === null || value === undefined) {
+      console.log(`field=`, field);
+      console.log(`value=`, value);
+    }
+
     switch(field) {
       case "auton_coral_scored_l4":
       case "auton_coral_scored_l3":
@@ -186,6 +193,8 @@ function TeamData(props: any) {
       case "overall_robot_died":
       case "overall_defended_others":
       case "overall_was_defended":
+      case "overall_tech_penalty":
+      case "overall_match_penalty":
         result = (<div className={`booleanValue booleanValue__${!!value}`} key={`field`}>&nbsp;</div>);
         location = field;
         hasValue = !!value;
@@ -211,14 +220,16 @@ function TeamData(props: any) {
       case "overall_defended":
       case "overall_defended_by":
       case "overall_pushing":
+      case "overall_defense_quality":
       case "overall_counter_defense":
       case "overall_driver_skill":
       case "overall_num_penalties":
       case "overall_penalties_incurred":
-        result = value.toString();
+        result = (value || "").toString();
         location = field;
         hasValue = !!value;
         break;
+      case "id":
       case "team_number":
       case "auton_coral_missed_l4":
       case "auton_coral_missed_l3":

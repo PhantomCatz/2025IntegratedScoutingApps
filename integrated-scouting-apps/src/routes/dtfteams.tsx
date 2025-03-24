@@ -301,13 +301,16 @@ function DTFTeams(props: any) {
     if(!matches) {
       return data;
     }
-    data.match_count = matches.length;
-    const l = data.match_count;
+    data.match_count = matches.filter((x) => x.robot_appeared).length;
+    const l = matches.length;
 
     if(l === 0) {
       return data;
     }
     for(const match of matches) {
+      if(!match.robot_appeared) {
+        continue;
+      }
       for(const [k, v] of Object.entries(match)) {
         aggregateData(k, v, data);
         if(getScore(k, v) === undefined) {
@@ -317,7 +320,7 @@ function DTFTeams(props: any) {
         data.total_score += getScore(k, v);
       }
     }
-    data.average_score = data.total_score / l;
+    data.average_score = data.total_score / data.match_count;
 
     for(const [k, v] of Object.entries(data)) {
       if(typeof v === "number") {
@@ -337,6 +340,7 @@ function DTFTeams(props: any) {
       }
 
       const dataIndex = teamIndex[team];
+      console.log(`teamData=`, teamData);
       const teamMatches = teamData[dataIndex];
 
       const data : any = mergeTeamData(teamMatches);
@@ -344,7 +348,7 @@ function DTFTeams(props: any) {
       alliancePersistentData.push(data);
 
       let hasData = true;
-      if(data.match_count === 0) {
+      if(teamMatches.length === 0) {
         hasData = false;
       }
 
@@ -427,7 +431,7 @@ function DTFTeams(props: any) {
         teamTabs.push({ key: "OA", label: "OA", children:
           <>
             <h2>Matches Played</h2>
-            <Input className="input" disabled value={data.match_count}  /> 
+            <Input className="input" disabled value={`${data.match_count}/${teamMatches.length}`}  /> 
             <h2>Robot Died (counter: matches)</h2>
             <Input className="input" disabled value={data.overall_robot_died}  /> 
             <h2>Intake Algae Type</h2>

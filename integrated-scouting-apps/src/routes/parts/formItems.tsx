@@ -13,6 +13,7 @@ type NumberInputType = {
   setForm: any;
   align?: string;
   shown?: boolean;
+  buttons?: boolean;
 };
 type SelectType = {
   title: any;
@@ -38,7 +39,8 @@ function NumberInput<FieldType>(props: NumberInputType) {
   const onDecrease = props.onDecrease || (() => {});
   const onChange = props.onChange || (() => {});
   const setForm = props.setForm;
-  const align = props.align || "left";
+  const align = props.align || "center";
+  const buttons = props.buttons ?? true;
 
   return (
     <Flex
@@ -52,6 +54,7 @@ function NumberInput<FieldType>(props: NumberInputType) {
         <h2
           style={{
             textAlign: align as any,
+            width: "100%",
           }}
         >{title}</h2>
       }
@@ -84,7 +87,8 @@ function NumberInput<FieldType>(props: NumberInputType) {
               return form;
             });
           }}
-          addonAfter={
+          {...(buttons ? {
+          addonAfter: (
             <Button
               className={"incrementbutton"}
               onMouseDown={() => {
@@ -99,8 +103,8 @@ function NumberInput<FieldType>(props: NumberInputType) {
                 });
               }}
             >+</Button>
-          }
-          addonBefore={
+          ),
+          addonBefore: (
             <Button
               className={"decrementbutton"}
               onMouseDown={(form: any) => {
@@ -115,7 +119,8 @@ function NumberInput<FieldType>(props: NumberInputType) {
                 });
               }}
             >-</Button>
-          }
+          )
+          } : {})}
         />
       </Form.Item>
     </Flex>

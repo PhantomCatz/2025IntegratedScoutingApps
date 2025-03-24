@@ -54,7 +54,6 @@ const formDefaultValues = {
   "teleop_algae_scored_processor": 0,
   // Endgame
   "endgame_coral_intake_capability": null,
-  "endgame_coral_station": null,
   "endgame_algae_intake_capability": null,
   "endgame_climb_successful": false,
   "endgame_climb_type": null,
@@ -66,6 +65,7 @@ const formDefaultValues = {
   "overall_defended": [],
   "overall_defended_by": [],
   "overall_pushing": 0,
+  "overall_defense_quality": 0,
   "overall_counter_defense": 0,
   "overall_driver_skill": 0,
   "overall_num_penalties": 0,
@@ -73,7 +73,6 @@ const formDefaultValues = {
   "overall_match_penalty": false,
   "overall_penalties_incurred": null,
   "overall_comments": null,
-  "overall_defense_quality" : 0,
 
   // Playoffs
   "red_alliance": "",
@@ -114,7 +113,6 @@ const noShowValues = {
   "teleop_algae_scored_processor": 0,
   // Endgame
   "endgame_coral_intake_capability": "Neither",
-  "endgame_coral_station": "Neither",
   "endgame_algae_intake_capability": "Neither",
   "endgame_climb_successful": false,
   "endgame_climb_type": "Neither",
@@ -126,6 +124,7 @@ const noShowValues = {
   "overall_defended": [],
   "overall_defended_by": [],
   "overall_pushing": 0,
+  "overall_defense_quality": 0,
   "overall_counter_defense": 0,
   "overall_driver_skill": 0,
   "overall_num_penalties": 0,
@@ -193,6 +192,7 @@ function MatchScout(props: any) {
       "teleop_algae_scored_processor",
       "overall_num_penalties",
       "overall_pushing",
+      "overall_defense_quality",
       "overall_counter_defense",
       "overall_driver_skill",
     ];
@@ -247,7 +247,6 @@ function MatchScout(props: any) {
       "teleop_algae_scored_processor": event.teleop_algae_scored_processor,
       // Endgame
       "endgame_coral_intake_capability": event.endgame_coral_intake_capability,
-      "endgame_coral_station": event.endgame_coral_station,
       "endgame_algae_intake_capability": event.endgame_algae_intake_capability,
       "endgame_climb_successful": event.endgame_climb_successful,
       "endgame_climb_type": event.endgame_climb_type,
@@ -263,6 +262,8 @@ function MatchScout(props: any) {
       "overall_counter_defense": event.overall_counter_defense,
       "overall_driver_skill": event.overall_driver_skill,
       "overall_num_penalties": event.overall_num_penalties,
+      "overall_tech_penalty": event.overall_tech_penalty,
+      "overall_match_penalty": event.overall_match_penalty,
       "overall_penalties_incurred": event.overall_penalties_incurred,
       "overall_comments": event.overall_comments,
       "robot_appeared": robot_appeared,
@@ -341,6 +342,7 @@ function MatchScout(props: any) {
       form.setFieldValue("match_number", match_number + 1);
       form.setFieldValue("match_level", match_level);
       form.setFieldValue("robot_position", robot_position);
+      setRobot_appeared(true);
 
       await calculateMatchLevel();
       await updateTeamNumber();
@@ -513,6 +515,8 @@ function MatchScout(props: any) {
           onChange={updateTeamNumber}
           min={1}
           setForm={setFormValue}
+          buttons={false}
+          align={"left"}
         />
 
         <NumberInput
@@ -885,14 +889,14 @@ function MatchScout(props: any) {
       overall_was_defended: boolean;
       overall_defended_by: string;
       overall_num_penalties: number;
+      overall_match_penalty: string;
+      overall_tech_penalty: string;
       overall_penalties_incurred: string;
-      overall_comments: string;
-      matchpen: string;
-      techpen: string;
       overall_pushing: number;
       overall_driver_skill: number;
       overall_counter_defense: number;
       overall_defense_quality: number;
+      overall_comments: string;
     };
 
     const opposingTeams = opposingTeamNum.map((team) => ({ label: team, value: team }));
@@ -928,6 +932,7 @@ function MatchScout(props: any) {
           <Select
             title={"Defended"}
             name={"overall_defended"}
+            required={defendedIsVisible}
             message={"Please select the teams it defended"}
             options={opposingTeams}
             multiple
@@ -936,6 +941,7 @@ function MatchScout(props: any) {
           <NumberInput
             title={"Defense Quality (1 - 4)"}
             name={"overall_defense_quality"}
+            required={defendedIsVisible}
             message={"Please input defense quality"}
             min={0}
             max={4}
@@ -951,6 +957,7 @@ function MatchScout(props: any) {
           <Select
             title={"Defended By"}
             name={"overall_defended_by"}
+            required={wasDefendedIsVisible}
             message={"Please select the teams it was defended by"}
             options={opposingTeams}
             multiple
@@ -959,6 +966,7 @@ function MatchScout(props: any) {
           <NumberInput
             title={<>Counter Defense<br />(1 - 4)</>}
             name={"overall_counter_defense"}
+            required={wasDefendedIsVisible}
             message={"Please input the counter-defense rating"}
             min={0}
             max={4}
@@ -968,9 +976,17 @@ function MatchScout(props: any) {
 
         <Flex justify='in-between'>
           <NumberInput
-            title={<>Pushing<br />(1 - 4)</>}
+            title={<>Pushing (1 - 4)</>}
             name={"overall_pushing"}
             message={"Please input the pushing rating"}
+            min={0}
+            max={4}
+            setForm={setFormValue}
+          />
+          <NumberInput
+            title={<>Driver Skill (1 - 4)</>}
+            name={"overall_driver_skill"}
+            message={"Please input the driver skill rating"}
             min={0}
             max={4}
             setForm={setFormValue}
@@ -978,16 +994,8 @@ function MatchScout(props: any) {
         </Flex>
         <Flex justify='in-between'>
           <NumberInput
-            title={<>Driver Skill<br />(1 - 4)</>}
-            name={"overall_driver_skill"}
-            message={"Please input the driver skill rating"}
-            min={0}
-            max={4}
-            setForm={setFormValue}
-          />
-          <NumberInput
-            title={<>Num Penalties<br />&nbsp;</>}
-            name={"overall_num_penalities"}
+            title={<>Num Penalties</>}
+            name={"overall_num_penalties"}
             message={"Enter # of incurred penalties"}
             min={0}
             onIncrease={() => setPenaltiesIsVisible(true)}
@@ -998,13 +1006,13 @@ function MatchScout(props: any) {
         <Flex justify='in-between' style={{ display: penaltiesIsVisible ? 'inherit' : 'none'}}>
           <Flex vertical align='flex-start'>
             <h2>Match</h2>
-            <Form.Item<FieldType> name="matchpen" valuePropName="checked" >
+            <Form.Item<FieldType> name="overall_match_penalty" valuePropName="checked" >
               <Checkbox className='input_checkbox' />
             </Form.Item>
           </Flex>
           <Flex vertical align='flex-start'>
             <h2>Tech</h2>
-            <Form.Item<FieldType> name="techpen" valuePropName="checked">
+            <Form.Item<FieldType> name="overall_tech_penalty" valuePropName="checked">
               <Checkbox className='input_checkbox' />
             </Form.Item>
           </Flex>
