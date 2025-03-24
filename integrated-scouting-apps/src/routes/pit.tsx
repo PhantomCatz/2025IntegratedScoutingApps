@@ -389,20 +389,20 @@ function PitScout(props: any) {
             dropdownStyle={{ maxHeight: 'none' }}
           />
         </Form.Item>
-        <h2>Intake Width</h2>
-          <Form.Item name="intake_width" rules={[{ required: true, message: 'Please input the intake width!' }]}>
-          <Select
-            options={intakeWidth}
-            className="input"
-            dropdownMatchSelectWidth={false}
-            dropdownStyle={{ maxHeight: 'none' }}
-          />
-        </Form.Item>
         <h2>Coral Intake Type</h2>
           <Form.Item name="coral_intake_capability" rules={[{ required: true, message: 'Please input the intake type!' }]}>
 
           <Select
             options={coral_intake_capability_options}
+            className="input"
+            dropdownMatchSelectWidth={false}
+            dropdownStyle={{ maxHeight: 'none' }}
+          />
+        </Form.Item>
+        <h2>Intake Width</h2>
+          <Form.Item name="intake_width" rules={[{ required: true, message: 'Please input the intake width!' }]}>
+          <Select
+            options={intakeWidth}
             className="input"
             dropdownMatchSelectWidth={false}
             dropdownStyle={{ maxHeight: 'none' }}
