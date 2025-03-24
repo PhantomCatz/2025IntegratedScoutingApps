@@ -5,7 +5,7 @@ import { Tabs, Input, Form, Checkbox, InputNumber, Flex, Button, Radio} from 'an
 import TextArea from 'antd/es/input/TextArea';
 import { Footer } from 'antd/es/layout/layout';
 import Header from "./parts/header";
-import QrCode from './parts/qrCodeViewer';
+import QrCode, {escapeUnicode, } from './parts/qrCodeViewer';
 import {isInPlayoffs, isRoundNumberVisible, getTeamsPlaying, getIndexNumber, getAllianceOffset } from './utils/tbaRequest';
 import type { TabsProps, RadioChangeEvent } from "antd";
 import { NumberInput, Select } from './parts/formItems';

@@ -56,12 +56,11 @@ function QrCode(props : any) {
 		}
 	}
 
-	const shownValue = vals.join(sep).replaceAll("\n", "\\n");
+	const shownValue = escapeUnicode(vals.join(sep).replaceAll("\n", "\\n"));
 	//if (shouldShow) {
 	//	console.log("Current key map: " + keys.join("$"));
 	//	console.log("Current values: " + vals.join("$"));
 	//}
-	
 	
 	const valuesToDisplay : {key : any, display : string}[] = [
 		{
@@ -113,4 +112,9 @@ function QrCode(props : any) {
 	</div>);
 }
 
+function escapeUnicode(str: string) {
+	return [...(str as any)].map(c => /^[\x00-\x7F]$/.test(c) ? c : c.split("").map((a: any) => "\\u" + a.charCodeAt().toString(16).padStart(4, "0")).join("")).join("");
+}
+
 export default QrCode;
+export {escapeUnicode, };
