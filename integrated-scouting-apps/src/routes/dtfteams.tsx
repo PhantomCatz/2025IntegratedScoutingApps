@@ -587,7 +587,7 @@ function DTFTeams(props: any) {
 
       }
 
-      allianceTabs.push({ key: "OverallSummary", label: "Overall Sumamry", children:
+      allianceTabs.push({ key: "OverallSummary", label: "Overall Summary", children:
         <>
           {allianceAverageScores} 
           {averageScores}

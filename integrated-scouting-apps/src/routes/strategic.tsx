@@ -18,11 +18,23 @@ const formDefaultValues = {
   "comments": null,
   "red_alliance": [],
   "blue_alliance": [],
-  "penalties":0,
+  "penalties": 0,
+}
+const noShowValues = {
+  //"match_event": null,
+  //"team_number": 0,
+  //"scouter_initials": null,
+  //"match_level": null,
+  //"match_number": 0,
+  //"robot_position": null,
+  "comments": "",
+  //"red_alliance": [],
+  //"blue_alliance": [],
 }
 
 function Strategic(props: any, text:any) {
   const [form] = Form.useForm();
+  const [formValue, setFormValue] = useState(formDefaultValues);
   const [tabNum, setTabNum] = useState("1");
   const [team_number, setTeamNum] = useState(0);
   const [teamsList, setTeamsList] = useState<string[]>([]);
@@ -34,8 +46,6 @@ function Strategic(props: any, text:any) {
   const [teamData, setTeamData] = useState<any>(null);
   const [inPlayoffs, setInPlayoffs] = useState(false);
   const [robot_appeared, setRobot_appeared] = useState(true);
-  const [formValue, setFormValue] = useState<any>(formDefaultValues);
- 
 
   useEffect(() => { document.title = props.title; return () => { } }, [props.title]);
   useEffect(() => {
@@ -102,7 +112,6 @@ function Strategic(props: any, text:any) {
       const roundNumber = form.getFieldValue('round_number');
       const allianceNumber1 = form.getFieldValue('red_alliance');
       const allianceNumber2 = form.getFieldValue('blue_alliance');
-      const penalties = form.getFieldValue('penalties');
 
       const teams = await getTeamsPlaying(matchLevel, matchNumber, roundNumber, allianceNumber1, allianceNumber2);
       setTeamsList(teams);
@@ -129,6 +138,7 @@ function Strategic(props: any, text:any) {
       "robot_position": event.robot_position,
       "comments": event.comments,
       "robot_appeared": robot_appeared,
+      //"penalties": event.penalties,
     };
     const status = await tryFetch(body);
 
@@ -225,7 +235,7 @@ function Strategic(props: any, text:any) {
       robot_position: string;
       red_alliance: string;
       blue_alliance: string;
-      penalties:number;
+      penalties: number;
     };
     const rounds = [
       { label: "Qualifications", value: "Qualifications" },
@@ -385,7 +395,7 @@ function Strategic(props: any, text:any) {
     
       for (const match of teamData) {
         dataSource.push({
-          "key": `${match.match_event}|${match.match_level}|${match.match_number}|${match.scouter_initials}`,
+          "key": `${match.id}`,
           "scouter_initials" : `Scouter Initials: ${match.scouter_initials}`,
           "match_number" : match.match_number,
           "comment" : match.comments,
