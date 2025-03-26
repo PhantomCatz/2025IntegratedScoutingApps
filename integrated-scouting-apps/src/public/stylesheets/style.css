@@ -19,7 +19,8 @@
 	src: url('../fonts/Figtree-VariableFont_wght.ttf') format('woff');
 }
 * {
-	font-family: Arial, Audiowide !important;
+	/*font-family: Audiowide !important;*/
+	font-family: Arial, sans-serif !important;
 	color: var(--font-color) !important;
 }
 body {
