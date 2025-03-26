@@ -61,14 +61,17 @@ margin-left: 535px;
 margin-right: 535px;
 }
 
-.input-num {
 
-input-mode: numeric 
-
-}
 
 h2.center {
 
 text-align: center;
+
+}
+
+.numberinput > div{
+
+width: 100%;
+
 
 }
