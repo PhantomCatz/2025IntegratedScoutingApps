@@ -9,15 +9,16 @@ import QrCode from "./parts/qrCodeViewer";
 import { isRoundNumberVisible, isInPlayoffs, getTeamsPlaying, getIndexNumber } from './utils/tbaRequest';
 
 const formDefaultValues = {
-  //"match_event": null,
+  "match_event": null,
   "team_number": 0,
-  "scouter_initials": "",
-  "match_level": "",
+  "scouter_initials": null,
+  "match_level": null,
   "match_number": 0,
-  "robot_position": "",
-  "comments": "",
+  "robot_position": null,
+  "comments": null,
   "red_alliance": [],
   "blue_alliance": [],
+  "penalties": 0,
 }
 const noShowValues = {
   //"match_event": null,
@@ -86,6 +87,21 @@ function Strategic(props: any, text:any) {
     })();
   }, [team_number]);
 
+  useEffect(() => {
+      const updateFields = [
+       "penalties",
+      ];
+      for(const field of updateFields) {
+        const element = document.getElementById(field);
+        if (element === null) {
+          continue;
+        }
+  
+        element.ariaValueNow = (formValue as any)[field].toString();
+        form.setFieldValue(field, (formValue as any)[field]);
+      }
+    }, [formValue, form]);
+
   const match_event = process.env.REACT_APP_EVENTNAME;
   
   async function updateTeamNumber() {
@@ -122,6 +138,7 @@ function Strategic(props: any, text:any) {
       "robot_position": event.robot_position,
       "comments": event.comments,
       "robot_appeared": robot_appeared,
+      //"penalties": event.penalties,
     };
     const status = await tryFetch(body);
 
@@ -218,6 +235,7 @@ function Strategic(props: any, text:any) {
       robot_position: string;
       red_alliance: string;
       blue_alliance: string;
+      penalties: number;
     };
     const rounds = [
       { label: "Qualifications", value: "Qualifications" },
@@ -225,6 +243,7 @@ function Strategic(props: any, text:any) {
       { label: "Semi-Finals", value: "Semi-Finals" },
       { label: "Finals", value: "Finals" },
     ];
+  
     function getNum(n : number) {
       if(!teamsList) {
         return "";
@@ -254,13 +273,27 @@ function Strategic(props: any, text:any) {
       <div>
         <h2>Team: {team_number}</h2>
         <h2>Scouter Initials</h2>
-        <Form.Item<FieldType> name="scouter_initials" rules={[{ required: true, message: 'Please input your initials!' }]}>
-          <Input maxLength={2} className="input" />
+        <Form.Item<FieldType> name="scouter_initials" rules={[
+          { required: true, message: 'Please input your initials!' },
+            {
+              pattern: /^[A-Za-z]{1,2}$/,
+               message: 'Please enter only letters (max 2)',
+            },
+               ]}>
+          <Input 
+           maxLength={2}
+            className="input"
+            onKeyPress={(event) => {
+              const keyCode = event.keyCode || event.which;
+              const keyValue = String.fromCharCode(keyCode);
+              if (!/^[A-Za-z]*$/.test(keyValue)) {
+                event.preventDefault();
+              }
+            }} />
         </Form.Item>
         <h2>Match Level</h2>
         <Form.Item<FieldType> name="match_level" rules={[{ required: true, message: 'Please input the match level!' }]}>
           <Select options={rounds} className="input" onChange={() => { calculateMatchLevel(); updateTeamNumber(); }} />
-                  
         </Form.Item>
         <div className={"playoff-alliances"} style={{ display: inPlayoffs ? 'inherit' : 'none' }}>
           
@@ -285,8 +318,7 @@ function Strategic(props: any, text:any) {
         </div>
         <h2>Match #</h2>
         <Form.Item<FieldType> name="match_number" rules={[{ required: true, message: 'Please input the match number!',  }]}>
-          <InputNumber min={1} className="input" onWheel={(e) => (e.target as HTMLElement).blur()} onChange={() => { updateTeamNumber(); }} type='number' /> 
-                  
+        <InputNumber min={1} onChange={updateTeamNumber} className="input" type='number' pattern="\d*" onWheel={(e) => (e.target as HTMLElement).blur()} />
         </Form.Item>
         <h2 style={{ display: roundIsVisible ? 'inherit' : 'none' }}>Round #</h2>
         <Form.Item<FieldType> name="round_number" rules={[{ required: roundIsVisible ? true : false, message: 'Please input the round number!' }]} style={{ display: roundIsVisible ? 'inherit' : 'none' }}>
@@ -304,13 +336,39 @@ function Strategic(props: any, text:any) {
             dropdownMatchSelectWidth={false}
             dropdownStyle={{ maxHeight: 'none' }}
           />
+
+        
+            <Flex className = "numberinput" vertical align='flex-start'>
+              <h2># of Penalties</h2>
+              <Form.Item<FieldType> name="penalties" rules={[{ required: true, message: 'Enter # of Penalties' }]}>
+                <InputNumber
+                  id="penalties"
+                  type='number'
+                  pattern="\d*"
+                  min={0}
+                  onWheel={(e) => (e.target as HTMLElement).blur()}
+                  className="input"
+                  addonAfter={<Button onMouseDown={() => {
+                    setFormValue({ ...formValue, penalties: formValue.penalties + 1 });
+                  }} className='incrementbutton'>+</Button>}
+                  addonBefore={<Button onMouseDown={() => {
+                    if (Number(formValue.penalties) > 0) {
+                      setFormValue({ ...formValue, penalties: formValue.penalties - 1 });
+                    }
+                  }} className='decrementbutton'>-</Button>}
+                />
+              </Form.Item>
+            </Flex>
+        
+
         </Form.Item>
         <Flex justify='in-between' style={{ paddingBottom : '5%' }}>
           <Button onClick={() => setTabNum("2")} className='tabbutton'>Next</Button>
         </Flex>
+
       </div>
-    );
-  } 
+  );
+}
 
   function comment() {
     let prevComments = null;
@@ -386,27 +444,20 @@ function Strategic(props: any, text:any) {
   }
 
   return (
-    <>
+    <div>
       <meta name="viewport" content="maximum-scale=1.0" />
       <Header name={"Strategic Scout"} back="#scoutingapp/" />
       <Form
         form={form}
         onFinish={runFormFinish}
-        onFinishFailed={({values, errorFields, outOfDate}) => {
-          console.log("values=", values);
-          console.log("errorFields=", errorFields);
-          console.log("outOfDate=", outOfDate);
-          
-          const errorMessage = errorFields.map((x : any) => x.errors.join(", ")).join("\n");
-          window.alert(errorMessage);
-        }}
       >
         <Tabs defaultActiveKey="1" activeKey={tabNum} items={items} centered className='tabs' onChange={async (key) => { setTabNum(key); }} />
       </Form>
       <QrCode value={qrValue} />
-    </>
+    </div>
   );
-} 
+}
+
 
 
 export default Strategic;
