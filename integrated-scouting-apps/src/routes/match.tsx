@@ -1150,8 +1150,8 @@ function MatchScout(props: any) {
       endgame_climb_time: number,
     };
     const endgame_coral_intake_capability = [
+      { label: "Coral Station", value: "Coral Station" },
       { label: "Ground", value: "Ground" },
-      { label: "Station", value: "Station" },
       { label: "Both", value: "Both" },
       { label: "Neither", value: "Neither" },
     ];

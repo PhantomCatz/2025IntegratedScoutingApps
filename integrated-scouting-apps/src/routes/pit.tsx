@@ -248,6 +248,7 @@ function PitScout(props: any) {
       { label: "Ramp", value: "Ramp" },
       { label: "Claw", value: "Claw"},
       { label: "Ground", value: "Ground"},
+      { label: "None", value: "None" },
     ]
     return (
       <div>
@@ -403,7 +404,7 @@ function PitScout(props: any) {
     <h2>Acceptance Angle (degrees)</h2>
     <Form.Item
       name="acceptance_angle"
-      rules={[{ required: true, message: 'Please input the acceptance angle in degrees!' }]}
+      rules={[{ required: isRampSelected, message: 'Please input the acceptance angle in degrees!' }]}
     >
       <InputNumber
         min={0}
