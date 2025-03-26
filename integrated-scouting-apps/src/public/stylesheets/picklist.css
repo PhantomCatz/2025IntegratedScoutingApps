@@ -3,7 +3,7 @@
 .ant-table-cell {
   font-size: 36px !important;
   background-color: var(--pc-blue) !important;
-  border: 4px solid white !important;
+  border: 4px solid var(--font-color) !important;
   font-weight: bold !important;
 }
 

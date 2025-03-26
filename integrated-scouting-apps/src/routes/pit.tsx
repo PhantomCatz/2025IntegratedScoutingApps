@@ -44,10 +44,12 @@ const IMAGE_DELIMITER = "$";
 function PitScout(props: any) {
   const match_event = process.env.REACT_APP_EVENTNAME as string;
   const [form] = Form.useForm();
-  const [loading, setLoading] = useState(false);
   const [formValue, setFormValue] = useState(formDefaultValues);
+  const [loading, setLoading] = useState(false);
   const [qrValue, setQrValue] = useState<any>();
   const [robotImageURI, setRobotImageURI] = useState<string[]>([]);
+  const [robotImages, setRobotImages] = useState<any>();
+  const robotImageInput = useRef(null);
 
   useEffect(() => {
     document.title = props.title;
@@ -102,6 +104,10 @@ function PitScout(props: any) {
         console.error("Error in fetching teams: ", err.message);
       }})();
   }, [match_event]);
+  useEffect(() => {
+
+    console.log(`robotImageURI=`, robotImageURI.map((x) => "adsf"));
+  }, [robotImageURI]);
 
   async function submitData(event: any) {
     console.log("event=", event);
@@ -114,8 +120,8 @@ function PitScout(props: any) {
       "motor_type": event.motor_type,
       "number_of_motors": event.number_of_motors,
       "wheel_type": event.wheel_type,
-      "coral_intake_capability": event.coral_intake_capability,
       "intake_width": event.intake_width,
+      "coral_intake_capability": event.coral_intake_capability,
       "coral_scoring_l1": event.coral_scoring_l1 || false,
       "coral_scoring_l2": event.coral_scoring_l2 || false,
       "coral_scoring_l3": event.coral_scoring_l3 || false,
@@ -183,17 +189,17 @@ function PitScout(props: any) {
       motor_type: string;
       number_of_motors: number;
       wheel_type: string;
-      coral_intake_capability: string;
       intake_width: string;
-      algae_intake_capability: string;
-      algae_scoring_capability: string;
-      score_aiming: string,
-      aiming_description: string,
+      coral_intake_capability: string;
       coral_scoring_l1: boolean;
       coral_scoring_l2: boolean;
       coral_scoring_l3: boolean;
       coral_scoring_l4: boolean;
       can_remove_algae: boolean;
+      algae_intake_capability: string;
+      algae_scoring_capability: string;
+      score_aiming: string,
+      aiming_description: string,
       climbing_capability: string;
       pit_organization: number;
       team_safety: number;
@@ -258,8 +264,10 @@ function PitScout(props: any) {
       { label: "Neither", value: "Neither" },
     ];
     const scoreAiming = [
-      { label: "Auto", value: "Auto" },
-      { label: "Manual", value: "Manual" },
+      { label: "Both", value: "Both" },
+      { label: "Only Coral", value: "Only Coral" },
+      { label: "Only Algae", value: "Only Algae" },
+      { label: "Neither", value: "Neither" },
     ];
     const climbing_capability_options = [
       { label: "Shallow", value: "Shallow" },
@@ -389,20 +397,20 @@ function PitScout(props: any) {
             dropdownStyle={{ maxHeight: 'none' }}
           />
         </Form.Item>
-        <h2>Intake Width</h2>
-          <Form.Item name="intake_width" rules={[{ required: true, message: 'Please input the intake width!' }]}>
-          <Select
-            options={intakeWidth}
-            className="input"
-            dropdownMatchSelectWidth={false}
-            dropdownStyle={{ maxHeight: 'none' }}
-          />
-        </Form.Item>
         <h2>Coral Intake Type</h2>
           <Form.Item name="coral_intake_capability" rules={[{ required: true, message: 'Please input the intake type!' }]}>
 
           <Select
             options={coral_intake_capability_options}
+            className="input"
+            dropdownMatchSelectWidth={false}
+            dropdownStyle={{ maxHeight: 'none' }}
+          />
+        </Form.Item>
+        <h2>Intake Width</h2>
+          <Form.Item name="intake_width" rules={[{ required: true, message: 'Please input the intake width!' }]}>
+          <Select
+            options={intakeWidth}
             className="input"
             dropdownMatchSelectWidth={false}
             dropdownStyle={{ maxHeight: 'none' }}
@@ -560,39 +568,30 @@ function PitScout(props: any) {
           <TextArea style={{ verticalAlign: 'center' }} className='textbox_input' />
         </Form.Item>
         <h2 style={{ display: loading ? 'inherit' : 'none' }}>Submitting data...</h2>
+        
         <Form.Item<FieldType> name="robot_images">
-          <Upload
-            beforeUpload={(file) => {
-              const isImage = file.type.startsWith("image");
-              if (!isImage) {
-                window.alert(`${file.name} is not an image`);
-                return Upload.LIST_IGNORE;
-              }
-              return true;
-            }}
-            onChange={async function(info) {
-              if(info.event) {
-                return;
-              }
+          <>
+            <label className="robotImageLabel" htmlFor="robotImageInput">Select Image{robotImageURI.length ? ` (${robotImageURI.length} images)` : ""}</label>
+            <input
+              ref={robotImageInput}
+              id="robotImageInput"
+              type="file"
+              multiple
+              onChange={async (event) => {
+                const fileList = event.target.files || [];
+                const copy = [...(fileList as any)];
 
-              const files : string[] = [];
-              const fileList = info.fileList;
+                const files : string[] = [];
 
-              for(let i = 0; i < fileList.length; i++) {
-                const image : string = await readImage(fileList[i].originFileObj);
+                for(let i = 0; i < copy.length; i++) {
+                  const image : string = await readImage(copy[i]);
 
-                files.push(image);
-              }
+                  files.push(image);
+                }
 
-              //const fileSet = new Set<string>(files);
-              //setRobotImageURI(fileSet);
-              setRobotImageURI(files);
-            }}
-            style={{ width: '100%' }}
-            name='robot_images'
-          >
-            <Button className='input' style={{ marginBottom: '5%' }}>Upload Images</Button>
-          </Upload>
+                setRobotImageURI(files);
+            }}/>
+          </>
         </Form.Item>
         <Input type="submit" value="Submit" className='submit' style={{ marginBottom: '5%' }} />
       </div>
@@ -625,6 +624,14 @@ function PitScout(props: any) {
             setLoading(false);
           }
         }}
+        onFinishFailed={({values, errorFields, outOfDate}) => {
+          console.log("values=", values);
+          console.log("errorFields=", errorFields);
+          console.log("outOfDate=", outOfDate);
+          
+          const errorMessage = errorFields.map((x : any) => x.errors.join(", ")).join("\n");
+          window.alert(errorMessage);
+        }}
       >
         <Pit />
       </Form>
@@ -639,7 +646,7 @@ async function readImage(blob : any) : Promise<string> {
     reader.readAsDataURL(blob);
     reader.onload = () => {
       const base64Image : string = reader.result as string;
-
+      console.log(base64Image)
       resolve(base64Image);
     };
     reader.onerror = () => {

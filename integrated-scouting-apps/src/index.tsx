@@ -25,23 +25,48 @@ import { HashRouter, Routes, Route } from 'react-router-dom';
 const rootElement = document.getElementById('root') as HTMLElement;
 const root = ReactDOM.createRoot(rootElement);
 
-// Debounce alerting because React runs it twice
+// Debounce alerting because React runs it twice and for less annoyance
 window.alert = (function() {
   const alert = globalThis.window.alert;
   let id : any;
+  let lastMessage : any[] = [];
 
-  return function(...args) {
+  return function(message) {
     clearTimeout(id);
 
+    if(!lastMessage.includes(message)) {
+      lastMessage.push(message);
+    }
+
     id = setTimeout(function() {
-      alert(...args);
-    }, 100);
+      if(!lastMessage?.length) {
+        return;
+      }
+
+      alert(lastMessage.join("\n"));
+      lastMessage = [];
+    }, 500);
   }
 })();
 //window.alert = () => {};
+/*
+globalThis.fetch = (() => {
+  const originalFetch = globalThis.fetch;
+
+  return async function(link : any, args : any) {
+      const rest = args || {};
+      const options = {
+        mode: "no-cors",
+        ...rest
+      };
+
+      return originalFetch(link, options);
+    }
+})();
+//*/
 
 function App() {
-	return (
+  return (
     <HashRouter>
       <Routes>
         <Route path="/" element={<HomePage title="2637 Strategy App" />} />

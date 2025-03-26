@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom";
 import { Checkbox, Flex, Input, Tabs } from "antd";
 import TextArea from 'antd/es/input/TextArea';
 import Header from "./parts/header";
-import Chart from 'chart.js/auto';
+//import Chart from 'chart.js/auto';
 import ChartComponent from "./parts/chart"; 
 import PitTabs from "./parts/pitTabs"; 
 import StrategicTabs from './parts/strategicTabs';
@@ -115,20 +115,7 @@ function DTFTeams(props: any) {
       }
       break;
     // Summative values
-    case "auton_coral_missed_l4":
-    case "auton_coral_missed_l3":
-    case "auton_coral_missed_l2":
-    case "auton_coral_missed_l1":
-      data.auton_coral_missed += v as any;
-      break;
-    case "teleop_coral_missed_l4":
-    case "teleop_coral_missed_l3":
-    case "teleop_coral_missed_l2":
-    case "teleop_coral_missed_l1":
-      data.teleop_coral_missed += v as any;
-      break;
-    case "auton_algae_missed_net":
-    case "teleop_algae_missed_net":
+    
     case "overall_robot_died":
       if(data[k] === undefined) {
         data[k] = v as any;
@@ -174,6 +161,40 @@ function DTFTeams(props: any) {
       //console.log("did nothing for", k);
       break;
     }
+    switch(k){
+    // Average values
+    case "auton_coral_scored_l4":
+    case "auton_coral_missed_l4":
+    case "auton_coral_scored_l3":
+    case "auton_coral_missed_l3":
+    case "auton_coral_scored_l2":
+    case "auton_coral_missed_l2":
+    case "auton_coral_scored_l1":
+    case "auton_coral_missed_l1":
+    case "auton_algae_scored_net":
+    case "auton_algae_missed_net":
+
+    case "teleop_coral_scored_l4":
+    case "teleop_coral_missed_l4":
+    case "teleop_coral_scored_l3":
+    case "teleop_coral_missed_l3":
+    case "teleop_coral_scored_l2":
+    case "teleop_coral_missed_l2":
+    case "teleop_coral_scored_l1":
+    case "teleop_coral_missed_l1":  
+    case "teleop_algae_scored_net":
+    case "teleop_algae_missed_net":
+      
+      const total_field = k.replace("_missed","").replace("_scored","") + ("_total");
+      if(data[total_field] === undefined) {
+        data[total_field] = v as any/l;
+      } else {
+        data[total_field] += v as any/l;
+      }
+      break;
+
+
+    }
   }
   function getScore(k : any, v : any) {
     const map : any = {
@@ -215,30 +236,40 @@ function DTFTeams(props: any) {
         // Auton
         //"auton_leave_starting_line": event.auton_leave_starting_line,
         "auton_coral_scored_l4": 0,
+        "auton_coral_l4_total": 0,
         //"auton_coral_missed_l4": 0,
         "auton_coral_scored_l3": 0,
+        "auton_coral_l3_total": 0,
         //"auton_coral_missed_l3": 0,
         "auton_coral_scored_l2": 0,
+        "auton_coral_l2_total": 0,
         //"auton_coral_missed_l2": 0,
         "auton_coral_scored_l1": 0,
+        "auton_coral_l1_total": 0,
         //"auton_coral_missed_l1": 0,
         "auton_algae_scored_net": 0,
         "auton_algae_missed_net": 0,
+        "auton_algae_net_total": 0,
         "auton_algae_scored_processor": 0,
-        "auton_coral_missed": 0,
+
         // Teleop
         "teleop_coral_scored_l4": 0,
+        "teleop_coral_l4_total": 0,
         //"teleop_coral_missed_l4": 0,
         "teleop_coral_scored_l3": 0,
+        "teleop_coral_l3_total": 0,
         //"teleop_coral_missed_l3": 0,
         "teleop_coral_scored_l2": 0,
+        "teleop_coral_l2_total": 0,
         //"teleop_coral_missed_l2": 0,
         "teleop_coral_scored_l1": 0,
+        "teleop_coral_l1_total": 0,
         //"teleop_coral_missed_l1": 0,
         "teleop_algae_scored_net": 0,
         "teleop_algae_missed_net": 0,
+        "teleop_algae_net_total": 0,
         "teleop_algae_scored_processor": 0,
-        "teleop_coral_missed": 0,
+    
         // Endgame
         "endgame_coral_intake_capability": "",
         //"endgame_coral_station": event.endgame_coral_station
@@ -270,22 +301,26 @@ function DTFTeams(props: any) {
     if(!matches) {
       return data;
     }
-    data.match_count = matches.length;
-    const l = data.match_count;
+    data.match_count = matches.filter((x) => x.robot_appeared).length;
+    const l = matches.length;
 
     if(l === 0) {
       return data;
     }
     for(const match of matches) {
+      if(!match.robot_appeared) {
+        continue;
+      }
       for(const [k, v] of Object.entries(match)) {
         aggregateData(k, v, data);
         if(getScore(k, v) === undefined) {
           console.log("field ", k, " is ", v, " and has no score");
+          continue;
         }
         data.total_score += getScore(k, v);
       }
     }
-    data.average_score = data.total_score / l;
+    data.average_score = data.total_score / data.match_count;
 
     for(const [k, v] of Object.entries(data)) {
       if(typeof v === "number") {
@@ -305,6 +340,7 @@ function DTFTeams(props: any) {
       }
 
       const dataIndex = teamIndex[team];
+      console.log(`teamData=`, teamData);
       const teamMatches = teamData[dataIndex];
 
       const data : any = mergeTeamData(teamMatches);
@@ -312,7 +348,7 @@ function DTFTeams(props: any) {
       alliancePersistentData.push(data);
 
       let hasData = true;
-      if(data.match_count === 0) {
+      if(teamMatches.length === 0) {
         hasData = false;
       }
 
@@ -334,32 +370,28 @@ function DTFTeams(props: any) {
             <Flex justify='in-between'>
               <Flex vertical align='flex-start'>
                 <h2>L1 avg</h2>
-                <Input className="dtf-input" disabled value={data.auton_coral_scored_l1} /> 
+                <Input className="dtf-input" disabled value={`${data.auton_coral_scored_l1}/${data.auton_coral_l1_total}`} /> 
               </Flex>
               <Flex vertical align='flex-start'>
                 <h2>L2 avg</h2>
-                <Input className="dtf-input" disabled value={data.auton_coral_scored_l2} /> 
+                <Input className="dtf-input" disabled value={`${data.auton_coral_scored_l2}/${data.auton_coral_l2_total}`} /> 
               </Flex>
             </Flex>
             <Flex justify='in-between'>
               <Flex vertical align='flex-start'>
                 <h2>L3 avg</h2>
-                <Input className="dtf-input" disabled value={data.auton_coral_scored_l3} /> 
+                <Input className="dtf-input" disabled value={`${data.auton_coral_scored_l3}/${data.auton_coral_l3_total}`} /> 
               </Flex>
               <Flex vertical align='flex-start'>
                 <h2>L4 avg</h2>
-                <Input className="dtf-input" disabled value={data.auton_coral_scored_l4} />
+                <Input className="dtf-input" disabled value={`${data.auton_coral_scored_l4}/${data.auton_coral_l4_total}`} />
               </Flex>
             </Flex>
 
             <h2>Avg Algae Processed</h2>
             <Input className="input" disabled value={data.auton_algae_scored_processor} /> 
             <h2>Avg Algae Net</h2>
-            <Input className="input" disabled value={data.auton_algae_scored_net}  /> 
-            <h2>Missed Coral</h2>
-            <Input className="input" disabled value={data.auton_coral_missed} />
-            <h2>Missed Algae</h2>
-            <Input className="input" disabled value={data.auton_algae_missed_net} />
+            <Input className="input" disabled value={`${data.auton_algae_scored_net}/${data.auton_algae_net_total}`}  /> 
           </>  
         });
 
@@ -368,31 +400,27 @@ function DTFTeams(props: any) {
             <Flex justify='in-between'>
               <Flex vertical align='flex-start'>
                 <h2>L1 avg</h2>
-                <Input className="dtf-input" disabled value={data.teleop_coral_scored_l1} />
+                <Input className="dtf-input" disabled value={`${data.teleop_coral_scored_l1}/${data.teleop_coral_l1_total}`} />
               </Flex>
               <Flex vertical align='flex-start'>
                 <h2>L2 avg</h2>
-                <Input className="dtf-input" disabled value={data.teleop_coral_scored_l2} /> 
+                <Input className="dtf-input" disabled value={`${data.teleop_coral_scored_l2}/${data.teleop_coral_l2_total}`} /> 
               </Flex>
             </Flex>
             <Flex justify='in-between'>
               <Flex vertical align='flex-start'>
                 <h2>L3 avg</h2>
-                <Input className="dtf-input" disabled value={data.teleop_coral_scored_l3} /> 
+                <Input className="dtf-input" disabled value={`${data.teleop_coral_scored_l3}/${data.teleop_coral_l3_total}`} /> 
               </Flex>
               <Flex vertical align='flex-start'>
                 <h2>L4 avg</h2>
-                <Input className="dtf-input" disabled value={data.teleop_coral_scored_l4} />
+                <Input className="dtf-input" disabled value={`${data.teleop_coral_scored_l4}/${data.teleop_coral_l4_total}`} />
               </Flex>
             </Flex>
             <h2>Avg Algae Processed</h2>
             <Input className="input" disabled value={data.teleop_algae_scored_processor} /> 
             <h2>Avg Algae Net</h2>
-            <Input className="input" disabled value={data.teleop_algae_scored_net}  /> 
-            <h2>Missed Coral</h2>
-            <Input className="input" disabled value={data.teleop_coral_missed} />
-            <h2>Missed Algae</h2>
-            <Input className="input" disabled value={data.teleop_algae_missed_net} />
+            <Input className="input" disabled value={`${data.teleop_algae_scored_net}/${data.teleop_algae_net_total}`}  /> 
             <h2>Climb Type</h2>
             <Input className="input" disabled value={data.endgame_climb_type} /> 
             <h2>Avg Climb Time</h2>
@@ -403,7 +431,7 @@ function DTFTeams(props: any) {
         teamTabs.push({ key: "OA", label: "OA", children:
           <>
             <h2>Matches Played</h2>
-            <Input className="input" disabled value={data.match_count}  /> 
+            <Input className="input" disabled value={`${data.match_count}/${teamMatches.length}`}  /> 
             <h2>Robot Died (counter: matches)</h2>
             <Input className="input" disabled value={data.overall_robot_died}  /> 
             <h2>Intake Algae Type</h2>
