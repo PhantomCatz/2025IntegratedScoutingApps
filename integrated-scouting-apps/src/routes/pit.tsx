@@ -129,7 +129,8 @@ function PitScout(props: any) {
       "can_remove_algae": event.can_remove_algae || false,
       "algae_intake_capability": event.algae_intake_capability,
       "algae_scoring_capability": event.algae_scoring_capability,
-      "score_aiming": event.score_aiming,
+      "score_aiming_coral": event.score_aiming_coral,
+      "score_aiming_algae": event.score_aiming_algae,
       "aiming_description": event.aiming_description,
       "climbing_capability": event.climbing_capability,
       "pit_organization": event.pit_organization,
@@ -330,31 +331,31 @@ function PitScout(props: any) {
           />
         </Form.Item>
         <h2>Robot Weight (lbs)</h2>
-        <Form.Item<FieldType>
-          name="robot_weight"
-          rules={[{ required: true, message: 'Please input the robot weight in lbs!' }]}
-        >
-          <InputNumber
-            controls
-            min={0}
-            max={1000}
-            precision={0}
-            placeholder="0"
-            className="input robot-weight-input"
-            type="number"
-            pattern="[0-9]*"
-            onChange={(event) => {
-              setFormValue((prevFormValue) => ({...prevFormValue, robot_weight: event || 0 }));
-            }}
-            onKeyPress={(event) => {
-              const charCode = event.which ? event.which : event.keyCode;
-              if (charCode > 31 && (charCode < 48 || charCode > 57)) {
-                event.preventDefault();
-              }
-            }}
-            onWheel={(e) => (e.target as HTMLElement).blur()}
-          />
-        </Form.Item>
+<Form.Item<FieldType>
+name="robot_weight"
+rules={[{ required: true, message: 'Please input the robot weight in lbs!' }]}
+>
+<InputNumber
+controls
+min={0}
+max={1000}
+precision={0}
+placeholder="0"
+className="input robot-weight-input"
+type="number"
+pattern="[0-9]*"
+onChange={(event) => {
+setFormValue((prevFormValue) => ({...prevFormValue, robot_weight: event || 0 }));
+}}
+onKeyPress={(event) => {
+const charCode = event.which ? event.which : event.keyCode;
+if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+event.preventDefault();
+}
+}}
+onWheel={(e) => (e.target as HTMLElement).blur()}
+/>
+</Form.Item>
         <h2>Drive Train Type</h2>
         <Form.Item name="drive_train_type" rules={[{ required: true, message: 'Please input the drive train type!' }]}>
         <Select
@@ -460,7 +461,7 @@ function PitScout(props: any) {
         />
       </Form.Item>
       <h2>Coral Score Aiming</h2>
-        <Form.Item name="score_aiming" rules={[{ required: true, message: 'Please input the Coral and Algae Score Aiming!' }]}>
+        <Form.Item name="score_aiming_coral" rules={[{ required: true, message: 'Please input the Coral Score Aiming!' }]}>
         <Select
           options={scoreAimingCoral}
           className="input"
@@ -469,7 +470,7 @@ function PitScout(props: any) {
         />
       </Form.Item>
       <h2>Algae Score Aiming</h2>
-        <Form.Item name="score_aiming" rules={[{ required: true, message: 'Please input the Coral and Algae Score Aiming!' }]}>
+        <Form.Item name="score_aiming_algae" rules={[{ required: true, message: 'Please input the Algae Score Aiming!' }]}>
         <Select
           options={scoreAimingAlgae}
           className="input"
