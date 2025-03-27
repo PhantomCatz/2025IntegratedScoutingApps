@@ -21,17 +21,17 @@ const formDefaultValues = {
   "blue_alliance": [],
   "penalties": 0,
 }
-const noShowValues = {
-  //"match_event": null,
-  //"team_number": 0,
-  //"scouter_initials": null,
-  //"match_level": null,
-  //"match_number": 0,
-  //"robot_position": null,
-  "comments": "",
-  //"red_alliance": [],
-  //"blue_alliance": [],
-}
+//const noShowValues = {
+//  //"match_event": null,
+//  //"team_number": 0,
+//  //"scouter_initials": null,
+//  //"match_level": null,
+//  //"match_number": 0,
+//  //"robot_position": null,
+//  "comments": "",
+//  //"red_alliance": [],
+//  //"blue_alliance": [],
+//}
 
 function Strategic(props: any, text:any) {
   const [form] = Form.useForm();

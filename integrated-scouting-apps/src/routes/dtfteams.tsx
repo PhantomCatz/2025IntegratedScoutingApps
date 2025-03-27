@@ -333,13 +333,12 @@ function DTFTeams(props: any) {
   }
 
   async function getAllianceTab(teams : any, persistentData : any, index : number) {
-	  console.log(`index=`, index);
     const tabs : any = [];
     const alliancePersistentData : any = [];
 
-	let teamCount = (index - 1) * TEAMS_PER_ALLIANCE;
+    let teamCount = (index - 1) * TEAMS_PER_ALLIANCE;
     for (const team of teams) {
-	  teamCount++;
+      teamCount++;
       if(!team) {
         continue;
       }
@@ -553,7 +552,6 @@ function DTFTeams(props: any) {
       const allianceAverageScores = [];
       const averageScores = [];
 
-	  console.log(`persistentData=`, persistentData);
       for(let i = 0; i < NUM_ALLIANCES; i++) {
         const averageScoresGroup = [];
         let allianceTotalAverage = 0;

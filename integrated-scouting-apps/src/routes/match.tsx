@@ -131,7 +131,7 @@ const noShowValues = {
   "overall_tech_penalty": false,
   "overall_match_penalty": false,
   "overall_penalties_incurred": "",
-  "overall_comments": "",
+  "overall_comments": "Robot did not appear",
   // Playoffs
   //"red_alliance": "",
   //"blue_alliance": "",
@@ -540,6 +540,12 @@ function MatchScout(props: any) {
        <Button
          className={"noShowButton"}
          onMouseDown={async () => {
+           const confirmed = window.confirm("Are you sure that this robot did not appear?");
+
+           if(!confirmed) {
+             return;
+            }
+
            const values = {...noShowValues};
 
            setTabNum("1");

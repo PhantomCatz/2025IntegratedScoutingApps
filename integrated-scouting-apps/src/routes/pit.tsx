@@ -104,10 +104,10 @@ function PitScout(props: any) {
         console.error("Error in fetching teams: ", err.message);
       }})();
   }, [match_event]);
-  useEffect(() => {
-
-    console.log(`robotImageURI=`, robotImageURI.map((x) => "adsf"));
-  }, [robotImageURI]);
+  //useEffect(() => {
+  //
+  //  console.log(`robotImageURI=`, robotImageURI.map((x) => "adsf"));
+  //}, [robotImageURI]);
 
   async function submitData(event: any) {
     console.log("event=", event);
@@ -584,7 +584,21 @@ function PitScout(props: any) {
                 const files : string[] = [];
 
                 for(let i = 0; i < copy.length; i++) {
-                  const image : string = await readImage(copy[i]);
+                  const file = copy[i];
+                  //console.log(`copy[i]=`, copy[i]);
+
+                  try {
+                    if(!file.type.startsWith("image")) {
+                      window.alert(`'${file.type.substring(file.type.indexOf("/") + 1)}' is not supported`);
+                      continue;
+                    }
+                  } catch (err) {
+                    console.log(`File reading error =`, err);
+                    window.alert("Error in reading file");
+                    return;
+                  }
+
+                  const image : string = await readImage(file);
 
                   files.push(image);
                 }
@@ -646,7 +660,7 @@ async function readImage(blob : any) : Promise<string> {
     reader.readAsDataURL(blob);
     reader.onload = () => {
       const base64Image : string = reader.result as string;
-      console.log(base64Image)
+      //console.log(base64Image)
       resolve(base64Image);
     };
     reader.onerror = () => {
