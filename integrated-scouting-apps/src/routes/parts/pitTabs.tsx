@@ -56,7 +56,7 @@ async function PitTabs(team_number: number, inCallback? : boolean) {
 
     matches.push({
       key: `pitData${pitInfo.id}`,
-      label: `${pitInfo.scouter_initials.toUpperCase()} : ${pitInfo.team_number}`,
+      label: `${pitInfo.scouter_initials.toUpperCase()}:${pitInfo.team_number}`,
       children: (
         <>
           <h2>Match Event</h2>

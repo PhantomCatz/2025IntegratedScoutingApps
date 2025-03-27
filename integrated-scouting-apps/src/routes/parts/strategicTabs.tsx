@@ -40,8 +40,8 @@ async function StrategicTabs(team_number: number, inCallback? : boolean) {
     strategicInfo.comments = strategicInfo.comments.replaceAll("\\n", "\n");
 
     matches.push({
-      key: `${strategicInfo.id}`,
-      label: `${strategicInfo.scouter_initials.toUpperCase()} : ${strategicInfo.team_number}`,
+      key: `strategicData${strategicInfo.id}`,
+      label: `${strategicInfo.scouter_initials.toUpperCase()}:${strategicInfo.team_number}`,
       children: (
         <>
           <h2>Scouter Initials</h2>
