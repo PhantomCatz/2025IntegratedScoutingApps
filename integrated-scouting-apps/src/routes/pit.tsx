@@ -29,7 +29,8 @@ const formDefaultValues = {
   "can_remove_algae": false,
   "algae_intake_capability": null,
   "algae_scoring_capability": null,
-  "score_aiming": null,
+  "score_aiming_coral": null,
+  "score_aiming_algae": null,
   "aiming_description": null,
   "climbing_capability": null,
   "pit_organization": 0,
@@ -199,7 +200,8 @@ function PitScout(props: any) {
       can_remove_algae: boolean;
       algae_intake_capability: string;
       algae_scoring_capability: string;
-      score_aiming: string,
+      score_aiming_coral: string,
+      score_aiming_algae: string,
       aiming_description: string,
       climbing_capability: string;
       pit_organization: number;
