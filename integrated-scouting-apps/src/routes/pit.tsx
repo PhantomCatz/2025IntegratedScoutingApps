@@ -246,7 +246,7 @@ function PitScout(props: any) {
       { label: "Other", value: "Other" },
     ];
     const algaeintakeCap = [
-      { label: "Station", value: "Station" },
+      { label: "Reef", value: "Reef" },
       { label: "Ground", value: "Ground" },
       { label: "Both", value: "Both" },
       { label: "Neither", value: "Neither" },
@@ -263,10 +263,14 @@ function PitScout(props: any) {
       { label: "Both", value: "Both" },
       { label: "Neither", value: "Neither" },
     ];
-    const scoreAiming = [
-      { label: "Both", value: "Both" },
-      { label: "Only Coral", value: "Only Coral" },
-      { label: "Only Algae", value: "Only Algae" },
+    const scoreAimingCoral = [
+      { label: "Manual", value: "Manual" },
+      { label: "Auto", value: "Auto" },
+      { label: "Neither", value: "Neither" },
+    ];
+    const scoreAimingAlgae = [
+      { label: "Manual", value: "Manual" },
+      { label: "Auto", value: "Auto" },
       { label: "Neither", value: "Neither" },
     ];
     const climbing_capability_options = [
@@ -449,22 +453,30 @@ function PitScout(props: any) {
         <h2>Algae Scoring Capability</h2>
         <Form.Item name="algae_scoring_capability" rules={[{ required: true, message: 'Please input the Algae Scoring capability!' }]}>
         <Select
-          options={algae_intake_capability_options}
+          options={algae_scoring_capability_options}
           className="input"
           dropdownMatchSelectWidth={false}
           dropdownStyle={{ maxHeight: 'none' }}
         />
       </Form.Item>
-      <h2>Coral and Algae Score Aiming</h2>
+      <h2>Coral Score Aiming</h2>
         <Form.Item name="score_aiming" rules={[{ required: true, message: 'Please input the Coral and Algae Score Aiming!' }]}>
         <Select
-          options={scoreAiming}
+          options={scoreAimingCoral}
           className="input"
           dropdownMatchSelectWidth={false}
           dropdownStyle={{ maxHeight: 'none' }}
         />
       </Form.Item>
-
+      <h2>Algae Score Aiming</h2>
+        <Form.Item name="score_aiming" rules={[{ required: true, message: 'Please input the Coral and Algae Score Aiming!' }]}>
+        <Select
+          options={scoreAimingAlgae}
+          className="input"
+          dropdownMatchSelectWidth={false}
+          dropdownStyle={{ maxHeight: 'none' }}
+        />
+      </Form.Item>
         <h2>Aiming Description</h2>
         <Form.Item<FieldType>
           name="aiming_description"
