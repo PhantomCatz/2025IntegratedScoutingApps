@@ -320,7 +320,9 @@ function DTFTeams(props: any) {
         data.total_score += getScore(k, v);
       }
     }
-    data.average_score = data.total_score / data.match_count;
+    data.average_score = data.match_count ?
+      data.total_score / data.match_count :
+      0;
 
     for(const [k, v] of Object.entries(data)) {
       if(typeof v === "number") {
@@ -331,10 +333,13 @@ function DTFTeams(props: any) {
   }
 
   async function getAllianceTab(teams : any, persistentData : any, index : number) {
+	  console.log(`index=`, index);
     const tabs : any = [];
     const alliancePersistentData : any = [];
 
+	let teamCount = (index - 1) * TEAMS_PER_ALLIANCE;
     for (const team of teams) {
+	  teamCount++;
       if(!team) {
         continue;
       }
@@ -361,7 +366,7 @@ function DTFTeams(props: any) {
       if(hasData) {
         teamTabs.push({ key: "Charts", label: "Charts", children:
           <>
-            <ChartComponent teamNumber={team} index={index} data={teamMatches}/>
+            <ChartComponent teamNumber={team} index={teamCount} data={teamMatches}/>
           </>  
         });
 
@@ -465,7 +470,7 @@ function DTFTeams(props: any) {
         </>
       });
 
-      tabs.push({ key: team, label: team, children:
+      tabs.push({ key: `${team}|${teamCount}`, label: team, children:
         <>
           <Tabs items={teamTabs} centered className={"tabs"} />
         </>
@@ -548,6 +553,7 @@ function DTFTeams(props: any) {
       const allianceAverageScores = [];
       const averageScores = [];
 
+	  console.log(`persistentData=`, persistentData);
       for(let i = 0; i < NUM_ALLIANCES; i++) {
         const averageScoresGroup = [];
         let allianceTotalAverage = 0;

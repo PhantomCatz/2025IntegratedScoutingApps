@@ -217,7 +217,6 @@ function ChartComponent(props : any) {
       algae_scored: 0,
       algae_missed: 0,
       algae_overall_total: 0,
-
     };
 
     try {
@@ -236,22 +235,22 @@ function ChartComponent(props : any) {
           }
           switch(field) {
             case "coral_scored_l1":
-              case "coral_scored_l2":
-              case "coral_scored_l3":
-              case "coral_scored_l4":
-              case "coral_missed_l1":
-              case "coral_missed_l2":
-              case "coral_missed_l3":
-              case "coral_missed_l4":
+            case "coral_scored_l2":
+            case "coral_scored_l3":
+            case "coral_scored_l4":
+            case "coral_missed_l1":
+            case "coral_missed_l2":
+            case "coral_missed_l3":
+            case "coral_missed_l4":
               total[field] += value as number;
-            break;
+              break;
             case "algae_scored_net":
               case "algae_scored_processor":
               total.algae_scored += value as number;
-            break;
+              break;
             case "algae_missed_net":
               total.algae_missed += value as number;
-            break;
+              break;
             default:
               break;
           }

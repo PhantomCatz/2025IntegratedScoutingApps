@@ -1,12 +1,13 @@
 import '../public/stylesheets/style.css';
 import '../public/stylesheets/strategic.css';
 import { useEffect, useState} from 'react';
-import { Tabs, Input, Form, Select, InputNumber, Button, Flex, Table } from 'antd';
+import { Tabs, Input, Form, InputNumber, Button, Flex, Table } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import { saveAs } from 'file-saver';
 import Header from "./parts/header";
 import QrCode from "./parts/qrCodeViewer";
 import { isRoundNumberVisible, isInPlayoffs, getTeamsPlaying, getIndexNumber } from './utils/tbaRequest';
+import { NumberInput, Select } from './parts/formItems';
 
 const formDefaultValues = {
   "match_event": null,
@@ -291,77 +292,62 @@ function Strategic(props: any, text:any) {
               }
             }} />
         </Form.Item>
-        <h2>Match Level</h2>
-        <Form.Item<FieldType> name="match_level" rules={[{ required: true, message: 'Please input the match level!' }]}>
-          <Select options={rounds} className="input" onChange={() => { calculateMatchLevel(); updateTeamNumber(); }} />
-        </Form.Item>
+        
+        <Select
+          title={"Match Level"}
+          name={"match_level"}
+          options={rounds}
+          onChange={() => { calculateMatchLevel(); updateTeamNumber(); }}
+        />
+
         <div className={"playoff-alliances"} style={{ display: inPlayoffs ? 'inherit' : 'none' }}>
-          
-          <h2>Red Alliance</h2>
-          <Form.Item<FieldType> name="red_alliance" rules={[{ required: inPlayoffs ? true : false, message: 'Enter the red alliance' }]}>
-            <Select options={playoff_alliances}
-              onChange={() => { calculateMatchLevel(); updateTeamNumber(); }}
-              className="input"
-              dropdownMatchSelectWidth={false}
-              dropdownStyle={{ maxHeight: 'none' }}
-            />
-          </Form.Item>
-          <h2>Blue Alliance</h2>
-          <Form.Item<FieldType> name="blue_alliance" rules={[{ required: inPlayoffs ? true : false, message: 'Enter the blue alliance' }]}>
-            <Select options={playoff_alliances}
-              onChange={() => { calculateMatchLevel(); updateTeamNumber(); }}
-              className="input"
-              dropdownMatchSelectWidth={false}
-              dropdownStyle={{ maxHeight: 'none' }}
-            />
-          </Form.Item>
-        </div>
-        <h2>Match #</h2>
-        <Form.Item<FieldType> name="match_number" rules={[{ required: true, message: 'Please input the match number!',  }]}>
-        <InputNumber min={1} onChange={updateTeamNumber} className="input" type='number' pattern="\d*" onWheel={(e) => (e.target as HTMLElement).blur()} />
-        </Form.Item>
-        <h2 style={{ display: roundIsVisible ? 'inherit' : 'none' }}>Round #</h2>
-        <Form.Item<FieldType> name="round_number" rules={[{ required: roundIsVisible ? true : false, message: 'Please input the round number!' }]} style={{ display: roundIsVisible ? 'inherit' : 'none' }}>
-          <InputNumber min={1} onChange={() => { updateTeamNumber(); }} style={{ display: roundIsVisible ? 'inherit' : 'none' }} className="input" type='number' pattern="\d*" onWheel={(event) => (event.target as HTMLElement).blur()} />
-        </Form.Item>
-        <h2>Robot Position</h2>
-        <Form.Item<FieldType> name="robot_position" rules={[{ required: true, message: 'Please input the robot position!' }]}>
           <Select
-            options={robot_position}
-            onChange={() => { updateTeamNumber(); }}
-            className='input'
-            listItemHeight={10}
-            listHeight={500}
-            placement='bottomLeft'
-            dropdownMatchSelectWidth={false}
-            dropdownStyle={{ maxHeight: 'none' }}
+            title={"Red Alliance"}
+            name={"red_alliance"}
+            required={inPlayoffs}
+            message={"Enter the red alliance"}
+            options={playoff_alliances}
+            onChange={() => { calculateMatchLevel(); updateTeamNumber(); }}
           />
+          
+          <Select
+            title={"Blue Alliance"}
+            name={"blue_alliance"}
+            required={inPlayoffs}
+            message={"Enter the blue alliance"}
+            options={playoff_alliances}
+            onChange={() => { calculateMatchLevel(); updateTeamNumber(); }}
+          />
+        </div>
 
+        <NumberInput
+          title={"Match #"}
+          name={"match_number"}
+          message={"Enter match #"}
+          onChange={updateTeamNumber}
+          min={1}
+          setForm={setFormValue}
+          buttons={false}
+          align={"left"}
+        />
         
-            <Flex className = "numberinput" vertical align='flex-start'>
-              <h2># of Penalties</h2>
-              <Form.Item<FieldType> name="penalties" rules={[{ required: true, message: 'Enter # of Penalties' }]}>
-                <InputNumber
-                  id="penalties"
-                  type='number'
-                  pattern="\d*"
-                  min={0}
-                  onWheel={(e) => (e.target as HTMLElement).blur()}
-                  className="input"
-                  addonAfter={<Button onMouseDown={() => {
-                    setFormValue({ ...formValue, penalties: formValue.penalties + 1 });
-                  }} className='incrementbutton'>+</Button>}
-                  addonBefore={<Button onMouseDown={() => {
-                    if (Number(formValue.penalties) > 0) {
-                      setFormValue({ ...formValue, penalties: formValue.penalties - 1 });
-                    }
-                  }} className='decrementbutton'>-</Button>}
-                />
-              </Form.Item>
-            </Flex>
-        
+        <NumberInput
+          title={"Round #"}
+          name={"round_number"}
+          message={"Enter round #"}
+          onChange={updateTeamNumber}
+          min={1}
+          setForm={setFormValue}
+          shown={roundIsVisible}
+        />
+        <Select
+          title={"Robot Position"}
+          name={"robot_position"}
+          message={"Please input the robot position"}
+          options={robot_position}
+          onChange={updateTeamNumber}
+        />
 
-        </Form.Item>
         <Flex justify='in-between' style={{ paddingBottom : '5%' }}>
           <Button onClick={() => setTabNum("2")} className='tabbutton'>Next</Button>
         </Flex>
@@ -450,6 +436,14 @@ function Strategic(props: any, text:any) {
       <Form
         form={form}
         onFinish={runFormFinish}
+        onFinishFailed={({values, errorFields, outOfDate}) => {
+          console.log("values=", values);
+          console.log("errorFields=", errorFields);
+          console.log("outOfDate=", outOfDate);
+          
+          const errorMessage = errorFields.map((x : any) => x.errors.join(", ")).join("\n");
+          window.alert(errorMessage);
+        }}
       >
         <Tabs defaultActiveKey="1" activeKey={tabNum} items={items} centered className='tabs' onChange={async (key) => { setTabNum(key); }} />
       </Form>
