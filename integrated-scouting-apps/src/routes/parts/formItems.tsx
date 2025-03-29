@@ -1,3 +1,4 @@
+import React, { useState, useRef, } from 'react';
 import { Tabs, Input, Form, Select as AntdSelect, Checkbox, InputNumber, Flex, Button, Radio} from 'antd';
 
 type NumberInputType = {
@@ -27,14 +28,14 @@ type SelectType = {
   multiple?: boolean;
 }
 
-function NumberInput<FieldType>(props: NumberInputType) {
+ const NumberInput = React.memo(function <FieldType,>(props: NumberInputType) {
   const title = props.title;
   const name = props.name;
   const shown = props.shown ?? true;
-  const required = (props.required !== undefined ? props.required : true) && shown;
+  const required = (props.required ?? true) && shown;
   const message = props.message || `Please input ${title}`;
-  const min = props.min !== undefined ? props.min : 0;
-  const max = props.max !== undefined ? props.max : Infinity;
+  const min = props.min ?? 0;
+  const max = props.max ?? Infinity;
   const onIncrease = props.onIncrease || (() => {});
   const onDecrease = props.onDecrease || (() => {});
   const onChange = props.onChange || (() => {});
@@ -42,7 +43,7 @@ function NumberInput<FieldType>(props: NumberInputType) {
   const align = props.align || "center";
   const buttons = props.buttons ?? true;
 
-  return (
+   return (
     <Flex
       vertical
       align='flex-start'
@@ -62,16 +63,21 @@ function NumberInput<FieldType>(props: NumberInputType) {
         name={name as any}
         rules={[{
           required: required,
-          message: message
+          message: message,
         }]}
       >
         <InputNumber
           id={name}
-          type={"number"}
-          pattern={"\d*"}
-          min={min}
-          max={max}
-          onWheel={(e) => (e.target as HTMLElement).blur()}
+          type={"text"}
+          inputMode={"numeric"}
+          onKeyDown={(e) => {
+            console.log(`e.keyCode=`, e.keyCode);
+            const key = e.keyCode;
+            if((key >= 32 && key !== 224) && ( key < "0".charCodeAt(0) || key > "9".charCodeAt(0))) {
+              e.nativeEvent.preventDefault();
+            }
+          }}
+          onWheel={(e) => {(e.target as HTMLElement).blur();console.log("adsf")}}
           className={"input"}
           onChange={(event) => {
             setForm((prevForm : any) => {
@@ -125,8 +131,8 @@ function NumberInput<FieldType>(props: NumberInputType) {
       </Form.Item>
     </Flex>
   );
-}
-function Select<FieldType>(props: SelectType) {
+});
+const Select = React.memo(function <FieldType,>(props: SelectType) {
   const title = props.title;
   const name = props.name;
   const required = props.required ?? true;
@@ -166,6 +172,6 @@ function Select<FieldType>(props: SelectType) {
       </Form.Item>
     </div>
   );
-}
+});
 
 export { NumberInput, Select, };

@@ -272,7 +272,7 @@ function MatchScout(props: any) {
 
     if(status) {
       window.alert("Successfully submitted data.");
-      return;
+      //return;
     }
 
     window.alert("Could not submit data. Please show QR to Webdev.");

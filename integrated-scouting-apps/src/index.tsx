@@ -92,6 +92,7 @@ function App() {
       </Routes>
     </HashRouter>
   );
+  
 }
 
 root.render(<App />);
@@ -102,3 +103,12 @@ root.render(
   </React.StrictMode>
 );
 */
+
+window.addEventListener("error", (event) => {
+  window.alert(event.message);
+});
+
+window.addEventListener("unhandledrejection", (event) => {
+  console.log(`event=`, event);
+  window.alert(event);
+});
