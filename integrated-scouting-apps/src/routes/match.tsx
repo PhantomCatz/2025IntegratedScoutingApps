@@ -425,8 +425,7 @@ function MatchScout(props: any) {
     };
     const rounds = [
       { label: "Qualifications", value: "Qualifications" },
-      { label: "Quarter-Finals", value: "Quarter-Finals" },
-      { label: "Semi-Finals", value: "Semi-Finals" },
+      { label: "Playoffs", value: "Playoffs" },
       { label: "Finals", value: "Finals" },
     ];
     function getNum(n : number) {

@@ -1,7 +1,7 @@
 import '../public/stylesheets/style.css';
 import '../public/stylesheets/pit.css';
 import '../public/stylesheets/match.css';
-import { Checkbox, Form, Input, InputNumber, Select, Upload, } from 'antd';
+import { Checkbox, Form, Input, InputNumber, Upload, } from 'antd';
 import { useRef } from 'react';
 import { Button } from 'antd';
 import React, { useState, useEffect } from 'react';
@@ -10,6 +10,7 @@ import TextArea from 'antd/es/input/TextArea';
 import Header from './parts/header';
 import QrCode from './parts/qrCodeViewer';
 import { getTeamsNotScouted, } from './utils/tbaRequest';
+import { NumberInput, Select } from './parts/formItems';
 
 const formDefaultValues = {
   "match_event": null,
@@ -29,7 +30,8 @@ const formDefaultValues = {
   "can_remove_algae": false,
   "algae_intake_capability": null,
   "algae_scoring_capability": null,
-  "score_aiming": null,
+  "score_aiming_coral": null,
+  "score_aiming_algae": null,
   "aiming_description": null,
   "climbing_capability": null,
   "pit_organization": 0,
@@ -104,10 +106,6 @@ function PitScout(props: any) {
         console.error("Error in fetching teams: ", err.message);
       }})();
   }, [match_event]);
-  //useEffect(() => {
-  //
-  //  console.log(`robotImageURI=`, robotImageURI.map((x) => "adsf"));
-  //}, [robotImageURI]);
 
   async function submitData(event: any) {
     console.log("event=", event);
@@ -129,7 +127,8 @@ function PitScout(props: any) {
       "can_remove_algae": event.can_remove_algae || false,
       "algae_intake_capability": event.algae_intake_capability,
       "algae_scoring_capability": event.algae_scoring_capability,
-      "score_aiming": event.score_aiming,
+      "score_aiming_coral": event.score_aiming_coral,
+      "score_aiming_algae": event.score_aiming_algae,
       "aiming_description": event.aiming_description,
       "climbing_capability": event.climbing_capability,
       "pit_organization": event.pit_organization,
@@ -198,7 +197,8 @@ function PitScout(props: any) {
       can_remove_algae: boolean;
       algae_intake_capability: string;
       algae_scoring_capability: string;
-      score_aiming: string,
+      score_aiming_coral: string,
+      score_aiming_algae: string,
       aiming_description: string,
       climbing_capability: string;
       pit_organization: number;
@@ -239,14 +239,14 @@ function PitScout(props: any) {
       { label: "Both", value: "Both" },
       { label: "Neither", value: "Neither" },
     ];
-    const intakeWidth = [
+    const intake_width_options = [
       { label: "Full Width", value: "Full Width" },
       { label: "Half Width", value: "Half Width" },
       { label: "Claw/ Aiming", value: "Claw/ Aiming" },
       { label: "Other", value: "Other" },
     ];
     const algaeintakeCap = [
-      { label: "Station", value: "Station" },
+      { label: "Reef", value: "Reef" },
       { label: "Ground", value: "Ground" },
       { label: "Both", value: "Both" },
       { label: "Neither", value: "Neither" },
@@ -263,10 +263,14 @@ function PitScout(props: any) {
       { label: "Both", value: "Both" },
       { label: "Neither", value: "Neither" },
     ];
-    const scoreAiming = [
-      { label: "Both", value: "Both" },
-      { label: "Only Coral", value: "Only Coral" },
-      { label: "Only Algae", value: "Only Algae" },
+    const score_aiming_coral_options = [
+      { label: "Manual", value: "Manual" },
+      { label: "Auto", value: "Auto" },
+      { label: "Neither", value: "Neither" },
+    ];
+    const score_aiming_algae_options = [
+      { label: "Manual", value: "Manual" },
+      { label: "Auto", value: "Auto" },
       { label: "Neither", value: "Neither" },
     ];
     const climbing_capability_options = [
@@ -300,122 +304,65 @@ function PitScout(props: any) {
             }}
           />
         </Form.Item>
-        <h2>Team #</h2>
-        <Form.Item<FieldType> 
-          name="team_number" 
-          rules={[{ required: true, message: 'Please input the team number!' }]}
-        >
-          <InputNumber 
-            controls 
-            min={1} 
-            max={99999} 
-            className="input"
-            type="number"
-            pattern="[0-9]*"
-            onKeyPress={(event) => {
-              const currentValue = event.currentTarget.value;
-              const charCode = event.which ? event.which : event.keyCode;
-              if (charCode > 31 && (charCode < '0'.charCodeAt(0) || charCode > '9'.charCodeAt(0))) {
-                event.preventDefault();
-              }
-              if (currentValue.length >= 5) {
-                event.preventDefault();
-              }
-            }}
-            onWheel={(e) => (e.target as HTMLElement).blur()}
-          />
-        </Form.Item>
-        <h2>Robot Weight (lbs)</h2>
-        <Form.Item<FieldType>
-          name="robot_weight"
-          rules={[{ required: true, message: 'Please input the robot weight in lbs!' }]}
-        >
-          <InputNumber
-            controls
-            min={0}
-            max={1000}
-            precision={0}
-            placeholder="0"
-            className="input robot-weight-input"
-            type="number"
-            pattern="[0-9]*"
-            onChange={(event) => {
-              setFormValue((prevFormValue) => ({...prevFormValue, robot_weight: event || 0 }));
-            }}
-            onKeyPress={(event) => {
-              const charCode = event.which ? event.which : event.keyCode;
-              if (charCode > 31 && (charCode < 48 || charCode > 57)) {
-                event.preventDefault();
-              }
-            }}
-            onWheel={(e) => (e.target as HTMLElement).blur()}
-          />
-        </Form.Item>
-        <h2>Drive Train Type</h2>
-        <Form.Item name="drive_train_type" rules={[{ required: true, message: 'Please input the drive train type!' }]}>
-        <Select
-          options={drive_train_options}
-          className="input"
-          dropdownMatchSelectWidth={false}
-          dropdownStyle={{ maxHeight: 'none' }}
+        <NumberInput
+          title={"Team #"}
+          name={"team_number"}
+          message={"Please input the team number"}
+          min={1}
+          max={99999}
+          setForm={setFormValue}
+          buttons={false}
+          align={"left"}
         />
-        </Form.Item>
-        <h2>Motor Type</h2>
-        <Form.Item name="motor_type" rules={[{ required: true, message: 'Please input the motor type!' }]}>
-        <Select
-          options={motor_type_options}
-          className="input"
-          dropdownMatchSelectWidth={false}
-          dropdownStyle={{ maxHeight: 'none' }}
+        
+        <NumberInput
+          title={"Robot Weight (lbs)"}
+          name={"robot_weight"}
+          message={"Please input the robot weight in lbs"}
+          min={0}
+          max={1000}
+          setForm={setFormValue}
+          align={"left"}
         />
-        </Form.Item>
-        <h2># of Motors</h2>
-        <Form.Item<FieldType> name="number_of_motors" rules={[{ required: true, message: 'Please input the number of motors!' }]}>
-          <InputNumber
-            controls
-            min={0}
-            className="input"
-            value={formValue.number_of_motors}
-            onChange={(value) => {
-              setFormValue({ ...formValue, number_of_motors: value ? value : 0 });
-            }}
-            addonAfter={<Button onMouseDown={() => {
-              setFormValue(prevFormValue => ({ ...prevFormValue, number_of_motors: prevFormValue.number_of_motors + 1 }));
-            }} className='incrementbutton'>+</Button>}
-            addonBefore={<Button onMouseDown={() => {
-              setFormValue(prevFormValue => ({ ...prevFormValue, number_of_motors: Math.max(0, prevFormValue.number_of_motors - 1) }));
-            }} className='decrementbutton'>-</Button>}
-          />
-        </Form.Item>
-        <h2>Wheel Type</h2>
-        <Form.Item name="wheel_type" rules={[{ required: true, message: 'Please input the wheel type!' }]}>
-          <Select
-            placeholder=""
-            options={wheel_type_options}
-            className="input"
-            dropdownMatchSelectWidth={false}
-            dropdownStyle={{ maxHeight: 'none' }}
-          />
-        </Form.Item>
-        <h2>Coral Intake Type</h2>
-          <Form.Item name="coral_intake_capability" rules={[{ required: true, message: 'Please input the intake type!' }]}>
 
-          <Select
-            options={coral_intake_capability_options}
-            className="input"
-            dropdownMatchSelectWidth={false}
-            dropdownStyle={{ maxHeight: 'none' }}
-          />
-        </Form.Item>
-        <h2>Intake Width</h2>
-          <Form.Item name="intake_width" rules={[{ required: true, message: 'Please input the intake width!' }]}>
-          <Select
-            options={intakeWidth}
-            className="input"
-            dropdownMatchSelectWidth={false}
-            dropdownStyle={{ maxHeight: 'none' }}
-          />
-        </Form.Item>
+        <Select
+          title={"Drive Train Type"}
+          name={"drive_train_type"}
+          message={"Please input the drive train type"}
+          options={drive_train_options}
+        />
+        <Select
+          title={"Motor Type"}
+          name={"motor_type"}
+          message={"Please input the motor type"}
+          options={motor_type_options}
+        />
+        <NumberInput
+          title={"# of Motors"}
+          name={"number_of_motors"}
+          message={"Please input the number of motors"}
+          min={0}
+          setForm={setFormValue}
+          align={"left"}
+        />
+        <Select
+          title={"Wheel Type"}
+          name={"wheel_type"}
+          message={"Please input the wheel type"}
+          options={wheel_type_options}
+        />
+        <Select
+          title={"Coral Intake Type"}
+          name={"coral_intake_capability"}
+          message={"Please input the intake type"}
+          options={coral_intake_capability_options}
+        />
+        <Select
+          title={"Intake Width"}
+          name={"intake_width"}
+          message={"Please input the intake width"}
+          options={intake_width_options}
+        />
         <h2>Coral Scoring</h2>
         <h2>L1</h2>
         <Form.Item<FieldType> valuePropName="checked" name="coral_scoring_l1">
@@ -437,34 +384,30 @@ function PitScout(props: any) {
         <Form.Item<FieldType> valuePropName="checked" name="can_remove_algae">
           <Checkbox className='input_checkbox' />
         </Form.Item>
-        <h2>Algae Intake Capability</h2>
-        <Form.Item name="algae_intake_capability" rules={[{ required: true, message: 'Please input the Algae intake capability!' }]}>
         <Select
+          title={"Algae Intake Capability"}
+          name={"algae_intake_capability"}
+          message={"Please input the algae intake capability"}
           options={algaeintakeCap}
-          className="input"
-          dropdownMatchSelectWidth={false}
-          dropdownStyle={{ maxHeight: 'none' }}
         />
-      </Form.Item>
-        <h2>Algae Scoring Capability</h2>
-        <Form.Item name="algae_scoring_capability" rules={[{ required: true, message: 'Please input the Algae Scoring capability!' }]}>
         <Select
-          options={algae_intake_capability_options}
-          className="input"
-          dropdownMatchSelectWidth={false}
-          dropdownStyle={{ maxHeight: 'none' }}
+          title={"Algae Scoring Capability"}
+          name={"algae_intake_capability"}
+          message={'Please input the algae scoring capability'}
+          options={algae_scoring_capability_options}
         />
-      </Form.Item>
-      <h2>Coral and Algae Score Aiming</h2>
-        <Form.Item name="score_aiming" rules={[{ required: true, message: 'Please input the Coral and Algae Score Aiming!' }]}>
         <Select
-          options={scoreAiming}
-          className="input"
-          dropdownMatchSelectWidth={false}
-          dropdownStyle={{ maxHeight: 'none' }}
+          title={"Coral Score Aiming"}
+          name={"score_aiming_coral"}
+          message={"Please input the coral score aiming"}
+          options={score_aiming_coral_options}
         />
-      </Form.Item>
-
+        <Select
+          title={"Algae Score Aiming"}
+          name={"score_aiming_algae"}
+          message={"Please input the algae score aiming"}
+          options={score_aiming_algae_options}
+        />
         <h2>Aiming Description</h2>
         <Form.Item<FieldType>
           name="aiming_description"
@@ -473,96 +416,55 @@ function PitScout(props: any) {
           ]}
         >
          <TextArea style={{ verticalAlign: 'center' }} className='textbox_input' />
-         </Form.Item>
+       </Form.Item>
 
-        <h2>Climbing Capability</h2>
-        <Form.Item<FieldType> name="climbing_capability" rules={[{ required: true, message: 'Please input the climbing capability!' }]}>
-          <Select options={climbing_capability_options} className="input" />
-        </Form.Item>
+        <Select
+          title={"Climbing Capability"}
+          name={"climbing_capability"}
+          message={"Please input the climbing capability"}
+          options={climbing_capability_options}
+        />
 
-        <h2>Pit Organization(0-4)</h2>
-        <Form.Item<FieldType> name="pit_organization" rules={[{ required: true, message: 'Please input the pit organization rating!' }]}>
-          <InputNumber
-            min={0}
-            max={4}
-            className="input"
-            addonAfter={<Button onMouseDown={() => {
-                setFormValue(prevValue => ({
-                  ...prevValue,
-                  pit_organization: Math.min(4, (prevValue.pit_organization || 0) + 1)
-                }));
-              }} className='incrementbutton'>+</Button>}
-            addonBefore={<Button onMouseDown={() => {
-                setFormValue(prevValue => ({
-                    ...prevValue,
-                    pit_organization: Math.max(0, (prevValue.pit_organization || 0) - 1)
-                  }));
-              }} className='decrementbutton'>-</Button>}
-          />
-        </Form.Item>
+        <NumberInput
+          title={"Pit Organization(0-4)"}
+          name={"pit_organization"}
+          message={"Please input pit organization rating"}
+          min={0}
+          max={4}
+          setForm={setFormValue}
+          align={"left"}
+        />
 
-        <h2>Team Safety(0-4)</h2>
-        <Form.Item<FieldType> name="team_safety" rules={[{ required: true, message: 'Please input the team safety rating!' }]}>
-          <InputNumber
-                min={0}
-                max={4}
-                className="input"
-              addonAfter={<Button onMouseDown={() => {
-                setFormValue(prevValue => ({
-                  ...prevValue,
-                  team_safety: Math.min(4, (prevValue.team_safety || 0) + 1)
-              }));
-            }} className='incrementbutton'>+</Button>}
-            addonBefore={<Button onMouseDown={() => {
-              setFormValue(prevValue => ({
-                  ...prevValue,
-                  team_safety: Math.max(0, (prevValue.team_safety || 0) - 1)
-                }));
-            }} className='decrementbutton'>-</Button>}
-          />
-        </Form.Item>
-      
-        <h2>Team Workmanship(0-4)</h2>
-        <Form.Item<FieldType> name="team_workmanship" rules={[{ required: true, message: 'Please input the team workmanship rating!' }]}>
-          <InputNumber
-                min={0}
-                max={4}
-                className="input"
-              addonAfter={<Button onMouseDown={() => {
-                setFormValue(prevValue => ({
-                  ...prevValue,
-                  team_workmanship: Math.min(4, (prevValue.team_workmanship || 0) + 1)
-              }));
-            }} className='incrementbutton'>+</Button>}
-            addonBefore={<Button onMouseDown={() => {
-              setFormValue(prevValue => ({
-                  ...prevValue,
-                  team_workmanship: Math.max(0, (prevValue.team_workmanship || 0) - 1)
-                }));
-            }} className='decrementbutton'>-</Button>}
-          />
-        </Form.Item>
+        <NumberInput
+          title={"Team Safety(0-4)"}
+          name={"team_safety"}
+          message={"Please input team safety rating"}
+          min={0}
+          max={4}
+          setForm={setFormValue}
+          align={"left"}
+        />
 
-        <h2>Gracious Professionalism(0-4)</h2>
-        <Form.Item<FieldType> name="gracious_professionalism" rules={[{ required: true, message: 'Please input the GP rating!' }]}>
-          <InputNumber
-                min={0}
-                max={4}
-                className="input"
-              addonAfter={<Button onMouseDown={() => {
-                setFormValue(prevValue => ({
-                  ...prevValue,
-                  gracious_professionalism: Math.min(4, (prevValue.gracious_professionalism || 0) + 1)
-              }));
-            }} className='incrementbutton'>+</Button>}
-            addonBefore={<Button onMouseDown={() => {
-              setFormValue(prevValue => ({
-                  ...prevValue,
-                  gracious_professionalism: Math.max(0, (prevValue.gracious_professionalism || 0) - 1)
-                }));
-            }} className='decrementbutton'>-</Button>}
-          />
-        </Form.Item>
+        <NumberInput
+          title={"Team Workmanship(0-4)"}
+          name={"team_workmanship"}
+          message={"Please input team workmanship rating"}
+          min={0}
+          max={4}
+          setForm={setFormValue}
+          align={"left"}
+        />
+
+        <NumberInput
+          title={"Gracious Professionalism(0-4)"}
+          name={"gracious_professionalism"}
+          message={"Please input GP rating"}
+          min={0}
+          max={4}
+          setForm={setFormValue}
+          align={"left"}
+        />
+
         <h2>Comments</h2>
         <Form.Item<FieldType> name="comments">
           <TextArea style={{ verticalAlign: 'center' }} className='textbox_input' />
@@ -585,7 +487,6 @@ function PitScout(props: any) {
 
                 for(let i = 0; i < copy.length; i++) {
                   const file = copy[i];
-                  //console.log(`copy[i]=`, copy[i]);
 
                   try {
                     if(!file.type.startsWith("image")) {
@@ -630,9 +531,9 @@ function PitScout(props: any) {
             form.setFieldsValue({...formDefaultValues, "scouter_initials": initials});
           }
           catch (err) {
-            // console.log(err);
-            // window.alert("Error occured, please do not leave this message and notify a Webdev member immediately.");
-            // window.alert(err);
+             console.log(err);
+             window.alert("Error occured, please do not leave this message and notify a Webdev member immediately.");
+             window.alert(err);
           }
           finally {
             setLoading(false);
@@ -660,7 +561,7 @@ async function readImage(blob : any) : Promise<string> {
     reader.readAsDataURL(blob);
     reader.onload = () => {
       const base64Image : string = reader.result as string;
-      //console.log(base64Image)
+
       resolve(base64Image);
     };
     reader.onerror = () => {
