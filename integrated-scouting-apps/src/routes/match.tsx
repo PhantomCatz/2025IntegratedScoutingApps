@@ -142,10 +142,6 @@ function MatchScout(props: any) {
   const [formValue, setFormValue] = useState<any>(formDefaultValues);
   const [roundIsVisible, setRoundIsVisible] = useState(false);
   const [isLoading, setLoading] = useState(false);
-  const [usChecked, setUSChecked] = useState(false);
-  const [csChecked, setCSChecked] = useState(false);
-  const [lsChecked, setLSChecked] = useState(false);
-  const [lChecked, setLChecked] = useState(false);
   const [tabNum, setTabNum] = useState("1");
   const [team_number, setTeam_number] = useState(0);
   const [teamsList, setTeamsList] = useState<string[]>([]);
@@ -154,12 +150,12 @@ function MatchScout(props: any) {
   const [wasDefendedIsVisible, setWasDefendedIsVisible] = useState(false);
   const [penaltiesIsVisible, setPenaltiesIsVisible] = useState(false);
   const [opposingTeamNum, setOpposingTeamNum] = useState([""]);
-  const [shouldRetrySubmit, setShouldRetrySubmit] = useState(true);
   const [lastFormValue, setLastFormValue] = useState<any>(null);
   const [inPlayoffs, setInPlayoffs] = useState(false);
   const [robot_appeared, setRobot_appeared] = useState(true);
   const [leftStartPos, setLeftStartPos] = useState(false);
   const [autonPoints, setAutonPoints] = useState(0);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const match_event = process.env.REACT_APP_EVENTNAME;
 
@@ -168,6 +164,8 @@ function MatchScout(props: any) {
   }, [props.title]);
   useEffect(() => {
     const updateFields = [
+      "match_number",
+      "round_number",
       "auton_coral_scored_l4",
       "auton_coral_scored_l3",
       "auton_coral_scored_l2",
@@ -268,12 +266,14 @@ function MatchScout(props: any) {
       "overall_comments": event.overall_comments,
       "robot_appeared": robot_appeared,
     };
-    const status = await tryFetch(body);
-
-    if(status) {
-      window.alert("Successfully submitted data.");
-      //return;
-    }
+    tryFetch(body)
+      .then((successful) => {
+        if(successful) {
+          window.alert("Submit successful.");
+        } else {
+          window.alert("Submit was not successful. Please show the QR to WebDev.");
+        }
+      })
 
     window.alert("Could not submit data. Please show QR to Webdev.");
 
@@ -315,6 +315,7 @@ function MatchScout(props: any) {
     if(isLoading) {
       return;
     }
+    console.log(`isLoading=`, isLoading);
 
     if(!event) {
       event = lastFormValue;
@@ -322,15 +323,16 @@ function MatchScout(props: any) {
       setLastFormValue(event);
     }
 
+	setLoading(true);
+
     try {
-      setLoading(true);
       await setNewMatchScout(event);
       const scouter_initials = form.getFieldValue("scouter_initials");
       const match_number = form.getFieldValue("match_number");
       const match_level = form.getFieldValue("match_level");
       const robot_position = form.getFieldValue("robot_position");
       
-      console.log(form.getFieldValue("red_alliance"));
+      //console.log(form.getFieldValue("red_alliance"));
 
       setWasDefendedIsVisible(false);
       setDefendedIsVisible(false);
@@ -339,7 +341,7 @@ function MatchScout(props: any) {
       form.resetFields();
       setFormValue(formDefaultValues);
       form.setFieldValue("scouter_initials", scouter_initials);
-      form.setFieldValue("match_number", match_number + 1);
+      form.setFieldValue("match_number", Number(match_number) + 1);
       form.setFieldValue("match_level", match_level);
       form.setFieldValue("robot_position", robot_position);
       setRobot_appeared(true);

@@ -17,9 +17,6 @@ import Watchlist from './routes/watchlist';
 import WatchlistGet from './routes/watchlistData';
 import WatchlistUpdate from './routes/watchlistUpdate';
 
-import Chart from './routes/parts/chart';
-import QrCode from './routes/parts/qrCodeViewer';
-
 import { HashRouter, Routes, Route } from 'react-router-dom';
 
 const rootElement = document.getElementById('root') as HTMLElement;
@@ -86,9 +83,6 @@ function App() {
         <Route path="/watchlist" element={<Watchlist title="2637 Watch List" />} />
         <Route path="/watchlist/:team_number" element={<WatchlistGet title="2637 Watch List" />} />
         <Route path="/watchlist/update/:question_info" element={<WatchlistUpdate title="2637 Watch List" />} />
-        
-        <Route path="/scoutingapp/chart" element={<Chart />} />
-        <Route path="/qrcode" element={<QrCode title="Qr Code" value={"aldshfglaierglkaheflkjghalfdgalwfghu"} />} />
       </Routes>
     </HashRouter>
   );

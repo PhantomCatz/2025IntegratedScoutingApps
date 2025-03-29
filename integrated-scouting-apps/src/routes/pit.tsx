@@ -5,7 +5,6 @@ import { Checkbox, Form, Input, InputNumber, Upload, } from 'antd';
 import { useRef } from 'react';
 import { Button } from 'antd';
 import React, { useState, useEffect } from 'react';
-import { ReactSketchCanvasRef } from 'react-sketch-canvas';
 import TextArea from 'antd/es/input/TextArea';
 import Header from './parts/header';
 import QrCode from './parts/qrCodeViewer';
@@ -58,6 +57,7 @@ function PitScout(props: any) {
   }, [props.title]);
   useEffect(() => {
     const updateFields = [
+      "team_number",
       "robot_weight",
       "number_of_motors",
       "pit_organization",
@@ -245,12 +245,6 @@ function PitScout(props: any) {
       { label: "Claw/ Aiming", value: "Claw/ Aiming" },
       { label: "Other", value: "Other" },
     ];
-    const algaeintakeCap = [
-      { label: "Reef", value: "Reef" },
-      { label: "Ground", value: "Ground" },
-      { label: "Both", value: "Both" },
-      { label: "Neither", value: "Neither" },
-    ];
     const algae_intake_capability_options = [
       { label: "Reef Zone", value: "Reef Zone" },
       { label: "Ground", value: "Ground" },
@@ -388,11 +382,11 @@ function PitScout(props: any) {
           title={"Algae Intake Capability"}
           name={"algae_intake_capability"}
           message={"Please input the algae intake capability"}
-          options={algaeintakeCap}
+          options={algae_intake_capability_options}
         />
         <Select
           title={"Algae Scoring Capability"}
-          name={"algae_intake_capability"}
+          name={"algae_scoring_capability"}
           message={'Please input the algae scoring capability'}
           options={algae_scoring_capability_options}
         />
@@ -548,7 +542,7 @@ function PitScout(props: any) {
           window.alert(errorMessage);
         }}
       >
-        <Pit />
+        {Pit()}
       </Form>
       <QrCode value={qrValue} />
     </>

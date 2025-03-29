@@ -211,39 +211,6 @@ input[type="number"]::-webkit-inner-spin-button, .ant-input-number-handler-wrap 
 .died {
 	color: red !important;
 }
-.input {
-	width: 100% !important;
-	min-width: 100% !important;
-	height: 120px !important;
-	min-height: 120px !important;
-	border: 4px solid var(--font-color) !important;
-	border-radius: 25px !important;
-	background-color: transparent !important;
-	font-size: 500% !important;
-	font-weight: bold !important;
-	color: var(--font-color) !important;
-	text-align: center !important;
-}
-.incrementbutton {
-	height: 120px !important;
-	border-top-right-radius: 20px !important;
-	border-bottom-right-radius: 20px !important;
-	background-color: transparent !important;
-	color: var(--font-color) !important;
-	font-size: 48px !important;
-	border-left: 4px solid var(--font-color) !important;
-	width: 150px !important;
-}
-.decrementbutton {
-	height: 120px !important;
-	border-top-left-radius: 20px !important;
-	border-bottom-left-radius: 20px !important;
-	background-color: transparent !important;
-	color: var(--font-color) !important;
-	font-size: 48px !important;
-	border-right: 4px solid var(--font-color) !important;
-	width: 150px !important;
-}
 
 .logo {
 	background-color: var(--pc-blue) !important;
