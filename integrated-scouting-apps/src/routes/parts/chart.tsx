@@ -91,16 +91,16 @@ function ChartComponent(props : any) {
             {
               label: 'Algae Scored', 
               data: [ratio.algae_scored_ratio],
-              backgroundColor: 'rgba(45, 255, 202, 0.5)', 
-              borderColor: 'rgb(45, 255, 202)',
+              backgroundColor: '(15, 204, 90, 0.8)', 
+              borderColor: 'rgb(15, 204, 90)',
               borderWidth: 1,
               barPercentage: 0.3
             },
             {
               label: 'Algae Missed', 
               data: [ratio.algae_missed_ratio],
-              backgroundColor: 'rgba(255, 255, 255, 0.5)', 
-              borderColor: 'rgb(255, 255, 255)',
+              backgroundColor: 'rgba(54, 255, 134, 0.5)', 
+              borderColor: 'rgb(54, 255, 134)',
               borderWidth: 1,
               barPercentage: 0.3
             },
@@ -119,64 +119,64 @@ function ChartComponent(props : any) {
             {
               label: 'L4 Scored',
               data: [ratio.coral_scored_l4_ratio],
-              backgroundColor: 'rgb(185, 52, 206, 0.5)', 
-              borderColor: 'rgb(185, 52, 206)',
+              backgroundColor: 'rgb(143, 26, 235, 0.9)', 
+              borderColor: 'rgb(143, 26, 235)',
               borderWidth: 1,
               barPercentage: 0.3,
             },
             {
               label: 'L4 Missed', 
               data: [ratio.coral_missed_l4_ratio],
-              backgroundColor: 'rgba(255, 255, 255, 0.5)', 
-              borderColor: 'rgb(255, 255, 255)',
+              backgroundColor: 'rgb(199, 20, 252, 0.5)', 
+              borderColor: 'rgb(199, 20, 252)',
               borderWidth: 1,
               barPercentage: 0.3
             },
             {
               label: 'L3 Scored', 
               data: [ratio.coral_scored_l3_ratio],
-              backgroundColor: 'rgba(249, 74, 144, 0.5)', 
-              borderColor: 'rgb(249, 74, 144)',
+              backgroundColor: 'rgba(0, 3, 255, 0.9)', 
+              borderColor: 'rgb(0, 3, 255)',
               borderWidth: 1,
               barPercentage: 0.3
             },
             {
               label: 'L3 Missed',
               data: [ratio.coral_missed_l3_ratio],
-              backgroundColor: 'rgba(255, 255, 255, 0.5)', 
-              borderColor: 'rgb(255, 255, 255)',
+              backgroundColor: 'rgba(27, 127, 245, 0.5)', 
+              borderColor: 'rgb(27, 127, 245)',
               borderWidth: 1,
               barPercentage: 0.3
             },
             {
               label: 'L2 Scored',
               data: [ratio.coral_scored_l2_ratio],
-              backgroundColor: 'rgba(249, 106, 74, 0.5)', 
-              borderColor: 'rgb(249, 106, 74)',
+              backgroundColor: 'rgba(2, 240, 255, 0.9)', 
+              borderColor: 'rgb(2, 240, 255)',
               borderWidth: 1,
               barPercentage: 0.3
             },
             {
               label: 'L2 Missed', 
               data: [ratio.coral_missed_l2_ratio],
-              backgroundColor: 'rgba(255, 255, 255, 0.5)', 
-              borderColor: 'rgb(255, 255, 255)',
+              backgroundColor: 'rgba(54, 255, 192, 0.5)', 
+              borderColor: 'rgb(54, 255, 192)',
               borderWidth: 1,
               barPercentage: 0.3
             },
             {
               label: 'L1 Scored', 
               data: [ratio.coral_scored_l1_ratio],
-              backgroundColor: 'rgba(243, 251, 85, 0.5)', 
-              borderColor: 'rgb(243, 251, 85)',
+              backgroundColor: 'rgb(252, 71, 175, 0.9)', 
+              borderColor: 'rgb(252, 71, 175)',
               borderWidth: 1,
               barPercentage: 0.3
             },
             {
               label: 'L1 Missed', 
               data: [ratio.coral_missed_l1_ratio],
-              backgroundColor: 'rgba(255, 255, 255, 0.5)', 
-              borderColor: 'rgb(255, 255, 255)',
+              backgroundColor: 'rgb(255, 54, 247, 0.5)', 
+              borderColor: 'rgb(255, 54, 247)',
               borderWidth: 1,
               barPercentage: 0.3
             },
