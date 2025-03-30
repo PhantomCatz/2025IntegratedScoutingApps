@@ -1,3 +1,5 @@
+import '../../public/stylesheets/formItems.css';
+import React, { useState, useRef, } from 'react';
 import { Tabs, Input, Form, Select as AntdSelect, Checkbox, InputNumber, Flex, Button, Radio} from 'antd';
 
 type NumberInputType = {
@@ -27,20 +29,53 @@ type SelectType = {
   multiple?: boolean;
 }
 
-function NumberInput<FieldType>(props: NumberInputType) {
+const NumberInput = React.memo(function <FieldType,>(props: NumberInputType) {
+  console.log("upowery");
   const title = props.title;
   const name = props.name;
   const shown = props.shown ?? true;
-  const required = (props.required !== undefined ? props.required : true) && shown;
+  const required = (props.required ?? true) && shown;
   const message = props.message || `Please input ${title}`;
-  const min = props.min !== undefined ? props.min : 0;
-  const max = props.max !== undefined ? props.max : Infinity;
+  const min = props.min ?? 0;
+  const max = props.max ?? Infinity;
   const onIncrease = props.onIncrease || (() => {});
   const onDecrease = props.onDecrease || (() => {});
   const onChange = props.onChange || (() => {});
   const setForm = props.setForm;
   const align = props.align || "center";
   const buttons = props.buttons ?? true;
+
+  const handleChange : ((event: any) => void) = (() => {
+    let id : any = null;
+
+    return function(event : any) {
+      window.clearTimeout(id);
+
+      id = setTimeout(() => {
+        const newValue : string = event.nativeEvent.target.value;
+        const num : number = Number(newValue) || 0;
+
+        if(!num || Number.isNaN(num)) {
+          return;
+        }
+
+        setForm((prevForm : any) => {
+          const form = {...prevForm};
+          const prevVal : string = form[name] ?? "";
+
+          const newVal : string = num.toString();
+
+          const newNumber : number = Math.max(Math.min(Number(newVal), max), min);
+          console.log(`newNumber=`, newNumber);
+
+          form[name] = newNumber.toString();
+
+          onChange(newNumber);
+          return form;
+        });
+      }, 50);
+    }
+  })();
 
   return (
     <Flex
@@ -49,6 +84,7 @@ function NumberInput<FieldType>(props: NumberInputType) {
       style={{
         display: shown ? 'inherit' : 'none',
       }}
+      className={"numberInput"}
     >
       {title &&
         <h2
@@ -62,39 +98,34 @@ function NumberInput<FieldType>(props: NumberInputType) {
         name={name as any}
         rules={[{
           required: required,
-          message: message
+          message: message,
         }]}
       >
-        <InputNumber
+        <Input
           id={name}
-          type={"number"}
-          pattern={"\d*"}
-          min={min}
-          max={max}
-          onWheel={(e) => (e.target as HTMLElement).blur()}
+          type={"text"}
+          inputMode={"numeric"}
           className={"input"}
-          onChange={(event) => {
-            setForm((prevForm : any) => {
-              const form = {...prevForm};
-              const prevVal = form[name];
-              const val = Number(event);
-
-              const number = Math.min(Math.max(val, min), max);
-
-              form[name] = number;
-
-              onChange(val);
-              return form;
-            });
+          onKeyDown={(e) => {
+            //console.log(`e.keyCode=`, e.keyCode);
+            const key = e.keyCode;
+            if((key >= 32 && key !== 224) && ( key < "0".charCodeAt(0) || key > "9".charCodeAt(0))) {
+              console.log("prevented", key);
+              e.nativeEvent.preventDefault();
+            }
           }}
+          onWheel={(e) => {
+            (e.target as HTMLElement).blur();
+          }}
+          onKeyUp={handleChange}
           {...(buttons ? {
           addonAfter: (
             <Button
-              className={"incrementbutton"}
+              className={"changeButton changeButton__increment"}
               onMouseDown={() => {
                 setForm((prevForm : any) => {
                   const form = {...prevForm};
-                  const val = form[name] + 1;
+                  const val = (form[name] ?? 0) + 1;
                   if (val <= max) {
                     form[name] = val;
                   }
@@ -106,11 +137,11 @@ function NumberInput<FieldType>(props: NumberInputType) {
           ),
           addonBefore: (
             <Button
-              className={"decrementbutton"}
+              className={"changeButton changeButton__decrement"}
               onMouseDown={(form: any) => {
                 setForm((prevForm: any) => {
                   const form = {...prevForm};
-                  const val = form[name] - 1;
+                  const val = (form[name] ?? 0) - 1;
                   if (val >= min) {
                     form[name] = val;
                   }
@@ -125,8 +156,13 @@ function NumberInput<FieldType>(props: NumberInputType) {
       </Form.Item>
     </Flex>
   );
-}
-function Select<FieldType>(props: SelectType) {
+}, function(a : any, b : any) {
+  //console.log(`a=`, a);
+  //console.log(`b=`, b);
+
+  return true;
+});
+const Select = React.memo(function <FieldType,>(props: SelectType) {
   const title = props.title;
   const name = props.name;
   const required = props.required ?? true;
@@ -166,6 +202,6 @@ function Select<FieldType>(props: SelectType) {
       </Form.Item>
     </div>
   );
-}
+});
 
 export { NumberInput, Select, };

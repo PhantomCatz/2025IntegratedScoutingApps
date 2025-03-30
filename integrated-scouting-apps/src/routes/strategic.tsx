@@ -51,28 +51,28 @@ function Strategic(props: any, text:any) {
   useEffect(() => { document.title = props.title; return () => { } }, [props.title]);
   useEffect(() => {
     (async function() {
-    let fetchLink = process.env.REACT_APP_SERVER_ADDRESS;
+      let fetchLink = process.env.REACT_APP_SERVER_ADDRESS;
 
-    if(!team_number) {
-      return;
-    }
+      if(!team_number) {
+        return;
+      }
 
-    if(!fetchLink) {
-      console.error("Could not get fetch link. Check .env");
-      return;
-    }
+      if(!fetchLink) {
+        console.error("Could not get fetch link. Check .env");
+        return;
+      }
 
-    fetchLink += "reqType=getTeamStrategic";
+      fetchLink += "reqType=getTeamStrategic";
 
-    fetchLink += `&team=${team_number}`;
+      fetchLink += `&team=${team_number}`;
 
-    fetch(fetchLink)
+      fetch(fetchLink)
       .then((res) => {
         const value = res.json();
         return value;
       })
       .then((data) => {
-        
+
         if(!data?.length) {
           console.log(`No data for team ${team_number}`);
           setTeamData(null);
@@ -89,19 +89,21 @@ function Strategic(props: any, text:any) {
   }, [team_number]);
 
   useEffect(() => {
-      const updateFields = [
-       "penalties",
-      ];
-      for(const field of updateFields) {
-        const element = document.getElementById(field);
-        if (element === null) {
-          continue;
-        }
-  
-        element.ariaValueNow = (formValue as any)[field].toString();
-        form.setFieldValue(field, (formValue as any)[field]);
+    const updateFields = [
+      "match_number",
+      "round_number",
+      "penalties",
+    ];
+    for(const field of updateFields) {
+      const element = document.getElementById(field);
+      if (element === null) {
+        continue;
       }
-    }, [formValue, form]);
+
+      element.ariaValueNow = (formValue as any)[field].toString();
+      form.setFieldValue(field, (formValue as any)[field]);
+    }
+  }, [formValue, form]);
 
   const match_event = process.env.REACT_APP_EVENTNAME;
   
@@ -145,11 +147,11 @@ function Strategic(props: any, text:any) {
 
     if(status) {
       window.alert("Successfully submitted data.");
-      return;
+      //return;
     }
 
     window.alert("Could not submit data. Please show QR to Webdev.");
-    
+
     setQrValue(body);
   }
   async function tryFetch(body : any) {
@@ -165,7 +167,7 @@ function Strategic(props: any, text:any) {
     const submitBody = {
       ...body,
     };
-    
+
     try {
       const res = await fetch(fetchLink, {
         method: "POST",
@@ -200,7 +202,7 @@ function Strategic(props: any, text:any) {
 
     form.setFieldsValue({...formDefaultValues});
     form.setFieldValue('scouter_initials', scouter_initials);
-    form.setFieldValue('match_number', match_number + 1);
+    form.setFieldValue('match_number', Number(match_number) + 1);
     form.setFieldValue('match_level', match_level);
     form.setFieldValue('robot_position', robot_position);
 
@@ -216,7 +218,7 @@ function Strategic(props: any, text:any) {
       event = lastFormValue;
     }
     try {
-      trySubmit(event);
+      await trySubmit(event);
     }
     catch (err) {
       console.log(err);
@@ -273,15 +275,18 @@ function Strategic(props: any, text:any) {
       <div>
         <h2>Team: {team_number}</h2>
         <h2>Scouter Initials</h2>
-        <Form.Item<FieldType> name="scouter_initials" rules={[
-          { required: true, message: 'Please input your initials!' },
-            {
-              pattern: /^[A-Za-z]{1,2}$/,
-               message: 'Please enter only letters (max 2)',
-            },
-               ]}>
+        <Form.Item<FieldType>
+          name="scouter_initials"
+          rules={[
+            { required: true, message: 'Please input your initials!' },
+              {
+                pattern: /^[A-Za-z]{1,2}$/,
+                 message: 'Please enter only letters (max 2)',
+              },
+            ]}
+        >
           <Input 
-           maxLength={2}
+            maxLength={2}
             className="input"
             onKeyPress={(event) => {
               const keyCode = event.keyCode || event.which;
@@ -289,7 +294,8 @@ function Strategic(props: any, text:any) {
               if (!/^[A-Za-z]*$/.test(keyValue)) {
                 event.preventDefault();
               }
-            }} />
+            }}
+          />
         </Form.Item>
         
         <Select
@@ -352,8 +358,8 @@ function Strategic(props: any, text:any) {
         </Flex>
 
       </div>
-  );
-}
+    );
+  }
 
   function comment() {
     let prevComments = null;

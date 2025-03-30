@@ -455,16 +455,16 @@ function DTFTeams(props: any) {
       teamTabs.push({ key: "Pit", label: "Pit", children:
         <>
           { pitData &&
-          <Tabs items={pitData} centered className="tabs" />
-          || <p className={"errorLabel"}>No Pit Data</p>
+            <Tabs items={pitData} centered className="tabs" />
+              || <p className={"errorLabel"}>No Pit Data</p>
           }
         </>
       });
       teamTabs.push({ key: "Strategic", label: "Strategic", children:
         <>
           { strategicData &&
-          <Tabs items={strategicData} centered className="tabs" />
-          || <p className={"errorLabel"}>No Strategic Data</p>
+            <Tabs items={strategicData} centered className="tabs" />
+              || <p className={"errorLabel"}>No Strategic Data</p>
           }
         </>
       });
