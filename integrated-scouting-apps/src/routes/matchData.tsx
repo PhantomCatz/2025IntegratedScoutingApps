@@ -279,7 +279,6 @@ function TeamData(props: any) {
   }
 
   function fixFields() {
-    //console.log("fixedFields=", fixedFields);
     for(const num of fixedFields) {
       document.querySelectorAll(`.matchDataTable table tr > :nth-child(${num + 1}):not([scope=colgroup])`)
       .forEach((x : any) => {

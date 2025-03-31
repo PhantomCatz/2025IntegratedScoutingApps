@@ -51,7 +51,7 @@ const NumberInput = React.memo(function <FieldType,>(props: NumberInputType) {
     return function(event : any) {
       window.clearTimeout(id);
 
-      id = setTimeout(() => {
+      id = setTimeout(async () => {
         const newValue : string = event.nativeEvent.target.value;
         const num : number = Number(newValue) || 0;
 
@@ -59,7 +59,9 @@ const NumberInput = React.memo(function <FieldType,>(props: NumberInputType) {
           return;
         }
 
-        setForm((prevForm : any) => {
+        let updatedNumber = 0;
+
+        await setForm((prevForm : any) => {
           const form = {...prevForm};
           const prevVal : string = form[name] ?? "";
 
@@ -70,9 +72,12 @@ const NumberInput = React.memo(function <FieldType,>(props: NumberInputType) {
 
           form[name] = newNumber.toString();
 
-          onChange(newNumber);
+          updatedNumber = newNumber;
+
           return form;
         });
+          
+        onChange(updatedNumber);
       }, 50);
     }
   })();
@@ -122,32 +127,48 @@ const NumberInput = React.memo(function <FieldType,>(props: NumberInputType) {
           addonAfter: (
             <Button
               className={"changeButton changeButton__increment"}
-              onMouseDown={() => {
-                setForm((prevForm : any) => {
+              onMouseDown={async () => {
+                let updatedNumber = 0;
+
+                await setForm((prevForm : any) => {
                   const form = {...prevForm};
                   const val = (form[name] ?? 0) + 1;
                   if (val <= max) {
                     form[name] = val;
+                  } else {
+                    form[name] = max
                   }
-                  onIncrease(val);
+
+                  updatedNumber = val;
+
                   return form;
                 });
+                
+                onIncrease(updatedNumber);
               }}
             >+</Button>
           ),
           addonBefore: (
             <Button
               className={"changeButton changeButton__decrement"}
-              onMouseDown={(form: any) => {
-                setForm((prevForm: any) => {
+              onMouseDown={async (form: any) => {
+                let updatedNumber = 0;
+
+                await setForm((prevForm: any) => {
                   const form = {...prevForm};
                   const val = (form[name] ?? 0) - 1;
                   if (val >= min) {
                     form[name] = val;
+                  } else {
+                    form[name] = min;
                   }
-                  onDecrease(val);
+                  
+                  updatedNumber = val;
+
                   return form;
                 });
+                
+                onDecrease(updatedNumber);
               }}
             >-</Button>
           )

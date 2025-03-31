@@ -39,7 +39,6 @@ function Strategic(props: any, text:any) {
   const [tabNum, setTabNum] = useState("1");
   const [team_number, setTeamNum] = useState(0);
   const [teamsList, setTeamsList] = useState<string[]>([]);
-  const [isLoading, setLoading] = useState(false);
   const [roundIsVisible, setRoundIsVisible] = useState(false);
   const [qrValue, setQrValue] = useState<any>();
   const [shouldRetrySubmit, setShouldRetrySubmit] = useState(false);
@@ -47,6 +46,7 @@ function Strategic(props: any, text:any) {
   const [teamData, setTeamData] = useState<any>(null);
   const [inPlayoffs, setInPlayoffs] = useState(false);
   const [robot_appeared, setRobot_appeared] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => { document.title = props.title; return () => { } }, [props.title]);
   useEffect(() => {
@@ -82,7 +82,6 @@ function Strategic(props: any, text:any) {
         setTeamData(data);
       })
       .catch((err) => {
-        console.log("team_number=", team_number);
         console.log("Error fetching data. Is server on?", err);
       });
     })();
@@ -96,12 +95,17 @@ function Strategic(props: any, text:any) {
     ];
     for(const field of updateFields) {
       const element = document.getElementById(field);
-      if (element === null) {
+      if (element === undefined || element === null) {
         continue;
       }
 
-      element.ariaValueNow = (formValue as any)[field].toString();
-      form.setFieldValue(field, (formValue as any)[field]);
+      try {
+        const value = (formValue as any)[field] ?? 0;
+        element.ariaValueNow = value.toString();
+        form.setFieldValue(field, value);
+      } catch (err) {
+        console.log(`field=`, field);
+      }
     }
   }, [formValue, form]);
 
@@ -122,7 +126,7 @@ function Strategic(props: any, text:any) {
       if(robotPosition) {
         const index = getIndexNumber(robotPosition);
         const teamNumber = Number(teams[index]);
-        setTeamNum(teamNumber);
+        setTeamNum(teamNumber || 0);
       } else {
         setTeamNum(0);
       }
@@ -143,14 +147,14 @@ function Strategic(props: any, text:any) {
       "robot_appeared": robot_appeared,
       //"penalties": event.penalties,
     };
-    const status = await tryFetch(body);
-
-    if(status) {
-      window.alert("Successfully submitted data.");
-      //return;
-    }
-
-    window.alert("Could not submit data. Please show QR to Webdev.");
+    tryFetch(body)
+      .then((successful) => {
+        if(successful) {
+          window.alert("Submit successful.");
+        } else {
+          window.alert("Submit was not successful. Please show the QR to WebDev.");
+        }
+      })
 
     setQrValue(body);
   }
@@ -210,13 +214,17 @@ function Strategic(props: any, text:any) {
     await updateTeamNumber();
   }
   async function runFormFinish(event? : any) {
-    setLoading(true);
-
+    if(isLoading) {
+      return;
+    }
+    setIsLoading(true);
+    
     if(event !== undefined) {
       setLastFormValue(event);
     } else {
       event = lastFormValue;
     }
+
     try {
       await trySubmit(event);
     }
@@ -225,7 +233,7 @@ function Strategic(props: any, text:any) {
       window.alert("Error occured, please do not leave this message and notify a Webdev member immediately.");
     }
     finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   }
   function preMatch() {

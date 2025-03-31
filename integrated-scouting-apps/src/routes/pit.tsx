@@ -108,7 +108,6 @@ function PitScout(props: any) {
   }, [match_event]);
 
   async function submitData(event: any) {
-    console.log("event=", event);
     const body = {
       "match_event": match_event,
       "team_number": event.team_number,

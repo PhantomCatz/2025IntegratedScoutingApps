@@ -344,7 +344,6 @@ function DTFTeams(props: any) {
       }
 
       const dataIndex = teamIndex[team];
-      console.log(`teamData=`, teamData);
       const teamMatches = teamData[dataIndex];
 
       const data : any = mergeTeamData(teamMatches);
