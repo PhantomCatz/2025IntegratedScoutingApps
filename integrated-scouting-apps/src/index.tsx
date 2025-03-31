@@ -103,6 +103,5 @@ window.addEventListener("error", (event) => {
 });
 
 window.addEventListener("unhandledrejection", (event) => {
-  console.log(`event=`, event);
   window.alert(event);
 });

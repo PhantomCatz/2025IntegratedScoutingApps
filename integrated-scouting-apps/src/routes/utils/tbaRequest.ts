@@ -63,6 +63,8 @@ async function getTeamsPlaying(matchLevel? : string,
 					   allianceNumber1? : string,
 					   allianceNumber2? : string) : Promise<string[]> {
 	const roundIsVisible = isRoundNumberVisible(matchLevel);
+	matchNumber = Number(matchNumber);
+	roundNumber = Number(roundNumber);
 
 	if(isInPlayoffs(matchLevel)) {
 		return await getTeamsPlayingOffline(roundIsVisible, matchLevel || "", matchNumber || 0, roundNumber || 0,
@@ -82,6 +84,9 @@ async function getTeamsPlaying(matchLevel? : string,
 		const response = await request('match/' + matchId);
 
 		const data = await response.json();
+		if(data.Error) {
+			throw new Error(`Received error ${data.Error}`);
+		}
 
 		const fullTeams : string[] = [];
 		for(const color of ["red", "blue"]) {

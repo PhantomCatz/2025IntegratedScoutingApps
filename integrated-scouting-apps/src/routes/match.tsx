@@ -196,12 +196,17 @@ function MatchScout(props: any) {
     ];
     for(const field of updateFields) {
       const element = document.getElementById(field);
-      if (element === null) {
+      if (element === undefined || element === null) {
         continue;
       }
 
-      element.ariaValueNow = (formValue as any)[field].toString();
-      form.setFieldValue(field, (formValue as any)[field]);
+      try {
+        const value = (formValue as any)[field] ?? 0;
+        element.ariaValueNow = value.toString();
+        form.setFieldValue(field, value);
+      } catch (err) {
+        console.log(`field=`, field);
+      }
     }
   }, [formValue, form]);
   
@@ -315,7 +320,6 @@ function MatchScout(props: any) {
     if(isLoading) {
       return;
     }
-    console.log(`isLoading=`, isLoading);
 
     if(!event) {
       event = lastFormValue;
@@ -323,7 +327,7 @@ function MatchScout(props: any) {
       setLastFormValue(event);
     }
 
-	setLoading(true);
+    setLoading(true);
 
     try {
       await setNewMatchScout(event);
@@ -331,8 +335,6 @@ function MatchScout(props: any) {
       const match_number = form.getFieldValue("match_number");
       const match_level = form.getFieldValue("match_level");
       const robot_position = form.getFieldValue("robot_position");
-      
-      //console.log(form.getFieldValue("red_alliance"));
 
       setWasDefendedIsVisible(false);
       setDefendedIsVisible(false);
@@ -373,7 +375,7 @@ function MatchScout(props: any) {
       if(robotPosition) {
         const index = getIndexNumber(robotPosition);
         const teamNumber = Number(teams[index]);
-        setTeam_number(teamNumber);
+        setTeam_number(teamNumber || 0);
         await updateDefendedList(robotPosition);
       } else {
         setTeam_number(0);

@@ -17,8 +17,6 @@ function TeamData(props: any) {
 				const data = await getAllTeams();
 				
 				const teamNumbers = data.map(function (team: any) {
-					//console.log(team);
-
 					return (<h2 key={team}>
 							<a href={`#scoutingapp/lookup/teamdata/${team}`}>{team}</a>
 							</h2>)
