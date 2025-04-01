@@ -1,5 +1,6 @@
 import { Input, InputNumber, Tabs, } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
+import '../../public/stylesheets/pitLookup.css';
 
 const IMAGE_DELIMITER = "$";
 
@@ -83,10 +84,18 @@ async function PitTabs(team_number: number, inCallback? : boolean) {
           <div className={`booleanValue booleanValue__${!!pitInfo.coral_scoring_l3}`} >&nbsp;</div>
           <h2>Coral Scoring L4</h2>
           <div className={`booleanValue booleanValue__${!!pitInfo.coral_scoring_l4}`} >&nbsp;</div>
+          <h2>Can Remove Algae</h2>
+          <div className={`booleanValue booleanValue__${!!pitInfo.can_remove_algae}`} >&nbsp;</div>
           <h2>Algae Intake Capability</h2>
           <Input className="input" disabled value={pitInfo.algae_intake_capability} />
           <h2>Algae Scoring Capability</h2>
           <Input className="input" disabled value={pitInfo.algae_scoring_capability} />
+          <h2>Score Aiming Coral</h2>
+          <Input className="input" disabled value={pitInfo.score_aiming_coral} />
+          <h2>Score Aiming Algae</h2>
+          <Input className="input" disabled value={pitInfo.score_aiming_algae} />
+          <h2>Aiming Description</h2>
+          <TextArea className="pit-comments" disabled value={pitInfo.aiming_description}/>
           <h2>Climbing Capability</h2>
           <Input className="input" disabled value={pitInfo.climbing_capability} />
           <h2>Pit Organization</h2>

@@ -5,7 +5,6 @@ import { useParams } from "react-router-dom";
 import { Checkbox, Flex, Input, Tabs } from "antd";
 import TextArea from 'antd/es/input/TextArea';
 import Header from "./parts/header";
-//import Chart from 'chart.js/auto';
 import ChartComponent from "./parts/chart"; 
 import PitTabs from "./parts/pitTabs"; 
 import StrategicTabs from './parts/strategicTabs';
@@ -355,7 +354,7 @@ function DTFTeams(props: any) {
         hasData = false;
       }
 
-      let pitData = await PitTabs(Number(team)) || undefined;
+      // let pitData = await PitTabs(Number(team)) || undefined;
       let strategicData = await StrategicTabs(Number(team)) || undefined;
 
       const teamTabs = [];
@@ -451,6 +450,7 @@ function DTFTeams(props: any) {
         });
       }
 
+	  /*
       teamTabs.push({ key: "Pit", label: "Pit", children:
         <>
           { pitData &&
@@ -459,6 +459,7 @@ function DTFTeams(props: any) {
           }
         </>
       });
+	  */
       teamTabs.push({ key: "Strategic", label: "Strategic", children:
         <>
           { strategicData &&
