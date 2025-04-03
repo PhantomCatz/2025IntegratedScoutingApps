@@ -1,4 +1,5 @@
 const tbaData = require("./tbaData.json");
+const tbaTeams = require("./tbaTeams.json");
 
 function isInPlayoffs(matchLevel? : string) {
 	return matchLevel !== "Qualifications" ?
@@ -189,19 +190,7 @@ function request(query : string) {
 }
 
 async function getAllTeamsOffline() {
-	const data : Set<number> = new Set();
-
-	for(const [id, teams] of Object.entries(tbaData)) {
-		(teams as any).forEach((x : any) => data.add(x));
-	}
-
-	let res : number[] = [];
-
-	data.forEach((x : number) => {
-		res.push(x);
-	});
-
-	res.sort((a : number, b : number) => a - b);
+	const res = [...tbaTeams];
 
 	return res;
 }

@@ -46,7 +46,7 @@ function PitScout(props: any) {
   const match_event = process.env.REACT_APP_EVENTNAME as string;
   const [form] = Form.useForm();
   const [formValue, setFormValue] = useState(formDefaultValues);
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setLoading] = useState(false);
   const [qrValue, setQrValue] = useState<any>();
   const [robotImageURI, setRobotImageURI] = useState<string[]>([]);
   const [robotImages, setRobotImages] = useState<any>();
@@ -139,11 +139,10 @@ function PitScout(props: any) {
     const status = await tryFetch(body);
 
     if(status) {
-      window.alert("Successfully submitted data.");
-      //return;
+      window.alert(`Successfully submitted data for team number ${body.team_number}.`);
+    } else {
+      window.alert("Could not submit data. Please show QR to Webdev. Please submit pictures manually.");
     }
-
-    window.alert("Could not submit data. Please show QR to Webdev. Please submit pictures manually.");
 
     setQrValue(body);
   }
@@ -462,7 +461,7 @@ function PitScout(props: any) {
         <Form.Item<FieldType> name="comments">
           <TextArea style={{ verticalAlign: 'center' }} className='textbox_input' />
         </Form.Item>
-        <h2 style={{ display: loading ? 'inherit' : 'none' }}>Submitting data...</h2>
+        <h2 style={{ display: isLoading ? 'inherit' : 'none' }}>Submitting data...</h2>
         
         <Form.Item<FieldType> name="robot_images">
           <>
@@ -512,6 +511,9 @@ function PitScout(props: any) {
         form={form}
         initialValues={formDefaultValues}
         onFinish={async (event) => {
+          if(isLoading) {
+            return;
+          }
           try {
             setLoading(true);
             
@@ -520,7 +522,7 @@ function PitScout(props: any) {
             const initials = form.getFieldValue("scouter_initials");
 
             form.resetFields();
-            setFormValue(formDefaultValues);
+            setFormValue({...formDefaultValues});
             form.setFieldsValue({...formDefaultValues, "scouter_initials": initials});
           }
           catch (err) {
