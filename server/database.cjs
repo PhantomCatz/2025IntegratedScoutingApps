@@ -7,6 +7,7 @@ const connectionData = {
 	"host" : process.env.DB_HOST, 
 	"port" : process.env.DB_PORT, 
 	"database" : process.env.DB_DATABASE, 
+	"connectionLimit" : 15, 
 };
 
 const NUM_ALLIANCES = 2;
@@ -19,14 +20,26 @@ if(!connectionData || !process.env.DB_DATABASE) {
 
 console.log("Using Database " + process.env.DB_DATABASE);
 
+let connPool = {
+	getConnection: async function() {
+		const mysql = require('mysql2/promise');
+		const pool = mysql.createPool(connectionData);
+
+		const conn = pool.getConnection();
+
+		connPool = pool;
+
+		return conn;
+	}
+};
+
 async function requestDatabase(query, substitution, forEach) {
 	let result = [];
 
 	const sqlQuery = query;
 
 	try {
-		const mysql = getMysql();
-		const conn = await mysql.createConnection(connectionData);
+		const conn = await connPool.getConnection();
 
 		if(Array.isArray(substitution)) {
 			for(const val of substitution) {
@@ -48,7 +61,7 @@ async function requestDatabase(query, substitution, forEach) {
 			result = res;
 		}
 
-		await conn.end();
+		await conn.destroy();
 
 		return result;
 	} catch(err) {
@@ -139,12 +152,15 @@ async function submitData(data, table) {
 	let result = null;
 
 	try {
-		const mysql = getMysql();
-		const conn = await mysql.createConnection(connectionData);
+		// const mysql = getMysql();
+		// const conn = await mysql.createConnection(connectionData);
+		const conn = await connPool.getConnection();
 
 		const [res, fields] = await conn.query(sqlQuery, values);
 
 		result = res;
+
+		await conn.destroy();
 	} catch(err) {
 		console.log(`Failed to resolve request to ${table}:`);
 		console.dir(err);
@@ -161,6 +177,7 @@ async function submitStrategicData(data) {
 	return await submitData(data, "strategic_data");
 }
 
+/*
 function getMysql() {
 	const mysql = require("mysql2/promise");
 
@@ -191,6 +208,7 @@ function getMysql() {
 
 	return res;
 }
+*/
 function verifyConnection(connection) {
 	if(connection.state === "disconnected") {
 		throw new Error("Could not connect to server.");
