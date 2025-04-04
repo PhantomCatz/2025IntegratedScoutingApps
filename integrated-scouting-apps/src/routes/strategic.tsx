@@ -45,7 +45,6 @@ function Strategic(props: any, text:any) {
   const [lastFormValue, setLastFormValue] = useState<any>(null);
   const [teamData, setTeamData] = useState<any>(null);
   const [inPlayoffs, setInPlayoffs] = useState(false);
-  const [robot_appeared, setRobot_appeared] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => { document.title = props.title; return () => { } }, [props.title]);
@@ -144,8 +143,7 @@ function Strategic(props: any, text:any) {
       "match_number": event.match_number,
       "robot_position": event.robot_position,
       "comments": event.comments,
-      "robot_appeared": robot_appeared,
-      //"penalties": event.penalties,
+      "robot_appeared": true,
     };
     tryFetch(body)
       .then((successful) => {

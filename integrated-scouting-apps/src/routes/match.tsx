@@ -209,6 +209,31 @@ function MatchScout(props: any) {
       }
     }
   }, [formValue, form]);
+  useEffect(() => {
+    const robotPosition = form.getFieldValue("robot_position");
+    if(!robotPosition) {
+      console.log(`robotPosition=`, robotPosition);
+      return;
+    }
+    try {
+      const color = robotPosition[0] === "R" ?
+        "blue" :
+        "red";
+
+      const indexOffset = getAllianceOffset(color);
+      const team = [];
+
+      for(let i = 0; i < 3; i++) {
+        const num = teamsList[indexOffset + i];
+        team.push(num);
+      }
+
+      setOpposingTeamNum(team);
+    }
+    catch (err) {
+      console.error("Failed to request TBA data when updating opposing team", err);
+    }
+  }, [teamsList, form.getFieldValue("robot_position")]);
   
   async function setNewMatchScout(event: any) {
     if (team_number === 0) {
@@ -278,9 +303,7 @@ function MatchScout(props: any) {
         } else {
           window.alert("Submit was not successful. Please show the QR to WebDev.");
         }
-      })
-
-    window.alert("Could not submit data. Please show QR to Webdev.");
+      });
 
     setQrValue(body);
   }
@@ -350,7 +373,6 @@ function MatchScout(props: any) {
 
       await calculateMatchLevel();
       await updateTeamNumber();
-      await updateDefendedList(robot_position);
     }
     catch (err) {
       console.log(err);
@@ -375,8 +397,8 @@ function MatchScout(props: any) {
       if(robotPosition) {
         const index = getIndexNumber(robotPosition);
         const teamNumber = Number(teams[index]);
-        setTeam_number(teamNumber || 0);
-        await updateDefendedList(robotPosition);
+
+        await setTeam_number(teamNumber || 0);
       } else {
         setTeam_number(0);
       }
@@ -394,26 +416,6 @@ function MatchScout(props: any) {
     const inPlayoffs = isInPlayoffs(matchLevel);
 
     setInPlayoffs(inPlayoffs);
-  }
-  async function updateDefendedList(robotPosition : string) {
-    try {
-      const color = robotPosition[0] === "R" ?
-        "blue" :
-        "red";
-
-      const indexOffset = getAllianceOffset(color);
-      const team = [];
-
-      for(let i = 0; i < 3; i++) {
-        const num = teamsList[indexOffset + i];
-        team.push(num);
-      }
-
-      setOpposingTeamNum(team);
-    }
-    catch (err) {
-      console.error("Failed to request TBA data when updating opposing team", err);
-    }
   }
 
   function preMatch() {
@@ -457,6 +459,11 @@ function MatchScout(props: any) {
       { label: "Alliance 8", value: "Alliance 8" },
     ];
 
+    async function updateNumbers() {
+      await calculateMatchLevel();
+      await updateTeamNumber();
+    }
+
     return (
       <div>
         <h2>Team: {team_number}</h2>
@@ -488,7 +495,7 @@ function MatchScout(props: any) {
           title={"Match Level"}
           name={"match_level"}
           options={rounds}
-          onChange={() => { calculateMatchLevel(); updateTeamNumber(); }}
+          onChange={updateNumbers}
         />
 
         <div className={"playoff-alliances"} style={{ display: inPlayoffs ? 'inherit' : 'none' }}>
@@ -498,7 +505,7 @@ function MatchScout(props: any) {
             required={inPlayoffs}
             message={"Enter the red alliance"}
             options={playoff_alliances}
-            onChange={() => { calculateMatchLevel(); updateTeamNumber(); }}
+            onChange={updateNumbers}
           />
           
           <Select
@@ -507,7 +514,7 @@ function MatchScout(props: any) {
             required={inPlayoffs}
             message={"Enter the blue alliance"}
             options={playoff_alliances}
-            onChange={() => { calculateMatchLevel(); updateTeamNumber(); }}
+            onChange={updateNumbers}
           />
         </div>
         
@@ -515,7 +522,7 @@ function MatchScout(props: any) {
           title={"Match #"}
           name={"match_number"}
           message={"Enter match #"}
-          onChange={updateTeamNumber}
+          onChange={updateNumbers}
           min={1}
           setForm={setFormValue}
           buttons={false}
@@ -526,7 +533,7 @@ function MatchScout(props: any) {
           title={"Round #"}
           name={"round_number"}
           message={"Enter round #"}
-          onChange={updateTeamNumber}
+          onChange={updateNumbers}
           min={1}
           setForm={setFormValue}
           shown={roundIsVisible}
@@ -537,7 +544,7 @@ function MatchScout(props: any) {
           name={"robot_position"}
           message={"Enter robot position"}
           options={robot_position}
-          onChange={updateTeamNumber}
+          onChange={updateNumbers}
         />
 
        <Button

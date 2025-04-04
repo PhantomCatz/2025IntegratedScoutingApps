@@ -12,11 +12,9 @@ function QrCode(props : any) {
 	const [timestamp, setTimestamp] = useState<Date>(new Date());
 
 	useEffect(() => {
-		try {
-		(window as any).scrollByPages(100);
-		} catch (err) {
-
-		}
+		setTimeout(() => {
+			(window as any).scrollByPages(100);
+		}, 100);
 	}, [qrValue]);
 
 	let shouldShow = !!qrValue;
