@@ -13,7 +13,12 @@ function QrCode(props : any) {
 
 	useEffect(() => {
 		setTimeout(() => {
-			(window as any).scrollByPages(100);
+			try {
+				(window as any).scrollByPages(100);
+				(window as any).scroll(0, 1e8);
+			} catch(err) {
+
+			}
 		}, 100);
 	}, [qrValue]);
 
