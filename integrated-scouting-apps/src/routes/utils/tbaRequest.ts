@@ -2,7 +2,7 @@ const tbaData = require("./tbaData.json");
 const tbaTeams = require("./tbaTeams.json");
 
 function isInPlayoffs(matchLevel? : string) {
-	return matchLevel !== "Qualifications" ?
+	return matchLevel !== "Qualifications" &&  matchLevel ?
 		true :
 		false;
 }

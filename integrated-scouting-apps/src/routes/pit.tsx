@@ -136,13 +136,14 @@ function PitScout(props: any) {
       "gracious_professionalism": event.gracious_professionalism,
       "comments": event.comments,
     };
-    const status = await tryFetch(body);
-
-    if(status) {
-      window.alert(`Successfully submitted data for team number ${body.team_number}.`);
-    } else {
-      window.alert("Could not submit data. Please show QR to Webdev. Please submit pictures manually.");
-    }
+    tryFetch(body)
+      .then((successful) => {
+        if(successful) {
+          window.alert("Submit successful.");
+        } else {
+          window.alert("Submit was not successful. Please show the QR to WebDev.");
+        }
+      });
 
     setQrValue(body);
   }

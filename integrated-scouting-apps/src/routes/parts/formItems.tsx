@@ -30,7 +30,6 @@ type SelectType = {
 }
 
 const NumberInput = React.memo(function <FieldType,>(props: NumberInputType) {
-  console.log("upowery");
   const title = props.title;
   const name = props.name;
   const shown = props.shown ?? true;
@@ -68,7 +67,6 @@ const NumberInput = React.memo(function <FieldType,>(props: NumberInputType) {
           const newVal : string = num.toString();
 
           const newNumber : number = Math.max(Math.min(Number(newVal), max), min);
-          console.log(`newNumber=`, newNumber);
 
           form[name] = newNumber.toString();
 
