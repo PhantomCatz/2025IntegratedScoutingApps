@@ -50,7 +50,7 @@ async function PitTabs(team_number: number, inCallback? : boolean) {
       pictures.push(
         <div key={`pitImage${i}`}>
           <h3>Picture {i + 1}</h3>
-          <img src={images[i]}></img>
+          <img className={"pitImage"} src={images[i]}></img>
         </div>
       );
     }

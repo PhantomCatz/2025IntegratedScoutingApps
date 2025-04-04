@@ -39,3 +39,6 @@
     text-align: center !important;
     background: transparent !important;
 }
+.pitImage {
+	max-width: 90vw;
+}
