@@ -156,6 +156,7 @@ function MatchScout(props: any) {
   const [leftStartPos, setLeftStartPos] = useState(false);
   const [autonPoints, setAutonPoints] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [climbSuccessful, setClimbSuccessful] = useState(false);
 
   const match_event = process.env.REACT_APP_EVENTNAME;
 
@@ -188,6 +189,7 @@ function MatchScout(props: any) {
       "teleop_algae_scored_net",
       "teleop_algae_missed_net",
       "teleop_algae_scored_processor",
+      "endgame_climb_time",
       "overall_num_penalties",
       "overall_pushing",
       "overall_defense_quality",
@@ -208,6 +210,7 @@ function MatchScout(props: any) {
         console.log(`field=`, field);
       }
     }
+    setClimbSuccessful(form.getFieldValue("endgame_climb_successful"))
   }, [formValue, form]);
   useEffect(() => {
     const robotPosition = form.getFieldValue("robot_position");
@@ -250,29 +253,29 @@ function MatchScout(props: any) {
       "robot_position": event.robot_position,
       // Auton
       "auton_leave_starting_line": event.auton_leave_starting_line,
-      "auton_coral_scored_l4": event.auton_coral_scored_l4,
-      "auton_coral_missed_l4": event.auton_coral_missed_l4,
-      "auton_coral_scored_l3": event.auton_coral_scored_l3,
-      "auton_coral_missed_l3": event.auton_coral_missed_l3,
-      "auton_coral_scored_l2": event.auton_coral_scored_l2,
-      "auton_coral_missed_l2": event.auton_coral_missed_l2,
-      "auton_coral_scored_l1": event.auton_coral_scored_l1,
-      "auton_coral_missed_l1": event.auton_coral_missed_l1,
-      "auton_algae_scored_net": event.auton_algae_scored_net,
-      "auton_algae_missed_net": event.auton_algae_missed_net,
-      "auton_algae_scored_processor": event.auton_algae_scored_processor,
+      "auton_coral_scored_l4": event.auton_coral_scored_l4 || 0,
+      "auton_coral_missed_l4": event.auton_coral_missed_l4 || 0,
+      "auton_coral_scored_l3": event.auton_coral_scored_l3 || 0,
+      "auton_coral_missed_l3": event.auton_coral_missed_l3 || 0,
+      "auton_coral_scored_l2": event.auton_coral_scored_l2 || 0,
+      "auton_coral_missed_l2": event.auton_coral_missed_l2 || 0,
+      "auton_coral_scored_l1": event.auton_coral_scored_l1 || 0,
+      "auton_coral_missed_l1": event.auton_coral_missed_l1 || 0,
+      "auton_algae_scored_net": event.auton_algae_scored_net || 0,
+      "auton_algae_missed_net": event.auton_algae_missed_net || 0,
+      "auton_algae_scored_processor": event.auton_algae_scored_processor || 0,
       // Teleop
-      "teleop_coral_scored_l4": event.teleop_coral_scored_l4,
-      "teleop_coral_missed_l4": event.teleop_coral_missed_l4,
-      "teleop_coral_scored_l3": event.teleop_coral_scored_l3,
-      "teleop_coral_missed_l3": event.teleop_coral_missed_l3,
-      "teleop_coral_scored_l2": event.teleop_coral_scored_l2,
-      "teleop_coral_missed_l2": event.teleop_coral_missed_l2,
-      "teleop_coral_scored_l1": event.teleop_coral_scored_l1,
-      "teleop_coral_missed_l1": event.teleop_coral_missed_l1,
-      "teleop_algae_scored_net": event.teleop_algae_scored_net,
-      "teleop_algae_missed_net": event.teleop_algae_missed_net,
-      "teleop_algae_scored_processor": event.teleop_algae_scored_processor,
+      "teleop_coral_scored_l4": event.teleop_coral_scored_l4 || 0,
+      "teleop_coral_missed_l4": event.teleop_coral_missed_l4 || 0,
+      "teleop_coral_scored_l3": event.teleop_coral_scored_l3 || 0,
+      "teleop_coral_missed_l3": event.teleop_coral_missed_l3 || 0,
+      "teleop_coral_scored_l2": event.teleop_coral_scored_l2 || 0,
+      "teleop_coral_missed_l2": event.teleop_coral_missed_l2 || 0,
+      "teleop_coral_scored_l1": event.teleop_coral_scored_l1 || 0,
+      "teleop_coral_missed_l1": event.teleop_coral_missed_l1 || 0,
+      "teleop_algae_scored_net": event.teleop_algae_scored_net || 0,
+      "teleop_algae_missed_net": event.teleop_algae_missed_net || 0,
+      "teleop_algae_scored_processor": event.teleop_algae_scored_processor || 0,
       // Endgame
       "endgame_coral_intake_capability": event.endgame_coral_intake_capability,
       "endgame_algae_intake_capability": event.endgame_algae_intake_capability,
@@ -364,9 +367,10 @@ function MatchScout(props: any) {
       setPenaltiesIsVisible(false);
 
       form.resetFields();
-      setFormValue(formDefaultValues);
+      setFormValue({...formDefaultValues,
+        match_number: Number(match_number) + 1,
+      });
       form.setFieldValue("scouter_initials", scouter_initials);
-      form.setFieldValue("match_number", Number(match_number) + 1);
       form.setFieldValue("match_level", match_level);
       form.setFieldValue("robot_position", robot_position);
       setRobot_appeared(true);
@@ -375,7 +379,7 @@ function MatchScout(props: any) {
       await updateTeamNumber();
     }
     catch (err) {
-      console.log(err);
+      console.log(`err=`, err);
     }
     finally {
       setLoading(false);
@@ -879,7 +883,11 @@ function MatchScout(props: any) {
         />
         <h2>Climb Successful?</h2>
         <Form.Item<FieldType> name ="endgame_climb_successful" valuePropName="checked">
-          <Checkbox className='input_checkbox' />
+          <Checkbox
+          className='input_checkbox'
+          onChange={(x : any) => {
+            setClimbSuccessful(x.target.checked);
+          }}/>
         </Form.Item>
 
         <Select
@@ -889,10 +897,14 @@ function MatchScout(props: any) {
           options={endgame_climb_type}
         />
 
-        <h2>Climb Time (Seconds):</h2>
-        <Form.Item<FieldType> name="endgame_climb_time" rules={[{ required: true, message: 'Enter Climb Time (Seconds)' }]}>
-          <InputNumber min={1} className="input" type='number' pattern="\d*" onWheel={(e) => (e.target as HTMLElement).blur()}/>
-        </Form.Item>
+        <NumberInput
+          title={"Climb Time (Seconds)"}
+          name={"endgame_climb_time"}
+          message={"Enter climb time (seconds)"}
+          setForm={setFormValue}
+          min={climbSuccessful ? 1 : 0}
+          align={"left"}
+        />
       </>
   )}
 

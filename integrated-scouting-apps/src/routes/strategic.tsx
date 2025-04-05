@@ -202,9 +202,10 @@ function Strategic(props: any, text:any) {
     const match_level = form.getFieldValue('match_level');
     const robot_position = form.getFieldValue('robot_position');
 
-    form.setFieldsValue({...formDefaultValues});
+    form.setFieldsValue({...formDefaultValues,
+      match_number: Number(match_number) + 1,
+    });
     form.setFieldValue('scouter_initials', scouter_initials);
-    form.setFieldValue('match_number', Number(match_number) + 1);
     form.setFieldValue('match_level', match_level);
     form.setFieldValue('robot_position', robot_position);
 
