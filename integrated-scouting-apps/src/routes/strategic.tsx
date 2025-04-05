@@ -348,7 +348,7 @@ function Strategic(props: any, text:any) {
           name={"round_number"}
           message={"Enter round #"}
           onChange={updateTeamNumber}
-          min={1}
+          min={0}
           setForm={setFormValue}
           shown={roundIsVisible}
         />
