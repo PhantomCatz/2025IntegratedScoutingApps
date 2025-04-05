@@ -1,8 +1,7 @@
 import '../public/stylesheets/style.css';
 import '../public/stylesheets/strategic.css';
 import { useEffect, useState } from 'react';
-import { Input, InputNumber, Tabs } from 'antd';
-import TextArea from 'antd/es/input/TextArea';
+import { InputNumber, Tabs } from 'antd';
 import Header from "./parts/header";
 import { getAllTeams } from './utils/tbaRequest';
 import StrategicTabs from './parts/strategicTabs';

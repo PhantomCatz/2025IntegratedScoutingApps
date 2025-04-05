@@ -170,14 +170,6 @@ function getRobotPosition(name : any) {
 
 	return positions[name]
 }
-function getTeamColor(team : any) {
-	const teams : {[team : string] : string} = {
-		"B" : "blue",
-		"R" : "red",
-	};
-
-	return teams[team[0]];
-}
 
 function request(query : string) {
 	const response = fetch('https://www.thebluealliance.com/api/v3/' + query, {

@@ -99,10 +99,35 @@ const NumberInput = React.memo(function <FieldType,>(props: NumberInputType) {
       }
       <Form.Item<FieldType>
         name={name as any}
-        rules={[{
-          required: required,
-          message: message,
-        }]}
+        rules={[
+          {
+            required: required,
+            message: message,
+          },
+          () => ({
+            async validator(rule : any, value, callback) {
+              // console.log(`rule=`, rule);
+
+              if(rule.field === "endgame_climb_time") {
+                console.log(`value=`, value);
+                console.log(`min=`, min);
+                console.log(`max=`, max);
+              }
+              // console.log(`callback=`, callback);
+              if(value < min) {
+                console.log("asdfdasf");
+                console.log(`rule.field=`, rule.field);
+                return Promise.reject(`${title} must be at least ${min}`);
+              }
+              if(value > max) {
+                console.log("lkhglkhlh");
+                console.log(`rule.field=`, rule.field);
+                return Promise.reject(`${title} must be at most ${max}`);
+              }
+              return Promise.resolve();
+            }
+          })
+        ]}
       >
         <Input
           id={name}
@@ -122,64 +147,59 @@ const NumberInput = React.memo(function <FieldType,>(props: NumberInputType) {
           }}
           onKeyUp={handleChange}
           {...(buttons ? {
-          addonAfter: (
-            <Button
-              className={"changeButton changeButton__increment"}
-              onMouseDown={async () => {
-                let updatedNumber = 0;
+            addonBefore: (
+              <Button
+                className={"changeButton changeButton__decrement"}
+                onMouseDown={async (form: any) => {
+                  let updatedNumber = 0;
 
-                await setForm((prevForm : any) => {
-                  const form = {...prevForm};
-                  const val = (form[name] ?? 0) + 1;
-                  if (val <= max) {
-                    form[name] = val;
-                  } else {
-                    form[name] = max
-                  }
+                  await setForm((prevForm: any) => {
+                    const form = {...prevForm};
+                    const val = (form[name] ?? 0) - 1;
+                    if (val >= min) {
+                      form[name] = val;
+                    } else {
+                      form[name] = min;
+                    }
+                    
+                    updatedNumber = val;
 
-                  updatedNumber = val;
-
-                  return form;
-                });
-                
-                onIncrease(updatedNumber);
-              }}
-            >+</Button>
-          ),
-          addonBefore: (
-            <Button
-              className={"changeButton changeButton__decrement"}
-              onMouseDown={async (form: any) => {
-                let updatedNumber = 0;
-
-                await setForm((prevForm: any) => {
-                  const form = {...prevForm};
-                  const val = (form[name] ?? 0) - 1;
-                  if (val >= min) {
-                    form[name] = val;
-                  } else {
-                    form[name] = min;
-                  }
+                    return form;
+                  });
                   
-                  updatedNumber = val;
+                  onDecrease(updatedNumber);
+                }}
+              >-</Button>
+            ),
+            addonAfter: (
+              <Button
+                className={"changeButton changeButton__increment"}
+                onMouseDown={async () => {
+                  let updatedNumber = 0;
 
-                  return form;
-                });
-                
-                onDecrease(updatedNumber);
-              }}
-            >-</Button>
-          )
+                  await setForm((prevForm : any) => {
+                    const form = {...prevForm};
+                    const val = (form[name] ?? 0) + 1;
+                    if (val <= max) {
+                      form[name] = val;
+                    } else {
+                      form[name] = max
+                    }
+
+                    updatedNumber = val;
+
+                    return form;
+                  });
+                  
+                  onIncrease(updatedNumber);
+                }}
+              >+</Button>
+            ),
           } : {})}
         />
       </Form.Item>
     </Flex>
   );
-}, function(a : any, b : any) {
-  //console.log(`a=`, a);
-  //console.log(`b=`, b);
-
-  return true;
 });
 const Select = React.memo(function <FieldType,>(props: SelectType) {
   const title = props.title;
