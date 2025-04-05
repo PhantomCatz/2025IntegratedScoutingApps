@@ -351,6 +351,7 @@ function Strategic(props: any, text:any) {
           min={0}
           setForm={setFormValue}
           shown={roundIsVisible}
+          align={"left"}
         />
         <Select
           title={"Robot Position"}

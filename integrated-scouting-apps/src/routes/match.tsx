@@ -541,6 +541,7 @@ function MatchScout(props: any) {
           min={0}
           setForm={setFormValue}
           shown={roundIsVisible}
+          align={"left"}
         />
 
         <Select
