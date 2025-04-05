@@ -538,7 +538,7 @@ function MatchScout(props: any) {
           name={"round_number"}
           message={"Enter round #"}
           onChange={updateNumbers}
-          min={1}
+          min={0}
           setForm={setFormValue}
           shown={roundIsVisible}
         />
