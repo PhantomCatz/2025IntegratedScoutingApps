@@ -402,11 +402,16 @@ function Strategic(props: any, text:any) {
       }
       
       prevComments = 
-        <Table columns = {columns} dataSource = {dataSource} expandable = {{rowExpandable:(record) => true,
-          expandedRowRender:(record) => {
+        <Table
+          columns={columns}
+          dataSource={dataSource}
+          expandable={{rowExpandable:(record) => true,
+            expandedRowRender:(record) => {
             return <p>{record.comment}</p>
           }
-        }}>
+          }}
+          pagination={false}
+        >
         </Table>;
     }
 

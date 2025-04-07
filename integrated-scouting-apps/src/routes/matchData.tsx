@@ -131,7 +131,6 @@ function TeamData(props: any) {
             }
           }
           const key = `${match.id}`;
-          //const key = `${match.match_event}|${match.match_level}|${match.match_number}|${match.scouter_initials}`;
           row["key"] = key;
 
           table.push(row);
@@ -163,7 +162,7 @@ function TeamData(props: any) {
     let location = null;
     let hasValue = null;
 
-    if(value === null || value === undefined) {
+    if(value === null || value === undefined || value === "") {
       console.log(`field=`, field);
       console.log(`value=`, value);
     }
@@ -197,7 +196,7 @@ function TeamData(props: any) {
       case "overall_match_penalty":
         result = (<div className={`booleanValue booleanValue__${!!value}`} key={`field`}>&nbsp;</div>);
         location = field;
-		// False for falsey values not in the list
+        // False for falsey values not in the list
         hasValue = ["robot_appeared"].includes(field) != value;
         break;
       case "overall_comments":
@@ -292,7 +291,11 @@ function TeamData(props: any) {
       <meta name="viewport" content="maximum-scale=1.0" />
       <Header name={`Data for ${teamNumber}`} back="#scoutingapp/lookup/match" />
       <h2 style={{ whiteSpace: 'pre-line' }}>{loading ? "Loading..." : ""}</h2>
-      <Table dataSource={matchData} className={"matchDataTable"}>
+      <Table
+        dataSource={matchData}
+        className={"matchDataTable"}
+        pagination={false}
+      >
       {
         makeColumns()
       }

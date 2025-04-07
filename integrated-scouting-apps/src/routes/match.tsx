@@ -295,8 +295,8 @@ function MatchScout(props: any) {
       "overall_num_penalties": event.overall_num_penalties,
       "overall_tech_penalty": event.overall_tech_penalty,
       "overall_match_penalty": event.overall_match_penalty,
-      "overall_penalties_incurred": event.overall_penalties_incurred,
-      "overall_comments": event.overall_comments,
+      "overall_penalties_incurred": event.overall_penalties_incurred || "",
+      "overall_comments": event.overall_comments || "",
       "robot_appeared": robot_appeared,
     };
     tryFetch(body)
