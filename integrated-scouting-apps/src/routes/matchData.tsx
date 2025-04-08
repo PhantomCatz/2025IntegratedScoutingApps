@@ -200,8 +200,12 @@ function TeamData(props: any) {
 		// False for falsey values not in the list
         hasValue = ["robot_appeared"].includes(field) != value;
         break;
+      case "overall_penalties_incurred":
       case "overall_comments":
-        result = value.replaceAll("\\n", "\n");
+        const text = (value || "").replaceAll("\\n", "\n"); 
+          result = (<p className="commentBox">
+                {text} 
+            </p>);
         location = field;
         hasValue = !!value;
         break;
@@ -225,7 +229,6 @@ function TeamData(props: any) {
       case "overall_counter_defense":
       case "overall_driver_skill":
       case "overall_num_penalties":
-      case "overall_penalties_incurred":
         result = (value || "").toString();
         location = field;
         hasValue = !!value;
