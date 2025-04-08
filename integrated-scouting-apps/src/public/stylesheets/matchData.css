@@ -40,3 +40,8 @@
 .matchDataTable tbody {
 	pointer-events: none !important;
 }
+.commentBox {
+	width: 500px; 
+    height: auto;
+}
+
