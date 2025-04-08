@@ -303,7 +303,7 @@ function PitScout(props: any) {
           message={"Please input the team number"}
           min={1}
           max={99999}
-          setForm={setFormValue}
+          form={form}
           buttons={false}
           align={"left"}
         />
@@ -314,7 +314,7 @@ function PitScout(props: any) {
           message={"Please input the robot weight in lbs"}
           min={0}
           max={1000}
-          setForm={setFormValue}
+          form={form}
           align={"left"}
         />
 
@@ -335,7 +335,7 @@ function PitScout(props: any) {
           name={"number_of_motors"}
           message={"Please input the number of motors"}
           min={0}
-          setForm={setFormValue}
+          form={form}
           align={"left"}
         />
         <Select
@@ -424,7 +424,7 @@ function PitScout(props: any) {
           message={"Please input pit organization rating"}
           min={0}
           max={4}
-          setForm={setFormValue}
+          form={form}
           align={"left"}
         />
 
@@ -434,7 +434,7 @@ function PitScout(props: any) {
           message={"Please input team safety rating"}
           min={0}
           max={4}
-          setForm={setFormValue}
+          form={form}
           align={"left"}
         />
 
@@ -444,7 +444,7 @@ function PitScout(props: any) {
           message={"Please input team workmanship rating"}
           min={0}
           max={4}
-          setForm={setFormValue}
+          form={form}
           align={"left"}
         />
 
@@ -454,7 +454,7 @@ function PitScout(props: any) {
           message={"Please input GP rating"}
           min={0}
           max={4}
-          setForm={setFormValue}
+          form={form}
           align={"left"}
         />
 

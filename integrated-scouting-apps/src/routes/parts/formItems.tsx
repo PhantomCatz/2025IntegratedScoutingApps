@@ -1,5 +1,5 @@
 import '../../public/stylesheets/formItems.css';
-import React, { useState, useRef, } from 'react';
+import React, { useState, useRef, useEffect, } from 'react';
 import { Tabs, Input, Form, Select as AntdSelect, Checkbox, InputNumber, Flex, Button, Radio} from 'antd';
 
 type NumberInputType = {
@@ -12,7 +12,7 @@ type NumberInputType = {
   onIncrease?: (e?: number) => void;
   onDecrease?: (e?: number) => void;
   onChange?: (e? : number) => void;
-  setForm: any;
+  form: any;
   align?: string;
   shown?: boolean;
   buttons?: boolean;
@@ -40,9 +40,33 @@ const NumberInput = React.memo(function <FieldType,>(props: NumberInputType) {
   const onIncrease = props.onIncrease || (() => {});
   const onDecrease = props.onDecrease || (() => {});
   const onChange = props.onChange || (() => {});
-  const setForm = props.setForm;
   const align = props.align || "center";
   const buttons = props.buttons ?? true;
+  const form = props.form ?? undefined;
+
+  const updateValue = (f : ((event : any) => void)) => {
+    const oldVal = form.getFieldValue(name);
+    
+    const newVal = f(oldVal);
+
+    form.setFieldValue(name, newVal);
+  };
+
+  const [value, setValue] = useState<number>(min);
+  const [prevValue, setPrevValue] = useState<number>(min);
+
+  useEffect(() => {
+    if(prevValue < value) {
+      onIncrease(value);
+    } else if(prevValue > value) {
+      onDecrease(value);
+    }
+
+    form.setFieldValue(name, value);
+
+    onChange(value);
+    setPrevValue(value);
+  }, [value]);
 
   const handleChange : ((event: any) => void) = (() => {
     let id : any = null;
@@ -52,15 +76,15 @@ const NumberInput = React.memo(function <FieldType,>(props: NumberInputType) {
 
       id = setTimeout(async () => {
         const newValue : string = event.nativeEvent.target.value;
-        const num : number = Number(newValue) || 0;
+        const num : number = toNumber(newValue);
 
-        if(!num || Number.isNaN(num)) {
+        if(!num) {
           return;
         }
 
         let updatedNumber = 0;
 
-        await setForm((prevForm : any) => {
+        await updateValue((prevForm : any) => {
           const form = {...prevForm};
           const prevVal : string = form[name] ?? "";
 
@@ -68,14 +92,11 @@ const NumberInput = React.memo(function <FieldType,>(props: NumberInputType) {
 
           const newNumber : number = Math.max(Math.min(Number(newVal), max), min);
 
-          form[name] = newNumber.toString();
-
           updatedNumber = newNumber;
 
-          return form;
+          return updatedNumber;
         });
           
-        onChange(updatedNumber);
       }, 50);
     }
   })();
@@ -106,24 +127,13 @@ const NumberInput = React.memo(function <FieldType,>(props: NumberInputType) {
           },
           () => ({
             async validator(rule : any, value, callback) {
-              // console.log(`rule=`, rule);
-
-              if(rule.field === "endgame_climb_time") {
-                console.log(`value=`, value);
-                console.log(`min=`, min);
-                console.log(`max=`, max);
-              }
-              // console.log(`callback=`, callback);
               if(value < min) {
-                console.log("asdfdasf");
-                console.log(`rule.field=`, rule.field);
                 return Promise.reject(`${title} must be at least ${min}`);
               }
               if(value > max) {
-                console.log("lkhglkhlh");
-                console.log(`rule.field=`, rule.field);
                 return Promise.reject(`${title} must be at most ${max}`);
               }
+
               return Promise.resolve();
             }
           })
@@ -135,9 +145,9 @@ const NumberInput = React.memo(function <FieldType,>(props: NumberInputType) {
           inputMode={"numeric"}
           className={"input"}
           onKeyDown={(e) => {
-            //console.log(`e.keyCode=`, e.keyCode);
             const key = e.keyCode;
-            if((key >= 32 && key !== 224) && ( key < "0".charCodeAt(0) || key > "9".charCodeAt(0))) {
+            const acceptedKeys = [37, 38, 39, 40, 224];
+            if((key >= 32 && !acceptedKeys.includes(key)) && ( key < ord("0") || key > ord("9"))) {
               console.log("prevented", key);
               e.nativeEvent.preventDefault();
             }
@@ -153,21 +163,15 @@ const NumberInput = React.memo(function <FieldType,>(props: NumberInputType) {
                 onMouseDown={async (form: any) => {
                   let updatedNumber = 0;
 
-                  await setForm((prevForm: any) => {
-                    const form = {...prevForm};
-                    const val = (form[name] ?? 0) - 1;
-                    if (val >= min) {
-                      form[name] = val;
-                    } else {
-                      form[name] = min;
-                    }
-                    
-                    updatedNumber = val;
+                  await updateValue((prevVal: any) => {
+                    const val = toNumber(prevVal) - 1;
 
-                    return form;
+                    updatedNumber= Math.max(val, min);
+
+                    return updatedNumber;
                   });
                   
-                  onDecrease(updatedNumber);
+                  await setValue(updatedNumber);
                 }}
               >-</Button>
             ),
@@ -177,21 +181,15 @@ const NumberInput = React.memo(function <FieldType,>(props: NumberInputType) {
                 onMouseDown={async () => {
                   let updatedNumber = 0;
 
-                  await setForm((prevForm : any) => {
-                    const form = {...prevForm};
-                    const val = (form[name] ?? 0) + 1;
-                    if (val <= max) {
-                      form[name] = val;
-                    } else {
-                      form[name] = max
-                    }
+                  await updateValue((prevVal : any) => {
+                    const val = toNumber(prevVal) + 1;
 
-                    updatedNumber = val;
+                    updatedNumber = Math.min(val, max);
 
-                    return form;
+                    return updatedNumber;
                   });
                   
-                  onIncrease(updatedNumber);
+                  await setValue(updatedNumber);
                 }}
               >+</Button>
             ),
@@ -242,5 +240,20 @@ const Select = React.memo(function <FieldType,>(props: SelectType) {
     </div>
   );
 });
+
+function ord(char : string) {
+  return char.charCodeAt(0);
+}
+function toNumber(x : any) : number {
+  if(typeof x === "number") {
+    return x;
+  }
+  x = x ?? 0;
+  const num = Number(x) ?? 0;
+  if(Number.isNaN(num) || !num) {
+    return 0;
+  }
+  return num;
+}
 
 export { NumberInput, Select, };
