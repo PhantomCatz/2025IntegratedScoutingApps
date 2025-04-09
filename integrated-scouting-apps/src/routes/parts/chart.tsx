@@ -91,16 +91,16 @@ function ChartComponent(props : any) {
             {
               label: 'Algae Scored', 
               data: [ratio.algae_scored_ratio],
-              backgroundColor: '(15, 204, 90, 0.8)', 
-              borderColor: 'rgb(15, 204, 90)',
+              backgroundColor: 'rgba(46, 224, 114, 0.5)', 
+              borderColor: 'rgb(46, 224, 114)',
               borderWidth: 1,
               barPercentage: 0.3
             },
             {
               label: 'Algae Missed', 
               data: [ratio.algae_missed_ratio],
-              backgroundColor: 'rgba(54, 255, 134, 0.5)', 
-              borderColor: 'rgb(54, 255, 134)',
+              backgroundColor: 'rgba(54, 255, 201, 0.5)', 
+              borderColor: 'rgb(54, 255, 201)',
               borderWidth: 1,
               barPercentage: 0.3
             },
@@ -119,64 +119,64 @@ function ChartComponent(props : any) {
             {
               label: 'L4 Scored',
               data: [ratio.coral_scored_l4_ratio],
-              backgroundColor: 'rgb(143, 26, 235, 0.9)', 
-              borderColor: 'rgb(143, 26, 235)',
+              backgroundColor: 'rgb(143, 26, 235,0.7)', 
+              borderColor: 'rgb(227, 80, 240)',
               borderWidth: 1,
               barPercentage: 0.3,
             },
             {
               label: 'L4 Missed', 
               data: [ratio.coral_missed_l4_ratio],
-              backgroundColor: 'rgb(199, 20, 252, 0.5)', 
-              borderColor: 'rgb(199, 20, 252)',
+              backgroundColor: 'rgb(143, 26, 235, 0.5)', 
+              borderColor: 'rgb(227, 80, 240)',
               borderWidth: 1,
               barPercentage: 0.3
             },
             {
               label: 'L3 Scored', 
               data: [ratio.coral_scored_l3_ratio],
-              backgroundColor: 'rgba(0, 3, 255, 0.9)', 
-              borderColor: 'rgb(0, 3, 255)',
+              backgroundColor: 'rgb(199, 20, 252, 0.7)', 
+              borderColor: 'rgb(199, 20, 252)',
               borderWidth: 1,
               barPercentage: 0.3
             },
             {
               label: 'L3 Missed',
               data: [ratio.coral_missed_l3_ratio],
-              backgroundColor: 'rgba(27, 127, 245, 0.5)', 
-              borderColor: 'rgb(27, 127, 245)',
+              backgroundColor: 'rgb(199, 20, 252, 0.5)', 
+              borderColor: 'rgb(199, 20, 252)',
               borderWidth: 1,
               barPercentage: 0.3
             },
             {
               label: 'L2 Scored',
               data: [ratio.coral_scored_l2_ratio],
-              backgroundColor: 'rgba(2, 240, 255, 0.9)', 
-              borderColor: 'rgb(2, 240, 255)',
+              backgroundColor: 'rgba(223, 38, 121, 0.7)', 
+              borderColor: 'rgb(223, 38, 121)',
               borderWidth: 1,
               barPercentage: 0.3
             },
             {
               label: 'L2 Missed', 
               data: [ratio.coral_missed_l2_ratio],
-              backgroundColor: 'rgba(54, 255, 192, 0.5)', 
-              borderColor: 'rgb(54, 255, 192)',
+              backgroundColor: 'rgba(240, 54, 138, 0.5)', 
+              borderColor: 'rgb(240, 54, 138)',
               borderWidth: 1,
               barPercentage: 0.3
             },
             {
               label: 'L1 Scored', 
               data: [ratio.coral_scored_l1_ratio],
-              backgroundColor: 'rgb(252, 71, 175, 0.9)', 
-              borderColor: 'rgb(252, 71, 175)',
+              backgroundColor: 'rgba(255, 83, 21, 0.7)', 
+              borderColor: 'rgb(255, 83, 21)',
               borderWidth: 1,
               barPercentage: 0.3
             },
             {
               label: 'L1 Missed', 
               data: [ratio.coral_missed_l1_ratio],
-              backgroundColor: 'rgb(255, 54, 247, 0.5)', 
-              borderColor: 'rgb(255, 54, 247)',
+              backgroundColor: 'rgba(255, 119, 41, 0.5)', 
+              borderColor: 'rgb(255, 119, 41)',
               borderWidth: 1,
               barPercentage: 0.3
             },
