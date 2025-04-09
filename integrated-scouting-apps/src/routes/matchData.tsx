@@ -9,6 +9,7 @@ import Header from "./parts/header";
 
 const DATA_COLUMNS = {
   "Match Identifier": {
+    "Team Number": "team_number",
     "Match Event": "match_event",
     "Scouter Initials": "scouter_initials",
     "Match Level": "match_level",
@@ -48,8 +49,8 @@ const DATA_COLUMNS = {
     "Defended by": "overall_defended_by",
     "Pushing": "overall_pushing",
     "Defense Quality": "overall_defense_quality",
-    "Tech Penalty": "overall_tech_penalty",
-    "Match Penalty": "overall_match_penalty",
+    "Major Penalties": "overall_major_penalties",
+    "Minor Penalties": "overall_minor_penalties",
     "Counter Defense": "overall_counter_defense",
     "Driver Skill": "overall_driver_skill",
     "# Penalties": "overall_num_penalties",
@@ -131,7 +132,6 @@ function TeamData(props: any) {
             }
           }
           const key = `${match.id}`;
-          //const key = `${match.match_event}|${match.match_level}|${match.match_number}|${match.scouter_initials}`;
           row["key"] = key;
 
           table.push(row);
@@ -163,7 +163,7 @@ function TeamData(props: any) {
     let location = null;
     let hasValue = null;
 
-    if(value === null || value === undefined) {
+    if(value === null || value === undefined || value === "") {
       console.log(`field=`, field);
       console.log(`value=`, value);
     }
@@ -193,18 +193,21 @@ function TeamData(props: any) {
       case "overall_robot_died":
       case "overall_defended_others":
       case "overall_was_defended":
-      case "overall_tech_penalty":
-      case "overall_match_penalty":
         result = (<div className={`booleanValue booleanValue__${!!value}`} key={`field`}>&nbsp;</div>);
         location = field;
-		// False for falsey values not in the list
+        // Negate certain values
         hasValue = ["robot_appeared"].includes(field) != value;
         break;
+      case "overall_penalties_incurred":
       case "overall_comments":
-        result = value.replaceAll("\\n", "\n");
+        const text = (value || "").replaceAll("\\n", "\n"); 
+          result = (<p className="commentBox">
+              {text} 
+            </p>);
         location = field;
         hasValue = !!value;
         break;
+      case "team_number":
       case "match_event":
       case "scouter_initials":
       case "match_level":
@@ -225,13 +228,13 @@ function TeamData(props: any) {
       case "overall_counter_defense":
       case "overall_driver_skill":
       case "overall_num_penalties":
-      case "overall_penalties_incurred":
+      case "overall_major_penalties":
+      case "overall_minor_penalties":
         result = (value || "").toString();
         location = field;
         hasValue = !!value;
         break;
       case "id":
-      case "team_number":
       case "auton_coral_missed_l4":
       case "auton_coral_missed_l3":
       case "auton_coral_missed_l2":
@@ -292,7 +295,11 @@ function TeamData(props: any) {
       <meta name="viewport" content="maximum-scale=1.0" />
       <Header name={`Data for ${teamNumber}`} back="#scoutingapp/lookup/match" />
       <h2 style={{ whiteSpace: 'pre-line' }}>{loading ? "Loading..." : ""}</h2>
-      <Table dataSource={matchData} className={"matchDataTable"}>
+      <Table
+        dataSource={matchData}
+        className={"matchDataTable"}
+        pagination={false}
+      >
       {
         makeColumns()
       }

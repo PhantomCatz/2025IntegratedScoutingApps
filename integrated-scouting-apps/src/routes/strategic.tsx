@@ -143,7 +143,6 @@ function Strategic(props: any, text:any) {
       "match_number": event.match_number,
       "robot_position": event.robot_position,
       "comments": event.comments,
-      "robot_appeared": true,
     };
     tryFetch(body)
       .then((successful) => {
@@ -338,7 +337,7 @@ function Strategic(props: any, text:any) {
           message={"Enter match #"}
           onChange={updateTeamNumber}
           min={1}
-          setForm={setFormValue}
+          form={form}
           buttons={false}
           align={"left"}
         />
@@ -349,7 +348,7 @@ function Strategic(props: any, text:any) {
           message={"Enter round #"}
           onChange={updateTeamNumber}
           min={0}
-          setForm={setFormValue}
+          form={form}
           shown={roundIsVisible}
           align={"left"}
         />
@@ -402,11 +401,16 @@ function Strategic(props: any, text:any) {
       }
       
       prevComments = 
-        <Table columns = {columns} dataSource = {dataSource} expandable = {{rowExpandable:(record) => true,
-          expandedRowRender:(record) => {
+        <Table
+          columns={columns}
+          dataSource={dataSource}
+          expandable={{rowExpandable:(record) => true,
+            expandedRowRender:(record) => {
             return <p>{record.comment}</p>
           }
-        }}>
+          }}
+          pagination={false}
+        >
         </Table>;
     }
 
