@@ -620,17 +620,17 @@ function MatchScout(props: any) {
         <div className = 'radioRColumn'> 
           <div className = 'radioRow'>
             <NumberInput
-              title={"#Coral Scored L4"}
+              title={"A Coral Scored L4"}
               name={"auton_coral_scored_l4"}
-              message={"Enter # coral scored for l4"}
+              message={"Enter # coral scored for l4 in Auton"}
               onIncrease={updateAutonValues}
               form={form}
             />
               
             <NumberInput
-              title={"#Coral Missed L4"}
+              title={"A Coral Missed L4"}
               name={"auton_coral_missed_l4"}
-              message={"Enter # coral missed for l4"}
+              message={"Enter # coral missed for l4 in Auton"}
               onIncrease={updateAutonValues}
               form={form}
             />
@@ -640,17 +640,17 @@ function MatchScout(props: any) {
         <div className = 'radioRColumn'> 
           <div className = 'radioRow'>
             <NumberInput
-              title={"#Coral Scored L3"}
+              title={"A Coral Scored L3"}
               name={"auton_coral_scored_l3"}
-              message={"Enter # coral scored for l3"}
+              message={"Enter # coral scored for l3 in Auton"}
               onIncrease={updateAutonValues}
               form={form}
             />
               
             <NumberInput
-              title={"#Coral Missed L3"}
+              title={"A Coral Missed L3"}
               name={"auton_coral_missed_l3"}
-              message={"Enter # coral missed for l3"}
+              message={"Enter # coral missed for l3 in Auton"}
               onIncrease={updateAutonValues}
               form={form}
             />
@@ -660,17 +660,17 @@ function MatchScout(props: any) {
         <div className = 'radioRColumn'> 
           <div className = 'radioRow'>
             <NumberInput
-              title={"#Coral Scored L2"}
+              title={"A Coral Scored L2"}
               name={"auton_coral_scored_l2"}
-              message={"Enter # coral scored for l2"}
+              message={"Enter # coral scored for l2 in Auton"}
               onIncrease={updateAutonValues}
               form={form}
             />
               
             <NumberInput
-              title={"#Coral Missed L2"}
+              title={"A Coral Missed L2"}
               name={"auton_coral_missed_l2"}
-              message={"Enter # coral missed for l2"}
+              message={"Enter # coral missed for l2 in Auton"}
               onIncrease={updateAutonValues}
               form={form}
             />
@@ -680,17 +680,17 @@ function MatchScout(props: any) {
         <div className = 'radioRColumn'> 
           <div className = 'radioRow'>
             <NumberInput
-              title={"#Coral Scored L1"}
+              title={"A Coral Scored L1"}
               name={"auton_coral_scored_l1"}
-              message={"Enter # coral scored for l1"}
+              message={"Enter # coral scored for l1 in Auton"}
               onIncrease={updateAutonValues}
               form={form}
             />
               
             <NumberInput
-              title={"#Coral Missed L1"}
+              title={"A Coral Missed L1"}
               name={"auton_coral_missed_l1"}
-              message={"Enter # coral missed for l1"}
+              message={"Enter # coral missed for l1 in Auton"}
               onIncrease={updateAutonValues}
               form={form}
             />
@@ -700,17 +700,17 @@ function MatchScout(props: any) {
         <div className = 'radioRColumn'> 
           <div className = 'radioRow'>
             <NumberInput
-              title={"#Algae Scored in Net"}
+              title={"A Algae Scored in Net"}
               name={"auton_algae_scored_net"}
-              message={"Enter # of algae scored for net"}
+              message={"Enter # of algae scored for net in Auton"}
               onIncrease={updateAutonValues}
               form={form}
             />
               
             <NumberInput
-              title={"#Algae Missed in Net"}
+              title={"A Algae Missed in Net"}
               name={"auton_algae_missed_net"}
-              message={"Enter # of algae missed for net"}
+              message={"Enter # of algae missed for net in Auton"}
               onIncrease={updateAutonValues}
               form={form}
             />
@@ -720,9 +720,9 @@ function MatchScout(props: any) {
         <div className = 'radioRColumn'> 
           <div className = 'radioRow'>
             <NumberInput
-              title={"#Algae Processor"}
+              title={"A Algae Processor"}
               name={"auton_algae_scored_processor"}
-              message={"Enter # of algae scored for processor"}
+              message={"Enter # of algae scored for processor in Auton"}
               onIncrease={updateAutonValues}
               form={form}
             />
@@ -753,16 +753,16 @@ function MatchScout(props: any) {
         <div className = 'radioRColumn'> 
           <div className = 'radioRow'>
             <NumberInput
-              title={"#Coral Scored L4"}
+              title={"T Coral Scored L4"}
               name={"teleop_coral_scored_l4"}
-              message={"Enter # of coral scored for l4"}
+              message={"Enter # of coral scored for l4 in Teleop"}
               form={form}
             />
               
             <NumberInput
-              title={"#Coral Missed L4"}
+              title={"T Coral Missed L4"}
               name={"teleop_coral_missed_l4"}
-              message={"Enter # of coral missed for l4"}
+              message={"Enter # of coral missed for l4 in Teleop"}
               form={form}
             />
           </div>
@@ -771,16 +771,16 @@ function MatchScout(props: any) {
         <div className = 'radioRColumn'> 
           <div className = 'radioRow'>
             <NumberInput
-              title={"#Coral Scored L3"}
+              title={"T Coral Scored L3"}
               name={"teleop_coral_scored_l3"}
-              message={"Enter # of coral scored for l3"}
+              message={"Enter # of coral scored for l3 in Teleop"}
               form={form}
             />
               
             <NumberInput
-              title={"#Coral Missed L3"}
+              title={"T Coral Missed L3"}
               name={"teleop_coral_missed_l3"}
-              message={"Enter # of coral missed for l3"}
+              message={"Enter # of coral missed for l3 in Teleop"}
               form={form}
             />
           </div>
@@ -789,16 +789,16 @@ function MatchScout(props: any) {
         <div className = 'radioRColumn'> 
           <div className = 'radioRow'>
             <NumberInput
-              title={"#Coral Scored L2"}
+              title={"T Coral Scored L2"}
               name={"teleop_coral_scored_l2"}
-              message={"Enter # of coral scored for l2"}
+              message={"Enter # of coral scored for l2 in Teleop"}
               form={form}
             />
               
             <NumberInput
-              title={"#Coral Missed L2"}
+              title={"T Coral Missed L2"}
               name={"teleop_coral_missed_l2"}
-              message={"Enter # of coral missed for l2"}
+              message={"Enter # of coral missed for l2 in Teleop"}
               form={form}
             />
           </div>
@@ -807,16 +807,16 @@ function MatchScout(props: any) {
         <div className = 'radioRColumn'> 
           <div className = 'radioRow'>
             <NumberInput
-              title={"#Coral Scored L1"}
+              title={"T Coral Scored L1"}
               name={"teleop_coral_scored_l1"}
-              message={"Enter # of coral scored for l1"}
+              message={"Enter # of coral scored for l1 in Teleop"}
               form={form}
             />
               
             <NumberInput
-              title={"#Coral Missed L1"}
+              title={"T Coral Missed L1"}
               name={"teleop_coral_missed_l1"}
-              message={"Enter # of coral missed for l1"}
+              message={"Enter # of coral missed for l1 in Teleop"}
               form={form}
             />
           </div>
@@ -825,16 +825,16 @@ function MatchScout(props: any) {
         <div className = 'radioRColumn'> 
           <div className = 'radioRow'>
             <NumberInput
-              title={"#Algae Scored in Net"}
+              title={"T Algae Scored in Net"}
               name={"teleop_algae_scored_net"}
-              message={"Enter # of algae scored for net"}
+              message={"Enter # of algae scored for net in Teleop"}
               form={form}
             />
               
             <NumberInput
-              title={"#Algae Missed in Net"}
+              title={"T Algae Missed in Net"}
               name={"teleop_algae_missed_net"}
-              message={"Enter # of algae missed for net"}
+              message={"Enter # of algae missed for net in Teleop"}
               form={form}
             />
           </div>
@@ -843,9 +843,9 @@ function MatchScout(props: any) {
         <div className = 'radioRColumn'> 
           <div className = 'radioRow'>
             <NumberInput
-              title={"#Algae Processor"}
+              title={"T Algae Processor"}
               name={"teleop_algae_scored_processor"}
-              message={"Enter # of algae scored for processor"}
+              message={"Enter # of algae scored for processor in Teleop"}
               form={form}
             />
           </div>
