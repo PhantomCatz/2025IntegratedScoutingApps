@@ -6,7 +6,7 @@ import TextArea from 'antd/es/input/TextArea';
 import { Footer } from 'antd/es/layout/layout';
 import Header from "./parts/header";
 import QrCode, {escapeUnicode, } from './parts/qrCodeViewer';
-import {isInPlayoffs, isRoundNumberVisible, getTeamsPlaying, getIndexNumber, getAllianceOffset, getDivisionsList } from './utils/tbaRequest';
+import {isInPlayoffs, isRoundNumberVisible, getTeamsPlaying, getIndexNumber, getAllianceOffset, getDivisionsList, getAllianceTags } from './utils/tbaRequest';
 import type { TabsProps, RadioChangeEvent } from "antd";
 import { NumberInput, Select } from './parts/formItems';
 
@@ -144,8 +144,6 @@ function MatchScout(props: any) {
   }
 
   const [form] = Form.useForm();
-  const [formValue, setFormValue] = useState<any>(formDefaultValues);
-  const [roundIsVisible, setRoundIsVisible] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const [tabNum, setTabNum] = useState("1");
   const [team_number, setTeam_number] = useState(0);
@@ -164,62 +162,14 @@ function MatchScout(props: any) {
   const [climbSuccessful, setClimbSuccessful] = useState(false);
   const [shouldShowAlliances, setShouldShowAlliances] = useState(false);
   const [match_event, setMatchEvent] = useState<string>(DEFAULT_MATCH_EVENT);
+  const [allianceTags, setAllianceTags] = useState(() => getAllianceTags(match_event));
 
   useEffect(() => {
     document.title = props.title;
   }, [props.title]);
   useEffect(() => {
-    /*
-    const updateFields = [
-      "match_number",
-      "round_number",
-      "auton_coral_scored_l4",
-      "auton_coral_scored_l3",
-      "auton_coral_scored_l2",
-      "auton_coral_scored_l1",
-      "auton_coral_missed_l4",
-      "auton_coral_missed_l3",
-      "auton_coral_missed_l2",
-      "auton_coral_missed_l1",
-      "auton_algae_scored_net",
-      "auton_algae_missed_net",
-      "auton_algae_scored_processor",
-      "teleop_coral_scored_l4",
-      "teleop_coral_scored_l3",
-      "teleop_coral_scored_l2",
-      "teleop_coral_scored_l1",
-      "teleop_coral_missed_l4",
-      "teleop_coral_missed_l3",
-      "teleop_coral_missed_l2",
-      "teleop_coral_missed_l1",
-      "teleop_algae_scored_net",
-      "teleop_algae_missed_net",
-      "teleop_algae_scored_processor",
-      "endgame_climb_time",
-      "overall_major_penalties",
-      "overall_minor_penalties",
-      "overall_pushing",
-      "overall_defense_quality",
-      "overall_counter_defense",
-      "overall_driver_skill",
-    ];
-    for(const field of updateFields) {
-      const element = document.getElementById(field);
-      if (element === undefined || element === null) {
-        continue;
-      }
-
-      // try {
-      //   const value = (formValue as any)[field] ?? 0;
-      //   element.ariaValueNow = value.toString();
-      //   form.setFieldValue(field, value);
-      // } catch (err) {
-      //   console.log(`field=`, field);
-      // }
-    }
-    */
     setClimbSuccessful(form.getFieldValue("endgame_climb_successful"))
-  }, [formValue, form]);
+  }, [form]);
   useEffect(() => {
     const robotPosition = form.getFieldValue("robot_position");
     if(!robotPosition) {
@@ -247,6 +197,7 @@ function MatchScout(props: any) {
   }, [teamsList, form.getFieldValue("robot_position")]);
   useEffect(() => {
     updateNumbers();
+	setAllianceTags(getAllianceTags(match_event));
   }, [match_event]);
   
   async function setNewMatchScout(event: any) {
@@ -259,7 +210,7 @@ function MatchScout(props: any) {
       "match_event": match_event,
       "team_number": team_number,
       "scouter_initials": event.scouter_initials.toLowerCase(),
-      "match_level": event.match_level + (roundIsVisible && event.round_number !== undefined ? event.round_number : ""),
+      "match_level": event.match_level,
       "match_number": event.match_number,
       "robot_position": event.robot_position,
       // Auton
@@ -369,6 +320,7 @@ function MatchScout(props: any) {
       await setNewMatchScout(event);
       const scouter_initials = form.getFieldValue("scouter_initials");
       const match_number = form.getFieldValue("match_number");
+      const match_event = form.getFieldValue("match_event");
       const match_level = form.getFieldValue("match_level");
       const robot_position = form.getFieldValue("robot_position");
 
@@ -376,11 +328,10 @@ function MatchScout(props: any) {
       setDefendedIsVisible(false);
 
       form.resetFields();
-      setFormValue({...formDefaultValues,
-        match_number: Number(match_number) + 1,
-      });
+      form.setFieldValue("match_event", match_event);
       form.setFieldValue("scouter_initials", scouter_initials);
       form.setFieldValue("match_level", match_level);
+      form.setFieldValue("match_number", Number(match_number) + 1);
       form.setFieldValue("robot_position", robot_position);
       setRobot_appeared(true);
 
@@ -400,11 +351,10 @@ function MatchScout(props: any) {
       const matchLevel = form.getFieldValue('match_level');
       const matchNumber = form.getFieldValue('match_number');
       const robotPosition = form.getFieldValue('robot_position');
-      const roundNumber = form.getFieldValue('round_number');
       const allianceNumber1 = form.getFieldValue('red_alliance');
       const allianceNumber2 = form.getFieldValue('blue_alliance');
 
-      const teams : any = await getTeamsPlaying(match_event, matchLevel, matchNumber, roundNumber, allianceNumber1, allianceNumber2);
+      const teams : any = await getTeamsPlaying(match_event, matchLevel, matchNumber, allianceNumber1, allianceNumber2);
 
       if(teams.shouldShowAlliances) {
         setShouldShowAlliances(true);
@@ -428,9 +378,6 @@ function MatchScout(props: any) {
   }
   function calculateMatchLevel() {
     const matchLevel = form.getFieldValue('match_level');
-    const isVisible = isRoundNumberVisible(matchLevel);
-
-    setRoundIsVisible(isVisible);
 
     const inPlayoffs = isInPlayoffs(matchLevel);
 
@@ -457,7 +404,6 @@ function MatchScout(props: any) {
       match_number: number,
       robot_position: string,
       preloaded: boolean,
-      round_number: number,
       red_alliance: string,
       blue_alliance: string,
     };
@@ -489,16 +435,7 @@ function MatchScout(props: any) {
       { label: `B2${getNum(4)}`, value: "B2" },
       { label: `B3${getNum(5)}`, value: 'B3' },
     ];
-    const playoff_alliances = [
-      { label: "Alliance 1", value: "Alliance 1" },
-      { label: "Alliance 2", value: "Alliance 2" },
-      { label: "Alliance 3", value: "Alliance 3" },
-      { label: "Alliance 4", value: "Alliance 4" },
-      { label: "Alliance 5", value: "Alliance 5" },
-      { label: "Alliance 6", value: "Alliance 6" },
-      { label: "Alliance 7", value: "Alliance 7" },
-      { label: "Alliance 8", value: "Alliance 8" },
-    ];
+    const playoff_alliances = allianceTags;
 
     return (
       <div>
@@ -580,17 +517,6 @@ function MatchScout(props: any) {
           align={"left"}
         />
 
-        <NumberInput
-          title={"Round #"}
-          name={"round_number"}
-          required={roundIsVisible}
-          message={"Enter round #"}
-          onChange={updateNumbers}
-          min={1}
-          form={form}
-          shown={roundIsVisible}
-          align={"left"}
-        />
 
         <Select
           title={"Robot Position"}

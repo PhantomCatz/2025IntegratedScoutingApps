@@ -45,7 +45,6 @@ function Strategic(props: any, text:any) {
   const [tabNum, setTabNum] = useState("1");
   const [team_number, setTeamNum] = useState(0);
   const [teamsList, setTeamsList] = useState<string[]>([]);
-  const [roundIsVisible, setRoundIsVisible] = useState(false);
   const [qrValue, setQrValue] = useState<any>();
   const [shouldRetrySubmit, setShouldRetrySubmit] = useState(false);
   const [lastFormValue, setLastFormValue] = useState<any>(null);
@@ -97,7 +96,6 @@ function Strategic(props: any, text:any) {
   useEffect(() => {
     const updateFields = [
       "match_number",
-      "round_number",
       "penalties",
     ];
     for(const field of updateFields) {
@@ -124,11 +122,10 @@ function Strategic(props: any, text:any) {
       const matchLevel = form.getFieldValue('match_level');
       const matchNumber = form.getFieldValue('match_number');
       const robotPosition = form.getFieldValue('robot_position');
-      const roundNumber = form.getFieldValue('round_number');
       const allianceNumber1 = form.getFieldValue('red_alliance');
       const allianceNumber2 = form.getFieldValue('blue_alliance');
 
-      const teams : any = await getTeamsPlaying(match_event, matchLevel, matchNumber, roundNumber, allianceNumber1, allianceNumber2);
+      const teams : any = await getTeamsPlaying(match_event, matchLevel, matchNumber, allianceNumber1, allianceNumber2);
 
       if(teams.shouldShowAlliances) {
         setShouldShowAlliances(true);
@@ -203,8 +200,6 @@ function Strategic(props: any, text:any) {
     const matchLevel = form.getFieldValue('match_level');
     const isVisible = isRoundNumberVisible(matchLevel);
 
-    setRoundIsVisible(isVisible);
-
     const inPlayoffs = isInPlayoffs(matchLevel);
 
     setInPlayoffs(inPlayoffs);
@@ -215,13 +210,14 @@ function Strategic(props: any, text:any) {
     const scouter_initials = form.getFieldValue('scouter_initials');
     const match_number = form.getFieldValue('match_number');
     const match_level = form.getFieldValue('match_level');
+    const match_event = form.getFieldValue('match_level');
     const robot_position = form.getFieldValue('robot_position');
 
-    form.setFieldsValue({...formDefaultValues,
-      match_number: Number(match_number) + 1,
-    });
+	form.resetFields();
     form.setFieldValue('scouter_initials', scouter_initials);
     form.setFieldValue('match_level', match_level);
+    form.setFieldValue('match_event', match_event);
+    form.setFieldValue("match_number", Number(match_number) + 1);
     form.setFieldValue('robot_position', robot_position);
 
     await calculateMatchLevel();
@@ -262,7 +258,6 @@ function Strategic(props: any, text:any) {
       match_level: string;
       match_number: number;
       round_number: number;
-      robot_position: string;
       red_alliance: string;
       blue_alliance: string;
       penalties: number;
@@ -387,16 +382,6 @@ function Strategic(props: any, text:any) {
           align={"left"}
         />
         
-        <NumberInput
-          title={"Round #"}
-          name={"round_number"}
-          message={"Enter round #"}
-          onChange={updateNumbers}
-          min={0}
-          form={form}
-          shown={roundIsVisible}
-          align={"left"}
-        />
         <Select
           title={"Robot Position"}
           name={"robot_position"}
