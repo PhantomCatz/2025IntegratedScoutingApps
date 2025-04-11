@@ -26,9 +26,9 @@ function getDivisionsList() {
 	};
 }
 
-async function getAllTeams() {
+async function getAllTeams(matchEvent : string) {
 	try {
-		const response = await request('event/' + process.env.REACT_APP_EVENTNAME + '/teams');
+		const response = await request('event/' + matchEvent + '/teams');
 		const teams = await response.json();
 
 		const numbers = teams.map((x : any) => x.team_number);
@@ -42,7 +42,7 @@ async function getAllTeams() {
 		return response;
 	}
 }
-async function getTeamsNotScouted() {
+async function getTeamsNotScouted(eventName : string) {
 	try {
 		let fetchLink = process.env.REACT_APP_SERVER_ADDRESS;
 
@@ -55,7 +55,7 @@ async function getTeamsNotScouted() {
 
 		let teamsScouted : any = await(await fetch(fetchLink)).json();
 
-		const allTeams = await getAllTeams();
+		const allTeams = await getAllTeams(eventName);
 
 		const all : any = new Set(allTeams);
 		const scouted = new Set(teamsScouted);

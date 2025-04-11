@@ -43,7 +43,7 @@ const formDefaultValues = {
 const IMAGE_DELIMITER = "$";
 
 function PitScout(props: any) {
-  const match_event = process.env.REACT_APP_EVENTNAME as string;
+  const match_event = process.env.REACT_APP_EVENTNAME || "";
   const [form] = Form.useForm();
   const [formValue, setFormValue] = useState(formDefaultValues);
   const [isLoading, setLoading] = useState(false);
@@ -85,7 +85,7 @@ function PitScout(props: any) {
       let message = initialMessage;
 
       try {
-        const teamsNotScouted = await getTeamsNotScouted();
+        const teamsNotScouted = await getTeamsNotScouted(match_event);
 
         if(teamsNotScouted === null || teamsNotScouted === undefined) {
           throw new Error("Could not access teams");
