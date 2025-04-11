@@ -12,6 +12,9 @@ function QrCode(props : any) {
 	const [timestamp, setTimestamp] = useState<Date>(new Date());
 
 	useEffect(() => {
+		if(!qrValue) {
+			return;
+		}
 		setTimeout(() => {
 			try {
 				(window as any).scrollByPages(100);

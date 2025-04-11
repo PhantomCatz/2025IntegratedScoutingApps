@@ -169,6 +169,7 @@ function MatchScout(props: any) {
     document.title = props.title;
   }, [props.title]);
   useEffect(() => {
+    /*
     const updateFields = [
       "match_number",
       "round_number",
@@ -216,6 +217,7 @@ function MatchScout(props: any) {
       //   console.log(`field=`, field);
       // }
     }
+    */
     setClimbSuccessful(form.getFieldValue("endgame_climb_successful"))
   }, [formValue, form]);
   useEffect(() => {
@@ -403,9 +405,7 @@ function MatchScout(props: any) {
       const allianceNumber1 = form.getFieldValue('red_alliance');
       const allianceNumber2 = form.getFieldValue('blue_alliance');
 
-      console.log(`match_event=`, match_event);
       const teams : any = await getTeamsPlaying(match_event, matchLevel, matchNumber, roundNumber, allianceNumber1, allianceNumber2);
-      console.log(`teams=`, teams);
 
       if(teams.shouldShowAlliances) {
         setShouldShowAlliances(true);
@@ -616,7 +616,7 @@ function MatchScout(props: any) {
               updateNumbers()
             }
           }}
-          min={1}
+          min={0}
           form={{
             setFieldValue: () => {},
             getFieldValue: () => {},
