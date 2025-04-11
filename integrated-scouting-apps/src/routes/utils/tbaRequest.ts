@@ -7,7 +7,7 @@ function isInPlayoffs(matchLevel? : string) {
 		false;
 }
 function isRoundNumberVisible(matchLevel? : string) {
-	return matchLevel !== "Qualifications" && matchLevel?
+	return matchLevel === "Playoffs" && matchLevel ?
 		true :
 		false;
 }
@@ -121,14 +121,16 @@ async function getTeamsPlaying(eventName : string,
 
 function getMatchId(eventName : string,
 					roundIsVisible : boolean,
-					matchLevel? : string,
-					matchNumber? : number,
-					roundNumber? : number) : string {
+					matchLevel : string,
+					matchNumber : number,
+					roundNumber : number) : string {
 	matchLevel = getMatchLevel(matchLevel);
 
 	const matchId = roundIsVisible ?
 		`${eventName}_${matchLevel}${matchNumber}m${roundNumber}` :
-		`${eventName}_${matchLevel}${matchNumber}`;
+		matchLevel === "f" ?
+			`${eventName}_${matchLevel}1m${matchNumber}` :
+			`${eventName}_${matchLevel}${matchNumber}`;
 	return matchId;
 }
 function getAllianceOffset(color : string) {
