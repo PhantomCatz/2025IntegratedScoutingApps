@@ -6,7 +6,7 @@ import Header from './parts/header';
 import { getAllTeams } from './utils/tbaRequest';
 
 function TeamData(props: any) {
-	const eventName = process.env.REACT_APP_EVENTNAME;
+	const eventName = process.env.REACT_APP_EVENTNAME || "";
 
 	const [form] = Form.useForm();
 	const [fetchedData, setFetchedData] = useState([]);
@@ -14,7 +14,7 @@ function TeamData(props: any) {
 	useEffect(() => {
 		(async function() {
 			try {
-				const data = await getAllTeams();
+				const data = await getAllTeams(eventName);
 				
 				const teamNumbers = data.map(function (team: any) {
 					return (<h2 key={team}>

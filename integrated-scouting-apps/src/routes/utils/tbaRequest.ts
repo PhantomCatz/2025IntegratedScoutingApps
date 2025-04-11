@@ -2,19 +2,33 @@ const tbaData = require("./tbaData.json");
 const tbaTeams = require("./tbaTeams.json");
 
 function isInPlayoffs(matchLevel? : string) {
-	return matchLevel !== "Qualifications" &&  matchLevel ?
+	return matchLevel !== "Qualifications" && matchLevel ?
 		true :
 		false;
 }
 function isRoundNumberVisible(matchLevel? : string) {
-	return matchLevel === "Finals" ?
+	return matchLevel !== "Qualifications" && matchLevel?
 		true :
 		false;
 }
 
-async function getAllTeams() {
+function getDivisionsList() {
+	return {
+		"Archimedes": "2024arc",
+		"Curie": "2024cur",
+		"Daly": "2024dal",
+		"Galileo": "2024gal",
+		"Hopper": "2024hop",
+		"Johnson": "2024joh",
+		"Milstein": "2024mil",
+		"Newton": "2024new",
+		"Einstein": "2024cmptx",
+	};
+}
+
+async function getAllTeams(matchEvent : string) {
 	try {
-		const response = await request('event/' + process.env.REACT_APP_EVENTNAME + '/teams');
+		const response = await request('event/' + matchEvent + '/teams');
 		const teams = await response.json();
 
 		const numbers = teams.map((x : any) => x.team_number);
@@ -28,7 +42,7 @@ async function getAllTeams() {
 		return response;
 	}
 }
-async function getTeamsNotScouted() {
+async function getTeamsNotScouted(eventName : string) {
 	try {
 		let fetchLink = process.env.REACT_APP_SERVER_ADDRESS;
 
@@ -41,7 +55,7 @@ async function getTeamsNotScouted() {
 
 		let teamsScouted : any = await(await fetch(fetchLink)).json();
 
-		const allTeams = await getAllTeams();
+		const allTeams = await getAllTeams(eventName);
 
 		const all : any = new Set(allTeams);
 		const scouted = new Set(teamsScouted);
@@ -58,19 +72,16 @@ async function getTeamsNotScouted() {
 		return null;
 	}
 }
-async function getTeamsPlaying(matchLevel? : string,
-					   matchNumber? : number,
-					   roundNumber? : number,
-					   allianceNumber1? : string,
-					   allianceNumber2? : string) : Promise<string[]> {
+async function getTeamsPlaying(eventName : string,
+							   matchLevel : string,
+							   matchNumber : number,
+							   roundNumber : number,
+							   allianceNumber1 : string,
+							   allianceNumber2 : string) : Promise<string[]> {
 	const roundIsVisible = isRoundNumberVisible(matchLevel);
 	matchNumber = Number(matchNumber);
 	roundNumber = Number(roundNumber);
 
-	if(isInPlayoffs(matchLevel)) {
-		return await getTeamsPlayingOffline(roundIsVisible, matchLevel || "", matchNumber || 0, roundNumber || 0,
-			   allianceNumber1 || "", allianceNumber2 || "");
-	}
 
 	try {
 		if (!matchLevel ||
@@ -80,7 +91,7 @@ async function getTeamsPlaying(matchLevel? : string,
 			throw new Error();
 		}
 
-		const matchId = getMatchId(roundIsVisible, matchLevel, matchNumber, roundNumber);
+		const matchId = getMatchId(eventName, roundIsVisible, matchLevel, matchNumber, roundNumber);
 
 		const response = await request('match/' + matchId);
 
@@ -102,22 +113,17 @@ async function getTeamsPlaying(matchLevel? : string,
 		if(err.message) {
 			console.log("err=", err);
 		}
-		const returnVal = await getTeamsPlayingOffline(roundIsVisible, matchLevel || "", matchNumber || 0, roundNumber || 0,
-			allianceNumber1 || "", allianceNumber2 || "");
-		return returnVal || [];
+
+		const returnVal = await getTeamsPlayingOffline(eventName, roundIsVisible, matchLevel, matchNumber, roundNumber, allianceNumber1, allianceNumber2);
+		return returnVal;
 	}
 }
 
-function getMatchId(roundIsVisible : boolean,
+function getMatchId(eventName : string,
+					roundIsVisible : boolean,
 					matchLevel? : string,
 					matchNumber? : number,
 					roundNumber? : number) : string {
-	const eventName = process.env.REACT_APP_EVENTNAME;
-
-	if(!eventName) {
-		console.error("Could not get event name. Check .env");
-	}
-
 	matchLevel = getMatchLevel(matchLevel);
 
 	const matchId = roundIsVisible ?
@@ -151,8 +157,7 @@ function getIndexNumber(robotPosition : string) {
 function getMatchLevel(name : any) {
 	const levels : {[matchLevel : string] : string} = {
       "Qualifications": "qm",
-      "Quarter-Finals": "qf",
-      "Semi-Finals": "sf",
+      "Playoffs": "sf",
       "Finals": "f",
 	};
 
@@ -186,22 +191,35 @@ async function getAllTeamsOffline() {
 
 	return res;
 }
-async function getTeamsPlayingOffline(roundIsVisible : boolean,
+async function getTeamsPlayingOffline(eventName : string,
+									  roundIsVisible : boolean,
 									  matchLevel : string,
 									  matchNumber : number,
 									  roundNumber : number,
 									  allianceNumber1 : string,
 									  allianceNumber2 : string) {
-	if(allianceNumber1 || allianceNumber2) {
-		const alliance1 = tbaData[allianceNumber1] || [0, 0, 0];
-		const alliance2 = tbaData[allianceNumber2] || [0, 0, 0];
+	if(isInPlayoffs(matchLevel)) {
+		try {
+			const alliance1 = tbaData[allianceNumber1];
+			const alliance2 = tbaData[allianceNumber2];
 
-		return alliance1.concat(alliance2);
+			const res : any = alliance1.concat(alliance2);
+
+			res.shouldShowAlliances = true;
+
+			return res;
+		} catch (err) {
+			const res : any = [];
+
+			res.shouldShowAlliances = true;
+
+			return res;
+		}
 	}
-	const matchId = getMatchId(roundIsVisible, matchLevel, matchNumber, roundNumber);
+	const matchId = getMatchId(eventName, roundIsVisible, matchLevel, matchNumber, roundNumber);
 	const teams = tbaData[matchId];
 
 	return teams;
 }
 
-export { isInPlayoffs, getAllTeams, getTeamsNotScouted, isRoundNumberVisible, getTeamsPlaying, getIndexNumber, getAllianceOffset };
+export { isInPlayoffs, getAllTeams, getTeamsNotScouted, isRoundNumberVisible, getTeamsPlaying, getIndexNumber, getAllianceOffset, getDivisionsList };

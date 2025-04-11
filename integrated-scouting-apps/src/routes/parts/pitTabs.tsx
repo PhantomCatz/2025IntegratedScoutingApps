@@ -42,16 +42,24 @@ async function PitTabs(team_number: number, inCallback? : boolean) {
   for (const pitInfo of response) {
     pitInfo.comments = pitInfo.comments.replaceAll("\\n", "\n");
 
-    const images = pitInfo.robotImageURI?.split(IMAGE_DELIMITER) || [];
+    const images = (pitInfo.robotImageURI?.split(IMAGE_DELIMITER) || []).filter((x : string) => x !== "");
 
     const pictures = [];
 
-    for(let i = 0; i < images.length; i++) {
+    if(images.length > 0) {
+      for(let i = 0; i < images.length; i++) {
+        pictures.push(
+          <div key={`pitImage${i}`}>
+            <h3>Picture {i + 1}</h3>
+            <img className={"pitImage"} src={images[i]}></img>
+          </div>
+        );
+      }
+    } else {
       pictures.push(
-        <div key={`pitImage${i}`}>
-          <h3>Picture {i + 1}</h3>
-          <img className={"pitImage"} src={images[i]}></img>
-        </div>
+        <p key={"pitImage__no-pictures"} style={{fontSize: "300%"}}>
+          No Pit Pictures D:
+        </p>
       );
     }
 

@@ -34,6 +34,9 @@ const NumberInput = React.memo(function <FieldType,>(props: NumberInputType) {
   const name = props.name;
   const shown = props.shown ?? true;
   const required = (props.required ?? true) && shown;
+  if((props.required ?? true) && !shown) {
+    console.error("Required and not shown for", name)
+  }
   const message = props.message || `Please input ${title}`;
   const min = props.min ?? 0;
   const max = props.max ?? Infinity;
@@ -96,6 +99,8 @@ const NumberInput = React.memo(function <FieldType,>(props: NumberInputType) {
 
           return updatedNumber;
         });
+
+        setValue(updatedNumber);
           
       }, 50);
     }
@@ -127,11 +132,13 @@ const NumberInput = React.memo(function <FieldType,>(props: NumberInputType) {
           },
           () => ({
             async validator(rule : any, value, callback) {
-              if(value < min) {
-                return Promise.reject(`${title} must be at least ${min}`);
-              }
-              if(value > max) {
-                return Promise.reject(`${title} must be at most ${max}`);
+              if(required) {
+                if(value < min) {
+                  return Promise.reject(`${title} must be at least ${min}`);
+                }
+                if(value > max) {
+                  return Promise.reject(`${title} must be at most ${max}`);
+                }
               }
 
               return Promise.resolve();

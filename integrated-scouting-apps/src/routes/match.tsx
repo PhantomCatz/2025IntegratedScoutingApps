@@ -6,7 +6,7 @@ import TextArea from 'antd/es/input/TextArea';
 import { Footer } from 'antd/es/layout/layout';
 import Header from "./parts/header";
 import QrCode, {escapeUnicode, } from './parts/qrCodeViewer';
-import {isInPlayoffs, isRoundNumberVisible, getTeamsPlaying, getIndexNumber, getAllianceOffset } from './utils/tbaRequest';
+import {isInPlayoffs, isRoundNumberVisible, getTeamsPlaying, getIndexNumber, getAllianceOffset, getDivisionsList } from './utils/tbaRequest';
 import type { TabsProps, RadioChangeEvent } from "antd";
 import { NumberInput, Select } from './parts/formItems';
 
@@ -137,8 +137,13 @@ const noShowValues = {
 }
 
 function MatchScout(props: any) {
+  const DEFAULT_MATCH_EVENT = process.env.REACT_APP_EVENTNAME || "";
+
+  if(DEFAULT_MATCH_EVENT === "") {
+    console.error("Could not get match event. Check .env");
+  }
+
   const [form] = Form.useForm();
-  // console.log(`form=`, form);
   const [formValue, setFormValue] = useState<any>(formDefaultValues);
   const [roundIsVisible, setRoundIsVisible] = useState(false);
   const [isLoading, setLoading] = useState(false);
@@ -157,8 +162,8 @@ function MatchScout(props: any) {
   const [autonPoints, setAutonPoints] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [climbSuccessful, setClimbSuccessful] = useState(false);
-
-  const match_event = process.env.REACT_APP_EVENTNAME;
+  const [shouldShowAlliances, setShouldShowAlliances] = useState(false);
+  const [match_event, setMatchEvent] = useState<string>(DEFAULT_MATCH_EVENT);
 
   useEffect(() => {
     document.title = props.title;
@@ -238,6 +243,9 @@ function MatchScout(props: any) {
       console.error("Failed to request TBA data when updating opposing team", err);
     }
   }, [teamsList, form.getFieldValue("robot_position")]);
+  useEffect(() => {
+    updateNumbers();
+  }, [match_event]);
   
   async function setNewMatchScout(event: any) {
     if (team_number === 0) {
@@ -395,8 +403,16 @@ function MatchScout(props: any) {
       const allianceNumber1 = form.getFieldValue('red_alliance');
       const allianceNumber2 = form.getFieldValue('blue_alliance');
 
-      const teams = await getTeamsPlaying(matchLevel, matchNumber, roundNumber, allianceNumber1, allianceNumber2);
-      setTeamsList(teams);
+      console.log(`match_event=`, match_event);
+      const teams : any = await getTeamsPlaying(match_event, matchLevel, matchNumber, roundNumber, allianceNumber1, allianceNumber2);
+      console.log(`teams=`, teams);
+
+      if(teams.shouldShowAlliances) {
+        setShouldShowAlliances(true);
+      } else {
+        setShouldShowAlliances(false);
+      }
+      setTeamsList(teams || []);
 
       if(robotPosition) {
         const index = getIndexNumber(robotPosition);
@@ -421,13 +437,16 @@ function MatchScout(props: any) {
 
     setInPlayoffs(inPlayoffs);
   }
+  async function updateNumbers() {
+    await calculateMatchLevel();
+    await updateTeamNumber();
+  }
+
   function updatePenalties() {
     const major = form.getFieldValue("overall_major_penalties");
     const minor = form.getFieldValue("overall_minor_penalties");
 
     const shouldShow = major + minor > 0;
-    console.log(`major + minor=`, major + minor);
-    console.log(`shouldShow=`, shouldShow);
 
     setPenaltiesIsVisible(shouldShow);
   }
@@ -443,6 +462,15 @@ function MatchScout(props: any) {
       red_alliance: string,
       blue_alliance: string,
     };
+    const matchEvents = [
+      { label: `Default (${DEFAULT_MATCH_EVENT})`, value: DEFAULT_MATCH_EVENT },
+    ];
+    for(const [eventName, eventId] of Object.entries(getDivisionsList())) {
+      matchEvents.push({
+        label: eventName,
+        value: eventId
+      });
+    }
     const rounds = [
       { label: "Qualifications", value: "Qualifications" },
       { label: "Playoffs", value: "Playoffs" },
@@ -473,14 +501,23 @@ function MatchScout(props: any) {
       { label: "Alliance 8", value: "Alliance 8" },
     ];
 
-    async function updateNumbers() {
-      await calculateMatchLevel();
-      await updateTeamNumber();
-    }
-
     return (
       <div>
         <h2>Team: {team_number}</h2>
+
+        <Select
+          title={"Match Event"}
+          name={"match_event"}
+          options={matchEvents}
+          onChange={async (e? : string) => {
+            console.log(`e=`, e);
+            if(e) {
+              await setMatchEvent(e);
+            } else {
+
+            }
+          }}
+        />
 
         <h2>Scouter Initials</h2>
         <Form.Item<FieldType>
@@ -505,6 +542,7 @@ function MatchScout(props: any) {
             }}
           /> 
         </Form.Item>
+
         <Select
           title={"Match Level"}
           name={"match_level"}
@@ -512,11 +550,11 @@ function MatchScout(props: any) {
           onChange={updateNumbers}
         />
 
-        <div className={"playoff-alliances"} style={{ display: inPlayoffs ? 'inherit' : 'none' }}>
+        <div className={"playoff-alliances"} style={{ display: inPlayoffs && shouldShowAlliances ? 'inherit' : 'none' }}>
           <Select
             title={"Red Alliance"}
             name={"red_alliance"}
-            required={inPlayoffs}
+            required={inPlayoffs && shouldShowAlliances}
             message={"Enter the red alliance"}
             options={playoff_alliances}
             onChange={updateNumbers}
@@ -525,7 +563,7 @@ function MatchScout(props: any) {
           <Select
             title={"Blue Alliance"}
             name={"blue_alliance"}
-            required={inPlayoffs}
+            required={inPlayoffs && shouldShowAlliances}
             message={"Enter the blue alliance"}
             options={playoff_alliances}
             onChange={updateNumbers}
@@ -546,9 +584,10 @@ function MatchScout(props: any) {
         <NumberInput
           title={"Round #"}
           name={"round_number"}
+          required={roundIsVisible}
           message={"Enter round #"}
           onChange={updateNumbers}
-          min={0}
+          min={1}
           form={form}
           shown={roundIsVisible}
           align={"left"}
@@ -560,6 +599,30 @@ function MatchScout(props: any) {
           message={"Enter robot position"}
           options={robot_position}
           onChange={updateNumbers}
+        />
+
+        <hr/>
+        <div style={{fontSize: "250%", fontWeight: "100"}}>
+        Warning! These options should not be used normally!
+        </div>
+        <NumberInput
+          title={"Override Team"}
+          name={""}
+          required={false}
+          onChange={(e? : number) => {
+            if(e) {
+              setTeam_number(e);
+            } else {
+              updateNumbers()
+            }
+          }}
+          min={1}
+          form={{
+            setFieldValue: () => {},
+            getFieldValue: () => {},
+          }}
+          buttons={false}
+          align={"left"}
         />
 
        <Button
@@ -1090,7 +1153,6 @@ function MatchScout(props: any) {
       label: 'Overall',
       children: overall(),
     },
-  
   ];
   return (
     <>

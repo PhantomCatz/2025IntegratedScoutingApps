@@ -6,7 +6,7 @@ import TextArea from 'antd/es/input/TextArea';
 import { saveAs } from 'file-saver';
 import Header from "./parts/header";
 import QrCode from "./parts/qrCodeViewer";
-import { isRoundNumberVisible, isInPlayoffs, getTeamsPlaying, getIndexNumber } from './utils/tbaRequest';
+import { isRoundNumberVisible, isInPlayoffs, getTeamsPlaying, getIndexNumber, getDivisionsList } from './utils/tbaRequest';
 import { NumberInput, Select } from './parts/formItems';
 
 const formDefaultValues = {
@@ -34,6 +34,12 @@ const formDefaultValues = {
 //}
 
 function Strategic(props: any, text:any) {
+  const DEFAULT_MATCH_EVENT = process.env.REACT_APP_EVENTNAME || "";
+
+  if(DEFAULT_MATCH_EVENT === "") {
+    console.error("Could not get match event. Check .env");
+  }
+
   const [form] = Form.useForm();
   const [formValue, setFormValue] = useState(formDefaultValues);
   const [tabNum, setTabNum] = useState("1");
@@ -46,6 +52,8 @@ function Strategic(props: any, text:any) {
   const [teamData, setTeamData] = useState<any>(null);
   const [inPlayoffs, setInPlayoffs] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [shouldShowAlliances, setShouldShowAlliances] = useState(false);
+  const [match_event, setMatchEvent] = useState<string>(DEFAULT_MATCH_EVENT);
 
   useEffect(() => { document.title = props.title; return () => { } }, [props.title]);
   useEffect(() => {
@@ -107,8 +115,9 @@ function Strategic(props: any, text:any) {
       }
     }
   }, [formValue, form]);
-
-  const match_event = process.env.REACT_APP_EVENTNAME;
+  useEffect(() => {
+    updateNumbers();
+  }, [match_event]);
   
   async function updateTeamNumber() {
     try {
@@ -119,13 +128,20 @@ function Strategic(props: any, text:any) {
       const allianceNumber1 = form.getFieldValue('red_alliance');
       const allianceNumber2 = form.getFieldValue('blue_alliance');
 
-      const teams = await getTeamsPlaying(matchLevel, matchNumber, roundNumber, allianceNumber1, allianceNumber2);
-      setTeamsList(teams);
+      const teams : any = await getTeamsPlaying(match_event, matchLevel, matchNumber, roundNumber, allianceNumber1, allianceNumber2);
+
+      if(teams.shouldShowAlliances) {
+        setShouldShowAlliances(true);
+      } else {
+        setShouldShowAlliances(false);
+      }
+      setTeamsList(teams || []);
 
       if(robotPosition) {
         const index = getIndexNumber(robotPosition);
         const teamNumber = Number(teams[index]);
-        setTeamNum(teamNumber || 0);
+
+        await setTeamNum(teamNumber || 0);
       } else {
         setTeamNum(0);
       }
@@ -234,6 +250,11 @@ function Strategic(props: any, text:any) {
       setIsLoading(false);
     }
   }
+  async function updateNumbers() {
+    await calculateMatchLevel();
+    await updateTeamNumber();
+  }
+
   function preMatch() {
     type FieldType = {
       scouter_initials: string;
@@ -246,6 +267,15 @@ function Strategic(props: any, text:any) {
       blue_alliance: string;
       penalties: number;
     };
+    const matchEvents = [
+      { label: `Default (${DEFAULT_MATCH_EVENT})`, value: DEFAULT_MATCH_EVENT },
+    ];
+    for(const [eventName, eventId] of Object.entries(getDivisionsList())) {
+      matchEvents.push({
+        label: eventName,
+        value: eventId
+      });
+    }
     const rounds = [
       { label: "Qualifications", value: "Qualifications" },
       { label: "Playoffs", value: "Playoffs" },
@@ -280,6 +310,21 @@ function Strategic(props: any, text:any) {
     return (
       <div>
         <h2>Team: {team_number}</h2>
+
+        <Select
+          title={"Match Event"}
+          name={"match_event"}
+          options={matchEvents}
+          onChange={(e? : string) => {
+            console.log(`e=`, e);
+            if(e) {
+              setMatchEvent(e);
+            } else {
+
+            }
+          }}
+        />
+
         <h2>Scouter Initials</h2>
         <Form.Item<FieldType>
           name="scouter_initials"
@@ -308,26 +353,26 @@ function Strategic(props: any, text:any) {
           title={"Match Level"}
           name={"match_level"}
           options={rounds}
-          onChange={() => { calculateMatchLevel(); updateTeamNumber(); }}
+          onChange={updateNumbers}
         />
 
-        <div className={"playoff-alliances"} style={{ display: inPlayoffs ? 'inherit' : 'none' }}>
+        <div className={"playoff-alliances"} style={{ display: inPlayoffs && shouldShowAlliances ? 'inherit' : 'none' }}>
           <Select
             title={"Red Alliance"}
             name={"red_alliance"}
-            required={inPlayoffs}
+            required={inPlayoffs && shouldShowAlliances}
             message={"Enter the red alliance"}
             options={playoff_alliances}
-            onChange={() => { calculateMatchLevel(); updateTeamNumber(); }}
+            onChange={updateNumbers}
           />
           
           <Select
             title={"Blue Alliance"}
             name={"blue_alliance"}
-            required={inPlayoffs}
+            required={inPlayoffs && shouldShowAlliances}
             message={"Enter the blue alliance"}
             options={playoff_alliances}
-            onChange={() => { calculateMatchLevel(); updateTeamNumber(); }}
+            onChange={updateNumbers}
           />
         </div>
 
@@ -335,7 +380,7 @@ function Strategic(props: any, text:any) {
           title={"Match #"}
           name={"match_number"}
           message={"Enter match #"}
-          onChange={updateTeamNumber}
+          onChange={updateNumbers}
           min={1}
           form={form}
           buttons={false}
@@ -346,7 +391,7 @@ function Strategic(props: any, text:any) {
           title={"Round #"}
           name={"round_number"}
           message={"Enter round #"}
-          onChange={updateTeamNumber}
+          onChange={updateNumbers}
           min={0}
           form={form}
           shown={roundIsVisible}
@@ -357,7 +402,7 @@ function Strategic(props: any, text:any) {
           name={"robot_position"}
           message={"Please input the robot position"}
           options={robot_position}
-          onChange={updateTeamNumber}
+          onChange={updateNumbers}
         />
 
         <Flex justify='in-between' style={{ paddingBottom : '5%' }}>
