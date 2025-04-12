@@ -8,8 +8,8 @@ import React, { useState, useEffect } from 'react';
 import {useLocalStorage, } from 'react-use';
 
 /**
- * Delocalised header
- * 
+ * Header Component
+ *
  * props.back = link to previous page
  * props.name = name of current page
  */
@@ -19,20 +19,22 @@ function Header(props: any) {
 	const backLink = props.back || "/";
 
 	const [theme, setTheme] = useLocalStorage<any>('theme', 'dark'); 
+	const [background, setBackground] = useLocalStorage<any>('background', '#000000'); 
+	const [fontColor, setFontColor] = useLocalStorage<any>('fontColor', '#ffffff'); 
 
 	const colors : any = {
-		light: {
+		light: () => ({
 			'--pc-blue': ' #ffffff',// #32a7dc
 			'--font-color': '#000000',
-		},
-		dark: {
+		}),
+		dark: () => ({
 			'--pc-blue': ' #000000',
 			'--font-color': '#ffffff'
-		},
-		pink: {
-			'--pc-blue': '#f79ac0',
-			'--font-color': 'rgb(255, 241, 248)',
-		},
+		}),
+		random: () => ({
+			'--pc-blue': `#${getRandomHex()}${getRandomHex()}${getRandomHex()}${getRandomHex()}${getRandomHex()}${getRandomHex()}`,
+			'--font-color': `#${getRandomHex()}${getRandomHex()}${getRandomHex()}${getRandomHex()}${getRandomHex()}${getRandomHex()}`,
+		}),
 	};
 	const icons : any = {
 		light: {
@@ -43,31 +45,42 @@ function Header(props: any) {
 			icon: lightLogo,
 			back: lightBack,
 		},
-		pink: {
+		random: {
 			icon: lightLogo,
 			back: lightBack,
 		},
 	};
 
-	const handleLogoClick = () => {
-		if (theme === 'pink') {
-			setTheme('light');
+	function handleLogoClick() {
+		if (theme === 'random') {
+			updateTheme('light');
 		} else if (theme === 'light') {
-			setTheme('dark');
+			updateTheme('dark');
 		} else if (theme === 'dark') {
-			setTheme('light');
+			updateTheme('light');
 		}
-	};
+	}
 
-	const handleLogoDoubleClick = () => {
-		setTheme('pink');
-	};
+	function handleLogoDoubleClick() {
+		updateTheme('random');
+	}
+
+	function updateTheme(newTheme : string) {
+		if(!colors[newTheme]) {
+			newTheme = 'dark';
+		}
+		const themeColors = colors[newTheme];
+		const color = themeColors();
+		setBackground(color["--pc-blue"]);
+		setFontColor(color["--font-color"]);
+
+		setTheme(newTheme);
+	}
 
 	useEffect(() => {
-		const root = document.documentElement;
-		for(const [variable, color] of Object.entries(colors[theme])) {
-			root.style.setProperty(variable, color as any); 
-		}
+		const rootElement = document.querySelector(":root") as any;
+		rootElement.style.setProperty('--pc-blue', background); 
+		rootElement.style.setProperty('--font-color', fontColor); 
 	}, [theme]);
 
 	return (
@@ -84,6 +97,14 @@ function Header(props: any) {
 			<h1 className={"pageTitle"}>{name}</h1>
 		</header>
 	);
+}
+
+
+function getRandomHex() {
+	const randVal = Math.floor(Math.random() * 16);
+	const vals = "0123456789ABCDEF";
+
+	return vals[randVal];
 }
 
 export default Header;
