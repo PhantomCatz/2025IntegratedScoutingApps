@@ -3,23 +3,29 @@ import '../public/stylesheets/pitLookup.css';
 import { useEffect, useState } from 'react';
 import { InputNumber, Tabs, } from 'antd';
 import Header from "./parts/header";
-import { getAllTeams } from './utils/tbaRequest';
+import { getAllTeams, getDivisionsList } from './utils/tbaRequest';
 import PitTabs from './parts/pitTabs';
+import { Select } from './parts/formItems';
 
 function TeamData(props: any) {
-  const eventName = process.env.REACT_APP_EVENTNAME || "";
+  const DEFAULT_MATCH_EVENT = process.env.REACT_APP_EVENTNAME || "";
 
   const [shouldRetryLoading, setShouldRetryLoading] = useState(false);
   const [fetchedData, setFetchedData] = useState<any>(null);
   const [teamNumber, setTeamNumber] = useState(0);
   const [tabNum, setTabNum] = useState("1");
   const [items, setItems] = useState([initialState()]);
+  const [match_event, setMatchEvent] = useState(DEFAULT_MATCH_EVENT);
 
   useEffect(() => { document.title = props.title }, [props.title]);
   useEffect(() => {
     (async function() {
       try {
-        const data = await getAllTeams(eventName);
+        const data = await getAllTeams(match_event);
+
+        if(!data) {
+          throw new Error("Could not get data");
+        }
 
         const teamNumbers = data.map(function (team: any) { 
           return (<h2 key={team}>
@@ -33,7 +39,7 @@ function TeamData(props: any) {
         console.error("Error fetching team list: ", err);
       }
     })();
-  }, [eventName]);
+  }, [match_event]);
   useEffect(() => {
     const prev : any = [];
 
@@ -92,10 +98,33 @@ function TeamData(props: any) {
     setShouldRetryLoading(false);
     setTabs(teamNumber, true);
   }
+
+  const matchEvents = [
+    { label: `Default (${DEFAULT_MATCH_EVENT})`, value: DEFAULT_MATCH_EVENT },
+  ];
+  for(const [eventName, eventId] of Object.entries(getDivisionsList())) {
+    matchEvents.push({
+      label: eventName,
+      value: eventId
+    });
+  }
+
   return (
     <>
       <meta name="viewport" content="maximum-scale=1.0" />
       <Header name={"Pit Lookup"} back={"#scoutingapp/lookup"} />
+      <Select
+        title={"Match Event"}
+        name={"match_event"}
+        options={matchEvents}
+        onChange={async (e? : string) => {
+          if(e) {
+            await setMatchEvent(e);
+          } else {
+
+          }
+        }}
+      />
       <Tabs defaultActiveKey="1" activeKey={tabNum} items={items} centered className='tabs' onChange={async (key) => { setTabNum(key); }} />
     </>
   );
