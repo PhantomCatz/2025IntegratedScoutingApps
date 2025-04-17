@@ -44,7 +44,7 @@ async function StrategicTabs(team_number: number, inCallback? : boolean) {
       label: `${strategicInfo.scouter_initials.toUpperCase()}:${strategicInfo.team_number}`,
       children: (
         <>
-          <h2>Scouter Initials</h2>
+          <h2>Match Event</h2>
           <Input className="input" disabled value={strategicInfo.match_event} />
           <h2>Scouter Initials</h2>
           <Input className="input" disabled value={strategicInfo.scouter_initials} />
@@ -52,8 +52,6 @@ async function StrategicTabs(team_number: number, inCallback? : boolean) {
           <Input className="input" disabled value={strategicInfo.match_level} />
           <h2>Match #</h2>
           <Input className="input" disabled value={strategicInfo.match_number} />
-          <h2>Round #</h2>
-          <Input className="input" disabled value={strategicInfo.round_number} />
           <h2>Robot Position</h2>
           <Input className="input" disabled value={strategicInfo.robot_position} />
           <h2>Comments</h2>

@@ -70,10 +70,6 @@ function QrCode(props : any) {
 	
 	const valuesToDisplay : {key : any, display : string}[] = [
 		{
-			"key" : "round_number",
-			"display" : "Round Number:",
-		},
-		{
 			"key" : "scouter_initials",
 			"display" : "Scouter Initials:",
 		},
