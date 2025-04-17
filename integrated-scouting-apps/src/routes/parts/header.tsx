@@ -7,6 +7,8 @@ import '../../public/stylesheets/header.css';
 import React, { useState, useEffect } from 'react';
 import {useLocalStorage, } from 'react-use';
 
+const DEFAULT_THEME = "dark";
+
 /**
  * Header Component
  *
@@ -18,7 +20,7 @@ function Header(props: any) {
 	const name = props.name || "No name set";
 	const backLink = props.back || "/";
 
-	const [theme, setTheme] = useLocalStorage<any>('theme', 'dark'); 
+	const [theme, setTheme] = useLocalStorage<any>('theme', DEFAULT_THEME); 
 	const [background, setBackground] = useLocalStorage<any>('background', '#000000'); 
 	const [fontColor, setFontColor] = useLocalStorage<any>('fontColor', '#ffffff'); 
 
@@ -51,6 +53,10 @@ function Header(props: any) {
 		},
 	};
 
+	useEffect(() => {
+		updateTheme("pink");
+	}, []);
+
 	function handleLogoClick() {
 		if (theme === 'random') {
 			updateTheme('light');
@@ -67,7 +73,8 @@ function Header(props: any) {
 
 	function updateTheme(newTheme : string) {
 		if(!colors[newTheme]) {
-			newTheme = 'dark';
+			newTheme = DEFAULT_THEME;
+			console.log(`newTheme=`, newTheme);
 		}
 		const themeColors = colors[newTheme];
 		const color = themeColors();
@@ -83,13 +90,15 @@ function Header(props: any) {
 		rootElement.style.setProperty('--font-color', fontColor); 
 	}, [theme]);
 
+	const iconSet = icons[theme] ?? icons[DEFAULT_THEME];
+
 	return (
 		<header className="header">
 		{!isRootPage &&
-			<a href={backLink}><img className={"backImg"} src={icons[theme].back} alt=''></img></a>}
+			<a href={backLink}><img className={"backImg"} src={iconSet.back} alt=''></img></a>}
 			<img
 				className={"logoImg"}
-				src={icons[theme].icon} 
+				src={iconSet.icon} 
 				onClick={handleLogoClick} 
 				onDoubleClick={handleLogoDoubleClick} 
 				alt="Logo"
