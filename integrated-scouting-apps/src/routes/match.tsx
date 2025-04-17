@@ -1,23 +1,85 @@
 import '../public/stylesheets/style.css';
 import '../public/stylesheets/match.css';
 import { useEffect, useState } from 'react';
-import { Tabs, Input, Form, Checkbox, InputNumber, Flex, Button, Radio} from 'antd';
+import { Tabs, Input, Form, Checkbox, Flex, Button } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import { Footer } from 'antd/es/layout/layout';
 import Header from "./parts/header";
 import QrCode, {escapeUnicode, } from './parts/qrCodeViewer';
-import {isInPlayoffs, isRoundNumberVisible, getTeamsPlaying, getIndexNumber, getAllianceOffset, getDivisionsList, getAllianceTags } from './utils/tbaRequest';
-import type { TabsProps, RadioChangeEvent } from "antd";
+import {isInPlayoffs, getTeamsPlaying, getIndexNumber, getAllianceOffset, getDivisionsList, getAllianceTags } from './utils/tbaRequest';
+import type { TabsProps, } from "antd";
 import { NumberInput, Select } from './parts/formItems';
 
-interface SpacerProps {
-  height?: string;
-  width?: string;
-}
+namespace Fields {
+    export type PreMatch = {
+      match_event: string,
+      scouter_initials: string,
+      match_level: string,
+      match_number: number,
+      robot_position: string,
+      red_alliance: string,
+      blue_alliance: string,
+      team_override: string,
+    };
 
-const Spacer: React.FC<SpacerProps> = ({ height = '0px', width = '0px' }) => {
-  return <div style={{ height, width }} />;
-};
+    export type AutonMatch = {
+      auton_coral_scored_l4: number,
+      auton_coral_scored_l3: number,
+      auton_coral_scored_l2: number,
+      auton_coral_scored_l1: number,
+      auton_coral_missed_l4: number,
+      auton_coral_missed_l3: number,
+      auton_coral_missed_l2: number,
+      auton_coral_missed_l1: number,
+      auton_algae_scored_net: number,
+      auton_algae_missed_net: number,
+      auton_algae_scored_processor: number,
+      auton_leave_starting_line: boolean,
+    };
+
+    export type TeleopMatch = {
+      teleop_coral_scored_l4: number,
+      teleop_coral_missed_l4: number,
+      teleop_coral_scored_l3: number,
+      teleop_coral_missed_l3: number,
+      teleop_coral_scored_l2: number,
+      teleop_coral_missed_l2: number,
+      teleop_coral_scored_l1: number,
+      teleop_coral_missed_l1: number,
+      teleop_algae_scored_net: number,
+      teleop_algae_missed_net: number,
+      teleop_algae_scored_processor: number,
+    };
+
+    export type EndgameMatch = {
+      endgame_coral_intake_capability: boolean,
+      endgame_algae_intake_capability: boolean,
+      endgame_climb_successful: boolean,
+      endgame_climb_type: boolean,
+      endgame_climb_time: number,
+    };
+
+    export type OverallMatch = {
+      overall_robot_died: boolean;
+      overall_defended_others: boolean;
+      overall_defended: string;
+      overall_was_defended: boolean;
+      overall_defended_by: string;
+      overall_num_penalties: number;
+      overall_match_penalty: string;
+      overall_tech_penalty: string;
+      overall_penalties_incurred: string;
+      overall_pushing: number;
+      overall_driver_skill: number;
+      overall_major_penalties: number;
+      overall_minor_penalties: number;
+      overall_counter_defense: number;
+      overall_defense_quality: number;
+      overall_comments: string;
+    };
+
+    export type All = PreMatch | AutonMatch | TeleopMatch | EndgameMatch | OverallMatch;
+}
 
 const formDefaultValues = {
   // Pre-match
@@ -134,7 +196,7 @@ const noShowValues = {
   // Playoffs
   //"red_alliance": "",
   //"blue_alliance": "",
-}
+};
 
 function MatchScout(props: any) {
   const DEFAULT_MATCH_EVENT = process.env.REACT_APP_EVENTNAME || "";
@@ -156,9 +218,6 @@ function MatchScout(props: any) {
   const [lastFormValue, setLastFormValue] = useState<any>(null);
   const [inPlayoffs, setInPlayoffs] = useState(false);
   const [robot_appeared, setRobot_appeared] = useState(true);
-  const [leftStartPos, setLeftStartPos] = useState(false);
-  const [autonPoints, setAutonPoints] = useState(0);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [climbSuccessful, setClimbSuccessful] = useState(false);
   const [shouldShowAlliances, setShouldShowAlliances] = useState(false);
   const [match_event, setMatchEvent] = useState<string>(DEFAULT_MATCH_EVENT);
@@ -170,6 +229,8 @@ function MatchScout(props: any) {
   useEffect(() => {
     setClimbSuccessful(form.getFieldValue("endgame_climb_successful"))
   }, [form]);
+
+  const currentRobotPosition = form.getFieldValue("robot_position");
   useEffect(() => {
     const robotPosition = form.getFieldValue("robot_position");
     if(!robotPosition) {
@@ -194,18 +255,18 @@ function MatchScout(props: any) {
     catch (err) {
       console.error("Failed to request TBA data when updating opposing team", err);
     }
-  }, [teamsList, form.getFieldValue("robot_position")]);
+  }, [teamsList, currentRobotPosition]);
   useEffect(() => {
     updateNumbers();
-	setAllianceTags(getAllianceTags(match_event));
+    setAllianceTags(getAllianceTags(match_event));
   }, [match_event]);
-  
+
   async function setNewMatchScout(event: any) {
     if (team_number === 0) {
       window.alert("Team number is 0, please check in Pre.");
       return;
     }
-    const body = {
+    const body : any = {
       // Pre-match
       "match_event": match_event,
       "team_number": team_number,
@@ -260,6 +321,18 @@ function MatchScout(props: any) {
       "overall_comments": event.overall_comments || "",
       "robot_appeared": robot_appeared,
     };
+    Object.entries(body)
+      .forEach((k) => {
+        const field = k[0];
+        const val = k[1];
+
+        const newVal = typeof val === "string" ?
+          escapeUnicode(val) :
+          val;
+
+        body[field] = newVal;
+      });
+
     tryFetch(body)
       .then((successful) => {
         if(successful) {
@@ -398,15 +471,7 @@ function MatchScout(props: any) {
   }
 
   function preMatch() {
-    type FieldType = {
-      scouter_initials: string,
-      match_level: string,
-      match_number: number,
-      robot_position: string,
-      preloaded: boolean,
-      red_alliance: string,
-      blue_alliance: string,
-    };
+    type FieldType = Fields.PreMatch;
     const matchEvents = [
       { label: `Default (${DEFAULT_MATCH_EVENT})`, value: DEFAULT_MATCH_EVENT },
     ];
@@ -441,7 +506,7 @@ function MatchScout(props: any) {
       <div>
         <h2>Team: {team_number}</h2>
 
-        <Select
+        <Select<FieldType>
           title={"Match Event"}
           name={"match_event"}
           options={matchEvents}
@@ -479,7 +544,7 @@ function MatchScout(props: any) {
           /> 
         </Form.Item>
 
-        <Select
+        <Select<FieldType>
           title={"Match Level"}
           name={"match_level"}
           options={rounds}
@@ -487,7 +552,7 @@ function MatchScout(props: any) {
         />
 
         <div className={"playoff-alliances"} style={{ display: inPlayoffs && shouldShowAlliances ? 'inherit' : 'none' }}>
-          <Select
+          <Select<FieldType>
             title={"Red Alliance"}
             name={"red_alliance"}
             required={inPlayoffs && shouldShowAlliances}
@@ -496,7 +561,7 @@ function MatchScout(props: any) {
             onChange={updateNumbers}
           />
           
-          <Select
+          <Select<FieldType>
             title={"Blue Alliance"}
             name={"blue_alliance"}
             required={inPlayoffs && shouldShowAlliances}
@@ -506,7 +571,7 @@ function MatchScout(props: any) {
           />
         </div>
         
-        <NumberInput
+        <NumberInput<FieldType>
           title={"Match #"}
           name={"match_number"}
           message={"Enter match #"}
@@ -518,7 +583,7 @@ function MatchScout(props: any) {
         />
 
 
-        <Select
+        <Select<FieldType>
           title={"Robot Position"}
           name={"robot_position"}
           message={"Enter robot position"}
@@ -530,9 +595,9 @@ function MatchScout(props: any) {
         <div style={{fontSize: "250%", fontWeight: "100"}}>
         Warning! These options should not be used normally!
         </div>
-        <NumberInput
+        <NumberInput<FieldType>
           title={"Override Team"}
-          name={""}
+          name={"team_override"}
           required={false}
           onChange={(e? : number) => {
             if(e) {
@@ -579,26 +644,9 @@ function MatchScout(props: any) {
     );
   }
   
-  function AutonMatch() {
-    type FieldType = {
-      auton_coral_scored_l4: number,
-      auton_coral_scored_l3: number,
-      auton_coral_scored_l2: number,
-      auton_coral_scored_l1: number,
-      auton_coral_missed_l4: number,
-      auton_coral_missed_l3: number,
-      auton_coral_missed_l2: number,
-      auton_coral_missed_l1: number,
-      auton_algae_scored_net: number,
-      auton_algae_missed_net: number,
-      auton_algae_scored_processor: number,
-      auton_leave_starting_line: boolean,
-    };
+  function autonMatch() {
+    type FieldType = Fields.AutonMatch;
     
-    useEffect(() => {
-      setLeftStartPos(autonPoints > 0);
-    }, [autonPoints, leftStartPos]);
-
     return (
       <div style={{ alignContent: 'center' }}>
         <h2>Leave Starting Line?</h2>
@@ -607,7 +655,7 @@ function MatchScout(props: any) {
         </Form.Item>
         <div className = 'radioRColumn'> 
           <div className = 'radioRow'>
-            <NumberInput
+            <NumberInput<FieldType>
               title={"A Coral Scored L4"}
               name={"auton_coral_scored_l4"}
               message={"Enter # coral scored for l4 in Auton"}
@@ -615,7 +663,7 @@ function MatchScout(props: any) {
               form={form}
             />
               
-            <NumberInput
+            <NumberInput<FieldType>
               title={"A Coral Missed L4"}
               name={"auton_coral_missed_l4"}
               message={"Enter # coral missed for l4 in Auton"}
@@ -627,7 +675,7 @@ function MatchScout(props: any) {
             
         <div className = 'radioRColumn'> 
           <div className = 'radioRow'>
-            <NumberInput
+            <NumberInput<FieldType>
               title={"A Coral Scored L3"}
               name={"auton_coral_scored_l3"}
               message={"Enter # coral scored for l3 in Auton"}
@@ -635,7 +683,7 @@ function MatchScout(props: any) {
               form={form}
             />
               
-            <NumberInput
+            <NumberInput<FieldType>
               title={"A Coral Missed L3"}
               name={"auton_coral_missed_l3"}
               message={"Enter # coral missed for l3 in Auton"}
@@ -647,7 +695,7 @@ function MatchScout(props: any) {
         
         <div className = 'radioRColumn'> 
           <div className = 'radioRow'>
-            <NumberInput
+            <NumberInput<FieldType>
               title={"A Coral Scored L2"}
               name={"auton_coral_scored_l2"}
               message={"Enter # coral scored for l2 in Auton"}
@@ -655,7 +703,7 @@ function MatchScout(props: any) {
               form={form}
             />
               
-            <NumberInput
+            <NumberInput<FieldType>
               title={"A Coral Missed L2"}
               name={"auton_coral_missed_l2"}
               message={"Enter # coral missed for l2 in Auton"}
@@ -667,7 +715,7 @@ function MatchScout(props: any) {
 
         <div className = 'radioRColumn'> 
           <div className = 'radioRow'>
-            <NumberInput
+            <NumberInput<FieldType>
               title={"A Coral Scored L1"}
               name={"auton_coral_scored_l1"}
               message={"Enter # coral scored for l1 in Auton"}
@@ -675,7 +723,7 @@ function MatchScout(props: any) {
               form={form}
             />
               
-            <NumberInput
+            <NumberInput<FieldType>
               title={"A Coral Missed L1"}
               name={"auton_coral_missed_l1"}
               message={"Enter # coral missed for l1 in Auton"}
@@ -687,7 +735,7 @@ function MatchScout(props: any) {
 
         <div className = 'radioRColumn'> 
           <div className = 'radioRow'>
-            <NumberInput
+            <NumberInput<FieldType>
               title={"A Algae Scored in Net"}
               name={"auton_algae_scored_net"}
               message={"Enter # of algae scored for net in Auton"}
@@ -695,7 +743,7 @@ function MatchScout(props: any) {
               form={form}
             />
               
-            <NumberInput
+            <NumberInput<FieldType>
               title={"A Algae Missed in Net"}
               name={"auton_algae_missed_net"}
               message={"Enter # of algae missed for net in Auton"}
@@ -707,7 +755,7 @@ function MatchScout(props: any) {
 
         <div className = 'radioRColumn'> 
           <div className = 'radioRow'>
-            <NumberInput
+            <NumberInput<FieldType>
               title={"A Algae Processor"}
               name={"auton_algae_scored_processor"}
               message={"Enter # of algae scored for processor in Auton"}
@@ -722,32 +770,20 @@ function MatchScout(props: any) {
   }
 
   function teleopMatch() {
-    type FieldType = {
-      teleop_coral_scored_l4: number,
-      teleop_coral_missed_l4: number,
-      teleop_coral_scored_l3: number,
-      teleop_coral_missed_l3: number,
-      teleop_coral_scored_l2: number,
-      teleop_coral_missed_l2: number,
-      teleop_coral_scored_l1: number,
-      teleop_coral_missed_l1: number,
-      teleop_algae_scored_net: number,
-      teleop_algae_missed_net: number,
-      teleop_algae_scored_processor: number,
-    };
+    type FieldType = Fields.TeleopMatch;
 
     return (
       <div>
         <div className = 'radioRColumn'> 
           <div className = 'radioRow'>
-            <NumberInput
+            <NumberInput<FieldType>
               title={"T Coral Scored L4"}
               name={"teleop_coral_scored_l4"}
               message={"Enter # of coral scored for l4 in Teleop"}
               form={form}
             />
               
-            <NumberInput
+            <NumberInput<FieldType>
               title={"T Coral Missed L4"}
               name={"teleop_coral_missed_l4"}
               message={"Enter # of coral missed for l4 in Teleop"}
@@ -758,14 +794,14 @@ function MatchScout(props: any) {
             
         <div className = 'radioRColumn'> 
           <div className = 'radioRow'>
-            <NumberInput
+            <NumberInput<FieldType>
               title={"T Coral Scored L3"}
               name={"teleop_coral_scored_l3"}
               message={"Enter # of coral scored for l3 in Teleop"}
               form={form}
             />
               
-            <NumberInput
+            <NumberInput<FieldType>
               title={"T Coral Missed L3"}
               name={"teleop_coral_missed_l3"}
               message={"Enter # of coral missed for l3 in Teleop"}
@@ -776,14 +812,14 @@ function MatchScout(props: any) {
         
         <div className = 'radioRColumn'> 
           <div className = 'radioRow'>
-            <NumberInput
+            <NumberInput<FieldType>
               title={"T Coral Scored L2"}
               name={"teleop_coral_scored_l2"}
               message={"Enter # of coral scored for l2 in Teleop"}
               form={form}
             />
               
-            <NumberInput
+            <NumberInput<FieldType>
               title={"T Coral Missed L2"}
               name={"teleop_coral_missed_l2"}
               message={"Enter # of coral missed for l2 in Teleop"}
@@ -794,14 +830,14 @@ function MatchScout(props: any) {
 
         <div className = 'radioRColumn'> 
           <div className = 'radioRow'>
-            <NumberInput
+            <NumberInput<FieldType>
               title={"T Coral Scored L1"}
               name={"teleop_coral_scored_l1"}
               message={"Enter # of coral scored for l1 in Teleop"}
               form={form}
             />
               
-            <NumberInput
+            <NumberInput<FieldType>
               title={"T Coral Missed L1"}
               name={"teleop_coral_missed_l1"}
               message={"Enter # of coral missed for l1 in Teleop"}
@@ -812,14 +848,14 @@ function MatchScout(props: any) {
 
         <div className = 'radioRColumn'> 
           <div className = 'radioRow'>
-            <NumberInput
+            <NumberInput<FieldType>
               title={"T Algae Scored in Net"}
               name={"teleop_algae_scored_net"}
               message={"Enter # of algae scored for net in Teleop"}
               form={form}
             />
               
-            <NumberInput
+            <NumberInput<FieldType>
               title={"T Algae Missed in Net"}
               name={"teleop_algae_missed_net"}
               message={"Enter # of algae missed for net in Teleop"}
@@ -830,7 +866,7 @@ function MatchScout(props: any) {
 
         <div className = 'radioRColumn'> 
           <div className = 'radioRow'>
-            <NumberInput
+            <NumberInput<FieldType>
               title={"T Algae Processor"}
               name={"teleop_algae_scored_processor"}
               message={"Enter # of algae scored for processor in Teleop"}
@@ -843,10 +879,7 @@ function MatchScout(props: any) {
   }
   
   function endgameMatch() {
-    type FieldType = {
-      endgame_climb_successful: boolean,
-      endgame_climb_time: number,
-    };
+    type FieldType = Fields.EndgameMatch;
     const endgame_coral_intake_capability = [
       { label: "Station", value: "Station" },
       { label: "Ground", value: "Ground" },
@@ -867,14 +900,14 @@ function MatchScout(props: any) {
     ];
     return (
       <>
-        <Select
+        <Select<FieldType>
           title={"Coral Intake Capability"}
           name={"endgame_coral_intake_capability"}
           message={"Enter coral intake capability"}
           options={endgame_coral_intake_capability}
         />
 
-        <Select
+        <Select<FieldType>
           title={"Algae Intake Capability"}
           name={"endgame_algae_intake_capability"}
           message={"Enter algae intake capability"}
@@ -889,14 +922,14 @@ function MatchScout(props: any) {
           }}/>
         </Form.Item>
 
-        <Select
+        <Select<FieldType>
           title={"Climb Type"}
           name={"endgame_climb_type"}
           message={"Enter climb type"}
           options={endgame_climb_type}
         />
 
-        <NumberInput
+        <NumberInput<FieldType>
           title={"Climb Time (Seconds)"}
           name={"endgame_climb_time"}
           message={"Enter climb time (seconds)"}
@@ -907,24 +940,8 @@ function MatchScout(props: any) {
       </>
   )}
 
-  function overall() {
-    type FieldType = {
-      overall_robot_died: boolean;
-      overall_defended_others: boolean;
-      overall_defended: string;
-      hoarded: boolean;
-      overall_was_defended: boolean;
-      overall_defended_by: string;
-      overall_num_penalties: number;
-      overall_match_penalty: string;
-      overall_tech_penalty: string;
-      overall_penalties_incurred: string;
-      overall_pushing: number;
-      overall_driver_skill: number;
-      overall_counter_defense: number;
-      overall_defense_quality: number;
-      overall_comments: string;
-    };
+  function overallMatch() {
+    type FieldType = Fields.OverallMatch;
 
     const opposingTeams = opposingTeamNum.map((team) => ({ label: team, value: team }));
 
@@ -956,7 +973,7 @@ function MatchScout(props: any) {
             display: defendedIsVisible ? 'inherit' : 'none' ,
           }}
         >
-          <Select
+          <Select<FieldType>
             title={"Defended"}
             name={"overall_defended"}
             required={defendedIsVisible}
@@ -965,7 +982,7 @@ function MatchScout(props: any) {
             multiple
           />
 
-          <NumberInput
+          <NumberInput<FieldType>
             title={"Defense Quality (1 - 4)"}
             name={"overall_defense_quality"}
             required={defendedIsVisible}
@@ -981,7 +998,7 @@ function MatchScout(props: any) {
             display: wasDefendedIsVisible ? 'inherit' : 'none' ,
           }}
         >
-          <Select
+          <Select<FieldType>
             title={"Defended By"}
             name={"overall_defended_by"}
             required={wasDefendedIsVisible}
@@ -990,7 +1007,7 @@ function MatchScout(props: any) {
             multiple
             shown={wasDefendedIsVisible}
           />
-          <NumberInput
+          <NumberInput<FieldType>
             title={<>Counter Defense<br />(1 - 4)</>}
             name={"overall_counter_defense"}
             required={wasDefendedIsVisible}
@@ -1002,7 +1019,7 @@ function MatchScout(props: any) {
         </div>
 
         <Flex justify='in-between'>
-          <NumberInput
+          <NumberInput<FieldType>
             title={"Pushing (1 - 4)"}
             name={"overall_pushing"}
             message={"Please input the pushing rating"}
@@ -1010,7 +1027,7 @@ function MatchScout(props: any) {
             max={4}
             form={form}
           />
-          <NumberInput
+          <NumberInput<FieldType>
             title={"Driver Skill (1 - 4)"}
             name={"overall_driver_skill"}
             message={"Please input the driver skill rating"}
@@ -1020,7 +1037,7 @@ function MatchScout(props: any) {
           />
         </Flex>
         <Flex justify='in-between'>
-          <NumberInput
+          <NumberInput<FieldType>
             title={"Major Penalties"}
             name={"overall_major_penalties"}
             message={"Enter # of major penalties"}
@@ -1028,7 +1045,7 @@ function MatchScout(props: any) {
             onChange={updatePenalties}
             form={form}
           />
-          <NumberInput
+          <NumberInput<FieldType>
             title={"Minor Penalties"}
             name={"overall_minor_penalties"}
             message={"Enter # of minor penalties"}
@@ -1061,7 +1078,7 @@ function MatchScout(props: any) {
     {
       key: '2',
       label: 'Auton',
-      children: AutonMatch(),
+      children: autonMatch(),
     },
     {
       key: '3',
@@ -1076,7 +1093,7 @@ function MatchScout(props: any) {
     {
       key: '5',
       label: 'Overall',
-      children: overall(),
+      children: overallMatch(),
     },
   ];
   return (

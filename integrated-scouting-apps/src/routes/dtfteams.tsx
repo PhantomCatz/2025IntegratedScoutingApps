@@ -350,7 +350,7 @@ function DTFTeams(props: any) {
       alliancePersistentData.push(data);
 
       let hasData = true;
-      if(teamMatches.length === 0) {
+      if(!teamMatches?.length) {
         hasData = false;
       }
 

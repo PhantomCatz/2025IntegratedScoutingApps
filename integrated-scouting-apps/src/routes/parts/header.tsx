@@ -4,7 +4,7 @@ import lightLogo from '../../public/images/logo.png';
 import darkLogo from '../../public/images/dark_logo.png';
 import '../../public/stylesheets/style.css';
 import '../../public/stylesheets/header.css';
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import {useLocalStorage, } from 'react-use';
 
 const DEFAULT_THEME = "dark";
@@ -52,10 +52,6 @@ function Header(props: any) {
 			back: lightBack,
 		},
 	};
-
-	useEffect(() => {
-		updateTheme("pink");
-	}, []);
 
 	function handleLogoClick() {
 		if (theme === 'random') {

@@ -1,10 +1,13 @@
 import '../../public/stylesheets/formItems.css';
 import React, { useState, useRef, useEffect, } from 'react';
-import { Tabs, Input, Form, Select as AntdSelect, Checkbox, InputNumber, Flex, Button, Radio} from 'antd';
+import { Input, Form, Select as AntdSelect, Checkbox, Flex, Button, Radio } from 'antd';
 
-type NumberInputType = {
+type StringMap<T> = Extract<keyof T, string>;
+type NoInfer<T> = [T][T extends any ? 0 : never];
+
+type NumberInputType<FieldType> = {
   title: any;
-  name: string;
+  name: StringMap<FieldType>;
   required?: boolean;
   message?: string;
   min?: number;
@@ -13,13 +16,13 @@ type NumberInputType = {
   onDecrease?: (e?: number) => void;
   onChange?: (e? : number) => void;
   form: any;
-  align?: string;
+  align?: "left" | "center" | "right";
   shown?: boolean;
   buttons?: boolean;
 };
-type SelectType = {
+type SelectType<FieldType> = {
   title: any;
-  name: string;
+  name: StringMap<FieldType>;
   required?: boolean;
   message?: string;
   options: any[];
@@ -29,7 +32,7 @@ type SelectType = {
   multiple?: boolean;
 }
 
-const NumberInput = React.memo(function <FieldType,>(props: NumberInputType) {
+function NumberInput<FieldType>(props: NumberInputType<NoInfer<FieldType>>) {
   const title = props.title;
   const name = props.name;
   const shown = props.shown ?? true;
@@ -88,12 +91,9 @@ const NumberInput = React.memo(function <FieldType,>(props: NumberInputType) {
         let updatedNumber = 0;
 
         await updateValue((prevForm : any) => {
-          const form = {...prevForm};
-          const prevVal : string = form[name] ?? "";
-
           const newVal : string = num.toString();
 
-          const newNumber : number = Math.max(Math.min(Number(newVal), max), min);
+          const newNumber : number = Math.max(Math.min(toNumber(newVal), max), min);
 
           updatedNumber = newNumber;
 
@@ -205,8 +205,8 @@ const NumberInput = React.memo(function <FieldType,>(props: NumberInputType) {
       </Form.Item>
     </Flex>
   );
-});
-const Select = React.memo(function <FieldType,>(props: SelectType) {
+}
+function Select<FieldType>(props: SelectType<FieldType>) {
   const title = props.title;
   const name = props.name;
   const required = props.required ?? true;
@@ -246,7 +246,7 @@ const Select = React.memo(function <FieldType,>(props: SelectType) {
       </Form.Item>
     </div>
   );
-});
+}
 
 function ord(char : string) {
   return char.charCodeAt(0);

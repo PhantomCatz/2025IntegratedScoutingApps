@@ -14,15 +14,15 @@ function isRoundNumberVisible(matchLevel? : string) {
 
 function getDivisionsList() {
 	return {
-		"Archimedes": "2024arc",
-		"Curie": "2024cur",
-		"Daly": "2024dal",
-		"Galileo": "2024gal",
-		"Hopper": "2024hop",
-		"Johnson": "2024joh",
-		"Milstein": "2024mil",
-		"Newton": "2024new",
-		"Einstein": "2024cmptx",
+		"Archimedes": "2025arc",
+		"Curie": "2025cur",
+		"Daly": "2025dal",
+		"Galileo": "2025gal",
+		"Hopper": "2025hop",
+		"Johnson": "2025joh",
+		"Milstein": "2025mil",
+		"Newton": "2025new",
+		"Einstein": "2025cmptx",
 	};
 }
 

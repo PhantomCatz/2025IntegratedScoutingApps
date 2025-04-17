@@ -21,7 +21,15 @@ if(!connectionData || !process.env.DB_DATABASE) {
 console.log("Using Database " + process.env.DB_DATABASE);
 
 let connPool = {
+	errorConnectionPool: {
+		query: async function(sqlQuery) {
+			console.log(`Did not run query '${sqlQuery}'`)
+			return {};
+		},
+		destroy: function() {},
+	},
 	getConnection: async function() {
+		try {
 		const mysql = require('mysql2/promise');
 		const pool = mysql.createPool(connectionData);
 
@@ -30,6 +38,11 @@ let connPool = {
 		connPool = pool;
 
 		return conn;
+		} catch (err) {
+			console.log("Error in creating connection pool:", err);
+
+			return connPool.errorConnection;
+		}
 	}
 };
 
@@ -96,7 +109,7 @@ async function getTeamInfo(queries) {
  
 	let result = {};
 
-	if(teams.length == 0) {
+	if(!teams?.length) {
 		console.log("Error: No teams queried");
 		return result;
 	}
@@ -111,7 +124,7 @@ async function getTeamInfo(queries) {
 
 	return result;
 }
-async function getTeamPitInfo(queries) {
+async function getTeamInfoSpecific(databaseName, queries) {
 	const team = queries.team;
 
 	if(!team) {
@@ -119,27 +132,20 @@ async function getTeamPitInfo(queries) {
 		return {};
 	}
 
-	const sqlQuery = "SELECT * FROM pit_data WHERE team_number=?";
+	const sqlQuery = `SELECT * FROM ${databaseName} WHERE team_number=?`;
 
-	const result = await requestDatabase(sqlQuery, team);
+	const result = await requestDatabase(sqlQuery, queries);
 
 	return result;
 }
+async function getTeamPitInfo(queries) {
+	return await getTeamInfoSpecific("pit_data", team)
+}
 async function getTeamStrategicInfo(queries) {
-	const team = queries.team;
-
-	let result = {};
-
-	if(!team) {
-		console.log("Error: bad team input: ", team);
-		return result;
-	}
-
-	const sqlQuery = "SELECT * FROM strategic_data WHERE team_number=?";
-
-	result = await requestDatabase(sqlQuery, team);
-
-	return result;
+	return await getTeamInfoSpecific("strategic_data", team)
+}
+async function getTeamWatchlistInfo(queries) {
+	return await getTeamInfoSpecific("watchlist_data", team)
 }
 
 // Please do not do SQL injection attack
@@ -152,8 +158,6 @@ async function submitData(data, table) {
 	let result = null;
 
 	try {
-		// const mysql = getMysql();
-		// const conn = await mysql.createConnection(connectionData);
 		const conn = await connPool.getConnection();
 
 		const [res, fields] = await conn.query(sqlQuery, values);
@@ -176,46 +180,15 @@ async function submitMatchData(data) {
 async function submitStrategicData(data) {
 	return await submitData(data, "strategic_data");
 }
-
-/*
-function getMysql() {
-	const mysql = require("mysql2/promise");
-
-	const errorConnection = {
-		query : function(...args) { return [null, null]; },
-		end: function(...args) { },
-	};
-
-	const res = {
-		createConnection : async function(connectionData) {
-			try {
-				const conn = await mysql.createConnection(connectionData);
-				return conn;
-			} catch (err) {
-				switch(err.code) {
-				case "ENOTFOUND":
-					console.log("Could not find database server. Check wifi connection.");
-					break;
-				default:
-					console.log("Error in mysql occurred: ", err);
-					break;
-				}
-
-				return errorConnection;
-			}
-		},
-	};
-
-	return res;
+async function submitWatchlistData(data) {
+	return await submitData(data, "watchlist_data");
 }
-*/
+
 function verifyConnection(connection) {
 	if(connection.state === "disconnected") {
 		throw new Error("Could not connect to server.");
 	}
 }
-
-
 
 module.exports = {
 	"requestDatabase" : requestDatabase,
@@ -223,7 +196,9 @@ module.exports = {
 	"getTeamsScouted" : getTeamsScouted,
 	"getTeamPitInfo" : getTeamPitInfo,
 	"getTeamStrategicInfo" : getTeamStrategicInfo,
+	"getTeamWatchlistInfo" : getTeamWatchlistInfo,
 	"submitPitData" : submitPitData,
 	"submitMatchData" : submitMatchData,
 	"submitStrategicData" : submitStrategicData,
+	"submitWatchlistData" : submitWatchlistData,
 };

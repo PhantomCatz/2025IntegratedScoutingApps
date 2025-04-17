@@ -1,13 +1,30 @@
 import '../public/stylesheets/style.css';
 import '../public/stylesheets/strategic.css';
 import { useEffect, useState} from 'react';
-import { Tabs, Input, Form, InputNumber, Button, Flex, Table } from 'antd';
+import { Tabs, Input, Form, Button, Flex, Table } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
-import { saveAs } from 'file-saver';
 import Header from "./parts/header";
-import QrCode from "./parts/qrCodeViewer";
-import { isRoundNumberVisible, isInPlayoffs, getTeamsPlaying, getIndexNumber, getDivisionsList } from './utils/tbaRequest';
+import QrCode, { escapeUnicode, } from "./parts/qrCodeViewer";
+import { isInPlayoffs, getTeamsPlaying, getIndexNumber, getDivisionsList } from './utils/tbaRequest';
 import { NumberInput, Select } from './parts/formItems';
+
+namespace Fields {
+  export type PreMatch = {
+      match_event: string;
+      scouter_initials: string;
+      match_level: string;
+      match_number: number;
+      robot_position: string;
+      red_alliance: string;
+      blue_alliance: string;
+      penalties: number;
+  };
+
+  export type Comment = {
+      comments: string;
+      team_rating: string;
+  };
+}
 
 const formDefaultValues = {
   "match_event": null,
@@ -16,22 +33,12 @@ const formDefaultValues = {
   "match_level": null,
   "match_number": 0,
   "robot_position": null,
+  "team_rating": null,
   "comments": null,
   "red_alliance": [],
   "blue_alliance": [],
   "penalties": 0,
 }
-//const noShowValues = {
-//  //"match_event": null,
-//  //"team_number": 0,
-//  //"scouter_initials": null,
-//  //"match_level": null,
-//  //"match_number": 0,
-//  //"robot_position": null,
-//  "comments": "",
-//  //"red_alliance": [],
-//  //"blue_alliance": [],
-//}
 
 function Strategic(props: any, text:any) {
   const DEFAULT_MATCH_EVENT = process.env.REACT_APP_EVENTNAME || "";
@@ -41,12 +48,10 @@ function Strategic(props: any, text:any) {
   }
 
   const [form] = Form.useForm();
-  const [formValue, setFormValue] = useState(formDefaultValues);
   const [tabNum, setTabNum] = useState("1");
   const [team_number, setTeamNum] = useState(0);
   const [teamsList, setTeamsList] = useState<string[]>([]);
   const [qrValue, setQrValue] = useState<any>();
-  const [shouldRetrySubmit, setShouldRetrySubmit] = useState(false);
   const [lastFormValue, setLastFormValue] = useState<any>(null);
   const [teamData, setTeamData] = useState<any>(null);
   const [inPlayoffs, setInPlayoffs] = useState(false);
@@ -94,26 +99,6 @@ function Strategic(props: any, text:any) {
   }, [team_number]);
 
   useEffect(() => {
-    const updateFields = [
-      "match_number",
-      "penalties",
-    ];
-    for(const field of updateFields) {
-      const element = document.getElementById(field);
-      if (element === undefined || element === null) {
-        continue;
-      }
-
-      try {
-        const value = (formValue as any)[field] ?? 0;
-        element.ariaValueNow = value.toString();
-        form.setFieldValue(field, value);
-      } catch (err) {
-        console.log(`field=`, field);
-      }
-    }
-  }, [formValue, form]);
-  useEffect(() => {
     updateNumbers();
   }, [match_event]);
   
@@ -148,15 +133,28 @@ function Strategic(props: any, text:any) {
     }
   }
   async function setNewStrategicScout(event: any) {
-    const body = {
+    const body : any = {
       "match_event": match_event,
       "team_number": team_number,
       "scouter_initials": event.scouter_initials.toLowerCase(),
       "match_level": event.match_level,
       "match_number": event.match_number,
       "robot_position": event.robot_position,
+      "team_rating": event.team_rating,
       "comments": event.comments,
     };
+    Object.entries(body)
+      .forEach((k) => {
+        const field = k[0];
+        const val = k[1];
+
+        const newVal = typeof val === "string" ?
+          escapeUnicode(val) :
+          val;
+
+        body[field] = newVal;
+      });
+
     tryFetch(body)
       .then((successful) => {
         if(successful) {
@@ -198,7 +196,6 @@ function Strategic(props: any, text:any) {
   }
   function calculateMatchLevel() {
     const matchLevel = form.getFieldValue('match_level');
-    const isVisible = isRoundNumberVisible(matchLevel);
 
     const inPlayoffs = isInPlayoffs(matchLevel);
 
@@ -210,7 +207,7 @@ function Strategic(props: any, text:any) {
     const scouter_initials = form.getFieldValue('scouter_initials');
     const match_number = form.getFieldValue('match_number');
     const match_level = form.getFieldValue('match_level');
-    const match_event = form.getFieldValue('match_level');
+    const match_event = form.getFieldValue('match_event');
     const robot_position = form.getFieldValue('robot_position');
 
 	form.resetFields();
@@ -252,16 +249,7 @@ function Strategic(props: any, text:any) {
   }
 
   function preMatch() {
-    type FieldType = {
-      scouter_initials: string;
-      teamnum: number;
-      match_level: string;
-      match_number: number;
-      round_number: number;
-      red_alliance: string;
-      blue_alliance: string;
-      penalties: number;
-    };
+    type FieldType = Fields.PreMatch;
     const matchEvents = [
       { label: `Default (${DEFAULT_MATCH_EVENT})`, value: DEFAULT_MATCH_EVENT },
     ];
@@ -306,7 +294,7 @@ function Strategic(props: any, text:any) {
       <div>
         <h2>Team: {team_number}</h2>
 
-        <Select
+        <Select<FieldType>
           title={"Match Event"}
           name={"match_event"}
           options={matchEvents}
@@ -344,7 +332,7 @@ function Strategic(props: any, text:any) {
           />
         </Form.Item>
         
-        <Select
+        <Select<FieldType>
           title={"Match Level"}
           name={"match_level"}
           options={rounds}
@@ -352,7 +340,7 @@ function Strategic(props: any, text:any) {
         />
 
         <div className={"playoff-alliances"} style={{ display: inPlayoffs && shouldShowAlliances ? 'inherit' : 'none' }}>
-          <Select
+          <Select<FieldType>
             title={"Red Alliance"}
             name={"red_alliance"}
             required={inPlayoffs && shouldShowAlliances}
@@ -361,7 +349,7 @@ function Strategic(props: any, text:any) {
             onChange={updateNumbers}
           />
           
-          <Select
+          <Select<FieldType>
             title={"Blue Alliance"}
             name={"blue_alliance"}
             required={inPlayoffs && shouldShowAlliances}
@@ -371,7 +359,7 @@ function Strategic(props: any, text:any) {
           />
         </div>
 
-        <NumberInput
+        <NumberInput<FieldType>
           title={"Match #"}
           name={"match_number"}
           message={"Enter match #"}
@@ -382,7 +370,7 @@ function Strategic(props: any, text:any) {
           align={"left"}
         />
         
-        <Select
+        <Select<FieldType>
           title={"Robot Position"}
           name={"robot_position"}
           message={"Please input the robot position"}
@@ -400,9 +388,7 @@ function Strategic(props: any, text:any) {
 
   function comment() {
     let prevComments = null;
-    type FieldType = {
-      comments: string;
-    };
+    type FieldType = Fields.Comment;
 
     if(!teamData) {
       prevComments =  <p style={{fontSize:"300%"}}>This team has not been scouted yet.</p>;
@@ -447,10 +433,24 @@ function Strategic(props: any, text:any) {
     return (
       <div>
         {prevComments}
+
         <h2>Comments</h2>
         <Form.Item<FieldType> name="comments" rules={[{ required: true, message: "Please input some comments!" }]}>
           <TextArea style={{ verticalAlign: 'center' }} className='strategic-input' />
         </Form.Item>
+
+        <h2>Team Rating</h2>
+        <Form.Item<FieldType>
+          name="team_rating"
+          rules={[
+            { required: true, message: 'Please input the team rating' },
+            ]}
+        >
+          <Input 
+            className="input"
+          />
+        </Form.Item>
+
         <h2 style={{ display: isLoading ? 'inherit' : 'none' }}>Submitting data...</h2>
         <Flex justify='in-between' style={{ paddingBottom : '5%' }}>
           <Button onClick={() => { setTabNum("1"); }} className='tabbutton'>Back</Button>
@@ -472,16 +472,13 @@ function Strategic(props: any, text:any) {
     },
   ];
 
-  if(shouldRetrySubmit) {
-    runFormFinish();
-  }
-
   return (
     <div>
       <meta name="viewport" content="maximum-scale=1.0" />
       <Header name={"Strategic Scout"} back="#scoutingapp/" />
       <Form
         form={form}
+        initialValues={formDefaultValues}
         onFinish={runFormFinish}
         onFinishFailed={({values, errorFields, outOfDate}) => {
           console.log("values=", values);

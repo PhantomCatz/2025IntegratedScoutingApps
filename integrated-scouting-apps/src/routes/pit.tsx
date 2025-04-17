@@ -1,15 +1,45 @@
 import '../public/stylesheets/style.css';
 import '../public/stylesheets/pit.css';
 import '../public/stylesheets/match.css';
-import { Checkbox, Form, Input, InputNumber, Upload, } from 'antd';
+import { Checkbox, Form, Input, } from 'antd';
 import { useRef } from 'react';
-import { Button } from 'antd';
 import React, { useState, useEffect } from 'react';
 import TextArea from 'antd/es/input/TextArea';
 import Header from './parts/header';
-import QrCode from './parts/qrCodeViewer';
+import QrCode, { escapeUnicode, } from './parts/qrCodeViewer';
 import { getTeamsNotScouted, } from './utils/tbaRequest';
 import { NumberInput, Select } from './parts/formItems';
+
+namespace Fields {
+    export type Pit = {
+      scouter_initials: string;
+      team_number: number;
+      drive_train_type: string;
+      robot_weight: number;
+      motor_type: string;
+      number_of_motors: number;
+      wheel_type: string;
+      intake_width: string;
+      coral_intake_capability: string;
+      coral_scoring_l1: boolean;
+      coral_scoring_l2: boolean;
+      coral_scoring_l3: boolean;
+      coral_scoring_l4: boolean;
+      can_remove_algae: boolean;
+      algae_intake_capability: string;
+      algae_scoring_capability: string;
+      score_aiming_coral: string,
+      score_aiming_algae: string,
+      aiming_description: string,
+      climbing_capability: string;
+      pit_organization: number;
+      team_safety: number;
+      team_workmanship: number;
+      gracious_professionalism: number;
+      robot_images: string;
+      comments: string;
+    };
+}
 
 const formDefaultValues = {
   "match_event": null,
@@ -49,7 +79,6 @@ function PitScout(props: any) {
   const [isLoading, setLoading] = useState(false);
   const [qrValue, setQrValue] = useState<any>();
   const [robotImageURI, setRobotImageURI] = useState<string[]>([]);
-  const [robotImages, setRobotImages] = useState<any>();
   const robotImageInput = useRef(null);
 
   useEffect(() => {
@@ -108,7 +137,7 @@ function PitScout(props: any) {
   }, [match_event]);
 
   async function submitData(event: any) {
-    const body = {
+    const body : any = {
       "match_event": match_event,
       "team_number": event.team_number,
       "scouter_initials": event.scouter_initials.toLowerCase(),
@@ -136,6 +165,18 @@ function PitScout(props: any) {
       "gracious_professionalism": event.gracious_professionalism,
       "comments": event.comments,
     };
+    Object.entries(body)
+      .forEach((k) => {
+        const field = k[0];
+        const val = k[1];
+
+        const newVal = typeof val === "string" ?
+          escapeUnicode(val) :
+          val;
+
+        body[field] = newVal;
+      });
+
     tryFetch(body)
       .then((successful) => {
         if(successful) {
@@ -179,34 +220,7 @@ function PitScout(props: any) {
     }
   }
   function Pit() {
-    type FieldType = {
-      scouter_initials: string;
-      team_number: number;
-      drive_train_type: string;
-      robot_weight: number;
-      motor_type: string;
-      number_of_motors: number;
-      wheel_type: string;
-      intake_width: string;
-      coral_intake_capability: string;
-      coral_scoring_l1: boolean;
-      coral_scoring_l2: boolean;
-      coral_scoring_l3: boolean;
-      coral_scoring_l4: boolean;
-      can_remove_algae: boolean;
-      algae_intake_capability: string;
-      algae_scoring_capability: string;
-      score_aiming_coral: string,
-      score_aiming_algae: string,
-      aiming_description: string,
-      climbing_capability: string;
-      pit_organization: number;
-      team_safety: number;
-      team_workmanship: number;
-      gracious_professionalism: number;
-      robot_images: string;
-      comments: string;
-    };
+    type FieldType = Fields.Pit;
     const drive_train_options = [
       { label: "Tank", value: "Tank" },
       { label: "Swerve", value: "Swerve" },
@@ -297,7 +311,7 @@ function PitScout(props: any) {
             }}
           />
         </Form.Item>
-        <NumberInput
+        <NumberInput<FieldType>
           title={"Team #"}
           name={"team_number"}
           message={"Please input the team number"}
@@ -308,7 +322,7 @@ function PitScout(props: any) {
           align={"left"}
         />
         
-        <NumberInput
+        <NumberInput<FieldType>
           title={"Robot Weight (lbs)"}
           name={"robot_weight"}
           message={"Please input the robot weight in lbs"}
@@ -318,19 +332,19 @@ function PitScout(props: any) {
           align={"left"}
         />
 
-        <Select
+        <Select<FieldType>
           title={"Drive Train Type"}
           name={"drive_train_type"}
           message={"Please input the drive train type"}
           options={drive_train_options}
         />
-        <Select
+        <Select<FieldType>
           title={"Motor Type"}
           name={"motor_type"}
           message={"Please input the motor type"}
           options={motor_type_options}
         />
-        <NumberInput
+        <NumberInput<FieldType>
           title={"# of Motors"}
           name={"number_of_motors"}
           message={"Please input the number of motors"}
@@ -338,19 +352,19 @@ function PitScout(props: any) {
           form={form}
           align={"left"}
         />
-        <Select
+        <Select<FieldType>
           title={"Wheel Type"}
           name={"wheel_type"}
           message={"Please input the wheel type"}
           options={wheel_type_options}
         />
-        <Select
+        <Select<FieldType>
           title={"Coral Intake Type"}
           name={"coral_intake_capability"}
           message={"Please input the intake type"}
           options={coral_intake_capability_options}
         />
-        <Select
+        <Select<FieldType>
           title={"Intake Width"}
           name={"intake_width"}
           message={"Please input the intake width"}
@@ -377,25 +391,25 @@ function PitScout(props: any) {
         <Form.Item<FieldType> valuePropName="checked" name="can_remove_algae">
           <Checkbox className='input_checkbox' />
         </Form.Item>
-        <Select
+        <Select<FieldType>
           title={"Algae Intake Capability"}
           name={"algae_intake_capability"}
           message={"Please input the algae intake capability"}
           options={algae_intake_capability_options}
         />
-        <Select
+        <Select<FieldType>
           title={"Algae Scoring Capability"}
           name={"algae_scoring_capability"}
           message={'Please input the algae scoring capability'}
           options={algae_scoring_capability_options}
         />
-        <Select
+        <Select<FieldType>
           title={"Coral Score Aiming"}
           name={"score_aiming_coral"}
           message={"Please input the coral score aiming"}
           options={score_aiming_coral_options}
         />
-        <Select
+        <Select<FieldType>
           title={"Algae Score Aiming"}
           name={"score_aiming_algae"}
           message={"Please input the algae score aiming"}
@@ -411,14 +425,14 @@ function PitScout(props: any) {
          <TextArea style={{ verticalAlign: 'center' }} className='textbox_input' />
        </Form.Item>
 
-        <Select
+        <Select<FieldType>
           title={"Climbing Capability"}
           name={"climbing_capability"}
           message={"Please input the climbing capability"}
           options={climbing_capability_options}
         />
 
-        <NumberInput
+        <NumberInput<FieldType>
           title={"Pit Organization(0-4)"}
           name={"pit_organization"}
           message={"Please input pit organization rating"}
@@ -428,7 +442,7 @@ function PitScout(props: any) {
           align={"left"}
         />
 
-        <NumberInput
+        <NumberInput<FieldType>
           title={"Team Safety(0-4)"}
           name={"team_safety"}
           message={"Please input team safety rating"}
@@ -438,7 +452,7 @@ function PitScout(props: any) {
           align={"left"}
         />
 
-        <NumberInput
+        <NumberInput<FieldType>
           title={"Team Workmanship(0-4)"}
           name={"team_workmanship"}
           message={"Please input team workmanship rating"}
@@ -448,7 +462,7 @@ function PitScout(props: any) {
           align={"left"}
         />
 
-        <NumberInput
+        <NumberInput<FieldType>
           title={"Gracious Professionalism(0-4)"}
           name={"gracious_professionalism"}
           message={"Please input GP rating"}
