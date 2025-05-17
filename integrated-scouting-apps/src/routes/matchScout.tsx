@@ -4,11 +4,11 @@ import { useEffect, useState } from 'react';
 import { Tabs, Input, Form, Checkbox, Flex, Button } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import { Footer } from 'antd/es/layout/layout';
-import Header from "./parts/header";
-import QrCode, {escapeUnicode, } from './parts/qrCodeViewer';
-import {isInPlayoffs, getTeamsPlaying, getIndexNumber, getAllianceOffset, getDivisionsList, getAllianceTags } from './utils/tbaRequest';
+import Header from '../parts/header';
+import QrCode, {escapeUnicode, } from '../parts/qrCodeViewer';
+import {isInPlayoffs, getTeamsPlaying, getIndexNumber, getAllianceOffset, getDivisionsList, getAllianceTags } from '../utils/tbaRequest';
 import type { TabsProps, } from "antd";
-import { NumberInput, Select } from './parts/formItems';
+import { NumberInput, Select } from '../parts/formItems';
 
 namespace Fields {
     export type PreMatch = {
@@ -218,7 +218,7 @@ function MatchScout(props: any) {
   const [lastFormValue, setLastFormValue] = useState<any>(null);
   const [inPlayoffs, setInPlayoffs] = useState(false);
   const [robot_appeared, setRobot_appeared] = useState(true);
-  const [climbSuccessful, setClimbSuccessful] = useState(false);
+  const [climb_successful, setClimbSuccessful] = useState(false);
   const [shouldShowAlliances, setShouldShowAlliances] = useState(false);
   const [match_event, setMatchEvent] = useState<string>(DEFAULT_MATCH_EVENT);
   const [allianceTags, setAllianceTags] = useState(() => getAllianceTags(match_event));
@@ -261,7 +261,7 @@ function MatchScout(props: any) {
     setAllianceTags(getAllianceTags(match_event));
   }, [match_event]);
 
-  async function setNewMatchScout(event: any) {
+  function setNewMatchScout(event: any) {
     if (team_number === 0) {
       window.alert("Team number is 0, please check in Pre.");
       return;
@@ -333,6 +333,7 @@ function MatchScout(props: any) {
         body[field] = newVal;
       });
 
+    // Do not block
     tryFetch(body)
       .then((successful) => {
         if(successful) {
@@ -381,24 +382,16 @@ function MatchScout(props: any) {
       return;
     }
 
-    if(!event) {
-      event = lastFormValue;
-    } else {
-      setLastFormValue(event);
-    }
-
     setLoading(true);
 
     try {
       await setNewMatchScout(event);
+
       const scouter_initials = form.getFieldValue("scouter_initials");
       const match_number = form.getFieldValue("match_number");
       const match_event = form.getFieldValue("match_event");
       const match_level = form.getFieldValue("match_level");
       const robot_position = form.getFieldValue("robot_position");
-
-      setWasDefendedIsVisible(false);
-      setDefendedIsVisible(false);
 
       form.resetFields();
       form.setFieldValue("match_event", match_event);
@@ -406,10 +399,12 @@ function MatchScout(props: any) {
       form.setFieldValue("match_level", match_level);
       form.setFieldValue("match_number", Number(match_number) + 1);
       form.setFieldValue("robot_position", robot_position);
-      setRobot_appeared(true);
 
-      await calculateMatchLevel();
-      await updateTeamNumber();
+      setRobot_appeared(true);
+      setWasDefendedIsVisible(false);
+      setDefendedIsVisible(false);
+
+      await updateNumbers();
     }
     catch (err) {
       console.log(`err=`, err);
@@ -444,8 +439,8 @@ function MatchScout(props: any) {
       } else {
         setTeam_number(0);
       }
-
     } catch (err) {
+
       console.error("Failed to request TBA data when updating team number", err);
     }
   }
@@ -503,7 +498,7 @@ function MatchScout(props: any) {
     const playoff_alliances = allianceTags;
 
     return (
-      <div>
+      <>
         <h2>Team: {team_number}</h2>
 
         <Select<FieldType>
@@ -511,11 +506,8 @@ function MatchScout(props: any) {
           name={"match_event"}
           options={matchEvents}
           onChange={async (e? : string) => {
-            console.log(`e=`, e);
             if(e) {
               await setMatchEvent(e);
-            } else {
-
             }
           }}
         />
@@ -615,32 +607,32 @@ function MatchScout(props: any) {
           align={"left"}
         />
 
-       <Button
-         className={"noShowButton"}
-         onMouseDown={async () => {
-           const confirmed = window.confirm("Are you sure that this robot did not appear?");
+        <Button
+          className={"noShowButton"}
+          onMouseDown={async () => {
+            const confirmed = window.confirm("Are you sure that this robot did not appear?");
 
-           if(!confirmed) {
-             return;
-            }
+            if(!confirmed) {
+              return;
+             }
 
-           const values = {...noShowValues};
+            const values = {...noShowValues};
 
-           setTabNum("1");
-           await sleep(100);
-           setTabNum("2");
-           await sleep(100);
-           setTabNum("3");
-           await sleep(100);
-           setTabNum("4");
-           await sleep(100);
-           setTabNum("5");
-           form.setFieldsValue(values);
-           setRobot_appeared(false);
-         }}
-       >No Show</Button>
+            setTabNum("1");
+            await sleep(100);
+            setTabNum("2");
+            await sleep(100);
+            setTabNum("3");
+            await sleep(100);
+            setTabNum("4");
+            await sleep(100);
+            setTabNum("5");
+            form.setFieldsValue(values);
+            setRobot_appeared(false);
+          }}
+        >No Show</Button>
         
-      </div>
+      </>
     );
   }
   
@@ -934,7 +926,7 @@ function MatchScout(props: any) {
           name={"endgame_climb_time"}
           message={"Enter climb time (seconds)"}
           form={form}
-          min={climbSuccessful ? 1 : 0}
+          min={climb_successful ? 1 : 0}
           align={"left"}
         />
       </>

@@ -1,6 +1,6 @@
 import { Input, InputNumber, Tabs, } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
-import '../../public/stylesheets/pitLookup.css';
+import '../public/stylesheets/pitLookup.css';
 
 const IMAGE_DELIMITER = "$";
 

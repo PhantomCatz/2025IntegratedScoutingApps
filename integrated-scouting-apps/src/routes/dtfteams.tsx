@@ -4,10 +4,10 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Checkbox, Flex, Input, Tabs } from "antd";
 import TextArea from 'antd/es/input/TextArea';
-import Header from "./parts/header";
-import ChartComponent from "./parts/chart"; 
-import PitTabs from "./parts/pitTabs"; 
-import StrategicTabs from './parts/strategicTabs';
+import Header from '../parts/header';
+import ChartComponent from '../parts/chart'; 
+import PitTabs from '../parts/pitTabs'; 
+import StrategicTabs from '../parts/strategicTabs';
 
 const NUM_ALLIANCES = 2;
 const TEAMS_PER_ALLIANCE = 3;

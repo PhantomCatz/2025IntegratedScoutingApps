@@ -1,4 +1,4 @@
-import '../../public/stylesheets/formItems.css';
+import '../public/stylesheets/formItems.css';
 import React, { useState, useRef, useEffect, } from 'react';
 import { Input, Form, Select as AntdSelect, Checkbox, Flex, Button, Radio } from 'antd';
 

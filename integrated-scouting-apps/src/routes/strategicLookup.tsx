@@ -2,10 +2,10 @@ import '../public/stylesheets/style.css';
 import '../public/stylesheets/strategic.css';
 import { useEffect, useState } from 'react';
 import { InputNumber, Tabs } from 'antd';
-import Header from "./parts/header";
-import { getAllTeams, getDivisionsList } from './utils/tbaRequest';
-import StrategicTabs from './parts/strategicTabs';
-import { Select } from './parts/formItems';
+import Header from '../parts/header';
+import { getAllTeams, getDivisionsList } from '../utils/tbaRequest';
+import StrategicTabs from '../parts/strategicTabs';
+import { Select } from '../parts/formItems';
 
 function TeamData(props: any) {
   const DEFAULT_MATCH_EVENT = process.env.REACT_APP_EVENTNAME || "";

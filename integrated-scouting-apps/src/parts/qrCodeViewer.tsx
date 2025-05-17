@@ -1,5 +1,5 @@
-import '../../public/stylesheets/style.css';
-import '../../public/stylesheets/qrcode.css';
+import '../public/stylesheets/style.css';
+import '../public/stylesheets/qrcode.css';
 
 import {QRCode as AntQr} from 'antd';
 import {useState, useEffect} from 'react';

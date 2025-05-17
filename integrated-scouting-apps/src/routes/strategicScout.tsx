@@ -3,10 +3,10 @@ import '../public/stylesheets/strategic.css';
 import { useEffect, useState} from 'react';
 import { Tabs, Input, Form, Button, Flex, Table } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
-import Header from "./parts/header";
-import QrCode, { escapeUnicode, } from "./parts/qrCodeViewer";
-import { isInPlayoffs, getTeamsPlaying, getIndexNumber, getDivisionsList } from './utils/tbaRequest';
-import { NumberInput, Select } from './parts/formItems';
+import Header from '../parts/header';
+import QrCode, { escapeUnicode, } from '../parts/qrCodeViewer';
+import { isInPlayoffs, getTeamsPlaying, getIndexNumber, getDivisionsList } from '../utils/tbaRequest';
+import { NumberInput, Select } from '../parts/formItems';
 
 namespace Fields {
   export type PreMatch = {

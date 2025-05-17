@@ -4,7 +4,7 @@ import '../public/stylesheets/match.css';
 import { Flex, Form, Input, InputNumber, Select, Tabs, TabsProps } from 'antd';
 import { useParams } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
-import Header from './parts/header'
+import Header from '../parts/header'
 
 function WatchlistUpdate(props: any) {
 

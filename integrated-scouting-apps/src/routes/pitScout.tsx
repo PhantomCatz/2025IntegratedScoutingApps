@@ -5,10 +5,10 @@ import { Checkbox, Form, Input, } from 'antd';
 import { useRef } from 'react';
 import React, { useState, useEffect } from 'react';
 import TextArea from 'antd/es/input/TextArea';
-import Header from './parts/header';
-import QrCode, { escapeUnicode, } from './parts/qrCodeViewer';
-import { getTeamsNotScouted, } from './utils/tbaRequest';
-import { NumberInput, Select } from './parts/formItems';
+import Header from '../parts/header';
+import QrCode, { escapeUnicode, } from '../parts/qrCodeViewer';
+import { getTeamsNotScouted, } from '../utils/tbaRequest';
+import { NumberInput, Select } from '../parts/formItems';
 
 namespace Fields {
     export type Pit = {

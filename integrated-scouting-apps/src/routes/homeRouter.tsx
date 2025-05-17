@@ -1,7 +1,7 @@
 import '../public/stylesheets/style.css';
 import { Button } from 'antd';
 import { useEffect } from 'react';
-import Header from "./parts/header";
+import Header from '../parts/header';
 
 function HomePage(props: any) {
   useEffect(() => { document.title = props.title; return () => { } }, [props.title]);

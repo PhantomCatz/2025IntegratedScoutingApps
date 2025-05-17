@@ -1,9 +1,9 @@
-import lightBack from '../../public/images/back.png';
-import darkBack from '../../public/images/dark_back.png';
-import lightLogo from '../../public/images/logo.png';
-import darkLogo from '../../public/images/dark_logo.png';
-import '../../public/stylesheets/style.css';
-import '../../public/stylesheets/header.css';
+import lightBack from '../public/images/back.png';
+import darkBack from '../public/images/dark_back.png';
+import lightLogo from '../public/images/logo.png';
+import darkLogo from '../public/images/dark_logo.png';
+import '../public/stylesheets/style.css';
+import '../public/stylesheets/header.css';
 import React, { useEffect } from 'react';
 import {useLocalStorage, } from 'react-use';
 
