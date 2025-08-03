@@ -1,8 +1,7 @@
 .submitButton {
 	background-color: var(--pc-blue) !important;
-	font-size: 60px !important;
 	border: 4px solid var(--font-color) !important;
-	border-radius: 25px !important;
+	border-radius: 5px !important;
 	padding: 15px 25px !important;
 	color: var(--font-color) !important;
 	margin: auto;
@@ -27,12 +26,11 @@
 .pit-comments {
     width: 100%;
     min-width: 100%;
-    height: 1000px !important;
-    min-height: 1000px !important;
+    height: 200px !important;
+    min-height: 200px !important;
     border: 4px solid var(--font-color) !important;
     border-radius: 25px;
     background-color: #32A7DC;
-    font-size: 500% !important;
     font-family: Figtree !important;
     font-weight: bold;
     color: var(--font-color) !important;

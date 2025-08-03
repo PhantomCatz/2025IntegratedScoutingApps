@@ -1,5 +1,5 @@
-const tbaData = require("./tbaData.json");
-const tbaTeams = require("./tbaTeams.json");
+import tbaData from "./tbaData.json";
+import tbaTeams from "./tbaTeams.json";
 
 function isInPlayoffs(matchLevel? : string) {
 	return matchLevel !== "Qualifications" && matchLevel ?
@@ -44,7 +44,7 @@ async function getAllTeams(matchEvent : string) {
 }
 async function getTeamsNotScouted(eventName : string) {
 	try {
-		let fetchLink = process.env.REACT_APP_SERVER_ADDRESS;
+		let fetchLink = import.meta.env.VITE_SERVER_ADDRESS;
 
 		if(!fetchLink) {
 			console.error("Could not get fetch link. Check .env");
@@ -273,7 +273,7 @@ function request(query : string) {
 	const response = fetch('https://www.thebluealliance.com/api/v3/' + query, {
 		method: "GET",
 		headers: {
-			'X-TBA-Auth-Key': process.env.REACT_APP_TBA_AUTH_KEY as string,
+			'X-TBA-Auth-Key': import.meta.env.VITE_TBA_AUTH_KEY as string,
 		}
 	});
 	return response;

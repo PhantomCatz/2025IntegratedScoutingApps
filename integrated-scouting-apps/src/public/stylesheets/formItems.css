@@ -1,12 +1,11 @@
 .input {
 	width: 100% !important;
 	min-width: 100% !important;
-	/*height: 120px !important;*/
+	height: 30px !important;
 	min-height: 120px !important;
 	border: 4px solid var(--font-color) !important;
 	border-radius: 25px !important;
 	background-color: transparent !important;
-	font-size: 500% !important;
 	font-weight: bold !important;
 	color: var(--font-color) !important;
 	text-align: center !important;
@@ -22,7 +21,7 @@
 	font-weight: bold !important;
 }
 .changeButton__increment {
-	height: 120px!important;
+	height: 30px !important;
 	background-color: transparent !important;
 	color: var(--font-color) !important;
 	font-size: 48px !important;

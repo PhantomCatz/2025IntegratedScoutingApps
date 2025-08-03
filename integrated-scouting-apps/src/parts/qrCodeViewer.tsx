@@ -15,6 +15,7 @@ function QrCode(props : any) {
 		if(!qrValue) {
 			return;
 		}
+		// Scroll to QR when value
 		setTimeout(() => {
 			try {
 				(window as any).scrollByPages(100);
@@ -114,8 +115,22 @@ function QrCode(props : any) {
 	</div>);
 }
 
-function escapeUnicode(str: string) {
-	return [...(str as any)].map(c => /^[\x00-\x7F]$/.test(c) ? c : c.split("").map((a: any) => "\\u" + a.charCodeAt().toString(16).padStart(4, "0")).join("")).join("");
+function escapeUnicode(str: string) : string {
+	return [...(str as any)]
+		.map(
+			c => /^[\x00-\x7F]$/
+				.test(c) ?
+					c :
+					c
+						.split("")
+						.map((a: any) => 
+							 "\\u" + a
+								.charCodeAt()
+								.toString(16)
+								.padStart(4, "0")
+						).join("")
+			)
+		.join("");
 }
 
 export default QrCode;

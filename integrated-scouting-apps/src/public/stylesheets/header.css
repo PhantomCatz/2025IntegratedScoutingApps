@@ -1,5 +1,4 @@
 .header {
-	font-size: 50px;
 	vertical-align: top;
 	display: flex;
 }
@@ -13,6 +12,5 @@
 }
 .header .pageTitle {
 	margin: auto;
-	font-size: 80px;
 	text-align: center;
 }

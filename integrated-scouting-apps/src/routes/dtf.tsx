@@ -1,10 +1,8 @@
 import '../public/stylesheets/dtf.css';
 import { useEffect } from 'react';
 import { Input, Form, InputNumber } from 'antd';
+import { NUM_ALLIANCES, TEAMS_PER_ALLIANCE, } from '../utils/utils';
 import Header from '../parts/header';
-
-const NUM_ALLIANCES = 2;
-const TEAMS_PER_ALLIANCE = 3;
 
 function DTF(props: any) {
   const [form] = Form.useForm();

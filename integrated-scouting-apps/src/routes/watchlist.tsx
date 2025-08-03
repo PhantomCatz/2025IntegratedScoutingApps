@@ -27,7 +27,7 @@ function Watchlist(props: any) {
         },
       };
       console.log(requestBody)
-      await fetch(process.env.REACT_APP_WATCHLIST_SEND_URL as string, {
+      await fetch(import.meta.env.VITE_WATCHLIST_SEND_URL as string, {
         method: "POST",
         body: JSON.stringify(requestBody),
         headers: {

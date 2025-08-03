@@ -1,6 +1,6 @@
 import '../public/stylesheets/style.css';
 import '../public/stylesheets/pit.css';
-import '../public/stylesheets/match.css';
+// import '../public/stylesheets/match.css';
 import { Checkbox, Form, Input, } from 'antd';
 import { useRef } from 'react';
 import React, { useState, useEffect } from 'react';
@@ -73,7 +73,7 @@ const formDefaultValues = {
 const IMAGE_DELIMITER = "$";
 
 function PitScout(props: any) {
-  const match_event = process.env.REACT_APP_EVENTNAME || "";
+  const match_event = import.meta.env.VITE_EVENTNAME || "";
   const [form] = Form.useForm();
   const [formValue, setFormValue] = useState(formDefaultValues);
   const [isLoading, setLoading] = useState(false);
@@ -189,7 +189,7 @@ function PitScout(props: any) {
     setQrValue(body);
   }
   async function tryFetch(body : any) {
-    let fetchLink = process.env.REACT_APP_SERVER_ADDRESS;
+    let fetchLink = process.env.VITE_SERVER_ADDRESS;
 
     if(!fetchLink) {
       console.error("Could not get fetch link; Check .env");

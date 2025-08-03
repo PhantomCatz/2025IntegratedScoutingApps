@@ -22,7 +22,7 @@ import { HashRouter, Routes, Route } from 'react-router-dom';
 const rootElement = document.getElementById('root') as HTMLElement;
 const root = ReactDOM.createRoot(rootElement);
 
-// Debounce alerting because React runs it twice and for less annoyance
+// Debounce alerting for less annoyance
 window.alert = (function() {
   const alert = globalThis.window.alert;
   let id : any;
@@ -105,3 +105,5 @@ window.addEventListener("error", (event) => {
 window.addEventListener("unhandledrejection", (event) => {
   window.alert(event);
 });
+
+console.log(`hi=`);

@@ -17,7 +17,7 @@ function Picklist(props: any) {
         setLoading(true);
         const teams: { [key: string]: any } = {};
         let kv = [];
-        const response = await fetch(process.env.REACT_APP_PICKLIST_URL as string);
+        const response = await fetch(import.meta.env.VITE_PICKLIST_URL as string);
         const data = await response.json();
         for (const team in data) {
           if (!teams[data[team].team_number]) {

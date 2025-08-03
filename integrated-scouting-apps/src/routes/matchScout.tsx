@@ -199,7 +199,7 @@ const noShowValues = {
 };
 
 function MatchScout(props: any) {
-  const DEFAULT_MATCH_EVENT = process.env.REACT_APP_EVENTNAME || "";
+  const DEFAULT_MATCH_EVENT = import.meta.env.VITE_EVENTNAME || "";
 
   if(DEFAULT_MATCH_EVENT === "") {
     console.error("Could not get match event. Check .env");
@@ -346,7 +346,7 @@ function MatchScout(props: any) {
     setQrValue(body);
   }
   async function tryFetch(body : any) {
-    let fetchLink = process.env.REACT_APP_SERVER_ADDRESS;
+    let fetchLink = process.env.VITE_SERVER_ADDRESS;
 
     if(!fetchLink) {
       console.error("Could not get fetch link; Check .env");
@@ -424,6 +424,11 @@ function MatchScout(props: any) {
 
       const teams : any = await getTeamsPlaying(match_event, matchLevel, matchNumber, allianceNumber1, allianceNumber2);
 
+      if(!teams) {
+        console.log("Failed to get teams playing");
+        return;
+      }
+
       if(teams.shouldShowAlliances) {
         setShouldShowAlliances(true);
       } else {
@@ -440,7 +445,6 @@ function MatchScout(props: any) {
         setTeam_number(0);
       }
     } catch (err) {
-
       console.error("Failed to request TBA data when updating team number", err);
     }
   }
@@ -614,7 +618,7 @@ function MatchScout(props: any) {
 
             if(!confirmed) {
               return;
-             }
+            }
 
             const values = {...noShowValues};
 

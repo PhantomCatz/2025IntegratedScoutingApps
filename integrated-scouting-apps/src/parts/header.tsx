@@ -113,3 +113,25 @@ function getRandomHex() {
 }
 
 export default Header;
+
+/*
+[localStorage.background, localStorage.fontColor]
+Array [ '"#F6C586"', '"#357856"' ]
+
+[localStorage.background, localStorage.fontColor]
+Array [ '"#460372"', '"#70D880"' ]
+
+[localStorage.background, localStorage.fontColor]
+Array [ '"#350009"', '"#F76E46"' ]
+
+[localStorage.background, localStorage.fontColor]
+Array [ '"#29595C"', '"#BCE6BD"' ]
+
+[localStorage.background, localStorage.fontColor]
+Array [ '"#1E0F09"', '"#DE607D"' ]
+
+[localStorage.background, localStorage.fontColor]
+Array [ '"#0B7642"', '"#6EB907"' ]
+
+​
+*/
