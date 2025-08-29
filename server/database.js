@@ -1,27 +1,30 @@
-require("dotenv").config()
+import dotenv from 'dotenv';
+import mysql from 'mysql2/promise';
+
+dotenv.config();
 
 const defaultValue = {"err" : "Failed to resolve request."};
 const connectionData = {
 	"user" : process.env.DB_USERNAME,
 	"password" : process.env.DB_PASSWORD,
-	"host" : process.env.DB_HOST, 
-	"port" : process.env.DB_PORT, 
-	"database" : process.env.DB_DATABASE, 
-	"connectionLimit" : 15, 
+	"host" : process.env.DB_HOST,
+	"port" : process.env.DB_PORT,
+	"database" : process.env.DB_DATABASE,
+	"connectionLimit" : 15,
 };
 
 const NUM_ALLIANCES = 2;
 const TEAMS_PER_ALLIANCE = 3;
 
-if(!connectionData || !process.env.DB_DATABASE) {
+if(!process.env.DB_DATABASE || !connectionData?.database) {
 	console.log("connectionData=", connectionData);
-	console.log("Check .env");
+	console.log("[91mWARNING:[0m Check .env");
 }
 
 console.log("Using Database " + process.env.DB_DATABASE);
 
 let connPool = {
-	errorConnectionPool: {
+	errorConnection: {
 		query: async function(sqlQuery) {
 			console.log(`Did not run query '${sqlQuery}'`)
 			return {};
@@ -30,14 +33,13 @@ let connPool = {
 	},
 	getConnection: async function() {
 		try {
-		const mysql = require('mysql2/promise');
-		const pool = mysql.createPool(connectionData);
+			const pool = mysql.createPool(connectionData);
 
-		const conn = pool.getConnection();
+			const conn = pool.getConnection();
 
-		connPool = pool;
+			connPool = pool;
 
-		return conn;
+			return conn;
 		} catch (err) {
 			console.log("Error in creating connection pool:", err);
 
@@ -83,9 +85,9 @@ async function requestDatabase(query, substitution, forEach) {
 	}
 	return result;
 }
-async function getTeamsScouted() {
+async function getTeamsScouted(table) {
 	let result = {};
-	const sqlQuery = "SELECT DISTINCT team_number FROM pit_data";
+	const sqlQuery = `SELECT DISTINCT team_number FROM ${table}`;
 
 	const res = await requestDatabase(sqlQuery);
 
@@ -106,7 +108,7 @@ async function getTeamInfo(queries) {
 		teams.push(num);
 		inverse[num] = i;
 	}
- 
+
 	let result = {};
 
 	if(!teams?.length) {
@@ -148,11 +150,9 @@ async function getTeamWatchlistInfo(queries) {
 	return await getTeamInfoSpecific("watchlist_data", team)
 }
 
-// Please do not do SQL injection attack
 async function submitData(data, table) {
 	const keys = Object.keys(data);
-	const sqlQuery = `INSERT INTO ${table} (${keys.join(",")}) values`
-		+ `(${keys.map((x) => "?").join(",")})`;
+	const sqlQuery = `INSERT INTO ${table} (${keys.join(",")}) values(${keys.map((x) => "?").join(",")})`;
 	const values = Object.values(data);
 
 	let result = null;
@@ -190,15 +190,15 @@ function verifyConnection(connection) {
 	}
 }
 
-module.exports = {
-	"requestDatabase" : requestDatabase,
-	"getTeamInfo" : getTeamInfo,
-	"getTeamsScouted" : getTeamsScouted,
-	"getTeamPitInfo" : getTeamPitInfo,
-	"getTeamStrategicInfo" : getTeamStrategicInfo,
-	"getTeamWatchlistInfo" : getTeamWatchlistInfo,
-	"submitPitData" : submitPitData,
-	"submitMatchData" : submitMatchData,
-	"submitStrategicData" : submitStrategicData,
-	"submitWatchlistData" : submitWatchlistData,
+export {
+	requestDatabase,
+	getTeamInfo,
+	getTeamsScouted,
+	getTeamPitInfo,
+	getTeamStrategicInfo,
+	getTeamWatchlistInfo,
+	submitPitData,
+	submitMatchData,
+	submitStrategicData,
+	submitWatchlistData,
 };

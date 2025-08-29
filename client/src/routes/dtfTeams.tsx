@@ -6,8 +6,8 @@ import { Checkbox, Flex, Input, Tabs } from "antd";
 import { NUM_ALLIANCES, TEAMS_PER_ALLIANCE, round, } from '../utils/utils';
 import TextArea from 'antd/es/input/TextArea';
 import Header from '../parts/header';
-import ChartComponent from '../parts/chart'; 
-import PitTabs from '../parts/pitTabs'; 
+import ChartComponent from '../parts/chart';
+import PitTabs from '../parts/pitTabs';
 import StrategicTabs from '../parts/strategicTabs';
 
 function DTFTeams(props: any) {
@@ -17,7 +17,7 @@ function DTFTeams(props: any) {
   const [teamList, setTeamList] = useState<string[]>([]);
   const [teamIndex, setTeamIndex] = useState<any>();
   const [teamData, setTeamData] = useState<any>();
-  
+
   useEffect(() => {
     document.title = props.title;
   }, [props.title]);
@@ -76,7 +76,7 @@ function DTFTeams(props: any) {
   useEffect(() => {
     getDTF(teamList);
   }, [teamData]);
-  
+
   function aggregateData(k : any, v : any, data : any) {
     const l = data.match_count;
     if(v === null && v === undefined) {
@@ -105,7 +105,7 @@ function DTFTeams(props: any) {
       }
       break;
     // Summative values
-    
+
     case "overall_robot_died":
       if(data[k] === undefined) {
         data[k] = v as any;
@@ -171,10 +171,10 @@ function DTFTeams(props: any) {
     case "teleop_coral_scored_l2":
     case "teleop_coral_missed_l2":
     case "teleop_coral_scored_l1":
-    case "teleop_coral_missed_l1":  
+    case "teleop_coral_missed_l1":
     case "teleop_algae_scored_net":
     case "teleop_algae_missed_net":
-      
+
       const total_field = k.replace("_missed","").replace("_scored","") + ("_total");
       if(data[total_field] === undefined) {
         data[total_field] = v as any/l;
@@ -259,7 +259,7 @@ function DTFTeams(props: any) {
         "teleop_algae_missed_net": 0,
         "teleop_algae_net_total": 0,
         "teleop_algae_scored_processor": 0,
-    
+
         // Endgame
         "endgame_coral_intake_capability": "",
         //"endgame_coral_station": event.endgame_coral_station
@@ -281,7 +281,7 @@ function DTFTeams(props: any) {
         "overall_num_penalties": 0,
         "overall_penalties_incurred": null,
         "overall_comments": "",
-        
+
         "robot_played": true,
 
         "total_score" : 0,
@@ -355,7 +355,7 @@ function DTFTeams(props: any) {
         teamTabs.push({ key: "Charts", label: "Charts", children:
           <>
             <ChartComponent teamNumber={team} index={teamCount} data={teamMatches}/>
-          </>  
+          </>
         });
 
         teamTabs.push({ key: "Auton", label: "Auton", children:
@@ -363,17 +363,17 @@ function DTFTeams(props: any) {
             <Flex justify='in-between'>
               <Flex vertical align='flex-start'>
                 <h2>L1 avg</h2>
-                <Input className="dtf-input" disabled value={`${data.auton_coral_scored_l1}/${data.auton_coral_l1_total}`} /> 
+                <Input className="dtf-input" disabled value={`${data.auton_coral_scored_l1}/${data.auton_coral_l1_total}`} />
               </Flex>
               <Flex vertical align='flex-start'>
                 <h2>L2 avg</h2>
-                <Input className="dtf-input" disabled value={`${data.auton_coral_scored_l2}/${data.auton_coral_l2_total}`} /> 
+                <Input className="dtf-input" disabled value={`${data.auton_coral_scored_l2}/${data.auton_coral_l2_total}`} />
               </Flex>
             </Flex>
             <Flex justify='in-between'>
               <Flex vertical align='flex-start'>
                 <h2>L3 avg</h2>
-                <Input className="dtf-input" disabled value={`${data.auton_coral_scored_l3}/${data.auton_coral_l3_total}`} /> 
+                <Input className="dtf-input" disabled value={`${data.auton_coral_scored_l3}/${data.auton_coral_l3_total}`} />
               </Flex>
               <Flex vertical align='flex-start'>
                 <h2>L4 avg</h2>
@@ -382,14 +382,14 @@ function DTFTeams(props: any) {
             </Flex>
 
             <h2>Avg Algae Processed</h2>
-            <Input className="input" disabled value={data.auton_algae_scored_processor} /> 
+            <Input className="input" disabled value={data.auton_algae_scored_processor} />
             <h2>Avg Algae Net</h2>
-            <Input className="input" disabled value={`${data.auton_algae_scored_net}/${data.auton_algae_net_total}`}  /> 
-          </>  
+            <Input className="input" disabled value={`${data.auton_algae_scored_net}/${data.auton_algae_net_total}`}  />
+          </>
         });
 
         teamTabs.push({ key: "Teleop/End", label: "Teleop/End", children:
-          <> 
+          <>
             <Flex justify='in-between'>
               <Flex vertical align='flex-start'>
                 <h2>L1 avg</h2>
@@ -397,13 +397,13 @@ function DTFTeams(props: any) {
               </Flex>
               <Flex vertical align='flex-start'>
                 <h2>L2 avg</h2>
-                <Input className="dtf-input" disabled value={`${data.teleop_coral_scored_l2}/${data.teleop_coral_l2_total}`} /> 
+                <Input className="dtf-input" disabled value={`${data.teleop_coral_scored_l2}/${data.teleop_coral_l2_total}`} />
               </Flex>
             </Flex>
             <Flex justify='in-between'>
               <Flex vertical align='flex-start'>
                 <h2>L3 avg</h2>
-                <Input className="dtf-input" disabled value={`${data.teleop_coral_scored_l3}/${data.teleop_coral_l3_total}`} /> 
+                <Input className="dtf-input" disabled value={`${data.teleop_coral_scored_l3}/${data.teleop_coral_l3_total}`} />
               </Flex>
               <Flex vertical align='flex-start'>
                 <h2>L4 avg</h2>
@@ -411,28 +411,28 @@ function DTFTeams(props: any) {
               </Flex>
             </Flex>
             <h2>Avg Algae Processed</h2>
-            <Input className="input" disabled value={data.teleop_algae_scored_processor} /> 
+            <Input className="input" disabled value={data.teleop_algae_scored_processor} />
             <h2>Avg Algae Net</h2>
-            <Input className="input" disabled value={`${data.teleop_algae_scored_net}/${data.teleop_algae_net_total}`}  /> 
+            <Input className="input" disabled value={`${data.teleop_algae_scored_net}/${data.teleop_algae_net_total}`}  />
             <h2>Climb Type</h2>
-            <Input className="input" disabled value={data.endgame_climb_type} /> 
+            <Input className="input" disabled value={data.endgame_climb_type} />
             <h2>Avg Climb Time</h2>
-            <Input className="input" disabled value={data.endgame_climb_time} /> 
-          </> 
+            <Input className="input" disabled value={data.endgame_climb_time} />
+          </>
         });
 
         teamTabs.push({ key: "OA", label: "OA", children:
           <>
             <h2>Matches Played</h2>
-            <Input className="input" disabled value={`${data.match_count}/${teamMatches.length}`}  /> 
+            <Input className="input" disabled value={`${data.match_count}/${teamMatches.length}`}  />
             <h2>Robot Died (counter: matches)</h2>
-            <Input className="input" disabled value={data.overall_robot_died}  /> 
+            <Input className="input" disabled value={data.overall_robot_died}  />
             <h2>Intake Algae Type</h2>
-            <Input className="input" disabled value={data.endgame_algae_intake_capability}  /> 
+            <Input className="input" disabled value={data.endgame_algae_intake_capability}  />
             <h2>Intake Coral Type</h2>
-            <Input className="input" disabled value={data.endgame_coral_intake_capability}  /> 
+            <Input className="input" disabled value={data.endgame_coral_intake_capability}  />
             <h2>Robot Comments</h2>
-            <TextArea disabled className="textbox_input" value={data.overall_comments} style={{marginBottom: '5%'}}/> 
+            <TextArea disabled className="textbox_input" value={data.overall_comments} style={{marginBottom: '5%'}}/>
           </>
         });
       } else {
@@ -441,7 +441,7 @@ function DTFTeams(props: any) {
         });
       }
 
-	  /*
+      /*
       teamTabs.push({ key: "Pit", label: "Pit", children:
         <>
           { pitData &&
@@ -450,7 +450,7 @@ function DTFTeams(props: any) {
           }
         </>
       });
-	  */
+     */
       teamTabs.push({ key: "Strategic", label: "Strategic", children:
         <>
           { strategicData &&
@@ -486,20 +486,20 @@ function DTFTeams(props: any) {
       averageScores.push(
         <div key={`${teamNumber}AverageScoreSkill`}>
           <h2>Team {teamNumber} Avg Score</h2>
-          <Input className="input" disabled value={team.average_score} /> 
+          <Input className="input" disabled value={team.average_score} />
         </div>
       );
       driverSkills.push(
         <Flex vertical align='center' key={`${teamNumber}DriverSkill`}>
           <h2 className='summary_text'>{teamNumber}</h2>
-          <Input className="dtf-input" disabled value={team.overall_driver_skill} /> 
+          <Input className="dtf-input" disabled value={team.overall_driver_skill} />
         </Flex>
       );
     }
-    
+
     tabs.push({ key: "Summary", label: "Summary", children:
-        <> 
-          <h2>Average Alliance Score</h2> 
+        <>
+          <h2>Average Alliance Score</h2>
           <Input className="input" disabled value={totalAverage} />
             {averageScores}
           <h2>Driver Skill</h2>
@@ -508,7 +508,7 @@ function DTFTeams(props: any) {
           </Flex>
         </>
     });
-    
+
     return tabs;
   }
   async function getDTF(teams: string[]) {
@@ -530,7 +530,7 @@ function DTFTeams(props: any) {
 
       for(let i = 1; i <= NUM_ALLIANCES; i++) {
         const alliance = teams.slice((i - 1) * TEAMS_PER_ALLIANCE, i * TEAMS_PER_ALLIANCE);
-        
+
         const allianceTab = await getAllianceTab(alliance, persistentData, i);
 
         allianceTabs.push({ key: `Alliance${i}`, label: `Alliance ${i}`, children:
@@ -560,13 +560,13 @@ function DTFTeams(props: any) {
           averageScoresGroup.push(
             <div key={`${i}|${j}`}>
               <h2>Team {teamNumber} Average Score</h2>
-              <Input className="input" disabled value={data.average_score} /> 
+              <Input className="input" disabled value={data.average_score} />
             </div>
           );
 
           allianceTotalAverage += data.average_score;
         }
-        
+
         averageScores.push(
           <div key={`allianceRobotAverages${i + 1}`}>
             <h2>Alliance {i + 1} Robots</h2>
@@ -576,7 +576,7 @@ function DTFTeams(props: any) {
         allianceAverageScores.push(
           <div key={`allianceAverage${i + 1}`}>
             <h2>Alliance {i + 1} Average Score</h2>
-            <Input className="input" disabled value={allianceTotalAverage} /> 
+            <Input className="input" disabled value={allianceTotalAverage} />
           </div>
         );
 
@@ -584,7 +584,7 @@ function DTFTeams(props: any) {
 
       allianceTabs.push({ key: "OverallSummary", label: "Overall Summary", children:
         <>
-          {allianceAverageScores} 
+          {allianceAverageScores}
           {averageScores}
         </>
       });

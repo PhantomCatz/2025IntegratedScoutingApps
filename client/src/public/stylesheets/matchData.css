@@ -1,5 +1,5 @@
 .ant-table-cell {
-    background-color: var(--pc-blue);
+    background-color: var(--background-color);
     border-collapse: collapse;
 	text-align: center !important;
 }

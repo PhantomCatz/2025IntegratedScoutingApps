@@ -112,9 +112,14 @@ function TeamData(props: any) {
         fetchLink += `&team1=${teamNumber}`;
 
         const response = await (await fetch(fetchLink)).json();
-        
+        console.log(`response=`, response);
+
         const table = [];
         const data : any[] = response[1];
+        if(!data) {
+          window.alert("Could not get data");
+          return;
+        }
 
         for (const match of data) {
           const row : any = {};
@@ -200,9 +205,9 @@ function TeamData(props: any) {
         break;
       case "overall_penalties_incurred":
       case "overall_comments":
-        const text = (value || "").replaceAll("\\n", "\n"); 
+        const text = (value || "").replaceAll("\\n", "\n");
           result = (<p className="commentBox">
-              {text} 
+              {text}
             </p>);
         location = field;
         hasValue = !!value;
@@ -289,7 +294,7 @@ function TeamData(props: any) {
       });
     }
   }
-  
+
   return (
     <>
       <meta name="viewport" content="maximum-scale=1.0" />
@@ -303,7 +308,7 @@ function TeamData(props: any) {
       {
         makeColumns()
       }
-        
+
       </Table>
     </>
   );

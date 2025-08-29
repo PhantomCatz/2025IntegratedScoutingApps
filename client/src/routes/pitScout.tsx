@@ -189,7 +189,7 @@ function PitScout(props: any) {
     setQrValue(body);
   }
   async function tryFetch(body : any) {
-    let fetchLink = process.env.VITE_SERVER_ADDRESS;
+    let fetchLink = import.meta.env.VITE_SERVER_ADDRESS;
 
     if(!fetchLink) {
       console.error("Could not get fetch link; Check .env");

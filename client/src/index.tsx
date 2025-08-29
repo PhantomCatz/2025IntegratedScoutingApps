@@ -24,7 +24,7 @@ const root = ReactDOM.createRoot(rootElement);
 
 // Debounce alerting for less annoyance
 window.alert = (function() {
-  const alert = globalThis.window.alert;
+  const alert = window.alert;
   let id : any;
   let lastMessage : any[] = [];
 
@@ -45,7 +45,9 @@ window.alert = (function() {
     }, 500);
   }
 })();
+
 //window.alert = () => {};
+
 /*
 globalThis.fetch = (() => {
   const originalFetch = globalThis.fetch;
@@ -86,7 +88,7 @@ function App() {
       </Routes>
     </HashRouter>
   );
-  
+
 }
 
 root.render(<App />);
@@ -105,5 +107,3 @@ window.addEventListener("error", (event) => {
 window.addEventListener("unhandledrejection", (event) => {
   window.alert(event);
 });
-
-console.log(`hi=`);

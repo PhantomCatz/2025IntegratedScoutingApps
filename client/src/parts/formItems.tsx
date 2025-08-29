@@ -5,9 +5,12 @@ import { Input, Form, Select as AntdSelect, Checkbox, Flex, Button, Radio } from
 type StringMap<T> = Extract<keyof T, string>;
 type NoInfer<T> = [T][T extends any ? 0 : never];
 
+type AlignOptions = "left" | "center" | "right";
+
 type NumberInputType<FieldType> = {
   title: any;
   name: StringMap<FieldType>;
+  form: any;
   required?: boolean;
   message?: string;
   min?: number;
@@ -15,8 +18,7 @@ type NumberInputType<FieldType> = {
   onIncrease?: (e?: number) => void;
   onDecrease?: (e?: number) => void;
   onChange?: (e? : number) => void;
-  form: any;
-  align?: "left" | "center" | "right";
+  align?: AlignOptions;
   shown?: boolean;
   buttons?: boolean;
 };
@@ -27,7 +29,7 @@ type SelectType<FieldType> = {
   message?: string;
   options: any[];
   onChange?: () => void;
-  align?: string;
+  align?: AlignOptions;
   shown?: boolean;
   multiple?: boolean;
 }
@@ -35,24 +37,24 @@ type SelectType<FieldType> = {
 function NumberInput<FieldType>(props: NumberInputType<NoInfer<FieldType>>) {
   const title = props.title;
   const name = props.name;
+  const form = props.form;
   const shown = props.shown ?? true;
   const required = (props.required ?? true) && shown;
   if((props.required ?? true) && !shown) {
     console.error("Required and not shown for", name)
   }
-  const message = props.message || `Please input ${title}`;
+  const message = props.message ?? `Please input ${title}`;
   const min = props.min ?? 0;
   const max = props.max ?? Infinity;
-  const onIncrease = props.onIncrease || (() => {});
-  const onDecrease = props.onDecrease || (() => {});
-  const onChange = props.onChange || (() => {});
-  const align = props.align || "center";
+  const onIncrease = props.onIncrease ?? (() => {});
+  const onDecrease = props.onDecrease ?? (() => {});
+  const onChange = props.onChange ?? (() => {});
+  const align = props.align ?? "center";
   const buttons = props.buttons ?? true;
-  const form = props.form ?? undefined;
 
   const updateValue = (f : ((event : any) => void)) => {
     const oldVal = form.getFieldValue(name);
-    
+
     const newVal = f(oldVal);
 
     form.setFieldValue(name, newVal);
@@ -101,7 +103,7 @@ function NumberInput<FieldType>(props: NumberInputType<NoInfer<FieldType>>) {
         });
 
         setValue(updatedNumber);
-          
+
       }, 50);
     }
   })();
@@ -177,7 +179,7 @@ function NumberInput<FieldType>(props: NumberInputType<NoInfer<FieldType>>) {
 
                     return updatedNumber;
                   });
-                  
+
                   await setValue(updatedNumber);
                 }}
               >-</Button>
@@ -195,7 +197,7 @@ function NumberInput<FieldType>(props: NumberInputType<NoInfer<FieldType>>) {
 
                     return updatedNumber;
                   });
-                  
+
                   await setValue(updatedNumber);
                 }}
               >+</Button>
@@ -209,12 +211,12 @@ function NumberInput<FieldType>(props: NumberInputType<NoInfer<FieldType>>) {
 function Select<FieldType>(props: SelectType<FieldType>) {
   const title = props.title;
   const name = props.name;
-  const required = props.required ?? true;
+  const required = props.required || true;
   const message = props.message || `Please input ${title}`;
   const options = props.options;
   const onChange = props.onChange || (() => {});
   const align = props.align || "left";
-  const shown = props.shown  ?? true;
+  const shown = props.shown || true;
   const multiple = props.multiple ? 'multiple' : undefined;
 
   return (
@@ -255,11 +257,8 @@ function toNumber(x : any) : number {
   if(typeof x === "number") {
     return x;
   }
-  x = x ?? 0;
-  const num = Number(x) ?? 0;
-  if(Number.isNaN(num) || !num) {
-    return 0;
-  }
+  x = x || 0;
+  const num = Number(x) || 0;
   return num;
 }
 

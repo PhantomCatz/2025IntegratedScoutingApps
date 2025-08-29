@@ -1,6 +1,6 @@
 :root {
-	--pc-blue: #32a7dc;
-	--pc-blue: #000000;
+	--background-color: #32a7dc;
+	--background-color: #000000;
 	--font-color: #ffffff;
 }
 
@@ -14,7 +14,6 @@
 	src: url('../fonts/Figtree-VariableFont_wght.ttf') format('woff');
 }
 */
-#fff300
 * {
 	/*font-family: Audiowide !important;*/
 	font-family: Arial, sans-serif !important;
@@ -25,7 +24,7 @@ body {
 	padding-left: 5% !important;
 	padding-right: 5% !important;
 	color: var(--font-color) !important;
-	background-color: var(--pc-blue) !important;
+	background-color: var(--background-color) !important;
 }
 h2 {
 	color: var(--font-color) !important;
@@ -56,7 +55,7 @@ a {
 	padding-right: 5% !important;
 }
 .ant-layout-footer {
-	background-color: var(--pc-blue) !important;
+	background-color: var(--background-color) !important;
 	padding: 0 !important;
 	border-top: 4px solid var(--font-color) !important;
 	width: 100vw;
@@ -83,7 +82,7 @@ input[type="number"]::-webkit-inner-spin-button, .ant-input-number-handler-wrap 
 	height: fit-content !important;
 }
 .ant-input-number {
-	background-color: var(--pc-blue) !important;
+	background-color: var(--background-color) !important;
 	font-weight: bold !important;
 	color: var(--font-color) !important;
 	text-align: center !important;
@@ -173,7 +172,7 @@ input[type="number"]::-webkit-inner-spin-button, .ant-input-number-handler-wrap 
 }
 
 .logo {
-	background-color: var(--pc-blue) !important;
+	background-color: var(--background-color) !important;
 }
 .ant-btn {
 	border-color: var(--font-color) !important;

@@ -199,7 +199,7 @@ const noShowValues = {
 };
 
 function MatchScout(props: any) {
-  const DEFAULT_MATCH_EVENT = import.meta.env.VITE_EVENTNAME || "";
+  const DEFAULT_MATCH_EVENT: string = import.meta.env.VITE_EVENTNAME || "";
 
   if(DEFAULT_MATCH_EVENT === "") {
     console.error("Could not get match event. Check .env");
@@ -358,7 +358,7 @@ function MatchScout(props: any) {
     const submitBody = {
       ...body,
     };
-    
+
     try {
       const res = await fetch(fetchLink, {
         method: "POST",
@@ -373,7 +373,7 @@ function MatchScout(props: any) {
       return false;
     }
   }
-  
+
   function updateAutonValues() {
     form.setFieldValue("auton_leave_starting_line", true);
   }
@@ -537,7 +537,7 @@ function MatchScout(props: any) {
                 event.preventDefault();
               }
             }}
-          /> 
+          />
         </Form.Item>
 
         <Select<FieldType>
@@ -556,7 +556,7 @@ function MatchScout(props: any) {
             options={playoff_alliances}
             onChange={updateNumbers}
           />
-          
+
           <Select<FieldType>
             title={"Blue Alliance"}
             name={"blue_alliance"}
@@ -566,7 +566,7 @@ function MatchScout(props: any) {
             onChange={updateNumbers}
           />
         </div>
-        
+
         <NumberInput<FieldType>
           title={"Match #"}
           name={"match_number"}
@@ -635,21 +635,21 @@ function MatchScout(props: any) {
             setRobot_appeared(false);
           }}
         >No Show</Button>
-        
+
       </>
     );
   }
-  
+
   function autonMatch() {
     type FieldType = Fields.AutonMatch;
-    
+
     return (
       <div style={{ alignContent: 'center' }}>
         <h2>Leave Starting Line?</h2>
         <Form.Item<FieldType> name="auton_leave_starting_line" valuePropName="checked">
           <Checkbox className='input_checkbox' />
         </Form.Item>
-        <div className = 'radioRColumn'> 
+        <div className = 'radioRColumn'>
           <div className = 'radioRow'>
             <NumberInput<FieldType>
               title={"A Coral Scored L4"}
@@ -658,7 +658,7 @@ function MatchScout(props: any) {
               onIncrease={updateAutonValues}
               form={form}
             />
-              
+
             <NumberInput<FieldType>
               title={"A Coral Missed L4"}
               name={"auton_coral_missed_l4"}
@@ -668,8 +668,8 @@ function MatchScout(props: any) {
             />
           </div>
         </div>
-            
-        <div className = 'radioRColumn'> 
+
+        <div className = 'radioRColumn'>
           <div className = 'radioRow'>
             <NumberInput<FieldType>
               title={"A Coral Scored L3"}
@@ -678,7 +678,7 @@ function MatchScout(props: any) {
               onIncrease={updateAutonValues}
               form={form}
             />
-              
+
             <NumberInput<FieldType>
               title={"A Coral Missed L3"}
               name={"auton_coral_missed_l3"}
@@ -688,8 +688,8 @@ function MatchScout(props: any) {
             />
           </div>
         </div>
-        
-        <div className = 'radioRColumn'> 
+
+        <div className = 'radioRColumn'>
           <div className = 'radioRow'>
             <NumberInput<FieldType>
               title={"A Coral Scored L2"}
@@ -698,7 +698,7 @@ function MatchScout(props: any) {
               onIncrease={updateAutonValues}
               form={form}
             />
-              
+
             <NumberInput<FieldType>
               title={"A Coral Missed L2"}
               name={"auton_coral_missed_l2"}
@@ -709,7 +709,7 @@ function MatchScout(props: any) {
           </div>
         </div>
 
-        <div className = 'radioRColumn'> 
+        <div className = 'radioRColumn'>
           <div className = 'radioRow'>
             <NumberInput<FieldType>
               title={"A Coral Scored L1"}
@@ -718,7 +718,7 @@ function MatchScout(props: any) {
               onIncrease={updateAutonValues}
               form={form}
             />
-              
+
             <NumberInput<FieldType>
               title={"A Coral Missed L1"}
               name={"auton_coral_missed_l1"}
@@ -729,7 +729,7 @@ function MatchScout(props: any) {
           </div>
         </div>
 
-        <div className = 'radioRColumn'> 
+        <div className = 'radioRColumn'>
           <div className = 'radioRow'>
             <NumberInput<FieldType>
               title={"A Algae Scored in Net"}
@@ -738,7 +738,7 @@ function MatchScout(props: any) {
               onIncrease={updateAutonValues}
               form={form}
             />
-              
+
             <NumberInput<FieldType>
               title={"A Algae Missed in Net"}
               name={"auton_algae_missed_net"}
@@ -749,7 +749,7 @@ function MatchScout(props: any) {
           </div>
         </div>
 
-        <div className = 'radioRColumn'> 
+        <div className = 'radioRColumn'>
           <div className = 'radioRow'>
             <NumberInput<FieldType>
               title={"A Algae Processor"}
@@ -760,7 +760,7 @@ function MatchScout(props: any) {
             />
           </div>
         </div>
-            
+
       </div>
     );
   }
@@ -770,7 +770,7 @@ function MatchScout(props: any) {
 
     return (
       <div>
-        <div className = 'radioRColumn'> 
+        <div className = 'radioRColumn'>
           <div className = 'radioRow'>
             <NumberInput<FieldType>
               title={"T Coral Scored L4"}
@@ -778,7 +778,7 @@ function MatchScout(props: any) {
               message={"Enter # of coral scored for l4 in Teleop"}
               form={form}
             />
-              
+
             <NumberInput<FieldType>
               title={"T Coral Missed L4"}
               name={"teleop_coral_missed_l4"}
@@ -787,8 +787,8 @@ function MatchScout(props: any) {
             />
           </div>
         </div>
-            
-        <div className = 'radioRColumn'> 
+
+        <div className = 'radioRColumn'>
           <div className = 'radioRow'>
             <NumberInput<FieldType>
               title={"T Coral Scored L3"}
@@ -796,7 +796,7 @@ function MatchScout(props: any) {
               message={"Enter # of coral scored for l3 in Teleop"}
               form={form}
             />
-              
+
             <NumberInput<FieldType>
               title={"T Coral Missed L3"}
               name={"teleop_coral_missed_l3"}
@@ -805,8 +805,8 @@ function MatchScout(props: any) {
             />
           </div>
         </div>
-        
-        <div className = 'radioRColumn'> 
+
+        <div className = 'radioRColumn'>
           <div className = 'radioRow'>
             <NumberInput<FieldType>
               title={"T Coral Scored L2"}
@@ -814,7 +814,7 @@ function MatchScout(props: any) {
               message={"Enter # of coral scored for l2 in Teleop"}
               form={form}
             />
-              
+
             <NumberInput<FieldType>
               title={"T Coral Missed L2"}
               name={"teleop_coral_missed_l2"}
@@ -824,7 +824,7 @@ function MatchScout(props: any) {
           </div>
         </div>
 
-        <div className = 'radioRColumn'> 
+        <div className = 'radioRColumn'>
           <div className = 'radioRow'>
             <NumberInput<FieldType>
               title={"T Coral Scored L1"}
@@ -832,7 +832,7 @@ function MatchScout(props: any) {
               message={"Enter # of coral scored for l1 in Teleop"}
               form={form}
             />
-              
+
             <NumberInput<FieldType>
               title={"T Coral Missed L1"}
               name={"teleop_coral_missed_l1"}
@@ -842,7 +842,7 @@ function MatchScout(props: any) {
           </div>
         </div>
 
-        <div className = 'radioRColumn'> 
+        <div className = 'radioRColumn'>
           <div className = 'radioRow'>
             <NumberInput<FieldType>
               title={"T Algae Scored in Net"}
@@ -850,7 +850,7 @@ function MatchScout(props: any) {
               message={"Enter # of algae scored for net in Teleop"}
               form={form}
             />
-              
+
             <NumberInput<FieldType>
               title={"T Algae Missed in Net"}
               name={"teleop_algae_missed_net"}
@@ -860,7 +860,7 @@ function MatchScout(props: any) {
           </div>
         </div>
 
-        <div className = 'radioRColumn'> 
+        <div className = 'radioRColumn'>
           <div className = 'radioRow'>
             <NumberInput<FieldType>
               title={"T Algae Processor"}
@@ -873,7 +873,7 @@ function MatchScout(props: any) {
       </div>
     );
   }
-  
+
   function endgameMatch() {
     type FieldType = Fields.EndgameMatch;
     const endgame_coral_intake_capability = [
@@ -1052,11 +1052,14 @@ function MatchScout(props: any) {
         </Flex>
         <div style={{ display: penaltiesIsVisible ? 'inherit' : 'none'}}>
           <h2>Penalties Incurred</h2>
-          <Form.Item<FieldType> name="overall_penalties_incurred" rules={[{ required: penaltiesIsVisible, message: 'Please enter the penalty(s)' }]}>
+          <Form.Item<FieldType>
+            name="overall_penalties_incurred"
+            rules={[{ required: penaltiesIsVisible, message: 'Please enter the penalty(s)'
+          }]}>
             <TextArea style={{ verticalAlign: 'center' }} className='textbox_input' />
           </Form.Item>
         </div>
-        
+
         <h2>Comments</h2>
         <Form.Item<FieldType> name="overall_comments" rules={[{required : true, message : "Please enter some comments!"}]}>
           <TextArea style={{ verticalAlign: 'center' }} className='textbox_input' />
@@ -1103,7 +1106,7 @@ function MatchScout(props: any) {
           console.log("values=", values);
           console.log("errorFields=", errorFields);
           console.log("outOfDate=", outOfDate);
-          
+
           const errorMessage = errorFields.map((x : any) => x.errors.join(", ")).join("\n");
           window.alert(errorMessage);
         }}

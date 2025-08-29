@@ -26,15 +26,15 @@ function Header(props: any) {
 
 	const colors : any = {
 		light: () => ({
-			'--pc-blue': ' #ffffff',// #32a7dc
+			'--background-color': ' #ffffff',// #32a7dc
 			'--font-color': '#000000',
 		}),
 		dark: () => ({
-			'--pc-blue': ' #000000',
+			'--background-color': ' #000000',
 			'--font-color': '#ffffff'
 		}),
 		random: () => ({
-			'--pc-blue': `#${getRandomHex()}${getRandomHex()}${getRandomHex()}${getRandomHex()}${getRandomHex()}${getRandomHex()}`,
+			'--background-color': `#${getRandomHex()}${getRandomHex()}${getRandomHex()}${getRandomHex()}${getRandomHex()}${getRandomHex()}`,
 			'--font-color': `#${getRandomHex()}${getRandomHex()}${getRandomHex()}${getRandomHex()}${getRandomHex()}${getRandomHex()}`,
 		}),
 	};
@@ -71,10 +71,10 @@ function Header(props: any) {
 		if(!colors[newTheme]) {
 			newTheme = DEFAULT_THEME;
 			console.log(`newTheme=`, newTheme);
-		}
+	}
 		const themeColors = colors[newTheme];
 		const color = themeColors();
-		setBackground(color["--pc-blue"]);
+		setBackground(color["--background-color"]);
 		setFontColor(color["--font-color"]);
 
 		setTheme(newTheme);
@@ -82,7 +82,7 @@ function Header(props: any) {
 
 	useEffect(() => {
 		const rootElement = document.querySelector(":root") as any;
-		rootElement.style.setProperty('--pc-blue', background); 
+		rootElement.style.setProperty('--background-color', background); 
 		rootElement.style.setProperty('--font-color', fontColor); 
 	}, [theme]);
 
@@ -106,8 +106,8 @@ function Header(props: any) {
 
 
 function getRandomHex() {
-	const randVal = Math.floor(Math.random() * 16);
 	const vals = "0123456789ABCDEF";
+	const randVal = Math.floor(Math.random() * vals.length);
 
 	return vals[randVal];
 }

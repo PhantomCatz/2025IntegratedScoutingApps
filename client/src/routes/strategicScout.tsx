@@ -41,7 +41,7 @@ const formDefaultValues = {
 }
 
 function Strategic(props: any, text:any) {
-  const DEFAULT_MATCH_EVENT = process.env.VITE_EVENTNAME || "";
+  const DEFAULT_MATCH_EVENT = import.meta.env.VITE_EVENTNAME || "";
 
   if(DEFAULT_MATCH_EVENT === "") {
     console.error("Could not get match event. Check .env");
@@ -62,7 +62,7 @@ function Strategic(props: any, text:any) {
   useEffect(() => { document.title = props.title; return () => { } }, [props.title]);
   useEffect(() => {
     (async function() {
-      let fetchLink = process.env.VITE_SERVER_ADDRESS;
+      let fetchLink = import.meta.env.VITE_SERVER_ADDRESS;
 
       if(!team_number) {
         return;
@@ -167,7 +167,7 @@ function Strategic(props: any, text:any) {
     setQrValue(body);
   }
   async function tryFetch(body : any) {
-    let fetchLink = process.env.VITE_SERVER_ADDRESS;
+    let fetchLink = import.meta.env.VITE_SERVER_ADDRESS;
 
     if(!fetchLink) {
       console.error("Could not get fetch link; Check .env");
