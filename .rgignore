@@ -1,0 +1,9 @@
+# Ignore files when searching
+!Icon
+!.env
+
+**/public/fonts
+**/public/images
+favicon.ico
+manifest.json
+robots.txt

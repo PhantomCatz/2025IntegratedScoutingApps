@@ -1,0 +1,18 @@
+.ant-table,
+.ant-table-tbody,
+.ant-table-cell {
+  font-size: 36px !important;
+  background-color: var(--background-color) !important;
+  border: 4px solid var(--font-color) !important;
+  font-weight: bold !important;
+}
+
+.ant-empty-description {
+  font-weight: bold !important;
+  font-size: 48px !important;
+
+}
+
+.robotdied {
+  color: red !important
+}

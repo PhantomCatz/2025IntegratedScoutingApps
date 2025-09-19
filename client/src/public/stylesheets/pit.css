@@ -1,0 +1,30 @@
+.textbox_input {
+    width: 100%;
+    min-width: 100%;
+    height: 250px !important;
+    min-height: 250px !important;
+    border: 4px solid var(--font-color) !important;
+    border-radius: 25px;
+    background-color: #32A7DC;
+    font-family: Figtree !important;
+    font-weight: bold;
+    color: var(--font-color) !important;
+    text-align: center !important;
+	background: transparent !important;
+}
+.ant-input-number .ant-input-number-input::placeholder {
+	color: var(--font-color) !important;
+	font-weight: bold !important;
+	opacity: 1.0 !important;
+}
+#robotImageInput {
+	display: none;
+}
+.robotImageLabel {
+	display: block;
+	border: 4px solid var(--font-color);
+	border-radius: 5px;
+	height: 100px;
+	width: 100%;
+	text-align: center;
+}

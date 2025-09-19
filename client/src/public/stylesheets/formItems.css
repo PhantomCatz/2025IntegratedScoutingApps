@@ -1,0 +1,40 @@
+.input {
+	width: 100% !important;
+	min-width: 100% !important;
+	height: 30px !important;
+	min-height: 120px !important;
+	border: 4px solid var(--font-color) !important;
+	border-radius: 25px !important;
+	background-color: transparent !important;
+	font-weight: bold !important;
+	color: var(--font-color) !important;
+	text-align: center !important;
+}
+.input .ant-input-group-addon {
+	padding: 0px !important;
+}
+.input .ant-input-wrapper > * {
+	border: 0px !important;
+}
+.input * {
+	color: var(--font-color) !important;
+	font-weight: bold !important;
+}
+.changeButton__increment {
+	height: 30px !important;
+	background-color: transparent !important;
+	color: var(--font-color) !important;
+	font-size: 48px !important;
+	border: 0px !important;
+	border-left: 4px solid var(--font-color) !important;
+	width: 150px !important;
+}
+.changeButton__decrement {
+	height: 120px !important;
+	background-color: transparent !important;
+	color: var(--font-color) !important;
+	font-size: 48px !important;
+	border: 0px!important;
+	border-right: 4px solid var(--font-color) !important;
+	width: 150px !important;
+}

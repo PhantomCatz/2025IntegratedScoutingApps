@@ -1,0 +1,13 @@
+{
+	"name": "2025-integrated-scouting-app-server",
+	"version": "1.0.0",
+	"type": "module",
+	"dependencies": {
+		"dotenv": "^16.4.7",
+		"express": "^4.21.2",
+		"mysql2": "^3.12.0"
+	},
+	"scripts": {
+		"start": "node index.js"
+	}
+}

@@ -1,4 +1,4 @@
-import { getTeamInfo, getTeamsScouted, getTeamPitInfo, getTeamStrategicInfo, submitPitData, submitMatchData, submitStrategicData,} from "./database.cjs";
+import { getTeamInfo, getTeamsScouted, getTeamPitInfo, getTeamStrategicInfo, submitPitData, submitMatchData, submitStrategicData,} from "./database.js";
 import express from "express";
 
 const PORT = process.env.PORT || 3001;
@@ -10,6 +10,7 @@ app.use(express.json({
 }));
 
 app.use((req, res, next) => {
+	//TODO: should this be removed?
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
   next();
@@ -23,13 +24,13 @@ app.listen(PORT, () => {
 app.get("/api", async function(req, res) {
 	const queryString = req.url.split("?")[1];
 	const queries = Object.fromEntries(new URLSearchParams(queryString));
-	
+
 	let result = undefined;
 
 	try {
 		switch(queries.reqType) {
 		case "teamsScouted":
-			result = await getTeamsScouted();
+			result = await getTeamsScouted("pit_data");
 			break;
 		case "getTeam":
 			result = await getTeamInfo(queries);
@@ -58,7 +59,7 @@ app.post("/api", async function(req, res) {
 	const queries = Object.fromEntries(new URLSearchParams(queryString));
 
 	console.log("Querying", queries);
-	
+
 	const data = req.body;
 
 	let result = undefined;
@@ -85,7 +86,7 @@ app.post("/api", async function(req, res) {
 		console.log("err=", err);
 		result = null;
 	}
-	
+
 	if(result) {
 		await res.status(200);
 		await res.json({});

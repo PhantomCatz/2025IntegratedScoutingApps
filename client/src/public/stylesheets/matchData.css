@@ -1,0 +1,47 @@
+.ant-table-cell {
+    background-color: var(--background-color);
+    border-collapse: collapse;
+	text-align: center !important;
+}
+.ant-table-content, .ant-table-container, .ant-table, .ant-spin-container, .ant-spin-nested-loading, .ant-table-wrapper {
+	width: fit-content;
+	height: fit-content;
+}
+.ant-pagination {
+	display: none !important;
+}
+.ant-table-thead, .ant-table-thead * {
+	position: sticky !important;
+	top: 0px !important;
+	z-index: 100 !important;
+}
+.booleanValue {
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+.booleanValue__true {
+	background-color: #00ff00;
+}
+.booleanValue__false {
+	background-color: #ff0000;
+}
+.matchDataTable table :is(th, td) {
+	padding: 0px 4px !important;
+}
+.matchDataTable .cell__fixed {
+	position: sticky !important;
+	left: 0px !important;
+	z-index: 99 !important;
+}
+.matchDataTable thead .cell__fixed {
+	z-index: 101 !important;
+}
+.matchDataTable tbody {
+	pointer-events: none !important;
+}
+.commentBox {
+	width: 500px; 
+    height: auto;
+}
+

@@ -1,0 +1,21 @@
+import '../public/stylesheets/style.css';
+import { Button } from 'antd';
+import { useEffect } from 'react';
+import Header from '../parts/header';
+
+function HomePage(props: any) {
+  useEffect(() => { document.title = props.title; return () => { } }, [props.title]);
+
+  return (
+    <>
+      <Header name={"Strategy App"} rootPage={true} />
+      <div>
+        <Button className='homebutton' href='#scoutingapp'>Scouting App</Button>
+        <Button className='homebutton' href='#dtf'>DTF</Button>
+        {/* <Button className='homebutton' href='#watchlist'>Watchlist</Button> */}
+      </div>
+    </>
+  );
+}
+
+export default HomePage;
