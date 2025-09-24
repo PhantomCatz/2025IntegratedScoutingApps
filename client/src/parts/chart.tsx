@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Chart from 'chart.js/auto';
-import {Flex, Tabs } from "antd";
 
 const chartOptions : any = {
   plugins: {
@@ -14,7 +13,7 @@ const chartOptions : any = {
     tooltip: {
       titleFont: {
         size: 18, // Title font size
-        color: 'white' 
+        color: 'white'
       },
       bodyFont: {
         size: 16 // Data font size
@@ -22,10 +21,10 @@ const chartOptions : any = {
     }
   },
   responsive: true,
-  indexAxis: 'y', 
+  indexAxis: 'y',
   scales: {
     x: {
-      stacked: true, 
+      stacked: true,
       beginAtZero: true,
     },
     y: {
@@ -47,7 +46,7 @@ function ChartComponent(props : any) {
   const teamNumber = props.teamNumber;
   const index = props.index;
   const data = props.data;
-  
+
   useEffect(() => {
     (async function() {
       let ratio = {
@@ -86,20 +85,20 @@ function ChartComponent(props : any) {
       const algaeChart = new Chart(algaeContext, {
         type: 'bar',
         data: {
-          labels: ['Algae'], 
-          datasets: [ 
+          labels: ['Algae'],
+          datasets: [
             {
-              label: 'Algae Scored', 
+              label: 'Algae Scored',
               data: [ratio.algae_scored_ratio],
-              backgroundColor: '(15, 204, 90, 0.8)', 
+              backgroundColor: '(15, 204, 90, 0.8)',
               borderColor: 'rgb(15, 204, 90)',
               borderWidth: 1,
               barPercentage: 0.3
             },
             {
-              label: 'Algae Missed', 
+              label: 'Algae Missed',
               data: [ratio.algae_missed_ratio],
-              backgroundColor: 'rgba(54, 255, 134, 0.5)', 
+              backgroundColor: 'rgba(54, 255, 134, 0.5)',
               borderColor: 'rgb(54, 255, 134)',
               borderWidth: 1,
               barPercentage: 0.3
@@ -114,28 +113,28 @@ function ChartComponent(props : any) {
       const coralChart = new Chart(coralContext, {
         type: 'bar',
         data: {
-          labels: ['Coral'], 
+          labels: ['Coral'],
           datasets: [
             {
               label: 'L4 Scored',
               data: [ratio.coral_scored_l4_ratio],
-              backgroundColor: 'rgb(143, 26, 235, 0.9)', 
+              backgroundColor: 'rgb(143, 26, 235, 0.9)',
               borderColor: 'rgb(143, 26, 235)',
               borderWidth: 1,
               barPercentage: 0.3,
             },
             {
-              label: 'L4 Missed', 
+              label: 'L4 Missed',
               data: [ratio.coral_missed_l4_ratio],
-              backgroundColor: 'rgb(199, 20, 252, 0.5)', 
+              backgroundColor: 'rgb(199, 20, 252, 0.5)',
               borderColor: 'rgb(199, 20, 252)',
               borderWidth: 1,
               barPercentage: 0.3
             },
             {
-              label: 'L3 Scored', 
+              label: 'L3 Scored',
               data: [ratio.coral_scored_l3_ratio],
-              backgroundColor: 'rgba(0, 3, 255, 0.9)', 
+              backgroundColor: 'rgba(0, 3, 255, 0.9)',
               borderColor: 'rgb(0, 3, 255)',
               borderWidth: 1,
               barPercentage: 0.3
@@ -143,7 +142,7 @@ function ChartComponent(props : any) {
             {
               label: 'L3 Missed',
               data: [ratio.coral_missed_l3_ratio],
-              backgroundColor: 'rgba(27, 127, 245, 0.5)', 
+              backgroundColor: 'rgba(27, 127, 245, 0.5)',
               borderColor: 'rgb(27, 127, 245)',
               borderWidth: 1,
               barPercentage: 0.3
@@ -151,31 +150,31 @@ function ChartComponent(props : any) {
             {
               label: 'L2 Scored',
               data: [ratio.coral_scored_l2_ratio],
-              backgroundColor: 'rgba(2, 240, 255, 0.9)', 
+              backgroundColor: 'rgba(2, 240, 255, 0.9)',
               borderColor: 'rgb(2, 240, 255)',
               borderWidth: 1,
               barPercentage: 0.3
             },
             {
-              label: 'L2 Missed', 
+              label: 'L2 Missed',
               data: [ratio.coral_missed_l2_ratio],
-              backgroundColor: 'rgba(54, 255, 192, 0.5)', 
+              backgroundColor: 'rgba(54, 255, 192, 0.5)',
               borderColor: 'rgb(54, 255, 192)',
               borderWidth: 1,
               barPercentage: 0.3
             },
             {
-              label: 'L1 Scored', 
+              label: 'L1 Scored',
               data: [ratio.coral_scored_l1_ratio],
-              backgroundColor: 'rgb(252, 71, 175, 0.9)', 
+              backgroundColor: 'rgb(252, 71, 175, 0.9)',
               borderColor: 'rgb(252, 71, 175)',
               borderWidth: 1,
               barPercentage: 0.3
             },
             {
-              label: 'L1 Missed', 
+              label: 'L1 Missed',
               data: [ratio.coral_missed_l1_ratio],
-              backgroundColor: 'rgb(255, 54, 247, 0.5)', 
+              backgroundColor: 'rgb(255, 54, 247, 0.5)',
               borderColor: 'rgb(255, 54, 247)',
               borderWidth: 1,
               barPercentage: 0.3
@@ -190,7 +189,7 @@ function ChartComponent(props : any) {
     .catch((err) => {});
   }, []);
 
-  async function getMatchData(teamNumber:number) : Promise<{
+  function getMatchData(teamNumber:number): {
     coral_scored_l1: number,
     coral_scored_l2: number,
     coral_scored_l3: number,
@@ -203,7 +202,7 @@ function ChartComponent(props : any) {
     algae_scored: number,
     algae_missed: number,
     algae_overall_total: number
-  }> {
+  } {
     let total = {
       coral_scored_l1: 0,
       coral_scored_l2: 0,
@@ -220,8 +219,6 @@ function ChartComponent(props : any) {
     };
 
     try {
-      const table = [];
-
       for (const match of data) {
         for(let [field, value] of Object.entries(match)) {
           if(value === null || value === undefined) {
@@ -256,7 +253,7 @@ function ChartComponent(props : any) {
           }
         }
       }
-      total.coral_overall_total = total.coral_scored_l1 + total.coral_scored_l2 + 
+      total.coral_overall_total = total.coral_scored_l1 + total.coral_scored_l2 +
                                   total.coral_scored_l3 + total.coral_scored_l4 +
                                   total.coral_missed_l1 + total.coral_missed_l2 +
                                   total.coral_missed_l3 + total.coral_missed_l4;

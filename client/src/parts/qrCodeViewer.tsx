@@ -1,4 +1,3 @@
-import '../public/stylesheets/style.css';
 import '../public/stylesheets/qrcode.css';
 
 import {QRCode as AntQr} from 'antd';
@@ -68,7 +67,7 @@ function QrCode(props : any) {
 	//	console.log("Current key map: " + keys.join("$"));
 	//	console.log("Current values: " + vals.join("$"));
 	//}
-	
+
 	const valuesToDisplay : {key : any, display : string}[] = [
 		{
 			"key" : "scouter_initials",
@@ -123,7 +122,7 @@ function escapeUnicode(str: string) : string {
 					c :
 					c
 						.split("")
-						.map((a: any) => 
+						.map((a: any) =>
 							 "\\u" + a
 								.charCodeAt()
 								.toString(16)

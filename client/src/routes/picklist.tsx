@@ -1,4 +1,3 @@
-import '../public/stylesheets/style.css';
 import '../public/stylesheets/picklist.css';
 import { useEffect, useState } from 'react';
 import Column from 'antd/es/table/Column';

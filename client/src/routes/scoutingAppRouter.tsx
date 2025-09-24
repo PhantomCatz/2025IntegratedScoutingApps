@@ -1,23 +1,21 @@
-import '../public/stylesheets/style.css';
-import { Button } from 'antd';
+import '../public/stylesheets/scoutingAppRouter.css';
 import { useEffect } from 'react';
 import Header from '../parts/header';
 
-function ScoutingPage(props: any) {
-  useEffect(() => { document.title = props.title; return () => { } }, [props.title]);
+function ScoutingAppRouter(props: any) {
+  useEffect(() => { document.title = props.title }, [props.title]);
 
   return (
     <>
-      <meta name="viewport" content="maximum-scale=1.0" />
-      <Header name={"Scouting App"} back={"#home"}/>
+      <Header name={"Scouting App"} back={"#"}/>
 
-      <Button className='mainbutton' href='#scoutingapp/match'>Match</Button>
-      <Button className='mainbutton' href='#scoutingapp/strategic'>Strategic</Button>
-      <Button className='mainbutton' href='#scoutingapp/pit'>Pit</Button>
-      <Button className='mainbutton' href='#scoutingapp/lookup'>Data Lookup</Button>
-      {/* <Button className='mainbutton' href='#scoutingapp/picklist'>Picklist</Button> */}
+      <a className='mainButton' href='#scoutingapp/match'>Match</a>
+      <a className='mainButton' href='#scoutingapp/strategic'>Strategic</a>
+      <a className='mainButton' href='#scoutingapp/pit'>Pit</a>
+      <a className='mainButton' href='#scoutingapp/lookup'>Data Lookup</a>
+      {/* <a className='mainbutton' href='#scoutingapp/picklist'>Picklist</a> */}
     </>
   );
 }
 
-export default ScoutingPage;
+export default ScoutingAppRouter;

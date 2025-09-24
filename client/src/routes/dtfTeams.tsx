@@ -1,5 +1,4 @@
-import '../public/stylesheets/style.css';
-import '../public/stylesheets/dtf.css';
+import '../public/stylesheets/dtfHome.css'; // TODO: change
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Checkbox, Flex, Input, Tabs } from "antd";

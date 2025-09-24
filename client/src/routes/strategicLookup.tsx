@@ -1,4 +1,3 @@
-import '../public/stylesheets/style.css';
 import '../public/stylesheets/strategic.css';
 import { useEffect, useState } from 'react';
 import { InputNumber, Tabs } from 'antd';
@@ -27,7 +26,7 @@ function TeamData(props: any) {
           throw new Error("Could not get data");
         }
 
-        const teamNumbers = data.map(function (team: any) { 
+        const teamNumbers = data.map(function (team: any) {
           return (<h2 key={team}>
                   <a onClick={async () => {setTeamNumber(team); await setTabs(team)}}>{team}</a>
                   </h2>);
@@ -78,7 +77,7 @@ function TeamData(props: any) {
       </div>
     );
   }
-  
+
   async function setTabs(team_number : number, inCallback? : boolean) {
     try {
       const tabs = await StrategicTabs(team_number, inCallback);

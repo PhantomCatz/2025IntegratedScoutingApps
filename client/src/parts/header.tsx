@@ -1,8 +1,7 @@
-import lightBack from '../public/images/back.png';
-import darkBack from '../public/images/dark_back.png';
-import lightLogo from '../public/images/logo.png';
-import darkLogo from '../public/images/dark_logo.png';
-import '../public/stylesheets/style.css';
+import lightBack from '../public/images/light-back.png';
+import darkBack from '../public/images/dark-back.png';
+import lightLogo from '../public/images/light-logo.png';
+import darkLogo from '../public/images/dark-logo.png';
 import '../public/stylesheets/header.css';
 import React, { useEffect } from 'react';
 import {useLocalStorage, } from 'react-use';
@@ -20,9 +19,9 @@ function Header(props: any) {
 	const name = props.name || "No name set";
 	const backLink = props.back || "/";
 
-	const [theme, setTheme] = useLocalStorage<any>('theme', DEFAULT_THEME); 
-	const [background, setBackground] = useLocalStorage<any>('background', '#000000'); 
-	const [fontColor, setFontColor] = useLocalStorage<any>('fontColor', '#ffffff'); 
+	const [theme, setTheme] = useLocalStorage<any>('theme', DEFAULT_THEME);
+	const [background, setBackground] = useLocalStorage<any>('background', '#000000');
+	const [fontColor, setFontColor] = useLocalStorage<any>('fontColor', '#ffffff');
 
 	const colors : any = {
 		light: () => ({
@@ -82,8 +81,8 @@ function Header(props: any) {
 
 	useEffect(() => {
 		const rootElement = document.querySelector(":root") as any;
-		rootElement.style.setProperty('--background-color', background); 
-		rootElement.style.setProperty('--font-color', fontColor); 
+		rootElement.style.setProperty('--background-color', background);
+		rootElement.style.setProperty('--font-color', fontColor);
 	}, [theme]);
 
 	const iconSet = icons[theme] ?? icons[DEFAULT_THEME];
@@ -94,9 +93,9 @@ function Header(props: any) {
 			<a href={backLink}><img className={"backImg"} src={iconSet.back} alt=''></img></a>}
 			<img
 				className={"logoImg"}
-				src={iconSet.icon} 
-				onClick={handleLogoClick} 
-				onDoubleClick={handleLogoDoubleClick} 
+				src={iconSet.icon}
+				onClick={handleLogoClick}
+				onDoubleClick={handleLogoDoubleClick}
 				alt="Logo"
 			/>
 			<h1 className={"pageTitle"}>{name}</h1>

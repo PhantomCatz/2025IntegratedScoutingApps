@@ -1,6 +1,4 @@
 import '../public/stylesheets/dtf.css';
-import logo from '../public/images/logo.png';
-import back from '../public/images/back.png';
 import { useState, useEffect } from 'react';
 import { Button, Tabs, TabsProps } from 'antd';
 import { useParams } from 'react-router-dom';
@@ -51,7 +49,7 @@ function WatchlistGet(props: any) {
         console.log(Object.keys(data.documents[0]).length)
         //let arrlen = Object.keys(data.documents[0]).length - 2
         // customArr = data.documents;
-        for(let i = 0; i < Object.keys(data.documents[0]).length - 2; i++) 
+        for(let i = 0; i < Object.keys(data.documents[0]).length - 2; i++)
         {
           console.log(data.documents[0].length)
           console.log('custom' + i as string)

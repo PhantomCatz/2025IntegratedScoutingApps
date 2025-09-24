@@ -1,4 +1,3 @@
-import '../public/stylesheets/style.css';
 import '../public/stylesheets/watchlist.css';
 import '../public/stylesheets/match.css';
 import { Flex, Form, Input, InputNumber, Select, Tabs, TabsProps } from 'antd';
@@ -14,7 +13,7 @@ function WatchlistUpdate(props: any) {
     answer: string;
     isPit: boolean;
   };
-  
+
   console.log(useParams());
   const { question_info } = useParams();
   let team_number: number = 10000;
@@ -50,10 +49,10 @@ function WatchlistUpdate(props: any) {
                 isPit: question_type,
             },
           }
-        }; 
+        };
 
     console.log(updatingStuff)
-    
+
     try {
       const initial = await fetch(import.meta.env.VITE_WATCHLIST_GET_URL + '?team_number=' + team_number);
       const data = await initial.json();
@@ -83,7 +82,7 @@ function WatchlistUpdate(props: any) {
       //   custom20?: object,
       // }
       console.log(updatingStuff['OwO'])
-      
+
       const owo = new Map()
 
       console.log(Object.keys(data.documents[0]).length);
@@ -183,7 +182,7 @@ function WatchlistUpdate(props: any) {
                 <Input type="submit" value="Submit" className='submit'/>
               </Flex>
             </div>
-            
+
           </Form>
         </div>
       </div>
@@ -199,15 +198,13 @@ function WatchlistUpdate(props: any) {
       children: updatepage(),
     },
 ];
-  
-  
+
+
   return(
-    <div>
-      <div>
-        <Header name={'Team ' + team_number} back="#watchlist" />
-      </div>
+    <>
+			<Header name={'Team ' + team_number} back="#watchlist" />
       <Tabs defaultActiveKey="1" activeKey={tabNum} items={items} className='tabs' centered onChange={async (key) => {setTabNum(key)}}/>
-    </div>
+    </>
   );
 }
 export default WatchlistUpdate;

@@ -3,12 +3,12 @@
 	display: flex;
 }
 .header .backImg {
-	height: 10vw;
-	margin: auto 5vw auto auto;
+	height: min(5rem, 10vw);
+	margin: auto min(1rem, 5vw) auto auto;
 }
 .header .logoImg {
-	width: 10vw;
-	height: 10vw;
+	width: min(5rem, 10vw);
+	height: min(5rem, 10vw);
 }
 .header .pageTitle {
 	margin: auto;
