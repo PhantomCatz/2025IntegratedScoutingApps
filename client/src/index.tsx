@@ -1,9 +1,8 @@
-import React from 'react';
 import ReactDOM from 'react-dom/client';
 import HomePage from './routes/homeRouter';
 import ScoutingApp from './routes/scoutingAppRouter';
 import MatchScout from './routes/matchScout';
-import DTF from './routes/dtf';
+import DTF from './routes/dtfHome';
 import DTFTeams from './routes/dtfTeams';
 import StrategicScout from './routes/strategicScout';
 import Lookup from './routes/lookupRouter';
@@ -13,9 +12,10 @@ import PitScout from './routes/pitScout';
 import DataLookup from './routes/matchLookup';
 import TeamData from './routes/matchData';
 import Picklist from './routes/picklist';
-import Watchlist from './routes/watchlist';
-import WatchlistGet from './routes/watchlistData';
-import WatchlistUpdate from './routes/watchlistUpdate';
+// import Watchlist from './routes/watchlist';
+// import WatchlistGet from './routes/watchlistData';
+// import WatchlistUpdate from './routes/watchlistUpdate';
+// TODO: remove?
 
 import { HashRouter, Routes, Route } from 'react-router-dom';
 
@@ -82,9 +82,9 @@ function App() {
         <Route path="/scoutingapp/picklist" element={<Picklist title="2637 Picklist" />} />
         <Route path="/dtf" element={<DTF title="2637 Drive Team Feeder" />} />
         <Route path="/dtf/:teamParams" element={<DTFTeams title="2637 Drive Team Feeder" />} />
-        <Route path="/watchlist" element={<Watchlist title="2637 Watch List" />} />
-        <Route path="/watchlist/:team_number" element={<WatchlistGet title="2637 Watch List" />} />
-        <Route path="/watchlist/update/:question_info" element={<WatchlistUpdate title="2637 Watch List" />} />
+        {/* <Route path="/watchlist" element={<Watchlist title="2637 Watch List" />} /> */}
+        {/* <Route path="/watchlist/:team_number" element={<WatchlistGet title="2637 Watch List" />} /> */}
+        {/* <Route path="/watchlist/update/:question_info" element={<WatchlistUpdate title="2637 Watch List" />} /> */}
       </Routes>
     </HashRouter>
   );

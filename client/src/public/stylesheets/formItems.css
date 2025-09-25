@@ -1,10 +1,8 @@
 .input {
 	width: 100% !important;
-	min-width: 100% !important;
-	height: 30px !important;
-	min-height: 120px !important;
+	height: 3rem !important;
 	border: 4px solid var(--font-color) !important;
-	border-radius: 25px !important;
+	border-radius: 20px !important;
 	background-color: transparent !important;
 	font-weight: bold !important;
 	color: var(--font-color) !important;
@@ -20,21 +18,15 @@
 	color: var(--font-color) !important;
 	font-weight: bold !important;
 }
-.changeButton__increment {
-	height: 30px !important;
+.changeButton {
 	background-color: transparent !important;
 	color: var(--font-color) !important;
-	font-size: 48px !important;
 	border: 0px !important;
+	border-radius: 0px !important;
+}
+.changeButton__increment {
 	border-left: 4px solid var(--font-color) !important;
-	width: 150px !important;
 }
 .changeButton__decrement {
-	height: 120px !important;
-	background-color: transparent !important;
-	color: var(--font-color) !important;
-	font-size: 48px !important;
-	border: 0px!important;
 	border-right: 4px solid var(--font-color) !important;
-	width: 150px !important;
 }

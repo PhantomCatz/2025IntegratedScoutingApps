@@ -1,4 +1,3 @@
-import '../public/stylesheets/style.css';
 import '../public/stylesheets/pitLookup.css';
 import { useEffect, useState } from 'react';
 import { InputNumber, Tabs, } from 'antd';
@@ -27,7 +26,7 @@ function TeamData(props: any) {
           throw new Error("Could not get data");
         }
 
-        const teamNumbers = data.map(function (team: any) { 
+        const teamNumbers = data.map(function (team: any) {
           return (<h2 key={team}>
                   <a onClick={async () => {setTeamNumber(team); await setTabs(team)}}>{team}</a>
                   </h2>);
@@ -92,7 +91,7 @@ function TeamData(props: any) {
       console.log(err);
     }
   }
-  
+
   // Hack to circumvent bug
   if(shouldRetryLoading) {
     setShouldRetryLoading(false);
@@ -111,7 +110,6 @@ function TeamData(props: any) {
 
   return (
     <>
-      <meta name="viewport" content="maximum-scale=1.0" />
       <Header name={"Pit Lookup"} back={"#scoutingapp/lookup"} />
       <Select
         title={"Match Event"}
