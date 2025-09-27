@@ -38,21 +38,18 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-        working-directory: ./client
       - name: Build App
         run: |
+          cd client
           npm install
           npm run build
-        working-directory: ./client
       - name: Setup Pages
         uses: actions/configure-pages@v5
-        working-directory: ./client
       - name: Upload Artifact
         uses: actions/upload-pages-artifact@v3
-        working-directory: ./client
         with:
-          # Upload entire repository
-          path: './dist'
+          # Upload only build files
+          path: './client/dist'
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
