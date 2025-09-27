@@ -44,6 +44,10 @@ jobs:
           cd client
           npm install
           npm run build
+        env:
+          VITE_TBA_AUTH_KEY: ${{ secrets.VITE_TBA_AUTH_KEY }}
+          VITE_EVENTNAME: ${{ secrets.VITE_EVENTNAME }}
+          VITE_SERVER_ADDRESS: ${{ secrets.VITE_SERVER_ADDRESS }}
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload Artifact
