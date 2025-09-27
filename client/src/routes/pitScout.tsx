@@ -1,6 +1,4 @@
-import '../public/stylesheets/style.css';
-import '../public/stylesheets/pit.css';
-// import '../public/stylesheets/match.css';
+import '../public/stylesheets/pitScout.css';
 import { Checkbox, Form, Input, } from 'antd';
 import { useRef } from 'react';
 import React, { useState, useEffect } from 'react';
@@ -119,7 +117,7 @@ function PitScout(props: any) {
         if(teamsNotScouted === null || teamsNotScouted === undefined) {
           throw new Error("Could not access teams");
         }
-        
+
         teamsNotScouted.sort(function (a : any, b : any) { return parseInt(a) - parseInt(b); });
 
         for (const team of teamsNotScouted) {
@@ -204,7 +202,7 @@ function PitScout(props: any) {
       ...body,
       robotImageURI: imageData,
     };
-    
+
     try {
       const res = await fetch(fetchLink, {
         method: "POST",
@@ -321,7 +319,7 @@ function PitScout(props: any) {
           buttons={false}
           align={"left"}
         />
-        
+
         <NumberInput<FieldType>
           title={"Robot Weight (lbs)"}
           name={"robot_weight"}
@@ -477,7 +475,7 @@ function PitScout(props: any) {
           <TextArea style={{ verticalAlign: 'center' }} className='textbox_input' />
         </Form.Item>
         <h2 style={{ display: isLoading ? 'inherit' : 'none' }}>Submitting data...</h2>
-        
+
         <Form.Item<FieldType> name="robot_images">
           <>
             <label className="robotImageLabel" htmlFor="robotImageInput">Select Image{robotImageURI.length ? ` (${robotImageURI.length} images)` : ""}</label>
@@ -531,9 +529,9 @@ function PitScout(props: any) {
           }
           try {
             setLoading(true);
-            
+
             await submitData(event);
-            
+
             const initials = form.getFieldValue("scouter_initials");
 
             form.resetFields();
@@ -553,7 +551,7 @@ function PitScout(props: any) {
           console.log("values=", values);
           console.log("errorFields=", errorFields);
           console.log("outOfDate=", outOfDate);
-          
+
           const errorMessage = errorFields.map((x : any) => x.errors.join(", ")).join("\n");
           window.alert(errorMessage);
         }}

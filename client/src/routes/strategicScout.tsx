@@ -1,4 +1,3 @@
-import '../public/stylesheets/style.css';
 import '../public/stylesheets/strategic.css';
 import { useEffect, useState} from 'react';
 import { Tabs, Input, Form, Button, Flex, Table } from 'antd';
@@ -40,7 +39,7 @@ const formDefaultValues = {
   "penalties": 0,
 }
 
-function Strategic(props: any, text:any) {
+function Strategic(props: any) {
   const DEFAULT_MATCH_EVENT = import.meta.env.VITE_EVENTNAME || "";
 
   if(DEFAULT_MATCH_EVENT === "") {
@@ -101,7 +100,7 @@ function Strategic(props: any, text:any) {
   useEffect(() => {
     updateNumbers();
   }, [match_event]);
-  
+
   async function updateTeamNumber() {
     try {
       const matchLevel = form.getFieldValue('match_level');
@@ -225,7 +224,7 @@ function Strategic(props: any, text:any) {
       return;
     }
     setIsLoading(true);
-    
+
     if(event !== undefined) {
       setLastFormValue(event);
     } else {
@@ -264,7 +263,7 @@ function Strategic(props: any, text:any) {
       { label: "Playoffs", value: "Playoffs" },
       { label: "Finals", value: "Finals" },
     ];
-  
+
     function getNum(n : number) {
       if(!teamsList) {
         return "";
@@ -319,7 +318,7 @@ function Strategic(props: any, text:any) {
               },
             ]}
         >
-          <Input 
+          <Input
             maxLength={2}
             className="input"
             onKeyPress={(event) => {
@@ -331,7 +330,7 @@ function Strategic(props: any, text:any) {
             }}
           />
         </Form.Item>
-        
+
         <Select<FieldType>
           title={"Match Level"}
           name={"match_level"}
@@ -348,7 +347,7 @@ function Strategic(props: any, text:any) {
             options={playoff_alliances}
             onChange={updateNumbers}
           />
-          
+
           <Select<FieldType>
             title={"Blue Alliance"}
             name={"blue_alliance"}
@@ -369,7 +368,7 @@ function Strategic(props: any, text:any) {
           buttons={false}
           align={"left"}
         />
-        
+
         <Select<FieldType>
           title={"Robot Position"}
           name={"robot_position"}
@@ -406,7 +405,7 @@ function Strategic(props: any, text:any) {
       ];
 
       const dataSource = [];
-    
+
       for (const match of teamData) {
         dataSource.push({
           "key": `${match.id}`,
@@ -415,8 +414,8 @@ function Strategic(props: any, text:any) {
           "comment" : match.comments,
         });
       }
-      
-      prevComments = 
+
+      prevComments =
         <Table
           columns={columns}
           dataSource={dataSource}
@@ -446,7 +445,7 @@ function Strategic(props: any, text:any) {
             { required: true, message: 'Please input the team rating' },
             ]}
         >
-          <Input 
+          <Input
             className="input"
           />
         </Form.Item>
@@ -474,7 +473,6 @@ function Strategic(props: any, text:any) {
 
   return (
     <div>
-      <meta name="viewport" content="maximum-scale=1.0" />
       <Header name={"Strategic Scout"} back="#scoutingapp/" />
       <Form
         form={form}
@@ -484,7 +482,7 @@ function Strategic(props: any, text:any) {
           console.log("values=", values);
           console.log("errorFields=", errorFields);
           console.log("outOfDate=", outOfDate);
-          
+
           const errorMessage = errorFields.map((x : any) => x.errors.join(", ")).join("\n");
           window.alert(errorMessage);
         }}

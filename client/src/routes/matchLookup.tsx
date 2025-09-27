@@ -1,5 +1,4 @@
-import '../public/stylesheets/style.css';
-import '../public/stylesheets/lookup.css';
+import '../public/stylesheets/matchLookup.css';
 import { useEffect, useState } from 'react';
 import { Input, Form, InputNumber } from 'antd';
 import Header from '../parts/header';
@@ -17,7 +16,7 @@ function TeamData(props: any) {
 		(async function() {
 			try {
 				const data = await getAllTeams(match_event);
-				
+
 				const teamNumbers = data.map(function (team: any) {
 					return (<h2 key={team}>
 							<a href={`#scoutingapp/lookup/teamdata/${team}`}>{team}</a>
@@ -44,7 +43,6 @@ function TeamData(props: any) {
 
 	return (
 		<div>
-			<meta name="viewport" content="maximum-scale=1.0" />
 			<Header name={"Match Lookup"} back={"#scoutingapp/lookup"} />
 			<Form
 				form={form}

@@ -1,4 +1,4 @@
-import '../public/stylesheets/dtf.css';
+import '../public/stylesheets/dtfHome.css';
 import { useEffect } from 'react';
 import { Input, Form, InputNumber } from 'antd';
 import { NUM_ALLIANCES, TEAMS_PER_ALLIANCE, } from '../utils/utils';

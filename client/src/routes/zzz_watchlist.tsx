@@ -1,4 +1,3 @@
-import '../public/stylesheets/style.css';
 import '../public/stylesheets/watchlist.css';
 import '../public/stylesheets/match.css';
 import { Button, Flex, Form, Input, InputNumber, Select, Tabs, TabsProps } from 'antd';
@@ -37,7 +36,7 @@ function Watchlist(props: any) {
         console.log(data)
         console.log("Data has been sent");
       });
-      
+
     } catch (error) {
       console.error("An unexpected error occurred:", error);
     }
@@ -58,7 +57,7 @@ function Watchlist(props: any) {
         <Form
         initialValues={{
           team_number: null,
-          question: "", 
+          question: "",
           isPit: null,
         }}
           onFinish={async event => {

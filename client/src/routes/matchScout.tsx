@@ -1,5 +1,4 @@
-import '../public/stylesheets/style.css';
-import '../public/stylesheets/match.css';
+import '../public/stylesheets/matchScout.css';
 import { useEffect, useState } from 'react';
 import { Tabs, Input, Form, Checkbox, Flex, Button } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
@@ -374,8 +373,10 @@ function MatchScout(props: any) {
     }
   }
 
-  function updateAutonValues() {
-    form.setFieldValue("auton_leave_starting_line", true);
+  function updateAutonValues(value) {
+    if(value) {
+      form.setFieldValue("auton_leave_starting_line", true);
+    }
   }
   async function trySubmit(event : any) {
     if(isLoading) {
@@ -417,15 +418,23 @@ function MatchScout(props: any) {
   async function updateTeamNumber() {
     try {
       const matchLevel = form.getFieldValue('match_level');
+	  console.log(`matchLevel=`, matchLevel);
       const matchNumber = form.getFieldValue('match_number');
+	  console.log(`matchNumber=`, matchNumber);
       const robotPosition = form.getFieldValue('robot_position');
+	  console.log(`robotPosition=`, robotPosition);
       const allianceNumber1 = form.getFieldValue('red_alliance');
+	  console.log(`allianceNumber1=`, allianceNumber1);
       const allianceNumber2 = form.getFieldValue('blue_alliance');
+	  console.log(`allianceNumber2=`, allianceNumber2);
+      if(!matchLevel) {
+        return;
+      }
 
       const teams : any = await getTeamsPlaying(match_event, matchLevel, matchNumber, allianceNumber1, allianceNumber2);
 
       if(!teams) {
-        console.log("Failed to get teams playing");
+        console.log("Failed to get teams playing: teams is empty");
         return;
       }
 
@@ -587,10 +596,10 @@ function MatchScout(props: any) {
           onChange={updateNumbers}
         />
 
-        <hr/>
-        <div style={{fontSize: "250%", fontWeight: "100"}}>
+        <details className="overrideOptions">
+        <summary>
         Warning! These options should not be used normally!
-        </div>
+        </summary>
         <NumberInput<FieldType>
           title={"Override Team"}
           name={"team_override"}
@@ -611,7 +620,8 @@ function MatchScout(props: any) {
           align={"left"}
         />
 
-        <Button
+        <button
+          type="button"
           className={"noShowButton"}
           onMouseDown={async () => {
             const confirmed = window.confirm("Are you sure that this robot did not appear?");
@@ -634,7 +644,8 @@ function MatchScout(props: any) {
             form.setFieldsValue(values);
             setRobot_appeared(false);
           }}
-        >No Show</Button>
+        >No Show</button>
+        </details>
 
       </>
     );
@@ -649,28 +660,25 @@ function MatchScout(props: any) {
         <Form.Item<FieldType> name="auton_leave_starting_line" valuePropName="checked">
           <Checkbox className='input_checkbox' />
         </Form.Item>
-        <div className = 'radioRColumn'>
-          <div className = 'radioRow'>
-            <NumberInput<FieldType>
-              title={"A Coral Scored L4"}
-              name={"auton_coral_scored_l4"}
-              message={"Enter # coral scored for l4 in Auton"}
-              onIncrease={updateAutonValues}
-              form={form}
-            />
+        <div className="inputRow">
+          <NumberInput<FieldType>
+            title={"A Coral Scored L4"}
+            name={"auton_coral_scored_l4"}
+            message={"Enter # coral scored for l4 in Auton"}
+            onIncrease={updateAutonValues}
+            form={form}
+          />
 
-            <NumberInput<FieldType>
-              title={"A Coral Missed L4"}
-              name={"auton_coral_missed_l4"}
-              message={"Enter # coral missed for l4 in Auton"}
-              onIncrease={updateAutonValues}
-              form={form}
-            />
-          </div>
+          <NumberInput<FieldType>
+            title={"A Coral Missed L4"}
+            name={"auton_coral_missed_l4"}
+            message={"Enter # coral missed for l4 in Auton"}
+            onIncrease={updateAutonValues}
+            form={form}
+          />
         </div>
 
-        <div className = 'radioRColumn'>
-          <div className = 'radioRow'>
+        <div className="inputRow">
             <NumberInput<FieldType>
               title={"A Coral Scored L3"}
               name={"auton_coral_scored_l3"}
@@ -686,79 +694,70 @@ function MatchScout(props: any) {
               onIncrease={updateAutonValues}
               form={form}
             />
-          </div>
         </div>
 
-        <div className = 'radioRColumn'>
-          <div className = 'radioRow'>
-            <NumberInput<FieldType>
-              title={"A Coral Scored L2"}
-              name={"auton_coral_scored_l2"}
-              message={"Enter # coral scored for l2 in Auton"}
-              onIncrease={updateAutonValues}
-              form={form}
-            />
+        <div className="inputRow">
+          <NumberInput<FieldType>
+            title={"A Coral Scored L2"}
+            name={"auton_coral_scored_l2"}
+            message={"Enter # coral scored for l2 in Auton"}
+            onIncrease={updateAutonValues}
+            form={form}
+          />
 
-            <NumberInput<FieldType>
-              title={"A Coral Missed L2"}
-              name={"auton_coral_missed_l2"}
-              message={"Enter # coral missed for l2 in Auton"}
-              onIncrease={updateAutonValues}
-              form={form}
-            />
-          </div>
+          <NumberInput<FieldType>
+            title={"A Coral Missed L2"}
+            name={"auton_coral_missed_l2"}
+            message={"Enter # coral missed for l2 in Auton"}
+            onIncrease={updateAutonValues}
+            form={form}
+          />
         </div>
 
-        <div className = 'radioRColumn'>
-          <div className = 'radioRow'>
-            <NumberInput<FieldType>
-              title={"A Coral Scored L1"}
-              name={"auton_coral_scored_l1"}
-              message={"Enter # coral scored for l1 in Auton"}
-              onIncrease={updateAutonValues}
-              form={form}
-            />
+        <div className="inputRow">
+          <NumberInput<FieldType>
+            title={"A Coral Scored L1"}
+            name={"auton_coral_scored_l1"}
+            message={"Enter # coral scored for l1 in Auton"}
+            onIncrease={updateAutonValues}
+            form={form}
+          />
 
-            <NumberInput<FieldType>
-              title={"A Coral Missed L1"}
-              name={"auton_coral_missed_l1"}
-              message={"Enter # coral missed for l1 in Auton"}
-              onIncrease={updateAutonValues}
-              form={form}
-            />
-          </div>
+          <NumberInput<FieldType>
+            title={"A Coral Missed L1"}
+            name={"auton_coral_missed_l1"}
+            message={"Enter # coral missed for l1 in Auton"}
+            onIncrease={updateAutonValues}
+            form={form}
+          />
         </div>
 
-        <div className = 'radioRColumn'>
-          <div className = 'radioRow'>
-            <NumberInput<FieldType>
-              title={"A Algae Scored in Net"}
-              name={"auton_algae_scored_net"}
-              message={"Enter # of algae scored for net in Auton"}
-              onIncrease={updateAutonValues}
-              form={form}
-            />
+        <div className="inputRow">
+          <NumberInput<FieldType>
+            title={"A Algae Scored in Net"}
+            name={"auton_algae_scored_net"}
+            message={"Enter # of algae scored for net in Auton"}
+            onIncrease={updateAutonValues}
+            form={form}
+          />
 
-            <NumberInput<FieldType>
-              title={"A Algae Missed in Net"}
-              name={"auton_algae_missed_net"}
-              message={"Enter # of algae missed for net in Auton"}
-              onIncrease={updateAutonValues}
-              form={form}
-            />
-          </div>
+          <NumberInput<FieldType>
+            title={"A Algae Missed in Net"}
+            name={"auton_algae_missed_net"}
+            message={"Enter # of algae missed for net in Auton"}
+            onIncrease={updateAutonValues}
+            form={form}
+          />
         </div>
 
-        <div className = 'radioRColumn'>
-          <div className = 'radioRow'>
-            <NumberInput<FieldType>
-              title={"A Algae Processor"}
-              name={"auton_algae_scored_processor"}
-              message={"Enter # of algae scored for processor in Auton"}
-              onIncrease={updateAutonValues}
-              form={form}
-            />
-          </div>
+        <div className="inputRow">
+          <NumberInput<FieldType>
+            title={"A Algae Processor"}
+            name={"auton_algae_scored_processor"}
+            message={"Enter # of algae scored for processor in Auton"}
+            onIncrease={updateAutonValues}
+            form={form}
+          />
         </div>
 
       </div>
@@ -770,105 +769,93 @@ function MatchScout(props: any) {
 
     return (
       <div>
-        <div className = 'radioRColumn'>
-          <div className = 'radioRow'>
-            <NumberInput<FieldType>
-              title={"T Coral Scored L4"}
-              name={"teleop_coral_scored_l4"}
-              message={"Enter # of coral scored for l4 in Teleop"}
-              form={form}
-            />
+        <div className="inputRow">
+          <NumberInput<FieldType>
+            title={"T Coral Scored L4"}
+            name={"teleop_coral_scored_l4"}
+            message={"Enter # of coral scored for l4 in Teleop"}
+            form={form}
+          />
 
-            <NumberInput<FieldType>
-              title={"T Coral Missed L4"}
-              name={"teleop_coral_missed_l4"}
-              message={"Enter # of coral missed for l4 in Teleop"}
-              form={form}
-            />
-          </div>
+          <NumberInput<FieldType>
+            title={"T Coral Missed L4"}
+            name={"teleop_coral_missed_l4"}
+            message={"Enter # of coral missed for l4 in Teleop"}
+            form={form}
+          />
         </div>
 
-        <div className = 'radioRColumn'>
-          <div className = 'radioRow'>
-            <NumberInput<FieldType>
-              title={"T Coral Scored L3"}
-              name={"teleop_coral_scored_l3"}
-              message={"Enter # of coral scored for l3 in Teleop"}
-              form={form}
-            />
+        <div className="inputRow">
+          <NumberInput<FieldType>
+            title={"T Coral Scored L3"}
+            name={"teleop_coral_scored_l3"}
+            message={"Enter # of coral scored for l3 in Teleop"}
+            form={form}
+          />
 
-            <NumberInput<FieldType>
-              title={"T Coral Missed L3"}
-              name={"teleop_coral_missed_l3"}
-              message={"Enter # of coral missed for l3 in Teleop"}
-              form={form}
-            />
-          </div>
+          <NumberInput<FieldType>
+            title={"T Coral Missed L3"}
+            name={"teleop_coral_missed_l3"}
+            message={"Enter # of coral missed for l3 in Teleop"}
+            form={form}
+          />
         </div>
 
-        <div className = 'radioRColumn'>
-          <div className = 'radioRow'>
-            <NumberInput<FieldType>
-              title={"T Coral Scored L2"}
-              name={"teleop_coral_scored_l2"}
-              message={"Enter # of coral scored for l2 in Teleop"}
-              form={form}
-            />
+        <div className="inputRow">
+          <NumberInput<FieldType>
+            title={"T Coral Scored L2"}
+            name={"teleop_coral_scored_l2"}
+            message={"Enter # of coral scored for l2 in Teleop"}
+            form={form}
+          />
 
-            <NumberInput<FieldType>
-              title={"T Coral Missed L2"}
-              name={"teleop_coral_missed_l2"}
-              message={"Enter # of coral missed for l2 in Teleop"}
-              form={form}
-            />
-          </div>
+          <NumberInput<FieldType>
+            title={"T Coral Missed L2"}
+            name={"teleop_coral_missed_l2"}
+            message={"Enter # of coral missed for l2 in Teleop"}
+            form={form}
+          />
         </div>
 
-        <div className = 'radioRColumn'>
-          <div className = 'radioRow'>
-            <NumberInput<FieldType>
-              title={"T Coral Scored L1"}
-              name={"teleop_coral_scored_l1"}
-              message={"Enter # of coral scored for l1 in Teleop"}
-              form={form}
-            />
+        <div className="inputRow">
+          <NumberInput<FieldType>
+            title={"T Coral Scored L1"}
+            name={"teleop_coral_scored_l1"}
+            message={"Enter # of coral scored for l1 in Teleop"}
+            form={form}
+          />
 
-            <NumberInput<FieldType>
-              title={"T Coral Missed L1"}
-              name={"teleop_coral_missed_l1"}
-              message={"Enter # of coral missed for l1 in Teleop"}
-              form={form}
-            />
-          </div>
+          <NumberInput<FieldType>
+            title={"T Coral Missed L1"}
+            name={"teleop_coral_missed_l1"}
+            message={"Enter # of coral missed for l1 in Teleop"}
+            form={form}
+          />
         </div>
 
-        <div className = 'radioRColumn'>
-          <div className = 'radioRow'>
-            <NumberInput<FieldType>
-              title={"T Algae Scored in Net"}
-              name={"teleop_algae_scored_net"}
-              message={"Enter # of algae scored for net in Teleop"}
-              form={form}
-            />
+        <div className="inputRow">
+          <NumberInput<FieldType>
+            title={"T Algae Scored in Net"}
+            name={"teleop_algae_scored_net"}
+            message={"Enter # of algae scored for net in Teleop"}
+            form={form}
+          />
 
-            <NumberInput<FieldType>
-              title={"T Algae Missed in Net"}
-              name={"teleop_algae_missed_net"}
-              message={"Enter # of algae missed for net in Teleop"}
-              form={form}
-            />
-          </div>
+          <NumberInput<FieldType>
+            title={"T Algae Missed in Net"}
+            name={"teleop_algae_missed_net"}
+            message={"Enter # of algae missed for net in Teleop"}
+            form={form}
+          />
         </div>
 
-        <div className = 'radioRColumn'>
-          <div className = 'radioRow'>
-            <NumberInput<FieldType>
-              title={"T Algae Processor"}
-              name={"teleop_algae_scored_processor"}
-              message={"Enter # of algae scored for processor in Teleop"}
-              form={form}
-            />
-          </div>
+        <div className="inputRow">
+          <NumberInput<FieldType>
+            title={"T Algae Processor"}
+            name={"teleop_algae_scored_processor"}
+            message={"Enter # of algae scored for processor in Teleop"}
+            form={form}
+          />
         </div>
       </div>
     );
@@ -1112,20 +1099,20 @@ function MatchScout(props: any) {
         }}
       >
         <Tabs defaultActiveKey="1" activeKey={tabNum} items={items} className='tabs' centered onChange={async (key) => { setTabNum(key) }} />
-        <Footer style={{ position: "sticky", bottom: "0" }}>
-          <Flex justify='in-between' id={"footer"} >
-            {Number(tabNum) !== 1 && (
-              <Button onMouseDown={async () => { setTabNum((Number(tabNum) - 1).toString()) }} className='tabbutton'>Back</Button>
+        <footer style={{ position: "sticky", bottom: "0" }}>
+            {Number(tabNum) > 1 && (
+              <button type="button" onMouseDown={() => { setTabNum((Number(tabNum) - 1).toString())}} className='tabButton'>Back</button>
             )}
-            {Number(tabNum) !== items.length && (
-              <Button onMouseDown={async () => { setTabNum((Number(tabNum) + 1).toString()) }} className='tabbutton'>Next</Button>
+            {Number(tabNum) < items.length && (
+              <button type="button" onMouseDown={() => { setTabNum((Number(tabNum) + 1).toString())}} className='tabButton'>Next</button>
             )}
             {Number(tabNum) === items.length && (
-              <Input type="submit" value="Submit" className='match_submit' />
+              <input type="submit" value="Submit" className='match_submit' />
             )}
-          </Flex>
-          <h2 style={{ display: isLoading ? 'inherit' : 'none' }}>Submitting data...</h2>
-        </Footer>
+            {isLoading &&
+              <h2>Submitting data...</h2>
+            }
+        </footer>
       </Form>
       <QrCode value={qrValue} />
     </>

@@ -78,8 +78,10 @@ async function getTeamsPlaying(eventName : string,
 							   allianceNumber1 : string,
 							   allianceNumber2 : string) : Promise<string[]> {
 	matchNumber = Number(matchNumber);
+	console.log("aorisetnoairsnt");
 
 	if(isInPlayoffs(matchLevel)) {
+		console.log("oaiersntoiaenrst");
 		const res =  await getTeamsPlayingPlayoffs(eventName, matchLevel, matchNumber, allianceNumber1, allianceNumber2);
 
 		return res;
@@ -90,8 +92,11 @@ async function getTeamsPlaying(eventName : string,
 		if (!matchLevel ||
 			!matchNumber
 		    ) {
+			console.log(`matchLevel=`, matchLevel);
+			console.log(`matchNumber=`, matchNumber);
 			throw new Error();
 		}
+		console.log("134");
 
 		const matchId = getMatchId(eventName, matchLevel, matchNumber);
 
@@ -241,7 +246,7 @@ function getIndexNumber(robotPosition : string) {
 
 	const allianceColor = data[0] as string;
 	res += getAllianceOffset(allianceColor);
-	
+
 	const robotOffset = data[1] as number;
 	res += robotOffset;
 
@@ -296,7 +301,7 @@ async function getTeamsPlayingOffline(eventName : string,
 }
 function getAllianceTags(eventName : string) {
 	try {
-		const match : any = tbaData[eventName];
+		const match : any = tbaData[eventName as any];
 
 		const alliances = Object.entries(match)
 			.filter((x : any) => !x[0].startsWith(eventName))
@@ -325,4 +330,14 @@ function getAllianceTags(eventName : string) {
 	}
 }
 
-export { isInPlayoffs, getAllTeams, getTeamsNotScouted, isRoundNumberVisible, getTeamsPlaying, getIndexNumber, getAllianceOffset, getDivisionsList, getAllianceTags };
+export {
+	isInPlayoffs,
+	getAllTeams,
+	getTeamsNotScouted,
+	isRoundNumberVisible,
+	getTeamsPlaying,
+	getIndexNumber,
+	getAllianceOffset,
+	getDivisionsList,
+	getAllianceTags
+};

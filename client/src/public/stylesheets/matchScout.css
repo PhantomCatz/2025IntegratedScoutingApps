@@ -1,0 +1,40 @@
+.input_checkbox {
+	width: 100%;
+	border: 4px solid var(--font-color) !important;
+	border-radius: 25px;
+	background-color: red;
+	font-weight: bold;
+	color: var(--font-color) !important;
+	text-align: center !important;
+}
+.inputRow {
+	display: flex !important;
+	& > * {
+		flex-grow: 1;
+	}
+}
+.tabButton, .match_submit {
+	width: 50%;
+	border: 4px solid var(--font-color) !important;
+	border-radius: 10px;
+	background-color: var(--background-color);
+	font-size: 3rem !important;
+	color: var(--font-color) !important;
+	text-align: center !important;
+	margin-top: 1%;
+}
+h3 {
+	margin: 20px !important;
+}
+.fieldTitle {
+	text-align: center;
+	width: 100%;
+}
+.noShowButton {
+	width: 100%;
+	background-color: var(--background-color);
+	color: var(--font-color);
+	border: 1px solid var(--font-color);
+	border-radius: 5px;
+	margin: 5% auto auto;
+}
