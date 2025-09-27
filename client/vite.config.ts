@@ -6,8 +6,8 @@ export default defineConfig(() => {
   return {
     plugins: [
       react(),
-			// viteSingleFile(),
+      // viteSingleFile(),
     ],
-		// base: "./",
+    base: "./",
   };
 });
