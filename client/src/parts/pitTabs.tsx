@@ -17,7 +17,7 @@ async function PitTabs(team_number: number, inCallback? : boolean) {
     return null;
   }
 
-  let fetchLink = import.meta.env.VITE_SERVER_ADDRESS;
+  let fetchLink = SERVER_ADDRESS;
 
   if(!fetchLink) {
     console.error("Could not get fetch link. Check .env");

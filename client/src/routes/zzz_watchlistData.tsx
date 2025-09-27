@@ -43,7 +43,7 @@ function WatchlistGet(props: any) {
   useEffect(() => {
     async function fetchData() {
       try {
-        const response = await fetch(import.meta.env.VITE_WATCHLIST_GET_URL + '?team_number=' + team_number); //import.meta.env.REACT_APP_DTF_URL
+        const response = await fetch(WATCHLIST_GET_URL + '?team_number=' + team_number); //import.meta.env.REACT_APP_DTF_URL
         const data = await response.json();
         console.log(data.documents[0]);
         console.log(Object.keys(data.documents[0]).length)

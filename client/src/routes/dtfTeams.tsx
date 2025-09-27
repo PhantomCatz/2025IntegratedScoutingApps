@@ -41,7 +41,7 @@ function DTFTeams(props: any) {
     if (!(teamList?.length)) {
       return;
     }
-    let fetchLink = import.meta.env.VITE_SERVER_ADDRESS;
+    let fetchLink = SERVER_ADDRESS;
 
     const teams = teamList.map((num) => {
       return Number(num || 0);

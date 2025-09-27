@@ -211,12 +211,16 @@ function NumberInput<FieldType>(props: NumberInputType<NoInfer<FieldType>>) {
 function Select<FieldType>(props: SelectType<FieldType>) {
   const title = props.title;
   const name = props.name;
-  const required = props.required || true;
-  const message = props.message || `Please input ${title}`;
+  const form = props.form;
+  const shown = props.shown ?? true;
+  const required = (props.required ?? true) && shown;
+  if((props.required ?? true) && !shown) {
+    console.error("Required and not shown for", name)
+  }
+  const message = props.message ?? `Please input ${title}`;
   const options = props.options;
-  const onChange = props.onChange || (() => {});
+  const onChange = props.onChange ?? (() => {});
   const align = props.align || "left";
-  const shown = props.shown || true;
   const multiple = props.multiple ? 'multiple' : undefined;
 
   return (

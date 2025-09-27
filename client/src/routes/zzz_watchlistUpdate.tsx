@@ -54,7 +54,7 @@ function WatchlistUpdate(props: any) {
     console.log(updatingStuff)
 
     try {
-      const initial = await fetch(import.meta.env.VITE_WATCHLIST_GET_URL + '?team_number=' + team_number);
+      const initial = await fetch(WATCHLIST_GET_URL + '?team_number=' + team_number);
       const data = await initial.json();
       console.log(data.documents);
       // type update = {
@@ -123,7 +123,7 @@ function WatchlistUpdate(props: any) {
 
       console.log(requestBody)
 
-      await fetch(import.meta.env.VITE_WATCHLIST_SEND_URL as string, {
+      await fetch(WATCHLIST_SEND_URL as string, {
         method: "POST",
         body: JSON.stringify(requestBody),
         headers: {

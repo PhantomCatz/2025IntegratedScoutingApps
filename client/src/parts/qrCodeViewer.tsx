@@ -90,7 +90,7 @@ function QrCode(props : any) {
 	const qrInfo : any[] = [];
 	for(const value of valuesToDisplay) {
 		if(qrValue[value.key]) {
-			qrInfo.push(<p style={{fontSize:"300%"}} key={value.key}>{value.display} {qrValue[value.key]}</p>);
+			qrInfo.push(<p className={"qrIdentifier"} key={value.key}>{value.display} {qrValue[value.key]}</p>);
 		}
 	}
 
@@ -105,7 +105,7 @@ function QrCode(props : any) {
 						<AntQr value={
 							/*Limit: 2324 chars*/
 							shownValue
-						} size={800} type={"svg"} />
+						} size={500} type={"svg"} />
 					</div>
 				</div>
 				<h2>Please take a screenshot of this and show it to WebDev</h2>

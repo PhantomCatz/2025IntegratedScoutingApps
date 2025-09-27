@@ -71,7 +71,7 @@ const formDefaultValues = {
 const IMAGE_DELIMITER = "$";
 
 function PitScout(props: any) {
-  const match_event = import.meta.env.VITE_EVENTNAME || "";
+  const match_event = EVENT_NAME || "";
   const [form] = Form.useForm();
   const [formValue, setFormValue] = useState(formDefaultValues);
   const [isLoading, setLoading] = useState(false);
@@ -187,7 +187,7 @@ function PitScout(props: any) {
     setQrValue(body);
   }
   async function tryFetch(body : any) {
-    let fetchLink = import.meta.env.VITE_SERVER_ADDRESS;
+    let fetchLink = SERVER_ADDRESS;
 
     if(!fetchLink) {
       console.error("Could not get fetch link; Check .env");

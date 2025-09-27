@@ -1,4 +1,4 @@
-import '../public/stylesheets/strategic.css';
+import '../public/stylesheets/strategicLookup.css';
 import { useEffect, useState } from 'react';
 import { InputNumber, Tabs } from 'antd';
 import Header from '../parts/header';
@@ -7,7 +7,7 @@ import StrategicTabs from '../parts/strategicTabs';
 import { Select } from '../parts/formItems';
 
 function TeamData(props: any) {
-  const DEFAULT_MATCH_EVENT = import.meta.env.VITE_EVENTNAME || "";
+  const DEFAULT_MATCH_EVENT = EVENT_NAME || "";
 
   const [shouldRetryLoading, setShouldRetryLoading] = useState(false);
   const [fetchedData, setFetchedData] = useState<any>(null);

@@ -1,4 +1,4 @@
-import '../public/stylesheets/strategic.css';
+import '../public/stylesheets/strategicScout.css';
 import { useEffect, useState} from 'react';
 import { Tabs, Input, Form, Button, Flex, Table } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
@@ -40,7 +40,7 @@ const formDefaultValues = {
 }
 
 function Strategic(props: any) {
-  const DEFAULT_MATCH_EVENT = import.meta.env.VITE_EVENTNAME || "";
+  const DEFAULT_MATCH_EVENT = EVENT_NAME || "";
 
   if(DEFAULT_MATCH_EVENT === "") {
     console.error("Could not get match event. Check .env");
@@ -55,13 +55,12 @@ function Strategic(props: any) {
   const [teamData, setTeamData] = useState<any>(null);
   const [inPlayoffs, setInPlayoffs] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [shouldShowAlliances, setShouldShowAlliances] = useState(false);
   const [match_event, setMatchEvent] = useState<string>(DEFAULT_MATCH_EVENT);
 
   useEffect(() => { document.title = props.title; return () => { } }, [props.title]);
   useEffect(() => {
     (async function() {
-      let fetchLink = import.meta.env.VITE_SERVER_ADDRESS;
+      let fetchLink = SERVER_ADDRESS;
 
       if(!team_number) {
         return;
@@ -82,6 +81,7 @@ function Strategic(props: any) {
         return value;
       })
       .then((data) => {
+				console.log(`data=`, data);
 
         if(!data?.length) {
           console.log(`No data for team ${team_number}`);
@@ -111,11 +111,6 @@ function Strategic(props: any) {
 
       const teams : any = await getTeamsPlaying(match_event, matchLevel, matchNumber, allianceNumber1, allianceNumber2);
 
-      if(teams.shouldShowAlliances) {
-        setShouldShowAlliances(true);
-      } else {
-        setShouldShowAlliances(false);
-      }
       setTeamsList(teams || []);
 
       if(robotPosition) {
@@ -139,7 +134,7 @@ function Strategic(props: any) {
       "match_level": event.match_level,
       "match_number": event.match_number,
       "robot_position": event.robot_position,
-      "team_rating": event.team_rating,
+      // "team_rating": event.team_rating,
       "comments": event.comments,
     };
     Object.entries(body)
@@ -166,7 +161,7 @@ function Strategic(props: any) {
     setQrValue(body);
   }
   async function tryFetch(body : any) {
-    let fetchLink = import.meta.env.VITE_SERVER_ADDRESS;
+    let fetchLink = SERVER_ADDRESS;
 
     if(!fetchLink) {
       console.error("Could not get fetch link; Check .env");
@@ -301,8 +296,6 @@ function Strategic(props: any) {
             console.log(`e=`, e);
             if(e) {
               setMatchEvent(e);
-            } else {
-
             }
           }}
         />
@@ -338,11 +331,11 @@ function Strategic(props: any) {
           onChange={updateNumbers}
         />
 
-        <div className={"playoff-alliances"} style={{ display: inPlayoffs && shouldShowAlliances ? 'inherit' : 'none' }}>
+        <div className={"playoff-alliances"} style={{ display: inPlayoffs ? 'inherit' : 'none' }}>
           <Select<FieldType>
             title={"Red Alliance"}
             name={"red_alliance"}
-            required={inPlayoffs && shouldShowAlliances}
+            required={inPlayoffs}
             message={"Enter the red alliance"}
             options={playoff_alliances}
             onChange={updateNumbers}
@@ -351,7 +344,7 @@ function Strategic(props: any) {
           <Select<FieldType>
             title={"Blue Alliance"}
             name={"blue_alliance"}
-            required={inPlayoffs && shouldShowAlliances}
+            required={inPlayoffs}
             message={"Enter the blue alliance"}
             options={playoff_alliances}
             onChange={updateNumbers}
@@ -378,7 +371,7 @@ function Strategic(props: any) {
         />
 
         <Flex justify='in-between' style={{ paddingBottom : '5%' }}>
-          <Button onClick={() => setTabNum("2")} className='tabbutton'>Next</Button>
+          <Button onClick={() => setTabNum("2")} className='tabButton'>Next</Button>
         </Flex>
 
       </div>
@@ -390,7 +383,7 @@ function Strategic(props: any) {
     type FieldType = Fields.Comment;
 
     if(!teamData) {
-      prevComments =  <p style={{fontSize:"300%"}}>This team has not been scouted yet.</p>;
+      prevComments =  <p>This team has not been scouted yet.</p>;
     } else {
       const columns = [
         {
@@ -438,6 +431,7 @@ function Strategic(props: any) {
           <TextArea style={{ verticalAlign: 'center' }} className='strategic-input' />
         </Form.Item>
 
+        {/*
         <h2>Team Rating</h2>
         <Form.Item<FieldType>
           name="team_rating"
@@ -449,11 +443,12 @@ function Strategic(props: any) {
             className="input"
           />
         </Form.Item>
+        */}
 
         <h2 style={{ display: isLoading ? 'inherit' : 'none' }}>Submitting data...</h2>
         <Flex justify='in-between' style={{ paddingBottom : '5%' }}>
-          <Button onClick={() => { setTabNum("1"); }} className='tabbutton'>Back</Button>
-          <Input type="submit" value="Submit" className='submitbutton' />
+          <button type='button' onClick={() => { setTabNum("1"); }} className='tabButton'>Back</button>
+          <button type='submit' className='submitButton'>Submit</button>
         </Flex>
       </div>
     );
