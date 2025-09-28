@@ -24,6 +24,7 @@ app.listen(PORT, () => {
 app.get("/api", async function(req, res) {
 	const queryString = req.url.split("?")[1];
 	const queries = Object.fromEntries(new URLSearchParams(queryString));
+	console.log(`queries=`, queries);
 
 	let result = undefined;
 

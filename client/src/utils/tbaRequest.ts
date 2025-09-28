@@ -44,7 +44,7 @@ async function getAllTeams(matchEvent : string) {
 }
 async function getTeamsNotScouted(eventName : string) {
 	try {
-		let fetchLink = import.meta.env.VITE_SERVER_ADDRESS;
+		let fetchLink = SERVER_ADDRESS;
 
 		if(!fetchLink) {
 			console.error("Could not get fetch link. Check .env");
@@ -78,10 +78,8 @@ async function getTeamsPlaying(eventName : string,
 							   allianceNumber1 : string,
 							   allianceNumber2 : string) : Promise<string[]> {
 	matchNumber = Number(matchNumber);
-	console.log("aorisetnoairsnt");
 
 	if(isInPlayoffs(matchLevel)) {
-		console.log("oaiersntoiaenrst");
 		const res =  await getTeamsPlayingPlayoffs(eventName, matchLevel, matchNumber, allianceNumber1, allianceNumber2);
 
 		return res;
@@ -92,11 +90,8 @@ async function getTeamsPlaying(eventName : string,
 		if (!matchLevel ||
 			!matchNumber
 		    ) {
-			console.log(`matchLevel=`, matchLevel);
-			console.log(`matchNumber=`, matchNumber);
 			throw new Error();
 		}
-		console.log("134");
 
 		const matchId = getMatchId(eventName, matchLevel, matchNumber);
 
@@ -180,8 +175,6 @@ async function getTeamsPlayingPlayoffs(eventName : string,
 
 			const res : any = alliance1.concat(alliance2);
 
-			res.shouldShowAlliances = true;
-
 			return res;
 		} catch (err : any) {
 			console.log(`err=`, err);
@@ -204,13 +197,9 @@ async function getTeamsPlayingPlayoffsOffline(eventName : string,
 
 		const res : any = alliance1.concat(alliance2);
 
-		res.shouldShowAlliances = true;
-
 		return res;
 	} catch (err) {
 		const res : any = [];
-
-		res.shouldShowAlliances = true;
 
 		return res;
 	}
@@ -278,7 +267,7 @@ function request(query : string) {
 	const response = fetch('https://www.thebluealliance.com/api/v3/' + query, {
 		method: "GET",
 		headers: {
-			'X-TBA-Auth-Key': import.meta.env.VITE_TBA_AUTH_KEY as string,
+			'X-TBA-Auth-Key': TBA_AUTH_KEY as string,
 		}
 	});
 	return response;
@@ -309,9 +298,12 @@ function getAllianceTags(eventName : string) {
 
 		const res =  alliances.map((x : any) => ({ label: x, value : x }));
 
+		if(!res?.length) {
+			throw new Error();
+		}
+
 		return res;
 	} catch (err : any) {
-		console.log(`err=`, err);
 
 		const names = [
 			"Alliance 1",

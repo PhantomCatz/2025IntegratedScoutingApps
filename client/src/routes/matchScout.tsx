@@ -198,7 +198,7 @@ const noShowValues = {
 };
 
 function MatchScout(props: any) {
-  const DEFAULT_MATCH_EVENT: string = import.meta.env.VITE_EVENTNAME || "";
+  const DEFAULT_MATCH_EVENT: string = EVENT_NAME || "";
 
   if(DEFAULT_MATCH_EVENT === "") {
     console.error("Could not get match event. Check .env");
@@ -218,7 +218,6 @@ function MatchScout(props: any) {
   const [inPlayoffs, setInPlayoffs] = useState(false);
   const [robot_appeared, setRobot_appeared] = useState(true);
   const [climb_successful, setClimbSuccessful] = useState(false);
-  const [shouldShowAlliances, setShouldShowAlliances] = useState(false);
   const [match_event, setMatchEvent] = useState<string>(DEFAULT_MATCH_EVENT);
   const [allianceTags, setAllianceTags] = useState(() => getAllianceTags(match_event));
 
@@ -233,7 +232,6 @@ function MatchScout(props: any) {
   useEffect(() => {
     const robotPosition = form.getFieldValue("robot_position");
     if(!robotPosition) {
-      console.log(`robotPosition=`, robotPosition);
       return;
     }
     try {
@@ -345,7 +343,7 @@ function MatchScout(props: any) {
     setQrValue(body);
   }
   async function tryFetch(body : any) {
-    let fetchLink = process.env.VITE_SERVER_ADDRESS;
+    let fetchLink = SERVER_ADDRESS;
 
     if(!fetchLink) {
       console.error("Could not get fetch link; Check .env");
@@ -418,31 +416,21 @@ function MatchScout(props: any) {
   async function updateTeamNumber() {
     try {
       const matchLevel = form.getFieldValue('match_level');
-	  console.log(`matchLevel=`, matchLevel);
       const matchNumber = form.getFieldValue('match_number');
-	  console.log(`matchNumber=`, matchNumber);
       const robotPosition = form.getFieldValue('robot_position');
-	  console.log(`robotPosition=`, robotPosition);
       const allianceNumber1 = form.getFieldValue('red_alliance');
-	  console.log(`allianceNumber1=`, allianceNumber1);
       const allianceNumber2 = form.getFieldValue('blue_alliance');
-	  console.log(`allianceNumber2=`, allianceNumber2);
       if(!matchLevel) {
         return;
       }
 
       const teams : any = await getTeamsPlaying(match_event, matchLevel, matchNumber, allianceNumber1, allianceNumber2);
 
-      if(!teams) {
+      if(!teams?.length) {
         console.log("Failed to get teams playing: teams is empty");
         return;
       }
 
-      if(teams.shouldShowAlliances) {
-        setShouldShowAlliances(true);
-      } else {
-        setShouldShowAlliances(false);
-      }
       setTeamsList(teams || []);
 
       if(robotPosition) {
@@ -556,11 +544,11 @@ function MatchScout(props: any) {
           onChange={updateNumbers}
         />
 
-        <div className={"playoff-alliances"} style={{ display: inPlayoffs && shouldShowAlliances ? 'inherit' : 'none' }}>
+        <div className={"playoff-alliances"} style={{ display: inPlayoffs ? 'inherit' : 'none' }}>
           <Select<FieldType>
             title={"Red Alliance"}
             name={"red_alliance"}
-            required={inPlayoffs && shouldShowAlliances}
+            required={inPlayoffs}
             message={"Enter the red alliance"}
             options={playoff_alliances}
             onChange={updateNumbers}
@@ -569,7 +557,7 @@ function MatchScout(props: any) {
           <Select<FieldType>
             title={"Blue Alliance"}
             name={"blue_alliance"}
-            required={inPlayoffs && shouldShowAlliances}
+            required={inPlayoffs}
             message={"Enter the blue alliance"}
             options={playoff_alliances}
             onChange={updateNumbers}
@@ -930,26 +918,26 @@ function MatchScout(props: any) {
 
     return (
       <div className='matchbody'>
-        <Flex justify='in-between'>
-          <Flex vertical align='flex-start'>
+        <div className='inputRow'>
+          <div className='input-wrapper'>
             <h3>Robot died?</h3>
             <Form.Item<FieldType> name="overall_robot_died" valuePropName="checked">
               <Checkbox className='input_checkbox' />
             </Form.Item>
-          </Flex>
-          <Flex vertical align='flex-start'>
+          </div>
+          <div className='input-wrapper'>
             <h3>Defended others?</h3>
             <Form.Item<FieldType> name="overall_defended_others" valuePropName="checked">
               <Checkbox className='input_checkbox' onChange={() => { setDefendedIsVisible(!defendedIsVisible); }} />
             </Form.Item>
-          </Flex>
-          <Flex vertical align='flex-start'>
+          </div>
+          <div className='input-wrapper'>
             <h3>Was Defended?</h3>
             <Form.Item<FieldType> name="overall_was_defended" valuePropName="checked">
               <Checkbox className='input_checkbox' onChange={() => { setWasDefendedIsVisible(!wasDefendedIsVisible); }} />
             </Form.Item>
-          </Flex>
-        </Flex>
+          </div>
+        </div>
 
         <div
           style={{
@@ -1001,7 +989,7 @@ function MatchScout(props: any) {
           />
         </div>
 
-        <Flex justify='in-between'>
+        <div className='inputRow'>
           <NumberInput<FieldType>
             title={"Pushing (1 - 4)"}
             name={"overall_pushing"}
@@ -1018,8 +1006,8 @@ function MatchScout(props: any) {
             max={4}
             form={form}
           />
-        </Flex>
-        <Flex justify='in-between'>
+        </div>
+        <div className='inputRow'>
           <NumberInput<FieldType>
             title={"Major Penalties"}
             name={"overall_major_penalties"}
@@ -1036,7 +1024,7 @@ function MatchScout(props: any) {
             form={form}
             onChange={updatePenalties}
           />
-        </Flex>
+        </div>
         <div style={{ display: penaltiesIsVisible ? 'inherit' : 'none'}}>
           <h2>Penalties Incurred</h2>
           <Form.Item<FieldType>
@@ -1107,7 +1095,7 @@ function MatchScout(props: any) {
               <button type="button" onMouseDown={() => { setTabNum((Number(tabNum) + 1).toString())}} className='tabButton'>Next</button>
             )}
             {Number(tabNum) === items.length && (
-              <input type="submit" value="Submit" className='match_submit' />
+              <button type="submit" className='submitButton'>Submit</button>
             )}
             {isLoading &&
               <h2>Submitting data...</h2>

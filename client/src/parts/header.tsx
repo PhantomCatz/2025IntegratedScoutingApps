@@ -6,7 +6,7 @@ import '../public/stylesheets/header.css';
 import React, { useEffect } from 'react';
 import {useLocalStorage, } from 'react-use';
 
-const DEFAULT_THEME = "dark";
+const DEFAULT_THEME = "light";
 
 /**
  * Header Component
@@ -20,8 +20,8 @@ function Header(props: any) {
 	const backLink = props.back || "/";
 
 	const [theme, setTheme] = useLocalStorage<any>('theme', DEFAULT_THEME);
-	const [background, setBackground] = useLocalStorage<any>('background', '#000000');
-	const [fontColor, setFontColor] = useLocalStorage<any>('fontColor', '#ffffff');
+	const [background, setBackground] = useLocalStorage<any>('background', '#ffffff');
+	const [fontColor, setFontColor] = useLocalStorage<any>('fontColor', '#000000');
 
 	const colors : any = {
 		light: () => ({

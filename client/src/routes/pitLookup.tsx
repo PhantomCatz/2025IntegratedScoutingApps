@@ -7,7 +7,7 @@ import PitTabs from '../parts/pitTabs';
 import { Select } from '../parts/formItems';
 
 function TeamData(props: any) {
-  const DEFAULT_MATCH_EVENT = import.meta.env.VITE_EVENTNAME || "";
+  const DEFAULT_MATCH_EVENT = EVENT_NAME || "";
 
   const [shouldRetryLoading, setShouldRetryLoading] = useState(false);
   const [fetchedData, setFetchedData] = useState<any>(null);

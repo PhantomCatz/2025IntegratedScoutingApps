@@ -1,7 +1,7 @@
 .dtf-input {
     width: 95% !important;
     height: 120px !important;
-    border: 4px solid var(--font-color) !important;
+    border: 2px solid var(--font-color) !important;
     border-radius: 25px;
     background-color: transparent !important;
     font-size: 500% !important;
@@ -15,7 +15,7 @@
     min-width: 100%;
     height: 120px !important;
     min-height: 120px !important;
-    border: 4px solid var(--font-color) !important;
+    border: 2px solid var(--font-color) !important;
     border-radius: 25px;
     background-color: red;
     font-size: 500% !important;
@@ -29,7 +29,7 @@
     min-width: 100%;
     height: 120px !important;
     min-height: 120px !important;
-    border: 4px solid var(--font-color) !important;
+    border: 2px solid var(--font-color) !important;
     border-radius: 25px;
     background-color: #61f761;
     font-size: 500% !important;
@@ -43,7 +43,7 @@
     min-width: 100%;
     height: 1000px !important;
     min-height: 1000px !important;
-    border: 4px solid var(--font-color) !important;
+    border: 2px solid var(--font-color) !important;
     border-radius: 25px;
     background-color: #A9A9A9;
     font-size: 500% !important;

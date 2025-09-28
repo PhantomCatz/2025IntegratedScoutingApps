@@ -100,7 +100,7 @@ function TeamData(props: any) {
   useEffect(() => {
     async function fetchData(teamNumber: number) {
       try {
-        let fetchLink = import.meta.env.VITE_SERVER_ADDRESS;
+        let fetchLink = SERVER_ADDRESS;
 
         if(!fetchLink) {
           console.error("Could not get fetch link. Check .env");
