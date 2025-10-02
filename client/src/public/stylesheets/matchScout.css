@@ -13,9 +13,6 @@
 		flex-grow: 1;
 	}
 }
-.numberInput > div {
-	width: 100%;
-}
 .fieldTitle {
 	text-align: center;
 	width: 100%;
