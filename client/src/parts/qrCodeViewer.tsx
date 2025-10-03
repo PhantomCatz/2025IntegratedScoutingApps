@@ -105,7 +105,7 @@ function QrCode(props : any) {
 						<AntQr value={
 							/*Limit: 2324 chars*/
 							shownValue
-						} size={500} type={"svg"} />
+						} type={"svg"} />
 					</div>
 				</div>
 				<h2>Please take a screenshot of this and show it to WebDev</h2>
