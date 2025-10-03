@@ -14,9 +14,19 @@
 .input .ant-input-wrapper > * {
 	border: 0px !important;
 }
+.numberInput > div {
+	width: 100%;
+}
+.numberInput > h2 {
+	flex-grow: 1;
+	font-size: 1rem;
+}
 .input * {
 	color: var(--font-color) !important;
 	font-weight: bold !important;
+}
+.input input {
+	width: 100% !important;
 }
 .changeButton {
 	background-color: transparent !important;
