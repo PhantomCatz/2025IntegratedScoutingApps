@@ -48,7 +48,11 @@ app.get("/api", async function(req, res) {
 			break;
 		}
 	} catch (err) {
+		console.error(`ERROR: `, err);
 		result = null
+	}
+	if(!result) {
+		console.error(`ERROR: could not resolve request`, err);
 	}
 
 	await res.json(result);

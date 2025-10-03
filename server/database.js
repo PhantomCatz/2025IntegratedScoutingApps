@@ -136,18 +136,18 @@ async function getTeamInfoSpecific(databaseName, queries) {
 
 	const sqlQuery = `SELECT * FROM ${databaseName} WHERE team_number=?`;
 
-	const result = await requestDatabase(sqlQuery, queries);
+	const result = await requestDatabase(sqlQuery, team);
 
 	return result;
 }
 async function getTeamPitInfo(queries) {
-	return await getTeamInfoSpecific("pit_data", team)
+	return await getTeamInfoSpecific("pit_data", queries)
 }
 async function getTeamStrategicInfo(queries) {
-	return await getTeamInfoSpecific("strategic_data", team)
+	return await getTeamInfoSpecific("strategic_data", queries)
 }
 async function getTeamWatchlistInfo(queries) {
-	return await getTeamInfoSpecific("watchlist_data", team)
+	return await getTeamInfoSpecific("watchlist_data", queries)
 }
 
 async function submitData(data, table) {
