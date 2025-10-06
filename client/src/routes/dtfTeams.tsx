@@ -277,7 +277,8 @@ function DTFTeams(props: any) {
         "overall_pushing": 0,
         "overall_counter_defense": 0,
         "overall_driver_skill": 0,
-        "overall_num_penalties": 0,
+        "overall_major_penalties": 0,
+        "overall_minor_penalties": 0,
         "overall_penalties_incurred": null,
         "overall_comments": "",
 

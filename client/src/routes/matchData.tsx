@@ -52,7 +52,8 @@ const DATA_COLUMNS = {
     "Minor Penalties": "overall_minor_penalties",
     "Counter Defense": "overall_counter_defense",
     "Driver Skill": "overall_driver_skill",
-    "# Penalties": "overall_num_penalties",
+    "Major Penalties": "overall_major_penalties",
+    "Minor Penalties": "overall_minor_penalties",
     "Penalties Incurred": "overall_penalties_incurred",
     "Comments": "overall_comments",
   },
@@ -231,7 +232,6 @@ function TeamData(props: any) {
       case "overall_defense_quality":
       case "overall_counter_defense":
       case "overall_driver_skill":
-      case "overall_num_penalties":
       case "overall_major_penalties":
       case "overall_minor_penalties":
         result = (value || "").toString();
