@@ -64,7 +64,6 @@ namespace Fields {
       overall_defended: string;
       overall_was_defended: boolean;
       overall_defended_by: string;
-      overall_num_penalties: number;
       overall_match_penalty: string;
       overall_tech_penalty: string;
       overall_penalties_incurred: string;
@@ -129,7 +128,6 @@ const formDefaultValues = {
   "overall_defense_quality": 0,
   "overall_counter_defense": 0,
   "overall_driver_skill": 0,
-  "overall_num_penalties": 0,
   "overall_major_penalties": 0,
   "overall_minor_penalties": 0,
   "overall_penalties_incurred": null,
@@ -309,7 +307,7 @@ function MatchScout(props: any) {
       "overall_defended": event.overall_defended.sort().join(","),
       "overall_defended_by": event.overall_defended_by.sort().join(","),
       "overall_pushing": event.overall_pushing,
-      "overall_defense_quality" : event.overall_defense_quality,
+      "overall_defense_quality": event.overall_defense_quality,
       "overall_counter_defense": event.overall_counter_defense,
       "overall_driver_skill": event.overall_driver_skill,
       "overall_major_penalties": event.overall_major_penalties || 0,
@@ -722,7 +720,7 @@ function MatchScout(props: any) {
 
         <div className="inputRow">
           <NumberInput<FieldType>
-            title={"A Algae Scored in Net"}
+            title={"A Algae Scored Net"}
             name={"auton_algae_scored_net"}
             message={"Enter # of algae scored for net in Auton"}
             onIncrease={updateAutonValues}
@@ -730,7 +728,7 @@ function MatchScout(props: any) {
           />
 
           <NumberInput<FieldType>
-            title={"A Algae Missed in Net"}
+            title={"A Algae Missed Net"}
             name={"auton_algae_missed_net"}
             message={"Enter # of algae missed for net in Auton"}
             onIncrease={updateAutonValues}
@@ -823,14 +821,14 @@ function MatchScout(props: any) {
 
         <div className="inputRow">
           <NumberInput<FieldType>
-            title={"T Algae Scored in Net"}
+            title={"T Algae Scored Net"}
             name={"teleop_algae_scored_net"}
             message={"Enter # of algae scored for net in Teleop"}
             form={form}
           />
 
           <NumberInput<FieldType>
-            title={"T Algae Missed in Net"}
+            title={"T Algae Missed Net"}
             name={"teleop_algae_missed_net"}
             message={"Enter # of algae missed for net in Teleop"}
             form={form}

@@ -66,6 +66,15 @@ function DTFTeams(props: any) {
         return value;
       })
       .then((data) => {
+        /*
+          data = {
+          <1-6>: [
+              <field>: <value>
+            ]
+          }
+          field, value from database
+        */
+        preprocessData(data);
         setTeamData(data);
       })
       .catch((err) => {
@@ -76,6 +85,22 @@ function DTFTeams(props: any) {
     getDTF(teamList);
   }, [teamData]);
 
+  function preprocessData(data) {
+    const matchLevelOrder = {
+      "Qualifications": 0,
+      "Playoffs": 1,
+      "Finals": 2,
+    } as const;
+    for(const teamIndex in data) {
+      data[teamIndex].sort(function(a, b) {
+        const matchLevelComp = matchLevelOrder[a.match_level] - matchLevelOrder[b.match_level];
+        if(matchLevelComp !== 0) {
+          return matchLevelComp;
+        }
+        return a.match_number - b.match_number;
+      });
+    }
+  }
   function aggregateData(k : any, v : any, data : any) {
     const l = data.match_count;
     if(v === null && v === undefined) {
@@ -277,7 +302,8 @@ function DTFTeams(props: any) {
         "overall_pushing": 0,
         "overall_counter_defense": 0,
         "overall_driver_skill": 0,
-        "overall_num_penalties": 0,
+        "overall_major_penalties": 0,
+        "overall_minor_penalties": 0,
         "overall_penalties_incurred": null,
         "overall_comments": "",
 
@@ -353,7 +379,7 @@ function DTFTeams(props: any) {
       if(hasData) {
         teamTabs.push({ key: "Charts", label: "Charts", children:
           <>
-            <ChartComponent teamNumber={team} index={teamCount} data={teamMatches}/>
+            <ChartComponent teamNumber={team} index={teamCount} teamMatches={teamMatches}/>
           </>
         });
 
