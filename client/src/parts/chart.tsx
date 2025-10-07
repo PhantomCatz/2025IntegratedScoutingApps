@@ -1,281 +1,157 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Chart from 'chart.js/auto';
 
-const chartOptions : any = {
-  plugins: {
-    legend: {
-      labels: {
-        font: {
-          size: 18
-        },
-      }
-    },
-    tooltip: {
-      titleFont: {
-        size: 18, // Title font size
-        color: 'white'
-      },
-      bodyFont: {
-        size: 16 // Data font size
-      }
-    }
-  },
-  responsive: true,
-  indexAxis: 'y',
-  scales: {
-    x: {
-      stacked: true,
-      beginAtZero: true,
-    },
-    y: {
-      stacked: true,
-      ticks: {
-        font: {
-          size: 18 // Adjust this for larger label text
-        }
-      }
-    },
-  },
-};
-
-
 function ChartComponent(props : any) {
-  const [algaeChart, setAlgaeChart] = useState<any>(null);
-  const [coralChart, setCoralChart] = useState<any>(null);
+  const autonAlgaeCanvas = useRef(null);
+  const teleopAlgaeCanvas = useRef(null);
+  const autonCoralCanvas = useRef(null);
+  const teleopCoralCanvas = useRef(null);
 
   const teamNumber = props.teamNumber;
   const index = props.index;
-  const data = props.data;
+  const teamMatches = props.teamMatches; // [{<field>:<value>},...] for field, value in match database
 
   useEffect(() => {
-    (async function() {
-      let ratio = {
-        algae_scored_ratio: 0,
-        algae_missed_ratio: 0,
+    if(!(autonAlgaeCanvas.current &&
+        teleopAlgaeCanvas.current &&
+        autonCoralCanvas.current &&
+        teleopCoralCanvas.current
+        )) {
+      return;
+    }
+    const matchNumbers = teamMatches.map(function(row) {
+      const match_level = row.match_level;
+      const match_number = row.match_number;
 
-        coral_scored_l1_ratio: 0,
-        coral_scored_l2_ratio: 0,
-        coral_scored_l3_ratio: 0,
-        coral_scored_l4_ratio: 0,
+      return match_level[0] + match_number;
+    });
 
-        coral_missed_l1_ratio: 0,
-        coral_missed_l2_ratio: 0,
-        coral_missed_l3_ratio: 0,
-        coral_missed_l4_ratio: 0,
+    createChart(autonAlgaeCanvas.current, teamMatches, matchNumbers, {
+      "Scored": {
+        "Net": "auton_algae_scored_net",
+        "Processor": "auton_algae_scored_processor",
+      },
+      "Missed": {
+        "Net": "auton_algae_missed_net",
+      },
+    });
+    createChart(teleopAlgaeCanvas.current, teamMatches, matchNumbers, {
+      "Scored": {
+        "Net": "teleop_algae_scored_net",
+        "Processor": "teleop_algae_scored_processor",
+      },
+      "Missed": {
+        "Net": "teleop_algae_missed_net",
+      },
+    });
+    createChart(autonCoralCanvas.current, teamMatches, matchNumbers, {
+      "Scored": {
+        "L1": "auton_coral_scored_l1",
+        "L2": "auton_coral_scored_l2",
+        "L3": "auton_coral_scored_l3",
+        "L4": "auton_coral_scored_l4",
+      },
+      "Missed": {
+        "L1": "auton_coral_missed_l1",
+        "L2": "auton_coral_missed_l2",
+        "L3": "auton_coral_missed_l3",
+        "L4": "auton_coral_missed_l4",
+      },
+    });
+    createChart(teleopCoralCanvas.current, teamMatches, matchNumbers, {
+      "Scored": {
+        "L1": "teleop_coral_scored_l1",
+        "L2": "teleop_coral_scored_l2",
+        "L3": "teleop_coral_scored_l3",
+        "L4": "teleop_coral_scored_l4",
+      },
+      "Missed": {
+        "L1": "teleop_coral_missed_l1",
+        "L2": "teleop_coral_missed_l2",
+        "L3": "teleop_coral_missed_l3",
+        "L4": "teleop_coral_missed_l4",
+      },
+    });
+
+  }, [autonAlgaeCanvas.current, teleopAlgaeCanvas.current, autonCoralCanvas.current, teleopCoralCanvas.current]);
+
+
+  return (
+      <>
+        <h2>Auton Algae</h2>
+        {<canvas ref={autonAlgaeCanvas}></canvas>}
+        <h2>Teleop Algae</h2>
+        {<canvas ref={teleopAlgaeCanvas}></canvas>}
+        <h2>Auton Coral</h2>
+        {<canvas ref={autonCoralCanvas}></canvas>}
+        <h2>Teleop Coral</h2>
+        {<canvas ref={teleopCoralCanvas}></canvas>}
+      </>
+  );
+}
+
+function createChart(canvas, teamMatches, matchNumbers, config) {
+  const values = [];
+  const averages = [];
+  for(const [line, names] of Object.entries(config)) {
+    let average = 0;
+    const data = teamMatches.map(function(row) {
+      let value = 0;
+      for(const [name, item] of Object.entries(names)) {
+        value += row[item];
       }
+      average += value;
 
-      const matchData = await getMatchData(teamNumber);
+      return value;
+    });
 
-      // Calculate ratios
-      ratio.algae_scored_ratio = matchData.algae_scored / matchData.algae_overall_total;
-      ratio.algae_missed_ratio = matchData.algae_missed / matchData.algae_overall_total;
+    values.push({
+      label: line,
+      data: data,
+    });
 
-      ratio.coral_scored_l1_ratio = matchData.coral_scored_l1 / matchData.coral_overall_total;
-      ratio.coral_scored_l2_ratio = matchData.coral_scored_l2 / matchData.coral_overall_total;
-      ratio.coral_scored_l3_ratio = matchData.coral_scored_l3 / matchData.coral_overall_total;
-      ratio.coral_scored_l4_ratio = matchData.coral_scored_l4 / matchData.coral_overall_total;
+    if(teamMatches.length > 0) {
+      average /= teamMatches.length;
+    }
+    averages.push({
+      label: `Average ${line}`,
+      data: Array(teamMatches.length).fill(average),
+      pointRadius: 0,
+    });
+  }
 
-      ratio.coral_missed_l1_ratio = matchData.coral_missed_l1 / matchData.coral_overall_total;
-      ratio.coral_missed_l2_ratio = matchData.coral_missed_l2 / matchData.coral_overall_total;
-      ratio.coral_missed_l3_ratio = matchData.coral_missed_l3 / matchData.coral_overall_total;
-      ratio.coral_missed_l4_ratio = matchData.coral_missed_l4 / matchData.coral_overall_total;
+  function tooltip(items) {
+    const dataPoint = items[0];
+    const match = teamMatches[dataPoint.dataIndex];
 
+    const names = Object.entries(config[dataPoint.dataset.label]);
 
-      const algaeContext = document.querySelector(`.algaeChart_${teamNumber}_${index}`) as HTMLCanvasElement;
-      const algaeChart = new Chart(algaeContext, {
-        type: 'bar',
-        data: {
-          labels: ['Algae'],
-          datasets: [
-            {
-              label: 'Algae Scored',
-              data: [ratio.algae_scored_ratio],
-              backgroundColor: '(15, 204, 90, 0.8)',
-              borderColor: 'rgb(15, 204, 90)',
-              borderWidth: 1,
-              barPercentage: 0.3
-            },
-            {
-              label: 'Algae Missed',
-              data: [ratio.algae_missed_ratio],
-              backgroundColor: 'rgba(54, 255, 134, 0.5)',
-              borderColor: 'rgb(54, 255, 134)',
-              borderWidth: 1,
-              barPercentage: 0.3
-            },
-          ],
-        },
-        options: chartOptions
-      });
-      setAlgaeChart(algaeChart);
+    let message = `${names[0][0]}: ${match[names[0][1]]}`;
 
-      const coralContext = document.querySelector(`.coralChart_${teamNumber}_${index}`) as HTMLCanvasElement;
-      const coralChart = new Chart(coralContext, {
-        type: 'bar',
-        data: {
-          labels: ['Coral'],
-          datasets: [
-            {
-              label: 'L4 Scored',
-              data: [ratio.coral_scored_l4_ratio],
-              backgroundColor: 'rgb(143, 26, 235, 0.9)',
-              borderColor: 'rgb(143, 26, 235)',
-              borderWidth: 1,
-              barPercentage: 0.3,
-            },
-            {
-              label: 'L4 Missed',
-              data: [ratio.coral_missed_l4_ratio],
-              backgroundColor: 'rgb(199, 20, 252, 0.5)',
-              borderColor: 'rgb(199, 20, 252)',
-              borderWidth: 1,
-              barPercentage: 0.3
-            },
-            {
-              label: 'L3 Scored',
-              data: [ratio.coral_scored_l3_ratio],
-              backgroundColor: 'rgba(0, 3, 255, 0.9)',
-              borderColor: 'rgb(0, 3, 255)',
-              borderWidth: 1,
-              barPercentage: 0.3
-            },
-            {
-              label: 'L3 Missed',
-              data: [ratio.coral_missed_l3_ratio],
-              backgroundColor: 'rgba(27, 127, 245, 0.5)',
-              borderColor: 'rgb(27, 127, 245)',
-              borderWidth: 1,
-              barPercentage: 0.3
-            },
-            {
-              label: 'L2 Scored',
-              data: [ratio.coral_scored_l2_ratio],
-              backgroundColor: 'rgba(2, 240, 255, 0.9)',
-              borderColor: 'rgb(2, 240, 255)',
-              borderWidth: 1,
-              barPercentage: 0.3
-            },
-            {
-              label: 'L2 Missed',
-              data: [ratio.coral_missed_l2_ratio],
-              backgroundColor: 'rgba(54, 255, 192, 0.5)',
-              borderColor: 'rgb(54, 255, 192)',
-              borderWidth: 1,
-              barPercentage: 0.3
-            },
-            {
-              label: 'L1 Scored',
-              data: [ratio.coral_scored_l1_ratio],
-              backgroundColor: 'rgb(252, 71, 175, 0.9)',
-              borderColor: 'rgb(252, 71, 175)',
-              borderWidth: 1,
-              barPercentage: 0.3
-            },
-            {
-              label: 'L1 Missed',
-              data: [ratio.coral_missed_l1_ratio],
-              backgroundColor: 'rgb(255, 54, 247, 0.5)',
-              borderColor: 'rgb(255, 54, 247)',
-              borderWidth: 1,
-              barPercentage: 0.3
-            },
-          ],
-        },
-        options: chartOptions
-      });
+    for(let i = 1; i < names.length; i++) {
+      message += `\n${names[i][0]}: ${match[names[i][1]]}`;
+    }
 
-      setCoralChart(coralChart);
-    })()
-    .catch((err) => {});
-  }, []);
+    return message;
+  }
 
-  function getMatchData(teamNumber:number): {
-    coral_scored_l1: number,
-    coral_scored_l2: number,
-    coral_scored_l3: number,
-    coral_scored_l4: number,
-    coral_missed_l1: number,
-    coral_missed_l2: number,
-    coral_missed_l3: number,
-    coral_missed_l4: number,
-    coral_overall_total: number,
-    algae_scored: number,
-    algae_missed: number,
-    algae_overall_total: number
-  } {
-    let total = {
-      coral_scored_l1: 0,
-      coral_scored_l2: 0,
-      coral_scored_l3: 0,
-      coral_scored_l4: 0,
-      coral_missed_l1: 0,
-      coral_missed_l2: 0,
-      coral_missed_l3: 0,
-      coral_missed_l4: 0,
-      coral_overall_total: 0,
-      algae_scored: 0,
-      algae_missed: 0,
-      algae_overall_total: 0,
-    };
-
-    try {
-      for (const match of data) {
-        for(let [field, value] of Object.entries(match)) {
-          if(value === null || value === undefined) {
-            continue;
-          }
-          if(field.startsWith("auton_")) {
-            field = field.substring("auton_".length);
-          }
-          if(field.startsWith("teleop_")) {
-            field = field.substring("teleop_".length);
-          }
-          switch(field) {
-            case "coral_scored_l1":
-            case "coral_scored_l2":
-            case "coral_scored_l3":
-            case "coral_scored_l4":
-            case "coral_missed_l1":
-            case "coral_missed_l2":
-            case "coral_missed_l3":
-            case "coral_missed_l4":
-              total[field] += value as number;
-              break;
-            case "algae_scored_net":
-              case "algae_scored_processor":
-              total.algae_scored += value as number;
-              break;
-            case "algae_missed_net":
-              total.algae_missed += value as number;
-              break;
-            default:
-              break;
+  const chart = new Chart(canvas, {
+    type: 'line',
+    data: {
+      labels: matchNumbers,
+      datasets: [...values, ...averages, ]
+    },
+    options: {
+      plugins: {
+        tooltip: {
+          callbacks: {
+            footer: tooltip,
           }
         }
       }
-      total.coral_overall_total = total.coral_scored_l1 + total.coral_scored_l2 +
-                                  total.coral_scored_l3 + total.coral_scored_l4 +
-                                  total.coral_missed_l1 + total.coral_missed_l2 +
-                                  total.coral_missed_l3 + total.coral_missed_l4;
-
-      total.algae_overall_total = (total.algae_scored + total.algae_missed);
-
-      return total;
     }
-    catch (err) {
-      console.log("Error occured when getting data: ", err);
-      return total;
-    }
-  }
-
-  return (
-      <div  style={{ padding: '50px'}}>
-        <h2>Algae: Processsed v. Netted</h2>
-        {<canvas className={`algaeChart_${teamNumber}_${index}`}></canvas>}
-        <h2>Coral: L1 v. L2 v. L3 v. L4</h2>
-        {<canvas className={`coralChart_${teamNumber}_${index}`}></canvas>}
-      </div>
-  );
+  });
 }
+
 
 export default ChartComponent;
