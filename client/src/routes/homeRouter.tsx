@@ -11,6 +11,7 @@ function HomeRouter(props: any) {
       <Header name={"Strategy App"} rootPage={true} />
       <a className='homeButton' href='#scoutingapp'>Scouting App</a>
       <a className='homeButton' href='#dtf'>DTF</a>
+      <a className='homeButton' href='#settings'>Settings</a>
       {/* <a className='homebutton' href='#watchlist'>Watchlist</a> */}
     </>
   );
