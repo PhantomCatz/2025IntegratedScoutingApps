@@ -124,7 +124,11 @@ function createChart(canvas, teamMatches, matchNumbers, config) {
     const dataPoint = items[0];
     const match = teamMatches[dataPoint.dataIndex];
 
-    const names = Object.entries(config[dataPoint.dataset.label]);
+    const entry = config[dataPoint.dataset.label];
+    if(!entry) {
+      return '';
+    }
+    const names = Object.entries(entry);
 
     let message = `${names[0][0]}: ${match[names[0][1]]}`;
 

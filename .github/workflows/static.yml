@@ -28,17 +28,13 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        node-version: [20.x, 22.x]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Use Node.js 20.x
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 20.x
       - name: Build App
         run: |
           cd client
@@ -46,8 +42,8 @@ jobs:
           npm run build
         env:
           VITE_TBA_AUTH_KEY: ${{ secrets.VITE_TBA_AUTH_KEY }}
-          VITE_EVENTNAME: ${{ secrets.VITE_EVENTNAME }}
-          VITE_SERVER_ADDRESS: ${{ secrets.VITE_SERVER_ADDRESS }}
+          VITE_EVENTNAME: ${{ vars.VITE_EVENTNAME }}
+          VITE_SERVER_ADDRESS: ${{ vars.VITE_SERVER_ADDRESS }}
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload Artifact
