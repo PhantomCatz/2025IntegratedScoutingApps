@@ -6,6 +6,7 @@ import { Footer } from 'antd/es/layout/layout';
 import Header from '../parts/header';
 import QrCode, {escapeUnicode, } from '../parts/qrCodeViewer';
 import {isInPlayoffs, getTeamsPlaying, getIndexNumber, getAllianceOffset, getDivisionsList, getAllianceTags } from '../utils/tbaRequest';
+import { sleep, } from "../utils/utils";
 import type { TabsProps, } from "antd";
 import { NumberInput, Select } from '../parts/formItems';
 
@@ -1103,10 +1104,6 @@ function MatchScout(props: any) {
       <QrCode value={qrValue} />
     </>
   );
-}
-
-function sleep(ms: number) {
-  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 export default MatchScout;
