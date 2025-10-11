@@ -1,34 +1,10 @@
 import { Input, InputNumber, Tabs, } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 
-async function StrategicTabs(team_number: number, inCallback? : boolean) {
-  const window = {
-    alert : function(...args : any[]) {
-      if(!!inCallback) {
-        return;
-      }
-      globalThis.window.alert(...args);
-    }
-  };
-  if (!team_number) {
-    return null;
-  }
-
-  let fetchLink = SERVER_ADDRESS;
-
-  if(!fetchLink) {
-    console.error("Could not get fetch link. Check .env");
-    return null;
-  }
-
-  fetchLink += "reqType=getTeamStrategic";
-
-  fetchLink += `&team=${team_number}`;
-
-  const response = await(await fetch(fetchLink)).json();
-
-  if(!response?.length) {
-    window.alert(`Team ${team_number} has not been strategic scouted.`);
+async function StrategicTabs(props) {
+  const teamNumber = props.teamNumber;
+  const data = props.data;
+  if (!teamNumber) {
     return null;
   }
 
@@ -36,7 +12,7 @@ async function StrategicTabs(team_number: number, inCallback? : boolean) {
 
   const matches : { key: string; label: string; children: JSX.Element; }[] = [];
 
-  for (const strategicInfo of response) {
+  for (const strategicInfo of data) {
     strategicInfo.comments = strategicInfo.comments.replaceAll("\\n", "\n");
 
     matches.push({
@@ -61,7 +37,6 @@ async function StrategicTabs(team_number: number, inCallback? : boolean) {
     });
     index++;
   }
-  matches.sort((a, b) => parseInt(a.key) - parseInt(b.key));
 
   return matches;
 }
