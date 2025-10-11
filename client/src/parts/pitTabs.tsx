@@ -30,7 +30,7 @@ async function PitTabs(team_number: number, inCallback? : boolean) {
 
   const response = await(await fetch(fetchLink)).json();
 
-  if(!response.length) {
+  if(!response?.length) {
     window.alert(`Team ${team_number} has not been pit scouted.`);
     return null;
   }

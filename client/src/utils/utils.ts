@@ -15,6 +15,20 @@ function mapInPlace(arr, func) {
 		arr[index] = func(element);
 	});
 }
+async function readImage(blob : any) : Promise<string> {
+  return new Promise(function(resolve, reject) {
+    const reader = new FileReader();
+    reader.readAsDataURL(blob);
+    reader.onload = () => {
+      const base64Image : string = reader.result as string;
+
+      resolve(base64Image);
+    };
+    reader.onerror = () => {
+      reject("Could not read image");
+    }
+  });
+}
 
 
 
@@ -24,4 +38,5 @@ export {
   round,
   sleep,
 	mapInPlace,
+	readImage,
 };

@@ -48,8 +48,6 @@ const DATA_COLUMNS = {
     "Defended by": "overall_defended_by",
     "Pushing": "overall_pushing",
     "Defense Quality": "overall_defense_quality",
-    "Major Penalties": "overall_major_penalties",
-    "Minor Penalties": "overall_minor_penalties",
     "Counter Defense": "overall_counter_defense",
     "Driver Skill": "overall_driver_skill",
     "Major Penalties": "overall_major_penalties",
