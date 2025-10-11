@@ -6,6 +6,7 @@ import TextArea from 'antd/es/input/TextArea';
 import Header from '../parts/header';
 import QrCode, { escapeUnicode, } from '../parts/qrCodeViewer';
 import { getTeamsNotScouted, } from '../utils/tbaRequest';
+import { readImage, } from '../utils/utils';
 import { NumberInput, Select } from '../parts/formItems';
 
 namespace Fields {
@@ -78,6 +79,7 @@ function PitScout(props: any) {
   const [qrValue, setQrValue] = useState<any>();
   const [robotImageURI, setRobotImageURI] = useState<string[]>([]);
   const robotImageInput = useRef(null);
+  const [refresh, setRefresh] = useState(false);
 
   useEffect(() => {
     document.title = props.title;
@@ -180,7 +182,7 @@ function PitScout(props: any) {
         if(successful) {
           window.alert("Submit successful.");
         } else {
-          window.alert("Submit was not successful. Please show the QR to WebDev.");
+          window.alert("Submit was not successful. Please show the QR to WebDev. You will have to manually submit pictures.");
         }
       });
 
@@ -478,39 +480,18 @@ function PitScout(props: any) {
 
         <Form.Item<FieldType> name="robot_images">
           <>
-            <label className="robotImageLabel" htmlFor="robotImageInput">Select Image{robotImageURI.length ? ` (${robotImageURI.length} images)` : ""}</label>
+            <label className="robotImageLabel" htmlFor="robotImageInput">Select Image {`(${robotImageInput?.current?.files?.length ?? 0} images)`}</label>
             <input
               ref={robotImageInput}
               id="robotImageInput"
               type="file"
+              accept="image/*"
               multiple
-              onChange={async (event) => {
-                const fileList = event.target.files || [];
-                const copy = [...(fileList as any)];
-
-                const files : string[] = [];
-
-                for(let i = 0; i < copy.length; i++) {
-                  const file = copy[i];
-
-                  try {
-                    if(!file.type.startsWith("image")) {
-                      window.alert(`'${file.type.substring(file.type.indexOf("/") + 1)}' is not supported`);
-                      continue;
-                    }
-                  } catch (err) {
-                    console.log(`File reading error =`, err);
-                    window.alert("Error in reading file");
-                    return;
-                  }
-
-                  const image : string = await readImage(file);
-
-                  files.push(image);
-                }
-
-                setRobotImageURI(files);
-            }}/>
+              onChange={function() {
+                console.log(`robotImageInput?.current?.files?.length=`, robotImageInput?.current?.files?.length);
+                setRefresh(!refresh);
+              }}
+            />
           </>
         </Form.Item>
         <Input type="submit" value="Submit" className='submit' style={{ marginBottom: '5%' }} />
@@ -536,6 +517,30 @@ function PitScout(props: any) {
 
             form.resetFields();
             setFormValue({...formDefaultValues});
+
+
+            const fileList = robotImageInput?.current?.files ?? [];
+
+            const parsedFiles: string[] = [];
+
+            for(const file of fileList) {
+              let image = "";
+
+              try {
+                image = await readImage(file);
+              } catch (err) {
+                console.log(`File reading error =`, err);
+                window.alert("Error in reading file");
+                continue;
+              }
+
+              parsedFiles.push(image);
+            }
+
+            setRobotImageURI(parsedFiles)
+            robotImageInput.current.value = null;
+
+
             form.setFieldsValue({...formDefaultValues, "scouter_initials": initials});
           }
           catch (err) {
@@ -563,19 +568,5 @@ function PitScout(props: any) {
   );
 }
 
-async function readImage(blob : any) : Promise<string> {
-  return new Promise(function(resolve, reject) {
-    const reader = new FileReader();
-    reader.readAsDataURL(blob);
-    reader.onload = () => {
-      const base64Image : string = reader.result as string;
-
-      resolve(base64Image);
-    };
-    reader.onerror = () => {
-      reject("Could not read image");
-    }
-  });
-}
 
 export default PitScout;
