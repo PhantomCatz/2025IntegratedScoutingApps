@@ -17,6 +17,11 @@ body {
 	background-color: var(--background-color);
 	min-height: 100vh;
 }
+@media (aspect-ratio >= 1/1) and (width >= 80vh) and (height >= 800px) {
+	body {
+		max-width: 80vh
+	}
+}
 
 #root {
 	width: 100%;
@@ -173,11 +178,6 @@ input[type="number"]::-webkit-inner-spin-button, .ant-input-number-handler-wrap 
 .input-wrapper {
 	display: block !important;
 	flex-grow: 1 !important;
-}
-@media (min-aspect-ratio: 1/1) and (min-width: 80vh) and (min-height: 800px) {
-	body {
-		max-width: 80vh
-	}
 }
 footer {
 	margin-top: 0px;
