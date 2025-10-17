@@ -10,6 +10,7 @@ function ChartComponent(props : any) {
   const teamNumber = props.teamNumber;
   const index = props.index;
   const teamMatches = props.teamMatches; // [{<field>:<value>},...] for field, value in match database
+  const teamStrategic = props.teamStrategic; // [{<field>:<value>},...] for field, value in match database
 
   useEffect(() => {
     if(!(autonAlgaeCanvas.current &&
@@ -26,6 +27,24 @@ function ChartComponent(props : any) {
       return match_level[0] + match_number;
     });
 
+    function commentCallback(message, items) {
+      const dataPoint = items[0];
+      const match = teamMatches[dataPoint.dataIndex];
+      const match_number = match.match_number;
+
+      const teamMatches = teamMatches.filter((row) => row.match_number === match_number);
+      const strategicMatches = teamStrategic.filter((row) => row.match_number === match_number);
+      const comments = [];
+      for(const match of teamMatches) {
+        comments.push("\nMS: " + match.overall_comments);
+      }
+      for(const match of teamMatches) {
+        comments.push("\nSS: " + match.overall_comments);
+      }
+
+      return message + "\n" + comments.join("\n");
+    }
+
     createChart(autonAlgaeCanvas.current, teamMatches, matchNumbers, {
       "Scored": {
         "Net": "auton_algae_scored_net",
@@ -34,7 +53,7 @@ function ChartComponent(props : any) {
       "Missed": {
         "Net": "auton_algae_missed_net",
       },
-    });
+    }, commentCallback);
     createChart(teleopAlgaeCanvas.current, teamMatches, matchNumbers, {
       "Scored": {
         "Net": "teleop_algae_scored_net",
@@ -43,7 +62,7 @@ function ChartComponent(props : any) {
       "Missed": {
         "Net": "teleop_algae_missed_net",
       },
-    });
+    }, commentCallback);
     createChart(autonCoralCanvas.current, teamMatches, matchNumbers, {
       "Scored": {
         "L1": "auton_coral_scored_l1",
@@ -57,7 +76,7 @@ function ChartComponent(props : any) {
         "L3": "auton_coral_missed_l3",
         "L4": "auton_coral_missed_l4",
       },
-    });
+    }, commentCallback);
     createChart(teleopCoralCanvas.current, teamMatches, matchNumbers, {
       "Scored": {
         "L1": "teleop_coral_scored_l1",
@@ -71,7 +90,7 @@ function ChartComponent(props : any) {
         "L3": "teleop_coral_missed_l3",
         "L4": "teleop_coral_missed_l4",
       },
-    });
+    }, commentCallback);
 
   }, [autonAlgaeCanvas.current, teleopAlgaeCanvas.current, autonCoralCanvas.current, teleopCoralCanvas.current]);
 
@@ -90,7 +109,7 @@ function ChartComponent(props : any) {
   );
 }
 
-function createChart(canvas, teamMatches, matchNumbers, config) {
+function createChart(canvas, teamMatches, matchNumbers, config, tooltipCallback) {
   const values = [];
   const averages = [];
   for(const [line, names] of Object.entries(config)) {
@@ -135,6 +154,10 @@ function createChart(canvas, teamMatches, matchNumbers, config) {
     for(let i = 1; i < names.length; i++) {
       message += `\n${names[i][0]}: ${match[names[i][1]]}`;
     }
+
+		if(tooltipCallback) {
+			message = tooltipCallback(message, items);
+		}
 
     return message;
   }
