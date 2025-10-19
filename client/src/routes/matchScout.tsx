@@ -1,6 +1,6 @@
 import '../public/stylesheets/matchScout.css';
 import { useEffect, useState } from 'react';
-import { Tabs, Input, Form, Checkbox, Flex, Button } from 'antd';
+import { Tabs, Input, Form, Flex, Button } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import { Footer } from 'antd/es/layout/layout';
 import Header from '../parts/header';
@@ -8,7 +8,7 @@ import QrCode, {escapeUnicode, } from '../parts/qrCodeViewer';
 import {isInPlayoffs, getTeamsPlaying, getIndexNumber, getAllianceOffset, getDivisionsList, getAllianceTags } from '../utils/tbaRequest';
 import { sleep, } from "../utils/utils";
 import type { TabsProps, } from "antd";
-import { NumberInput, Select } from '../parts/formItems';
+import { NumberInput, Select, SelectNew, Checkbox, Input as InputNew } from '../parts/formItems';
 
 namespace Fields {
     export type PreMatch = {
@@ -512,31 +512,16 @@ function MatchScout(props: any) {
           }}
         />
 
-        <h2>Scouter Initials</h2>
-        <Form.Item<FieldType>
+        <InputNew
+          title="Scouter Initials"
           name="scouter_initials"
-          rules={[
-            { required: true, message: 'Please input your initials!' },
-            {
-              pattern: /^[A-Za-z]{1,2}$/,
-              message: 'Please enter only letters (max 2)',
-            },
-          ]}
-        >
-          <Input
-            maxLength={2}
-            className="input"
-            onKeyPress={(event) => {
-              const keyCode = event.keyCode || event.which;
-              const keyValue = String.fromCharCode(keyCode);
-              if (!/^[A-Za-z]*$/.test(keyValue)) {
-                event.preventDefault();
-              }
-            }}
-          />
-        </Form.Item>
+          pattern="^[a-zA-Z]{1,2}$"
+          message="Please input your initials (1-2 letters only)"
+          align="left"
+          required
+        />
 
-        <Select<FieldType>
+        <SelectNew<FieldType>
           title={"Match Level"}
           name={"match_level"}
           options={rounds}
@@ -641,10 +626,10 @@ function MatchScout(props: any) {
 
     return (
       <div style={{ alignContent: 'center' }}>
-        <h2>Leave Starting Line?</h2>
-        <Form.Item<FieldType> name="auton_leave_starting_line" valuePropName="checked">
-          <Checkbox className='input_checkbox' />
-        </Form.Item>
+        <Checkbox<FieldType>
+          name="auton_leave_starting_line"
+          title="Leave Starting Line?"
+        />
         <div className="inputRow">
           <NumberInput<FieldType>
             title={"A Coral Scored L4"}
@@ -881,14 +866,13 @@ function MatchScout(props: any) {
           message={"Enter algae intake capability"}
           options={endgame_algae_intake_capability}
         />
-        <h2>Climb Successful?</h2>
-        <Form.Item<FieldType> name ="endgame_climb_successful" valuePropName="checked">
-          <Checkbox
-          className='input_checkbox'
+        <Checkbox<FieldType>
+          name="endgame_climb_successful"
+          title="Climp Successful?"
           onChange={(x : any) => {
             setClimbSuccessful(x.target.checked);
-          }}/>
-        </Form.Item>
+          }}
+        />
 
         <Select<FieldType>
           title={"Climb Type"}
@@ -915,25 +899,27 @@ function MatchScout(props: any) {
 
     return (
       <div className='matchbody'>
-        <div className='inputRow'>
-          <div className='input-wrapper'>
-            <h3>Robot died?</h3>
-            <Form.Item<FieldType> name="overall_robot_died" valuePropName="checked">
-              <Checkbox className='input_checkbox' />
-            </Form.Item>
-          </div>
-          <div className='input-wrapper'>
-            <h3>Defended others?</h3>
-            <Form.Item<FieldType> name="overall_defended_others" valuePropName="checked">
-              <Checkbox className='input_checkbox' onChange={() => { setDefendedIsVisible(!defendedIsVisible); }} />
-            </Form.Item>
-          </div>
-          <div className='input-wrapper'>
-            <h3>Was Defended?</h3>
-            <Form.Item<FieldType> name="overall_was_defended" valuePropName="checked">
-              <Checkbox className='input_checkbox' onChange={() => { setWasDefendedIsVisible(!wasDefendedIsVisible); }} />
-            </Form.Item>
-          </div>
+        <div className="inputRow">
+          <Checkbox
+            title="Robot died?"
+            name="overall_robot_died"
+            className='input_checkbox'
+          />
+          <Checkbox
+            title="Defended others?"
+            name="overall_defended_others"
+            className='input_checkbox'
+            onChange={() => {
+              setDefendedIsVisible(!defendedIsVisible);
+            }}
+          />
+          <Checkbox
+            title="Was Defended?"
+            name="overall_was_defended"
+            onChange={() => {
+              setWasDefendedIsVisible(!wasDefendedIsVisible);
+            }}
+          />
         </div>
 
         <div

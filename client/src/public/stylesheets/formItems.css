@@ -2,43 +2,152 @@
 	font-weight: bold;
 	color: var(--font-color);
 	flex-grow: 1;
+	width: 100%;
 
 	& > div {
 		display: flex;
 	}
-}
+	label {
+		font-size: 1rem;
+		display: block;
+	}
+	input {
+		background-color: transparent;
 
-/* ********** NUMBER ********** */
-input[type=number] {
-	appearance: textfield;
-	flex-grow: 1;
-	height: max(2rem, 100%);
-	padding: 0px;
-	border: 1px solid var(--font-color);
-	text-align: center;
-	display: block;
+		&:focus {
+			outline: 0px;
+		}
+	}
+	/* TODO: remove */
+	/* DEBUG */
+	&:has(input:valid) label {
+		color: green;
+	}
+	&:has(input:invalid) label {
+		color: red;
+	}
+	/* END DEBUG */
+	.message {
+		transition: opacity 0.5s ease-out;
+		opacity: 0;
+		height: 0;
+		overflow: hidden;
+		margin: auto;
+		color: var(--color-failure);
+	}
+	&:has(input:user-invalid) .message {
+		opacity: 1;
+		height: auto;
+	}
 }
-br {
-	display: block;
-	width: 100%;
-}
-.changeButton {
-	width: max(2rem, 5%);
-	height: max(2rem, 5%);
-	font-size: 1rem;
-	padding: 0px;
-	border: 1px solid var(--font-color);
-	display: block;
-}
-.changeButton__increment {
-	background-color: transparent;
-	color: var(--font-color);
-	border-left: 2px solid var(--font-color);
-}
-.changeButton__decrement {
-	background-color: transparent;
-	color: var(--font-color);
-	border-right: 2px solid var(--font-color);
-}
-/* ********** SELECT ********** */
+.input__text {
+	input[type=text] {
+		width: 100%;
+		box-sizing: border-box;
+		height: 3rem;
+		display: block;
+		border: 2px solid var(--font-color);
+		border-radius: 1rem;
+		text-align: center;
 
+		&:focus {
+			border: 2px solid var(--color-active-text);
+			outline: 1px solid var(--color-active-text);
+		}
+	}
+}
+.input__number {
+	input[type=number] {
+		appearance: textfield;
+		flex-grow: 1;
+		height: 100%;
+		padding: 0px;
+		border: 0px;
+		text-align: center;
+		display: block;
+		width: 100%;
+		box-sizing: border-box;
+		font-size: 2rem;
+	}
+	br {
+		display: block;
+		width: 100%;
+	}
+	& > div {
+		height: 3rem;
+		border: 2px solid var(--font-color);
+		border-radius: 1rem;
+
+		&:has(input:focus) {
+			border: 2px solid var(--color-active-text);
+			outline: 1px solid var(--color-active-text);
+		}
+	}
+	.changeButton {
+		width: max(5rem, 5%);
+		height: 100%;
+		font-size: 2rem;
+		padding: 0px;
+		display: block;
+		border: 0px;
+		background-color: transparent;
+		color: var(--font-color);
+	}
+	.changeButton__increment {
+		border-left: 2px solid var(--font-color);
+	}
+	.changeButton__decrement {
+		border-right: 2px solid var(--font-color);
+	}
+}
+.input__select {
+	select {
+		display: block;
+		width: 100%;
+		background-color: var(--background-color);
+		border: 2px solid var(--font-color);
+		appearance: none;
+		border-radius: 1rem;
+		height: 3rem;
+		text-align: center;
+		font-size: 1rem;
+
+		&:focus {
+			border: 2px solid var(--color-active-text);
+			outline: 1px solid var(--color-active-text);
+		}
+	}
+}
+.input__checkbox {
+	input[type=checkbox] {
+		appearance: none;
+		height: 3rem;
+		padding: 0px;
+		border: 2px solid var(--font-color);
+		text-align: center;
+		display: block;
+		width: 100%;
+		box-sizing: border-box;
+		margin: 0px;
+		border-radius: 1rem;
+
+		&:not(:checked) {
+			background-color: var(--color-failure);
+			&::after {
+				content: 'Yes';
+			}
+		}
+		&:checked {
+			background-color: var(--color-success);
+			&::after {
+				content: 'No';
+			}
+		}
+		&::after {
+			text-align: center;
+			vertical-align: bottom;
+			display: inline;
+			font-size: 2.5rem;
+		}
+	}
+}

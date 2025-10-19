@@ -8,7 +8,7 @@ function HomeRouter(props: any) {
 
   return (
     <>
-      <Header name={"Strategy App"} rootPage={true} />
+      <Header name={"Strategy App"}/>
       <a className='homeButton' href='#scoutingapp'>Scouting App</a>
       <a className='homeButton' href='#dtf'>DTF</a>
       {/* <a className='homebutton' href='#watchlist'>Watchlist</a> */}

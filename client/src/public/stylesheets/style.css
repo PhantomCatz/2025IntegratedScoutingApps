@@ -2,6 +2,11 @@
 	--background-color: #32a7dc;
 	--background-color: #000000;
 	--font-color: #ffffff;
+	--color-failure: #ff0000;
+	--color-success: #00ff00;
+	--color-active-text: #0000ff;
+	--color-hover: hsl(from var(--background-color) h s calc(l + 10));
+	--color-active: hsl(from var(--background-color) h s calc(l - 20));
 }
 
 * {
@@ -46,8 +51,8 @@ a {
 .ant-upload-list-item-name {
 	color: var(--font-color);
 }
-.anticon-paper-clip, input[type="checkbox"], .ant-checkbox-inner, .anticon, .ant-tooltip {
-	display: none;
+.anticon-paper-clip, .ant-checkbox-inner, .anticon, .ant-tooltip, .ant-checkbox > div, .ant-wave {
+	display: none !important;
 }
 .ant-upload-list-item-actions {
 	padding-right: 5%;

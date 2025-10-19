@@ -1,6 +1,7 @@
 import '../public/stylesheets/dtfHome.css';
 import { useEffect } from 'react';
 import { Input, Form, InputNumber } from 'antd';
+import { NumberInput, } from '../parts/formItems';
 import { NUM_ALLIANCES, TEAMS_PER_ALLIANCE, } from '../utils/utils';
 import Header from '../parts/header';
 
@@ -18,15 +19,15 @@ function DTF(props: any) {
       const teamNumberId = `team${teamNumber + TEAMS_PER_ALLIANCE * (allianceNumber - 1)}Num`;
 
       teamNumberInput.push(
-        <div key={teamNumberId}>
-          <h2>Team {teamNumber + TEAMS_PER_ALLIANCE * (allianceNumber - 1)} Number</h2>
-          <Form.Item
-            name={teamNumberId}
-            rules={[{ required: (teamNumber === 1), message: "Please input the team number!" }]}
-          >
-            <InputNumber min={0} className="input" />
-          </Form.Item>
-        </div>
+        <NumberInput
+          key={teamNumberId}
+          name={teamNumberId}
+          title={`Team ${teamNumber + TEAMS_PER_ALLIANCE * (allianceNumber - 1)} Number`}
+          min={0}
+          buttons={false}
+          align="left"
+          className="input"
+        />
       );
     }
 
@@ -42,9 +43,15 @@ function DTF(props: any) {
   return (
     <>
       <Header name={"Drive Team Feeder"} back={"#home"} />
-      <Form
+      <form
         form={form}
-        onFinish={async (event) => {
+        onSubmit={async (event) => {
+          console.log(`event=`, event);
+
+          for(const v of event.target) {
+            console.log(v);
+          }
+
           const teamNums = [];
 
           for(let i = 1; i <= NUM_ALLIANCES * TEAMS_PER_ALLIANCE; i++) {
@@ -54,14 +61,12 @@ function DTF(props: any) {
 
           teamNums.filter((num) => num !== undefined);
 
-          window.location.href = "#dtf/" + teamNums.join(",");
+          // window.location.href = "#dtf/" + teamNums.join(",");
         }}
       >
         {teamInput}
-        <Form.Item>
-          <Input type="submit" value="Submit" className="submit" />
-        </Form.Item>
-      </Form>
+        <input type="submit" value="Submit" className="submit" />
+      </form>
     </>
   );
 }

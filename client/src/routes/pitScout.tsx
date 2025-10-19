@@ -445,6 +445,7 @@ function PitScout(props: any) {
           message={"Please input team safety rating"}
           min={0}
           max={4}
+          defaultValue={4}
           form={form}
           align={"left"}
         />
@@ -476,20 +477,17 @@ function PitScout(props: any) {
         <h2 style={{ display: isLoading ? 'inherit' : 'none' }}>Submitting data...</h2>
 
         <Form.Item<FieldType> name="robot_images">
-          <>
-            <label className="robotImageLabel" htmlFor="robotImageInput">Select Image {`(${robotImageInput?.current?.files?.length ?? 0} images)`}</label>
-            <input
-              ref={robotImageInput}
-              id="robotImageInput"
-              type="file"
-              accept="image/*"
-              multiple
-              onChange={function() {
-                console.log(`robotImageInput?.current?.files?.length=`, robotImageInput?.current?.files?.length);
-                setRefresh(!refresh);
-              }}
-            />
-          </>
+          <label className="robotImageLabel" htmlFor="robotImageInput">Select Image {`(${robotImageInput?.current?.files?.length ?? 0} images)`}</label>
+          <input
+            ref={robotImageInput}
+            id="robotImageInput"
+            type="file"
+            accept="image/*"
+            multiple
+            onChange={function() {
+              setRefresh(!refresh);
+            }}
+          />
         </Form.Item>
         <Input type="submit" value="Submit" className='submit' style={{ marginBottom: '5%' }} />
       </div>

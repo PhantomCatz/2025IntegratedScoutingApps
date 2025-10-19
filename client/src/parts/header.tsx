@@ -15,9 +15,8 @@ const DEFAULT_THEME = "light";
  * props.name = name of current page
  */
 function Header(props: any) {
-	const isRootPage = props.rootPage || false;
 	const name = props.name || "No name set";
-	const backLink = props.back || "/";
+	const backLink = props.back;
 
 	const [theme, setTheme] = useLocalStorage<any>('theme', DEFAULT_THEME);
 	const [background, setBackground] = useLocalStorage<any>('background', '#ffffff');
@@ -89,15 +88,18 @@ function Header(props: any) {
 
 	return (
 		<header className="header">
-		{!isRootPage &&
-			<a href={backLink}><img className={"backImg"} src={iconSet.back} alt=''></img></a>}
-			<img
-				className={"logoImg"}
-				src={iconSet.icon}
-				onClick={handleLogoClick}
-				onDoubleClick={handleLogoDoubleClick}
-				alt="Logo"
-			/>
+			<div className="images">
+				{backLink &&
+					<a href={backLink}><img className={"backImg"} src={iconSet.back} alt=''/></a>
+				}
+				<img
+					className={"logoImg"}
+					src={iconSet.icon}
+					onClick={handleLogoClick}
+					onDoubleClick={handleLogoDoubleClick}
+					alt="Logo"
+				/>
+			</div>
 			<h1 className={"pageTitle"}>{name}</h1>
 		</header>
 	);
