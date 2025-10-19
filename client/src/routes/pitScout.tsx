@@ -418,9 +418,6 @@ function PitScout(props: any) {
         <h2>Aiming Description</h2>
         <Form.Item<FieldType>
           name="aiming_description"
-          rules={[
-            { required: true, message: 'Please input Aiming Description!' },
-          ]}
         >
          <TextArea style={{ verticalAlign: 'center' }} className='textbox_input' />
        </Form.Item>

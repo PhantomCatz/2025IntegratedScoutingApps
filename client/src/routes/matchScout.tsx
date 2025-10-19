@@ -584,54 +584,52 @@ function MatchScout(props: any) {
         />
 
         <details className="overrideOptions">
-        <summary>
-        Warning! These options should not be used normally!
-        </summary>
-        <NumberInput<FieldType>
-          title={"Override Team"}
-          name={"team_override"}
-          required={false}
-          onChange={(e? : number) => {
-            if(e) {
-              setTeam_number(e);
-            } else {
-              updateNumbers()
-            }
-          }}
-          min={0}
-          form={{
-            setFieldValue: () => {},
-            getFieldValue: () => {},
-          }}
-          buttons={false}
-          align={"left"}
-        />
+          <summary>Warning! These options should not be used normally!</summary>
+          <NumberInput<FieldType>
+            title={"Override Team"}
+            name={"team_override"}
+            required={false}
+            onChange={(e? : number) => {
+              if(e) {
+                setTeam_number(e);
+              } else {
+                updateNumbers()
+              }
+            }}
+            min={0}
+            form={{
+              setFieldValue: () => {},
+              getFieldValue: () => {},
+            }}
+            buttons={false}
+            align={"left"}
+          />
 
-        <button
-          type="button"
-          className={"noShowButton"}
-          onMouseDown={async () => {
-            const confirmed = window.confirm("Are you sure that this robot did not appear?");
+          <button
+            type="button"
+            className={"noShowButton"}
+            onMouseDown={async () => {
+              const confirmed = window.confirm("Are you sure that this robot did not appear?");
 
-            if(!confirmed) {
-              return;
-            }
+              if(!confirmed) {
+                return;
+              }
 
-            const values = {...noShowValues};
+              const values = {...noShowValues};
 
-            setTabNum("1");
-            await sleep(100);
-            setTabNum("2");
-            await sleep(100);
-            setTabNum("3");
-            await sleep(100);
-            setTabNum("4");
-            await sleep(100);
-            setTabNum("5");
-            form.setFieldsValue(values);
-            setRobot_appeared(false);
-          }}
-        >No Show</button>
+              setTabNum("1");
+              await sleep(100);
+              setTabNum("2");
+              await sleep(100);
+              setTabNum("3");
+              await sleep(100);
+              setTabNum("4");
+              await sleep(100);
+              setTabNum("5");
+              form.setFieldsValue(values);
+              setRobot_appeared(false);
+            }}
+          >No Show</button>
         </details>
 
       </>
