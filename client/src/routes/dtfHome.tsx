@@ -46,12 +46,6 @@ function DTF(props: any) {
       <form
         form={form}
         onSubmit={async (event) => {
-          console.log(`event=`, event);
-
-          for(const v of event.target) {
-            console.log(v);
-          }
-
           const teamNums = [];
 
           for(let i = 1; i <= NUM_ALLIANCES * TEAMS_PER_ALLIANCE; i++) {
@@ -61,7 +55,7 @@ function DTF(props: any) {
 
           teamNums.filter((num) => num !== undefined);
 
-          // window.location.href = "#dtf/" + teamNums.join(",");
+          window.location.href = "#dtf/" + teamNums.join(",");
         }}
       >
         {teamInput}

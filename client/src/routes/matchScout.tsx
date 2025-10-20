@@ -635,7 +635,7 @@ function MatchScout(props: any) {
             title={"A Coral Scored L4"}
             name={"auton_coral_scored_l4"}
             message={"Enter # coral scored for l4 in Auton"}
-            onIncrease={updateAutonValues}
+            onChange={updateAutonValues}
             form={form}
           />
 
@@ -643,7 +643,7 @@ function MatchScout(props: any) {
             title={"A Coral Missed L4"}
             name={"auton_coral_missed_l4"}
             message={"Enter # coral missed for l4 in Auton"}
-            onIncrease={updateAutonValues}
+            onChange={updateAutonValues}
             form={form}
           />
         </div>
@@ -653,7 +653,7 @@ function MatchScout(props: any) {
               title={"A Coral Scored L3"}
               name={"auton_coral_scored_l3"}
               message={"Enter # coral scored for l3 in Auton"}
-              onIncrease={updateAutonValues}
+              onChange={updateAutonValues}
               form={form}
             />
 
@@ -661,7 +661,7 @@ function MatchScout(props: any) {
               title={"A Coral Missed L3"}
               name={"auton_coral_missed_l3"}
               message={"Enter # coral missed for l3 in Auton"}
-              onIncrease={updateAutonValues}
+              onChange={updateAutonValues}
               form={form}
             />
         </div>
@@ -671,7 +671,7 @@ function MatchScout(props: any) {
             title={"A Coral Scored L2"}
             name={"auton_coral_scored_l2"}
             message={"Enter # coral scored for l2 in Auton"}
-            onIncrease={updateAutonValues}
+            onChange={updateAutonValues}
             form={form}
           />
 
@@ -679,7 +679,7 @@ function MatchScout(props: any) {
             title={"A Coral Missed L2"}
             name={"auton_coral_missed_l2"}
             message={"Enter # coral missed for l2 in Auton"}
-            onIncrease={updateAutonValues}
+            onChange={updateAutonValues}
             form={form}
           />
         </div>
@@ -689,7 +689,7 @@ function MatchScout(props: any) {
             title={"A Coral Scored L1"}
             name={"auton_coral_scored_l1"}
             message={"Enter # coral scored for l1 in Auton"}
-            onIncrease={updateAutonValues}
+            onChange={updateAutonValues}
             form={form}
           />
 
@@ -697,7 +697,7 @@ function MatchScout(props: any) {
             title={"A Coral Missed L1"}
             name={"auton_coral_missed_l1"}
             message={"Enter # coral missed for l1 in Auton"}
-            onIncrease={updateAutonValues}
+            onChange={updateAutonValues}
             form={form}
           />
         </div>
@@ -707,7 +707,7 @@ function MatchScout(props: any) {
             title={"A Algae Scored Net"}
             name={"auton_algae_scored_net"}
             message={"Enter # of algae scored for net in Auton"}
-            onIncrease={updateAutonValues}
+            onChange={updateAutonValues}
             form={form}
           />
 
@@ -715,7 +715,7 @@ function MatchScout(props: any) {
             title={"A Algae Missed Net"}
             name={"auton_algae_missed_net"}
             message={"Enter # of algae missed for net in Auton"}
-            onIncrease={updateAutonValues}
+            onChange={updateAutonValues}
             form={form}
           />
         </div>
@@ -725,7 +725,7 @@ function MatchScout(props: any) {
             title={"A Algae Processor"}
             name={"auton_algae_scored_processor"}
             message={"Enter # of algae scored for processor in Auton"}
-            onIncrease={updateAutonValues}
+            onChange={updateAutonValues}
             form={form}
           />
         </div>

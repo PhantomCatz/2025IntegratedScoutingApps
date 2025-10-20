@@ -22,6 +22,11 @@ body {
 	background-color: var(--background-color);
 	min-height: 100vh;
 }
+@media (aspect-ratio >= 1/1) and (width >= 80vh) and (height >= 800px) {
+	body {
+		max-width: 80vh
+	}
+}
 
 #root {
 	width: 100%;
@@ -139,7 +144,26 @@ input[type="number"]::-webkit-inner-spin-button, .ant-input-number-handler-wrap 
 }
 
 .ant-tabs-nav-wrap::before, .ant-tabs-nav-wrap::after {
-	display: none;
+	display: none !important;
+}
+.ant-input-wrapper.ant-input-group {
+	display: flex !important;
+	height: 100% !important;
+
+	& > *, & .changeButton {
+		width: auto;
+		height: 100% !important;
+	}
+	& > input {
+		flex-grow: 1;
+	}
+}
+.input-wrapper {
+	display: block !important;
+	flex-grow: 1 !important;
+}
+footer {
+	margin-top: 0px;
 }
 .tabButton, .submitButton {
 	width: 50%;
