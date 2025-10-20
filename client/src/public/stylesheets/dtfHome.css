@@ -8,28 +8,34 @@
 }
 
 .input_checkbox {
+    min-height: 120px !important;
     border: 2px solid var(--font-color) !important;
     border-radius: 25px;
     background-color: red;
+    font-size: 500% !important;
     font-weight: bold;
     color: var(--font-color) !important;
     text-align: center !important;
 }
 
 .input_checkbox_filled {
+    min-height: 120px !important;
     border: 2px solid var(--font-color) !important;
     border-radius: 25px;
     background-color: #61f761;
+    font-size: 500% !important;
     font-weight: bold;
     color: var(--font-color) !important;
     text-align: center !important;
 }
 
 .textbox_input {
+    min-width: 100%;
     height: 1000px !important;
     border: 2px solid var(--font-color) !important;
     border-radius: 25px;
     background-color: #A9A9A9;
+    font-size: 500% !important;
     font-weight: bold;
     color: var(--font-color) !important;
     text-align: center !important;

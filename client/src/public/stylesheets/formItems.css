@@ -1,42 +1,44 @@
 .input {
-	width: 100% !important;
-	height: 3rem !important;
-	border: 2px solid var(--font-color) !important;
-	border-radius: 20px !important;
-	background-color: transparent !important;
-	font-weight: bold !important;
-	color: var(--font-color) !important;
-	text-align: center !important;
+	font-weight: bold;
+	color: var(--font-color);
+	flex-grow: 1;
+
+	& > div {
+		display: flex;
+	}
 }
-.input .ant-input-group-addon {
-	padding: 0px !important;
+
+/* ********** NUMBER ********** */
+input[type=number] {
+	appearance: textfield;
+	flex-grow: 1;
+	height: max(2rem, 100%);
+	padding: 0px;
+	border: 1px solid var(--font-color);
+	text-align: center;
+	display: block;
 }
-.input .ant-input-wrapper > * {
-	border: 0px !important;
-}
-.numberInput > div {
+br {
+	display: block;
 	width: 100%;
 }
-.numberInput > h2 {
-	flex-grow: 1;
-	font-size: 1rem;
-}
-.input * {
-	color: var(--font-color) !important;
-	font-weight: bold !important;
-}
-.input input {
-	width: 100% !important;
-}
 .changeButton {
-	background-color: transparent !important;
-	color: var(--font-color) !important;
-	border: 0px !important;
-	border-radius: 0px !important;
+	width: max(2rem, 5%);
+	height: max(2rem, 5%);
+	font-size: 1rem;
+	padding: 0px;
+	border: 1px solid var(--font-color);
+	display: block;
 }
 .changeButton__increment {
-	border-left: 2px solid var(--font-color) !important;
+	background-color: transparent;
+	color: var(--font-color);
+	border-left: 2px solid var(--font-color);
 }
 .changeButton__decrement {
-	border-right: 2px solid var(--font-color) !important;
+	background-color: transparent;
+	color: var(--font-color);
+	border-right: 2px solid var(--font-color);
 }
+/* ********** SELECT ********** */
+

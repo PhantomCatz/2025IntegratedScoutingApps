@@ -81,7 +81,6 @@ function Strategic(props: any) {
         return value;
       })
       .then((data) => {
-				console.log(`data=`, data);
 
         if(!data?.length) {
           console.log(`No data for team ${team_number}`);

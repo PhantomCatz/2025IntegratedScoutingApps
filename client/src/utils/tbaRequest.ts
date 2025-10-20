@@ -78,8 +78,10 @@ async function getTeamsPlaying(eventName : string,
 							   allianceNumber1 : string,
 							   allianceNumber2 : string) : Promise<string[]> {
 	matchNumber = Number(matchNumber);
+	console.log("aorisetnoairsnt");
 
 	if(isInPlayoffs(matchLevel)) {
+		console.log("oaiersntoiaenrst");
 		const res =  await getTeamsPlayingPlayoffs(eventName, matchLevel, matchNumber, allianceNumber1, allianceNumber2);
 
 		return res;
@@ -90,8 +92,11 @@ async function getTeamsPlaying(eventName : string,
 		if (!matchLevel ||
 			!matchNumber
 		    ) {
+			console.log(`matchLevel=`, matchLevel);
+			console.log(`matchNumber=`, matchNumber);
 			throw new Error();
 		}
+		console.log("134");
 
 		const matchId = getMatchId(eventName, matchLevel, matchNumber);
 
