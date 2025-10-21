@@ -116,7 +116,7 @@ function TeamData(props: any) {
         title={"Match Event"}
         name={"match_event"}
         options={matchEvents}
-				required={false}
+        required={false}
         onChange={async (e? : string) => {
           if(e) {
             await setMatchEvent(e);

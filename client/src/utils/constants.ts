@@ -9,5 +9,5 @@ const constants = {
 } as const;
 
 for(const [name, value] of Object.entries(constants)) {
-	globalThis[name] = value;
+  globalThis[name] = value;
 }

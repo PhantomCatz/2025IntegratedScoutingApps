@@ -16,17 +16,17 @@
 	align-items: center;
 }
 .pit-comments {
-    width: 100%;
-    min-width: 100%;
-    height: 200px !important;
-    min-height: 200px !important;
-    border: 2px solid var(--font-color) !important;
-    border-radius: 25px;
-    background-color: #32A7DC;
-    font-weight: bold;
-    color: var(--font-color) !important;
-    text-align: center !important;
-    background: transparent !important;
+	width: 100%;
+	min-width: 100%;
+	height: 200px !important;
+	min-height: 200px !important;
+	border: 2px solid var(--font-color) !important;
+	border-radius: 25px;
+	background-color: #32A7DC;
+	font-weight: bold;
+	color: var(--font-color) !important;
+	text-align: center !important;
+	background: transparent !important;
 }
 .pitImage {
 	max-width: 90vw;
