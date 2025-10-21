@@ -37,6 +37,6 @@ export {
   TEAMS_PER_ALLIANCE,
   round,
   sleep,
-	mapInPlace,
-	readImage,
+  mapInPlace,
+  readImage,
 };

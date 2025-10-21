@@ -1,6 +1,6 @@
 .ant-table-cell {
-    background-color: var(--background-color);
-    border-collapse: collapse;
+	background-color: var(--background-color);
+	border-collapse: collapse;
 	text-align: center !important;
 }
 .ant-table-content, .ant-table-container, .ant-table, .ant-spin-container, .ant-spin-nested-loading, .ant-table-wrapper {
@@ -42,6 +42,6 @@
 }
 .commentBox {
 	width: 500px;
-    height: auto;
+	height: auto;
 }
 

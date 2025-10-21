@@ -198,7 +198,7 @@ function DTFTeams(props: any) {
     case "teleop_coral_missed_l1":
     case "teleop_algae_scored_net":
     case "teleop_algae_missed_net":
-		case "endgame_climb_successful":
+      case "endgame_climb_successful":
       const total_field = k.replace("_missed","").replace("_scored","") + ("_total");
       if(data[total_field] === undefined) {
         data[total_field] = v as any/l;
@@ -206,7 +206,7 @@ function DTFTeams(props: any) {
         data[total_field] += v as any/l;
       }
       break;
-		}
+    }
   }
   function getScore(k : any, v : any) {
     const map : any = {
