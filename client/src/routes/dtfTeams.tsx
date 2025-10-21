@@ -63,7 +63,7 @@ function DTFTeams(props: any) {
 
     fetch(fetchLink)
       .then((res) => res.json())
-      .then((data) => {
+      .then(async (data) => {
         /*
           data = {
           <1-6>: [
@@ -72,7 +72,7 @@ function DTFTeams(props: any) {
           }
           field, value from database
         */
-        preprocessData(data);
+        await preprocessData(data);
         setTeamsMatchData(data);
       })
       .catch((err) => {
@@ -86,25 +86,26 @@ function DTFTeams(props: any) {
       const strategicData = {};
       for(const team of teams) {
         const res = await fetch(fetchLink + `&team=${team}`);
-        const data = res.json();
+        const data = await res.json();
         strategicData[team] = data;
       }
-      preprocessData(strategicData);
+      await preprocessData(strategicData);
       setTeamsStrategicData(strategicData);
     })()
   }, [teamList]);
   useEffect(() => {
     getDTF(teamList);
-  }, [teamsMatchData]);
+  }, [teamsMatchData, teamsStragicData]);
 
-  function preprocessData(data) {
+  async function preprocessData(data) {
     const matchLevelOrder = {
       "Qualifications": 0,
       "Playoffs": 1,
       "Finals": 2,
     } as const;
+    console.log(`data=`, data);
     for(const teamIndex in data) {
-      data[teamIndex].sort(function(a, b) {
+      (await data[teamIndex]).sort(function(a, b) {
         const matchLevelComp = matchLevelOrder[a.match_level] - matchLevelOrder[b.match_level];
         if(matchLevelComp !== 0) {
           return matchLevelComp;
@@ -552,6 +553,10 @@ function DTFTeams(props: any) {
   }
   async function getDTF(teams: string[]) {
     setLoading(true);
+
+    if(!teamsMatchData || !teamsStragicData) {
+      return;
+    }
 
     try {
       let index = 2;
