@@ -118,8 +118,6 @@ function TeamData(props: any) {
         onChange={async (e? : string) => {
           if(e) {
             await setMatchEvent(e);
-          } else {
-
           }
         }}
       />

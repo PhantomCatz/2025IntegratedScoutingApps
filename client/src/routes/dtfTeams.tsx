@@ -175,7 +175,7 @@ function DTFTeams(props: any) {
       //console.log("did nothing for", k);
       break;
     }
-    switch(k){
+    switch(k) {
     // Average values
     case "auton_coral_scored_l4":
     case "auton_coral_missed_l4":
@@ -198,7 +198,7 @@ function DTFTeams(props: any) {
     case "teleop_coral_missed_l1":
     case "teleop_algae_scored_net":
     case "teleop_algae_missed_net":
-
+		case "endgame_climb_successful":
       const total_field = k.replace("_missed","").replace("_scored","") + ("_total");
       if(data[total_field] === undefined) {
         data[total_field] = v as any/l;
@@ -206,9 +206,7 @@ function DTFTeams(props: any) {
         data[total_field] += v as any/l;
       }
       break;
-
-
-    }
+		}
   }
   function getScore(k : any, v : any) {
     const map : any = {
@@ -385,26 +383,26 @@ function DTFTeams(props: any) {
 
         teamTabs.push({ key: "Auton", label: "Auton", children:
           <>
-            <Flex justify='in-between'>
-              <Flex vertical align='flex-start'>
+            <div style={{display: 'flex',}}>
+              <div style={{flexGrow: 1, }}>
                 <h2>L1 avg</h2>
                 <Input className="dtf-input" disabled value={`${data.auton_coral_scored_l1}/${data.auton_coral_l1_total}`} />
-              </Flex>
-              <Flex vertical align='flex-start'>
+              </div>
+              <div style={{flexGrow: 1, }}>
                 <h2>L2 avg</h2>
                 <Input className="dtf-input" disabled value={`${data.auton_coral_scored_l2}/${data.auton_coral_l2_total}`} />
-              </Flex>
-            </Flex>
-            <Flex justify='in-between'>
-              <Flex vertical align='flex-start'>
+              </div>
+            </div>
+            <div style={{display: 'flex',}}>
+              <div style={{flexGrow: 1, }}>
                 <h2>L3 avg</h2>
                 <Input className="dtf-input" disabled value={`${data.auton_coral_scored_l3}/${data.auton_coral_l3_total}`} />
-              </Flex>
-              <Flex vertical align='flex-start'>
+              </div>
+              <div style={{flexGrow: 1, }}>
                 <h2>L4 avg</h2>
                 <Input className="dtf-input" disabled value={`${data.auton_coral_scored_l4}/${data.auton_coral_l4_total}`} />
-              </Flex>
-            </Flex>
+              </div>
+            </div>
 
             <h2>Avg Algae Processed</h2>
             <Input className="input" disabled value={data.auton_algae_scored_processor} />
@@ -415,32 +413,34 @@ function DTFTeams(props: any) {
 
         teamTabs.push({ key: "Teleop/End", label: "Teleop/End", children:
           <>
-            <Flex justify='in-between'>
-              <Flex vertical align='flex-start'>
+            <div style={{display: 'flex',}}>
+              <div style={{flexGrow: 1, }}>
                 <h2>L1 avg</h2>
                 <Input className="dtf-input" disabled value={`${data.teleop_coral_scored_l1}/${data.teleop_coral_l1_total}`} />
-              </Flex>
-              <Flex vertical align='flex-start'>
+              </div>
+              <div style={{flexGrow: 1, }}>
                 <h2>L2 avg</h2>
                 <Input className="dtf-input" disabled value={`${data.teleop_coral_scored_l2}/${data.teleop_coral_l2_total}`} />
-              </Flex>
-            </Flex>
-            <Flex justify='in-between'>
-              <Flex vertical align='flex-start'>
+              </div>
+            </div>
+            <div style={{display: 'flex',}}>
+              <div style={{flexGrow: 1, }}>
                 <h2>L3 avg</h2>
                 <Input className="dtf-input" disabled value={`${data.teleop_coral_scored_l3}/${data.teleop_coral_l3_total}`} />
-              </Flex>
-              <Flex vertical align='flex-start'>
+              </div>
+              <div style={{flexGrow: 1, }}>
                 <h2>L4 avg</h2>
                 <Input className="dtf-input" disabled value={`${data.teleop_coral_scored_l4}/${data.teleop_coral_l4_total}`} />
-              </Flex>
-            </Flex>
+              </div>
+            </div>
             <h2>Avg Algae Processed</h2>
             <Input className="input" disabled value={data.teleop_algae_scored_processor} />
             <h2>Avg Algae Net</h2>
             <Input className="input" disabled value={`${data.teleop_algae_scored_net}/${data.teleop_algae_net_total}`}  />
             <h2>Climb Type</h2>
             <Input className="input" disabled value={data.endgame_climb_type} />
+            <h2>Avg Climb Success</h2>
+            <Input className="input" disabled value={data.endgame_climb_successful_total} />
             <h2>Avg Climb Time</h2>
             <Input className="input" disabled value={data.endgame_climb_time} />
           </>
