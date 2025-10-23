@@ -22,7 +22,6 @@ function DTF(props: any) {
           <h2>Team {teamNumber + TEAMS_PER_ALLIANCE * (allianceNumber - 1)} Number</h2>
           <Form.Item
             name={teamNumberId}
-            rules={[{ required: (teamNumber === 1), message: "Please input the team number!" }]}
           >
             <InputNumber min={0} className="input" />
           </Form.Item>

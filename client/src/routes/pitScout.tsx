@@ -488,7 +488,6 @@ function PitScout(props: any) {
               accept="image/*"
               multiple
               onChange={function() {
-                console.log(`robotImageInput?.current?.files?.length=`, robotImageInput?.current?.files?.length);
                 setRefresh(!refresh);
               }}
             />

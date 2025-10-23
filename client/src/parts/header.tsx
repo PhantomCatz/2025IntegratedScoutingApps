@@ -2,6 +2,8 @@ import lightBack from '../public/images/light-back.png';
 import darkBack from '../public/images/dark-back.png';
 import lightLogo from '../public/images/light-logo.png';
 import darkLogo from '../public/images/dark-logo.png';
+import lightMenu from '../public/images/ThreeWhiteBars.png';
+import darkMenu from '../public/images/ThreeBlackMenuBars.png';
 import '../public/stylesheets/header.css';
 import React, { useEffect } from 'react';
 import {useLocalStorage, } from 'react-use';
@@ -41,14 +43,18 @@ function Header(props: any) {
 		light: {
 			icon: darkLogo,
 			back: darkBack,
+			menu: darkMenu,
+
 		},
 		dark: {
 			icon: lightLogo,
 			back: lightBack,
+			menu: lightMenu,
 		},
 		random: {
 			icon: lightLogo,
 			back: lightBack,
+			menu: lightMenu,
 		},
 	};
 
@@ -91,6 +97,7 @@ function Header(props: any) {
 		<header className="header">
 		{!isRootPage &&
 			<a href={backLink}><img className={"backImg"} src={iconSet.back} alt=''></img></a>}
+
 			<img
 				className={"logoImg"}
 				src={iconSet.icon}
@@ -99,6 +106,8 @@ function Header(props: any) {
 				alt="Logo"
 			/>
 			<h1 className={"pageTitle"}>{name}</h1>
+			<a href={"#settings"}><img className={"menuImg"} src={iconSet.menu} alt=''></img></a>
+
 		</header>
 	);
 }
