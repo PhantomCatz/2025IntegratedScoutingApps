@@ -182,11 +182,11 @@ function createChart(canvas, teamMatches, matchNumbers, config, tooltipCallback)
 
 
       message.push(`${dataPoint.dataset.label}:`);
-      message.push(`\n${names[0][0]}: ${match[names[0][1]]}`);
+      message.push(`${names[0][0]}: ${match[names[0][1]]}`);
 
 
       for(let i = 1; i < names.length; i++) {
-        message.push(`\n${names[i][0]}: ${match[names[i][1]]}`);
+        message.push(`${names[i][0]}: ${match[names[i][1]]}`);
       }
 
       if(tooltipCallback) {
