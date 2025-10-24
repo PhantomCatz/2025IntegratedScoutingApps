@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import Chart from 'chart.js/auto';
+import { splitString, } from '../utils/utils';
 
 function ChartComponent(props : any) {
   const autonAlgaeCanvas = useRef(null);
@@ -10,6 +11,7 @@ function ChartComponent(props : any) {
   const teamNumber = props.teamNumber;
   const index = props.index;
   const teamMatches = props.teamMatches; // [{<field>:<value>},...] for field, value in match database
+  const teamStrategic = props.teamStrategic; // [{<field>:<value>},...] for field, value in match database
 
   useEffect(() => {
     if(!(autonAlgaeCanvas.current &&
@@ -26,52 +28,93 @@ function ChartComponent(props : any) {
       return match_level[0] + match_number;
     });
 
+    function commentCallback(message, items) {
+      const dataPoint = items[0];
+      const match = teamMatches[dataPoint.dataIndex];
+      const match_number = match.match_number;
+      const match_level = match.match_level;
+
+      const currentTeamMatches = teamMatches.filter((row) => row.match_number === match_number && row.match_level === match_level);
+      const currentStrategicMatches = teamStrategic.filter((row) => row.match_number === match_number && row.match_level === match_level);
+      const comments = [];
+      for(const match of currentTeamMatches) {
+        message.push("MS: " + match.overall_comments);
+      }
+      for(const match of currentStrategicMatches) {
+        message.push("SS: " + match.comments);
+      }
+    }
+
     createChart(autonAlgaeCanvas.current, teamMatches, matchNumbers, {
       "Scored": {
-        "Net": "auton_algae_scored_net",
-        "Processor": "auton_algae_scored_processor",
+        values: {
+          "Net": "auton_algae_scored_net",
+          "Processor": "auton_algae_scored_processor",
+        },
+        calculateAverage: true,
       },
       "Missed": {
-        "Net": "auton_algae_missed_net",
+        values: {
+          "Net": "auton_algae_missed_net",
+        },
+        calculateAverage: true,
       },
-    });
+    }, commentCallback);
     createChart(teleopAlgaeCanvas.current, teamMatches, matchNumbers, {
       "Scored": {
-        "Net": "teleop_algae_scored_net",
-        "Processor": "teleop_algae_scored_processor",
+        values: {
+          "Net": "teleop_algae_scored_net",
+          "Processor": "teleop_algae_scored_processor",
+        },
+        calculateAverage: true,
       },
       "Missed": {
-        "Net": "teleop_algae_missed_net",
+        values: {
+          "Net": "teleop_algae_missed_net",
+        },
+        calculateAverage: true,
       },
-    });
+    }, commentCallback);
     createChart(autonCoralCanvas.current, teamMatches, matchNumbers, {
       "Scored": {
-        "L1": "auton_coral_scored_l1",
-        "L2": "auton_coral_scored_l2",
-        "L3": "auton_coral_scored_l3",
-        "L4": "auton_coral_scored_l4",
+        values: {
+          "L1": "auton_coral_scored_l1",
+          "L2": "auton_coral_scored_l2",
+          "L3": "auton_coral_scored_l3",
+          "L4": "auton_coral_scored_l4",
+        },
+        calculateAverage: true,
       },
       "Missed": {
-        "L1": "auton_coral_missed_l1",
-        "L2": "auton_coral_missed_l2",
-        "L3": "auton_coral_missed_l3",
-        "L4": "auton_coral_missed_l4",
+        values: {
+          "L1": "auton_coral_missed_l1",
+          "L2": "auton_coral_missed_l2",
+          "L3": "auton_coral_missed_l3",
+          "L4": "auton_coral_missed_l4",
+        },
+        calculateAverage: true,
       },
-    });
+    }, commentCallback);
     createChart(teleopCoralCanvas.current, teamMatches, matchNumbers, {
       "Scored": {
-        "L1": "teleop_coral_scored_l1",
-        "L2": "teleop_coral_scored_l2",
-        "L3": "teleop_coral_scored_l3",
-        "L4": "teleop_coral_scored_l4",
+        values: {
+          "L1": "teleop_coral_scored_l1",
+          "L2": "teleop_coral_scored_l2",
+          "L3": "teleop_coral_scored_l3",
+          "L4": "teleop_coral_scored_l4",
+        },
+        calculateAverage: true,
       },
       "Missed": {
-        "L1": "teleop_coral_missed_l1",
-        "L2": "teleop_coral_missed_l2",
-        "L3": "teleop_coral_missed_l3",
-        "L4": "teleop_coral_missed_l4",
+        values: {
+          "L1": "teleop_coral_missed_l1",
+          "L2": "teleop_coral_missed_l2",
+          "L3": "teleop_coral_missed_l3",
+          "L4": "teleop_coral_missed_l4",
+        },
+        calculateAverage: true,
       },
-    });
+    }, commentCallback);
 
   }, [autonAlgaeCanvas.current, teleopAlgaeCanvas.current, autonCoralCanvas.current, teleopCoralCanvas.current]);
 
@@ -90,53 +133,72 @@ function ChartComponent(props : any) {
   );
 }
 
-function createChart(canvas, teamMatches, matchNumbers, config) {
+function createChart(canvas, teamMatches, matchNumbers, config, tooltipCallback) {
   const values = [];
   const averages = [];
-  for(const [line, names] of Object.entries(config)) {
+  for(const [dataLine, lineOptions] of Object.entries(config)) {
+    const doAverage = lineOptions.calculateAverage;
     let average = 0;
     const data = teamMatches.map(function(row) {
       let value = 0;
-      for(const [name, item] of Object.entries(names)) {
+      for(const [name, item] of Object.entries(lineOptions.values)) {
         value += row[item];
       }
-      average += value;
+
+      if(doAverage) {
+        average += value;
+      }
 
       return value;
     });
 
     values.push({
-      label: line,
+      label: dataLine,
       data: data,
     });
 
-    if(teamMatches.length > 0) {
-      average /= teamMatches.length;
+    if(doAverage) {
+      if(teamMatches.length > 0) {
+        average /= teamMatches.length;
+      }
+      averages.push({
+        label: `Average ${dataLine}`,
+        data: Array(teamMatches.length).fill(average),
+        pointRadius: 0,
+      });
     }
-    averages.push({
-      label: `Average ${line}`,
-      data: Array(teamMatches.length).fill(average),
-      pointRadius: 0,
-    });
   }
 
   function tooltip(items) {
-    const dataPoint = items[0];
-    const match = teamMatches[dataPoint.dataIndex];
+    let message = [];
+    for(const dataPoint of items) {
+      const match = teamMatches[dataPoint.dataIndex];
 
-    const entry = config[dataPoint.dataset.label];
-    if(!entry) {
-      return '';
+      const entry = config[dataPoint.dataset.label]?.values;
+      if(!entry) {
+        continue;
+      }
+      const names = Object.entries(entry);
+
+
+      message.push(`${dataPoint.dataset.label}:`);
+      message.push(`${names[0][0]}: ${match[names[0][1]]}`);
+
+
+      for(let i = 1; i < names.length; i++) {
+        message.push(`${names[i][0]}: ${match[names[i][1]]}`);
+      }
+
+      if(tooltipCallback) {
+        tooltipCallback(message, items);
+      }
     }
-    const names = Object.entries(entry);
 
-    let message = `${names[0][0]}: ${match[names[0][1]]}`;
+    const lineLength = 80;
+    const lineSep = "\n";
+    const wrappedLines = message.map((l) => splitString(l, lineLength).join(lineSep));
 
-    for(let i = 1; i < names.length; i++) {
-      message += `\n${names[i][0]}: ${match[names[i][1]]}`;
-    }
-
-    return message;
+    return wrappedLines.join(lineSep);
   }
 
   const chart = new Chart(canvas, {

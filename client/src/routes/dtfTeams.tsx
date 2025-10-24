@@ -15,7 +15,8 @@ function DTFTeams(props: any) {
   const [items, setItems] = useState<{ key: string; label: string; children: JSX.Element; }[]>([]);
   const [teamList, setTeamList] = useState<string[]>([]);
   const [teamIndex, setTeamIndex] = useState<any>();
-  const [teamData, setTeamData] = useState<any>();
+  const [teamsMatchData, setTeamsMatchData] = useState<any>();
+  const [teamsStragicData, setTeamsStrategicData] = useState<any>();
 
   useEffect(() => {
     document.title = props.title;
@@ -61,11 +62,8 @@ function DTFTeams(props: any) {
     }
 
     fetch(fetchLink)
-      .then((res) => {
-        const value = res.json();
-        return value;
-      })
-      .then((data) => {
+      .then((res) => res.json())
+      .then(async (data) => {
         /*
           data = {
           <1-6>: [
@@ -74,25 +72,40 @@ function DTFTeams(props: any) {
           }
           field, value from database
         */
-        preprocessData(data);
-        setTeamData(data);
+        await preprocessData(data);
+        setTeamsMatchData(data);
       })
       .catch((err) => {
         console.log("Error fetching data. Is server on?", err);
       });
+
+    fetchLink = SERVER_ADDRESS;
+    fetchLink += "reqType=getTeamStrategic";
+
+    (async () => {
+      const strategicData = {};
+      for(const team of teams) {
+        const res = await fetch(fetchLink + `&team=${team}`);
+        const data = await res.json();
+        strategicData[team] = data;
+      }
+      await preprocessData(strategicData);
+      setTeamsStrategicData(strategicData);
+    })()
   }, [teamList]);
   useEffect(() => {
     getDTF(teamList);
-  }, [teamData]);
+  }, [teamsMatchData, teamsStragicData]);
 
-  function preprocessData(data) {
+  async function preprocessData(data) {
     const matchLevelOrder = {
       "Qualifications": 0,
       "Playoffs": 1,
       "Finals": 2,
     } as const;
+    console.log(`data=`, data);
     for(const teamIndex in data) {
-      data[teamIndex].sort(function(a, b) {
+      (await data[teamIndex]).sort(function(a, b) {
         const matchLevelComp = matchLevelOrder[a.match_level] - matchLevelOrder[b.match_level];
         if(matchLevelComp !== 0) {
           return matchLevelComp;
@@ -357,9 +370,9 @@ function DTFTeams(props: any) {
       }
 
       const dataIndex = teamIndex[team];
-      const teamMatches = teamData[dataIndex];
+      const teamMatches = teamsMatchData[dataIndex];
 
-      const data : any = mergeTeamData(teamMatches);
+      const data = mergeTeamData(teamMatches);
       persistentData[team] = data;
       alliancePersistentData.push(data);
 
@@ -368,8 +381,10 @@ function DTFTeams(props: any) {
         hasData = false;
       }
 
-      // let pitData = await PitTabs(Number(team)) || undefined;
-      let strategicData = await StrategicTabs(Number(team)) || undefined;
+
+      const strategicData = teamsStragicData[team];
+      // let pitData = await PitTabs(Number(team));
+      let strategicTabs = await StrategicTabs({team: team, data: strategicData});
 
       const teamTabs = [];
       let teamTabsCount = 1;
@@ -377,7 +392,7 @@ function DTFTeams(props: any) {
       if(hasData) {
         teamTabs.push({ key: "Charts", label: "Charts", children:
           <>
-            <ChartComponent teamNumber={team} index={teamCount} teamMatches={teamMatches}/>
+            <ChartComponent teamNumber={team} index={teamCount} teamMatches={teamMatches} teamStrategic={strategicData}/>
           </>
         });
 
@@ -478,9 +493,9 @@ function DTFTeams(props: any) {
      */
       teamTabs.push({ key: "Strategic", label: "Strategic", children:
         <>
-          { strategicData &&
-            <Tabs items={strategicData} centered className="tabs" />
-              || <p className={"errorLabel"}>No Strategic Data</p>
+          { strategicTabs ?
+            <Tabs items={strategicTabs} centered className="tabs" />
+              : <p className={"errorLabel"}>No Strategic Data</p>
           }
         </>
       });
@@ -539,11 +554,15 @@ function DTFTeams(props: any) {
   async function getDTF(teams: string[]) {
     setLoading(true);
 
+    if(!teamsMatchData || !teamsStragicData) {
+      return;
+    }
+
     try {
       let index = 2;
       const match: { key: string; label: string; children: JSX.Element }[] = [];
 
-      if(!teamData) {
+      if(!teamsMatchData) {
         console.log("Could not load DTF. No data found");
         return (<></>);
       } else {
