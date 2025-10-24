@@ -22,7 +22,7 @@ function Header(props: any) {
 	const backLink = props.back || "/";
 
 	const [theme, setTheme] = useLocalStorage<any>('theme', DEFAULT_THEME);
-	const [background, setBackground] = useLocalStorage<any>('background', '#ffffff');
+	const [backgroundColor, setBackgroundColor] = useLocalStorage<any>('backgroundColor', '#ffffff');
 	const [fontColor, setFontColor] = useLocalStorage<any>('fontColor', '#000000');
 
 	const colors : any = {
@@ -76,10 +76,12 @@ function Header(props: any) {
 		if(!colors[newTheme]) {
 			newTheme = DEFAULT_THEME;
 			console.log(`newTheme=`, newTheme);
-	}
+		}
+
 		const themeColors = colors[newTheme];
 		const color = themeColors();
-		setBackground(color["--background-color"]);
+
+		setBackgroundColor(color["--background-color"]);
 		setFontColor(color["--font-color"]);
 
 		setTheme(newTheme);
@@ -87,7 +89,7 @@ function Header(props: any) {
 
 	useEffect(() => {
 		const rootElement = document.querySelector(":root") as any;
-		rootElement.style.setProperty('--background-color', background);
+		rootElement.style.setProperty('--background-color', backgroundColor);
 		rootElement.style.setProperty('--font-color', fontColor);
 	}, [theme]);
 
@@ -101,9 +103,9 @@ function Header(props: any) {
 			<img
 				className={"logoImg"}
 				src={iconSet.icon}
+				alt="Logo"
 				onClick={handleLogoClick}
 				onDoubleClick={handleLogoDoubleClick}
-				alt="Logo"
 			/>
 			<h1 className={"pageTitle"}>{name}</h1>
 			<a href={"#settings"}><img className={"menuImg"} src={iconSet.menu} alt=''></img></a>
@@ -121,25 +123,3 @@ function getRandomHex() {
 }
 
 export default Header;
-
-/*
-[localStorage.background, localStorage.fontColor]
-Array [ '"#F6C586"', '"#357856"' ]
-
-[localStorage.background, localStorage.fontColor]
-Array [ '"#460372"', '"#70D880"' ]
-
-[localStorage.background, localStorage.fontColor]
-Array [ '"#350009"', '"#F76E46"' ]
-
-[localStorage.background, localStorage.fontColor]
-Array [ '"#29595C"', '"#BCE6BD"' ]
-
-[localStorage.background, localStorage.fontColor]
-Array [ '"#1E0F09"', '"#DE607D"' ]
-
-[localStorage.background, localStorage.fontColor]
-Array [ '"#0B7642"', '"#6EB907"' ]
-
-​
-*/
