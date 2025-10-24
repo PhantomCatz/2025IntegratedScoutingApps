@@ -12,6 +12,7 @@ import PitScout from './routes/pitScout';
 import DataLookup from './routes/matchLookup';
 import TeamData from './routes/matchData';
 import Picklist from './routes/picklist';
+import Settings from './routes/settingsPage';
 // import Watchlist from './routes/watchlist';
 // import WatchlistGet from './routes/watchlistData';
 // import WatchlistUpdate from './routes/watchlistUpdate';
@@ -85,6 +86,7 @@ function App() {
         {/* <Route path="/watchlist" element={<Watchlist title="2637 Watch List" />} /> */}
         {/* <Route path="/watchlist/:team_number" element={<WatchlistGet title="2637 Watch List" />} /> */}
         {/* <Route path="/watchlist/update/:question_info" element={<WatchlistUpdate title="2637 Watch List" />} /> */}
+        <Route path="/settings" element={<Settings title="Settings" />} />
       </Routes>
     </HashRouter>
   );
