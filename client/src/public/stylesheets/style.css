@@ -129,32 +129,6 @@ input[type="number"]::-webkit-inner-spin-button, .ant-input-number-handler-wrap 
 .ant-input-number-group-addon {
 	padding: 0px !important;
 }
-.submit {
-	width: 50% !important;
-	border: 2px solid var(--font-color) !important;
-	border-radius: 5px !important;
-	background-color: transparent !important;
-	color: var(--font-color) !important;
-	text-align: center !important;
-	align-items: center !important;
-	margin-left: 25% !important;
-	font-weight: bold !important;
-}
-.died {
-	color: red !important;
-}
-
-.logo {
-	background-color: var(--background-color) !important;
-}
-.ant-btn {
-	border-color: var(--font-color) !important;
-}
-[class^=ant] {
-	/*
-	background-color: transparent !important;
-	*/
-}
 .ant-checkbox, .ant-checkbox-wrapper {
 	width: 100% !important;
 	display: block !important;

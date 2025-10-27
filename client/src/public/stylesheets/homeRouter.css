@@ -1,11 +1,13 @@
-.homeButton {
-	font-size: 18pt;
-	height: 6rem;
-	border: 2px solid var(--font-color);
-	border-radius: 20px;
-	color: var(--font-color);
-	align-items: center;
-	display: flex;
-	justify-content: center;
-	margin-top: 2rem;
+.homeRouter {
+	.homeButton {
+		font-size: 18pt;
+		height: 6rem;
+		border: 2px solid var(--font-color);
+		border-radius: 20px;
+		color: var(--font-color);
+		align-items: center;
+		display: flex;
+		justify-content: center;
+		margin-top: 2rem;
+	}
 }

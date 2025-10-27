@@ -7,19 +7,14 @@ import darkMenu from '../public/images/ThreeBlackMenuBars.png';
 import '../public/stylesheets/header.css';
 import React, { useEffect } from 'react';
 import {useLocalStorage, } from 'react-use';
+import { getRandomHex, } from "../utils/utils";
 
 const DEFAULT_THEME = "light";
 
-/**
- * Header Component
- *
- * props.back = link to previous page
- * props.name = name of current page
- */
 function Header(props: any) {
 	const isRootPage = props.rootPage || false;
 	const name = props.name || "No name set";
-	const backLink = props.back || "/";
+	const backLink = props.back;
 
 	const [theme, setTheme] = useLocalStorage<any>('theme', DEFAULT_THEME);
 	const [backgroundColor, setBackgroundColor] = useLocalStorage<any>('backgroundColor', '#ffffff');
@@ -97,29 +92,22 @@ function Header(props: any) {
 
 	return (
 		<header className="header">
-		{!isRootPage &&
-			<a href={backLink}><img className={"backImg"} src={iconSet.back} alt=''></img></a>}
-
-			<img
-				className={"logoImg"}
-				src={iconSet.icon}
-				alt="Logo"
-				onClick={handleLogoClick}
-				onDoubleClick={handleLogoDoubleClick}
-			/>
+			<div className="images">
+				{backLink &&
+					<a href={backLink}><img className={"backImg"} src={iconSet.back} alt='Go back'/></a>
+				}
+				<img
+					className={"logoImg"}
+					src={iconSet.icon}
+					onClick={handleLogoClick}
+					onDoubleClick={handleLogoDoubleClick}
+					alt="2637 Logo"
+				/>
+			</div>
 			<h1 className={"pageTitle"}>{name}</h1>
-			<a href={"#settings"}><img className={"menuImg"} src={iconSet.menu} alt=''></img></a>
-
 		</header>
 	);
 }
 
-
-function getRandomHex() {
-	const vals = "0123456789ABCDEF";
-	const randVal = Math.floor(Math.random() * vals.length);
-
-	return vals[randVal];
-}
 
 export default Header;

@@ -1,22 +1,17 @@
 import ReactDOM from 'react-dom/client';
-import HomePage from './routes/homeRouter';
-import ScoutingApp from './routes/scoutingAppRouter';
+import HomeRouter from './routes/homeRouter';
+import ScoutingAppRouter from './routes/scoutingAppRouter';
 import MatchScout from './routes/matchScout';
-import DTF from './routes/dtfHome';
+import DTFHome from './routes/dtfHome';
 import DTFTeams from './routes/dtfTeams';
 import StrategicScout from './routes/strategicScout';
-import Lookup from './routes/lookupRouter';
+import LookupRouter from './routes/lookupRouter';
 import StrategicLookup from './routes/strategicLookup';
 import PitLookup from './routes/pitLookup';
 import PitScout from './routes/pitScout';
-import DataLookup from './routes/matchLookup';
-import TeamData from './routes/matchData';
-import Picklist from './routes/picklist';
-import Settings from './routes/settingsPage';
-// import Watchlist from './routes/watchlist';
-// import WatchlistGet from './routes/watchlistData';
-// import WatchlistUpdate from './routes/watchlistUpdate';
-// TODO: remove?
+import MatchLookup from './routes/matchLookup';
+import MatchData from './routes/matchData';
+import SettingsPage from './routes/settingsPage';
 
 import { HashRouter, Routes, Route } from 'react-router-dom';
 
@@ -69,24 +64,20 @@ function App() {
   return (
     <HashRouter>
       <Routes>
-        <Route path="/" element={<HomePage title="2637 Strategy App" />} />
-        <Route path="/home" element={<HomePage title="2637 Strategy App" />} />
-        <Route path="/scoutingapp" element={<ScoutingApp title="2637 Scouting App" />} />
+        <Route path="/" element={<HomeRouter title="2637 Strategy App" />} />
+        <Route path="/scoutingapp" element={<ScoutingAppRouter title="2637 Scouting App" />} />
         <Route path="/scoutingapp/match" element={<MatchScout title="2637 Match Scout" />} />
         <Route path="/scoutingapp/strategic" element={<StrategicScout title="2637 Strategic Scout" />} />
-        <Route path="/scoutingapp/lookup/" element={<Lookup title="2637 Lookup" />} />
+        <Route path="/scoutingapp/lookup/" element={<LookupRouter title="2637 Lookup" />} />
         <Route path="/scoutingapp/lookup/strategic" element={<StrategicLookup title="2637 Strategic Lookup" />} />
-        <Route path="/scoutingapp/lookup/match" element={<DataLookup title="2637 Match Lookup" />} />
+        <Route path="/scoutingapp/lookup/match" element={<MatchLookup title="2637 Match Lookup" />} />
         <Route path="/scoutingapp/lookup/pit" element={<PitLookup title="2637 Pit Lookup" />} />
-        <Route path="/scoutingapp/lookup/teamdata/:teamNumber" element={<TeamData title="2637 Data Lookup" />} />
+        <Route path="/scoutingapp/lookup/teamdata/:teamNumber" element={<MatchData title="2637 Data Lookup" />} />
         <Route path="/scoutingapp/pit" element={<PitScout title="2637 Pit Scout" />} />
-        <Route path="/scoutingapp/picklist" element={<Picklist title="2637 Picklist" />} />
-        <Route path="/dtf" element={<DTF title="2637 Drive Team Feeder" />} />
+        <Route path="/dtf" element={<DTFHome title="2637 Drive Team Feeder" />} />
         <Route path="/dtf/:teamParams" element={<DTFTeams title="2637 Drive Team Feeder" />} />
-        {/* <Route path="/watchlist" element={<Watchlist title="2637 Watch List" />} /> */}
-        {/* <Route path="/watchlist/:team_number" element={<WatchlistGet title="2637 Watch List" />} /> */}
-        {/* <Route path="/watchlist/update/:question_info" element={<WatchlistUpdate title="2637 Watch List" />} /> */}
-        <Route path="/settings" element={<Settings title="Settings" />} />
+
+        <Route path="/settings" element={<SettingsPage title="Settings" />} />
       </Routes>
     </HashRouter>
   );
