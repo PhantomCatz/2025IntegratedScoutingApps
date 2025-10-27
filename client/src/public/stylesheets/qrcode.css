@@ -1,16 +1,17 @@
-.qrCodeHolder {
-	display: flex;
-	& .ant-qrcode, & .ant-qrcode > svg {
-		width: 100% !important;
-		height: 100% !important;
+.qrCode {
+	.qrCodeHolder {
+		display: flex;
+		& .ant-qrcode, & .ant-qrcode > svg {
+			width: 100% !important;
+			height: 100% !important;
+		}
+		& > div {
+			margin: auto;
+			width: 100% !important;
+			background-color: white;
+		}
+		& .qrTitle {
+			text-align: center;
+		}
 	}
-   & > div {
-	   margin: auto;
-	   width: 100% !important;
-	   background-color: white;
-   }
-   & .qrTitle {
-	   text-align: center;
-   }
 }
-

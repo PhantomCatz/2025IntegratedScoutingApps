@@ -1,69 +1,44 @@
 import { Input, InputNumber, Tabs, } from 'antd';
-import TextArea from 'antd/es/input/TextArea';
+import '../public/stylesheets/strategicTabs.css';
 
-async function StrategicTabs(team_number: number, inCallback? : boolean) {
-  const window = {
-    alert : function(...args : any[]) {
-      if(!!inCallback) {
-        return;
-      }
-      globalThis.window.alert(...args);
-    }
-  };
-  if (!team_number) {
-    return null;
-  }
+async function StrategicTabs(props) {
+	const team = props.team;
+	const data = props.data;
+	if (!team) {
+		return null;
+	}
 
-  let fetchLink = SERVER_ADDRESS;
+	let index = 2;
 
-  if(!fetchLink) {
-    console.error("Could not get fetch link. Check .env");
-    return null;
-  }
+	const matches : { key: string; label: string; children: JSX.Element; }[] = [];
 
-  fetchLink += "reqType=getTeamStrategic";
+	for (const strategicInfo of data) {
+		strategicInfo.comments = strategicInfo.comments.replaceAll("\\n", "\n");
 
-  fetchLink += `&team=${team_number}`;
+		matches.push({
+			key: `strategicData${strategicInfo.id}`,
+			label: `${strategicInfo.scouter_initials.toUpperCase()}:${strategicInfo.team_number}`,
+			children: (
+				<div className="strategicTabs">
+					<h2>Match Event</h2>
+					<Input className="input" disabled value={strategicInfo.match_event} />
+					<h2>Scouter Initials</h2>
+					<Input className="input" disabled value={strategicInfo.scouter_initials} />
+					<h2>Match Level</h2>
+					<Input className="input" disabled value={strategicInfo.match_level} />
+					<h2>Match #</h2>
+					<Input className="input" disabled value={strategicInfo.match_number} />
+					<h2>Robot Position</h2>
+					<Input className="input" disabled value={strategicInfo.robot_position} />
+					<h2>Comments</h2>
+					<textarea className="strategicInput" disabled value={strategicInfo.comments} style={{marginBottom: '5%'}} />
+				</div>
+			)
+		});
+		index++;
+	}
 
-  const response = await(await fetch(fetchLink)).json();
-
-  if(!response?.length) {
-    window.alert(`Team ${team_number} has not been strategic scouted.`);
-    return null;
-  }
-
-  let index = 2;
-
-  const matches : { key: string; label: string; children: JSX.Element; }[] = [];
-
-  for (const strategicInfo of response) {
-    strategicInfo.comments = strategicInfo.comments.replaceAll("\\n", "\n");
-
-    matches.push({
-      key: `strategicData${strategicInfo.id}`,
-      label: `${strategicInfo.scouter_initials.toUpperCase()}:${strategicInfo.team_number}`,
-      children: (
-        <>
-          <h2>Match Event</h2>
-          <Input className="input" disabled value={strategicInfo.match_event} />
-          <h2>Scouter Initials</h2>
-          <Input className="input" disabled value={strategicInfo.scouter_initials} />
-          <h2>Match Level</h2>
-          <Input className="input" disabled value={strategicInfo.match_level} />
-          <h2>Match #</h2>
-          <Input className="input" disabled value={strategicInfo.match_number} />
-          <h2>Robot Position</h2>
-          <Input className="input" disabled value={strategicInfo.robot_position} />
-          <h2>Comments</h2>
-          <TextArea className="strategic-input" disabled value={strategicInfo.comments} style={{marginBottom: '5%'}} />
-        </>
-      )
-    });
-    index++;
-  }
-  matches.sort((a, b) => parseInt(a.key) - parseInt(b.key));
-
-  return matches;
+	return matches;
 }
 
 export default StrategicTabs;

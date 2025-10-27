@@ -3,17 +3,21 @@ import { useEffect } from 'react';
 import Header from '../parts/header';
 
 function HomeRouter(props: any) {
-  useEffect(() => { document.title = props.title }, [props.title]);
+	useEffect(() => { document.title = props.title }, [props.title]);
 
 
-  return (
-    <>
-      <Header name={"Strategy App"}/>
-      <a className='homeButton' href='#scoutingapp'>Scouting App</a>
-      <a className='homeButton' href='#dtf'>DTF</a>
-      {/* <a className='homebutton' href='#watchlist'>Watchlist</a> */}
-    </>
-  );
+	return (
+		<>
+			<Header name={"Strategy App"} />
+
+			<div className="homeRouter">
+				<a className='homeButton' href='#scoutingapp'>Scouting App</a>
+				<a className='homeButton' href='#dtf'>DTF</a>
+
+				{/* <a className='homebutton' href='#watchlist'>Watchlist</a> */}
+			</div>
+		</>
+	);
 }
 
 export default HomeRouter;

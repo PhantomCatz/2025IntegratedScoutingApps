@@ -2,24 +2,21 @@ import lightBack from '../public/images/light-back.png';
 import darkBack from '../public/images/dark-back.png';
 import lightLogo from '../public/images/light-logo.png';
 import darkLogo from '../public/images/dark-logo.png';
+import lightMenu from '../public/images/ThreeWhiteBars.png';
+import darkMenu from '../public/images/ThreeBlackMenuBars.png';
 import '../public/stylesheets/header.css';
 import React, { useEffect } from 'react';
 import {useLocalStorage, } from 'react-use';
+import { getRandomHex, } from "../utils/utils";
 
 const DEFAULT_THEME = "light";
 
-/**
- * Header Component
- *
- * props.back = link to previous page
- * props.name = name of current page
- */
 function Header(props: any) {
 	const name = props.name || "No name set";
 	const backLink = props.back;
 
 	const [theme, setTheme] = useLocalStorage<any>('theme', DEFAULT_THEME);
-	const [background, setBackground] = useLocalStorage<any>('background', '#ffffff');
+	const [backgroundColor, setBackgroundColor] = useLocalStorage<any>('backgroundColor', '#ffffff');
 	const [fontColor, setFontColor] = useLocalStorage<any>('fontColor', '#000000');
 
 	const colors : any = {
@@ -40,14 +37,18 @@ function Header(props: any) {
 		light: {
 			icon: darkLogo,
 			back: darkBack,
+			menu: darkMenu,
+
 		},
 		dark: {
 			icon: lightLogo,
 			back: lightBack,
+			menu: lightMenu,
 		},
 		random: {
 			icon: lightLogo,
 			back: lightBack,
+			menu: lightMenu,
 		},
 	};
 
@@ -69,10 +70,12 @@ function Header(props: any) {
 		if(!colors[newTheme]) {
 			newTheme = DEFAULT_THEME;
 			console.log(`newTheme=`, newTheme);
-	}
+		}
+
 		const themeColors = colors[newTheme];
 		const color = themeColors();
-		setBackground(color["--background-color"]);
+
+		setBackgroundColor(color["--background-color"]);
 		setFontColor(color["--font-color"]);
 
 		setTheme(newTheme);
@@ -80,7 +83,7 @@ function Header(props: any) {
 
 	useEffect(() => {
 		const rootElement = document.querySelector(":root") as any;
-		rootElement.style.setProperty('--background-color', background);
+		rootElement.style.setProperty('--background-color', backgroundColor);
 		rootElement.style.setProperty('--font-color', fontColor);
 	}, [theme]);
 
@@ -90,14 +93,14 @@ function Header(props: any) {
 		<header className="header">
 			<div className="images">
 				{backLink &&
-					<a href={backLink}><img className={"backImg"} src={iconSet.back} alt=''/></a>
+					<a href={backLink}><img className={"backImg"} src={iconSet.back} alt='Go back'/></a>
 				}
 				<img
 					className={"logoImg"}
 					src={iconSet.icon}
 					onClick={handleLogoClick}
 					onDoubleClick={handleLogoDoubleClick}
-					alt="Logo"
+					alt="2637 Logo"
 				/>
 			</div>
 			<h1 className={"pageTitle"}>{name}</h1>
@@ -106,33 +109,4 @@ function Header(props: any) {
 }
 
 
-function getRandomHex() {
-	const vals = "0123456789ABCDEF";
-	const randVal = Math.floor(Math.random() * vals.length);
-
-	return vals[randVal];
-}
-
 export default Header;
-
-/*
-[localStorage.background, localStorage.fontColor]
-Array [ '"#F6C586"', '"#357856"' ]
-
-[localStorage.background, localStorage.fontColor]
-Array [ '"#460372"', '"#70D880"' ]
-
-[localStorage.background, localStorage.fontColor]
-Array [ '"#350009"', '"#F76E46"' ]
-
-[localStorage.background, localStorage.fontColor]
-Array [ '"#29595C"', '"#BCE6BD"' ]
-
-[localStorage.background, localStorage.fontColor]
-Array [ '"#1E0F09"', '"#DE607D"' ]
-
-[localStorage.background, localStorage.fontColor]
-Array [ '"#0B7642"', '"#6EB907"' ]
-
-​
-*/

@@ -336,5 +336,6 @@ export {
 	getIndexNumber,
 	getAllianceOffset,
 	getDivisionsList,
-	getAllianceTags
+	getAllianceTags,
+	request,
 };

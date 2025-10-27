@@ -1,0 +1,33 @@
+.settingsPage {
+	input[type=color] {
+		margin: 0.4rem;
+	}
+	label {
+		font-size: 1.2rem;
+	}
+	.fetchDataButton, .clearDataButton {
+		width: 30%;
+		border: 2px solid var(--font-color);
+		background-color: var(--background-color);
+		border-radius: 1rem;
+		text-align: center;
+		margin-top: 0.5rem;
+		padding: 0.5rem 1rem;
+	}
+	.updateTime {
+		margin-left: 2rem;
+		margin-top: 0.5rem;
+
+		.updateTime__title {
+			display: inline-block;
+			margin: auto;
+			margin-right: 1rem;
+			font-size: 1.5rem;
+		}
+		.updateTime__timestamp {
+			display: inline-block;
+			font-size: 1rem;
+			margin: auto;
+		}
+	}
+}
