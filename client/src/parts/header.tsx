@@ -12,7 +12,6 @@ import { getRandomHex, } from "../utils/utils";
 const DEFAULT_THEME = "light";
 
 function Header(props: any) {
-	const isRootPage = props.rootPage || false;
 	const name = props.name || "No name set";
 	const backLink = props.back;
 
@@ -92,7 +91,7 @@ function Header(props: any) {
 
 	return (
 		<header className="header">
-			{!isRootPage &&
+			{backLink &&
 				<a href={backLink}><img className={"backImg"} src={iconSet.back} alt='Go back'/></a>
 			}
 
