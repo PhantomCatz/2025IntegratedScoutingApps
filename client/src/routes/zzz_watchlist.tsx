@@ -1,11 +1,12 @@
 import '../public/stylesheets/watchlist.css';
-import '../public/stylesheets/match.css';
+import '../public/stylesheets/matchScout.css';
 import { Button, Flex, Form, Input, InputNumber, Select, Tabs, TabsProps } from 'antd';
 import React, { useState, useEffect } from 'react';
 import TextArea from 'antd/es/input/TextArea';
 import Header from '../parts/header';
 
 function Watchlist(props: any) {
+  const WATCHLIST_SEND_URL = "test";
   type FieldType = {
     team_number: number;
     question: string;
@@ -48,10 +49,11 @@ function Watchlist(props: any) {
       answer?: string,
       isPit: boolean,
     };
-    const appOptions = [
+    const Questions = [  //fetch from here
       { label: "Pit", value: true },
       { label: "Strategic", value: false },
     ];
+    
     return (
       <div>
         <Form
@@ -75,11 +77,15 @@ function Watchlist(props: any) {
           <Form.Item<FieldType> name="team_number" rules={[{ required: true, message: 'Please input the team number!' }]}>
             <InputNumber controls min={0} className="input" />
           </Form.Item>
-          <h2>Pit or Strategic</h2>
+          <h2>Question</h2>
           <Form.Item<FieldType> name="isPit" rules={[{ required: true, message: 'Please input whether it is pit or strategic!' }]}>
-            <Select options={appOptions} className="input" />
+            <Select options={Questions} className="input" />
           </Form.Item>
-          <h2>Custom Question</h2>
+          <h2>Add Question</h2>
+          <Form.Item<FieldType> name="question" rules={[{ required: true, message: 'Please input a question!' }]}>
+            <TextArea className="textbox_input" />
+          </Form.Item>
+          <h2>Add Response</h2>
           <Form.Item<FieldType> name="question" rules={[{ required: true, message: 'Please input a question!' }]}>
             <TextArea className="textbox_input" />
           </Form.Item>

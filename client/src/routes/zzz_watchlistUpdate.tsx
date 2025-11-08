@@ -1,5 +1,5 @@
 import '../public/stylesheets/watchlist.css';
-import '../public/stylesheets/match.css';
+import '../public/stylesheets/matchScout.css';
 import { Flex, Form, Input, InputNumber, Select, Tabs, TabsProps } from 'antd';
 import { useParams } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
@@ -16,6 +16,8 @@ function WatchlistUpdate(props: any) {
 
   console.log(useParams());
   const { question_info } = useParams();
+  const WATCHLIST_GET_URL = "test"
+  const WATCHLIST_SEND_URL = "test"
   let team_number: number = 10000;
   let question: string = 'tOwOt';
   let question_type: boolean = true;
@@ -202,7 +204,7 @@ function WatchlistUpdate(props: any) {
 
   return(
     <>
-			<Header name={'Team ' + team_number} back="#watchlist" />
+			<Header name={'Team ' + team_number} back={"#watchlist"} />
       <Tabs defaultActiveKey="1" activeKey={tabNum} items={items} className='tabs' centered onChange={async (key) => {setTabNum(key)}}/>
     </>
   );

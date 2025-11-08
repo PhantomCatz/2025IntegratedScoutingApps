@@ -13,9 +13,9 @@ import DataLookup from './routes/matchLookup';
 import TeamData from './routes/matchData';
 import Picklist from './routes/picklist';
 import Settings from './routes/settingsPage';
-// import Watchlist from './routes/watchlist';
-// import WatchlistGet from './routes/watchlistData';
-// import WatchlistUpdate from './routes/watchlistUpdate';
+import Watchlist from './routes/zzz_watchlist';
+import WatchlistGet from './routes/zzz_watchlistData';
+import WatchlistUpdate from './routes/zzz_watchlistUpdate';
 // TODO: remove?
 
 import { HashRouter, Routes, Route } from 'react-router-dom';
@@ -83,9 +83,9 @@ function App() {
         <Route path="/scoutingapp/picklist" element={<Picklist title="2637 Picklist" />} />
         <Route path="/dtf" element={<DTF title="2637 Drive Team Feeder" />} />
         <Route path="/dtf/:teamParams" element={<DTFTeams title="2637 Drive Team Feeder" />} />
-        {/* <Route path="/watchlist" element={<Watchlist title="2637 Watch List" />} /> */}
-        {/* <Route path="/watchlist/:team_number" element={<WatchlistGet title="2637 Watch List" />} /> */}
-        {/* <Route path="/watchlist/update/:question_info" element={<WatchlistUpdate title="2637 Watch List" />} /> */}
+        <Route path="/watchlist" element={<Watchlist title="2637 Watch List" />} />
+        <Route path="/watchlist/:team_number" element={<WatchlistGet title="2637 Watch List" />} />
+        <Route path="/watchlist/update/:question_info" element={<WatchlistUpdate title="2637 Watch List" />} />
         <Route path="/settings" element={<Settings title="Settings" />} />
       </Routes>
     </HashRouter>

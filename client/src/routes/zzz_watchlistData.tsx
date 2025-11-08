@@ -2,6 +2,7 @@ import '../public/stylesheets/dtf.css';
 import { useState, useEffect } from 'react';
 import { Button, Tabs, TabsProps } from 'antd';
 import { useParams } from 'react-router-dom';
+import Header from '../parts/header';
 
 const owo='tOwOt'
 const arrarr: any[] = [];
@@ -9,6 +10,7 @@ const pitQ: string[] = [];
 const strQ: string[] = [];
 const pitQIndex: number[] = [];
 const strQIndex: number[] = [];
+const WATCHLIST_GET_URL="test"
 
 
 function WatchlistGet(props: any) {
@@ -192,26 +194,13 @@ function WatchlistGet(props: any) {
 ];
 
   return (
-    <body className='body'>
-      <div className='banner'>
-        <header>
-          <a href='/watchlist'>
-            <img src={back} style={{height: 64 + 'px', paddingTop: '5%'}} alt=''/>
-          </a>
-          <table>
-            <td>
-              <img src={logo} style={{ height: 256 + 'px' }} alt=''/>
-            </td>
-            <td>
-            <h2 style={{ whiteSpace: 'pre-line' }}>{loading ? "Loading..." : 'Team ' + team_number}</h2>
-            </td>
-          </table>
-        </header>
-      </div>
-      <div>
-        <Tabs defaultActiveKey="1" activeKey={tabNum} items={items} className='tabs' centered onChange={async (key) => {setTabNum(key)}}/>
-      </div>
-    </body>
+    <div>
+    <Header name={"Strategic Scout"} back={"#watchlist"} />
+        <div>
+          <Tabs defaultActiveKey="1" activeKey={tabNum} items={items} className='tabs' centered onChange={async (key) => {setTabNum(key)}}/>
+        </div>
+    </div>
+    
   );
 }
 

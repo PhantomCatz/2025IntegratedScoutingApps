@@ -12,7 +12,7 @@ function HomeRouter(props: any) {
       <a className='homeButton' href='#scoutingapp'>Scouting App</a>
       <a className='homeButton' href='#dtf'>DTF</a>
 
-      {/* <a className='homebutton' href='#watchlist'>Watchlist</a> */}
+      <a className='homeButton' href='#watchlist'>Watchlist</a>
     </>
   );
 }

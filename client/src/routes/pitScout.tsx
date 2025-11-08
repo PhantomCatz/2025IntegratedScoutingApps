@@ -37,6 +37,7 @@ namespace Fields {
       gracious_professionalism: number;
       robot_images: string;
       comments: string;
+      sushi: string;
     };
 }
 
@@ -67,6 +68,7 @@ const formDefaultValues = {
   "team_workmanship": 0,
   "gracious_professionalism": 0,
   "comments": null,
+  "sushi": null,
 }
 
 const IMAGE_DELIMITER = "$";
@@ -164,6 +166,7 @@ function PitScout(props: any) {
       "team_workmanship": event.team_workmanship,
       "gracious_professionalism": event.gracious_professionalism,
       "comments": event.comments,
+      "sushi": event.sushi
     };
     Object.entries(body)
       .forEach((k) => {
@@ -470,6 +473,13 @@ function PitScout(props: any) {
           max={4}
           form={form}
           align={"left"}
+        />
+
+        <Select<FieldType>
+          title={"sushi"}
+          name={"sushi"}
+          message={"please input sushi"}
+          options={}
         />
 
         <h2>Comments</h2>
