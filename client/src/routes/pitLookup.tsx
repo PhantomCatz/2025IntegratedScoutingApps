@@ -88,7 +88,7 @@ function PitLookup(props: any) {
 				setItems([initialState()]);
 			}
 		} catch (err) {
-			console.log(err);
+			console.error(err);
 		}
 	}
 

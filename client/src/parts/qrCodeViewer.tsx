@@ -1,7 +1,8 @@
 import '../public/stylesheets/qrcode.css';
 
-import {QRCode as AntQr} from 'antd';
-import {useState, useEffect} from 'react';
+import { QRCode as AntQr } from 'antd';
+import { useState, useEffect } from 'react';
+import { escapeUnicode } from '../utils/utils';
 
 const sep = "\t";
 const defualtValue = <></>;
@@ -52,7 +53,7 @@ function QrCode(props : any) {
 					vals.push(0);
 					break;
 				case undefined:
-					console.log(`${k} is undefined`);
+					console.error(`${k} is undefined`);
 					vals.push(v);
 					break;
 				default:

@@ -1,6 +1,6 @@
 import '../public/stylesheets/matchLookup.css';
 import { useEffect, useState } from 'react';
-import { Input, Form, InputNumber } from 'antd';
+import Form, { Input, NumberInput } from '../parts/formItems';
 import Header from '../parts/header';
 import { getAllTeams, getDivisionsList } from '../utils/tbaRequest';
 import { Select } from '../parts/formItems';
@@ -8,7 +8,6 @@ import { Select } from '../parts/formItems';
 function MatchLookup(props: any) {
 	const DEFAULT_MATCH_EVENT = EVENT_NAME || "";
 
-	const [form] = Form.useForm();
 	const [fetchedData, setFetchedData] = useState([]);
 	const [match_event, setMatchEvent] = useState(DEFAULT_MATCH_EVENT);
 	useEffect(() => { document.title = props.title; return () => { } }, [props.title]);
@@ -47,7 +46,6 @@ function MatchLookup(props: any) {
 
 			<div className="matchLookup">
 				<Form
-					form={form}
 					onFinish={async event => {
 						window.location.href = "#scoutingapp/lookup/teamData/" + event.teamNum;
 					}}
@@ -65,15 +63,19 @@ function MatchLookup(props: any) {
 							}
 						}}
 					/>
-					<div>
-						<h2>Team Number</h2>
-						<Form.Item name="teamNum" rules={[{ required: true, message: "Please input the team number!" }]}>
-							<InputNumber min={0} className="input" />
-						</Form.Item>
-						<Input type="submit" value="Submit" className='submit' />
-						<h2>List of Teams</h2>
-						{fetchedData}
-					</div>
+					<NumberInput
+						title="Team Number"
+						name="teamNum"
+						message="Please input the team number!"
+						min={0}
+					/>
+					<button
+						type="submit"
+						value="Submit"
+						className='submitButton'
+					/>
+					<h2>List of Teams</h2>
+					{fetchedData}
 				</Form>
 			</div>
 		</>

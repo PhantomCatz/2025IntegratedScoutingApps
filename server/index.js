@@ -24,7 +24,6 @@ app.listen(PORT, () => {
 app.get("/api", async function(req, res) {
 	const queryString = req.url.split("?")[1];
 	const queries = Object.fromEntries(new URLSearchParams(queryString));
-	console.log(`queries=`, queries);
 
 	let result = undefined;
 
@@ -43,7 +42,7 @@ app.get("/api", async function(req, res) {
 			result = await getTeamStrategicInfo(queries);
 			break;
 		default:
-			console.log("reqType not used when getting:", queries);
+			console.error("reqType not used when getting:", queries);
 			result = await getTeamInfo(queries);
 			break;
 		}
@@ -88,7 +87,7 @@ app.post("/api", async function(req, res) {
 			break;
 		}
 	} catch (err) {
-		console.log("err=", err);
+		console.error("err=", err);
 		result = null;
 	}
 
@@ -98,7 +97,7 @@ app.post("/api", async function(req, res) {
 		return res;
 	}
 
-	console.log("Could not submit data.", queries);
+	console.error("Could not submit data.", queries);
 	await res.status(500);
 	await res.json(result);
 	return res;

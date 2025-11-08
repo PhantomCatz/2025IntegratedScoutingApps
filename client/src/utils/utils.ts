@@ -62,6 +62,17 @@ function escapeUnicode(str: string) : string {
 		)
 		.join("");
 }
+function ord(char : string) {
+	return char.charCodeAt(0);
+}
+function toNumber(x : any) : number {
+	if(typeof x === "number") {
+		return x;
+	}
+	x = x || 0;
+	const num = Number(x) || 0;
+	return num;
+}
 
 export {
 	NUM_ALLIANCES,
@@ -73,4 +84,6 @@ export {
 	splitString,
 	getRandomHex,
 	escapeUnicode,
+	ord,
+	toNumber,
 };

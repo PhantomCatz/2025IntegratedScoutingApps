@@ -80,7 +80,7 @@ function SettingsPage(props: any) {
 
 	return (
 		<>
-			<Header name={"Settings"} back="#/" />
+			<Header name={"Settings"} back="#/" settingsPage />
 
 			<div className="settingsPage">
 				<h1>Scouter Initials</h1>

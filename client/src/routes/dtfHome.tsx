@@ -1,7 +1,7 @@
 import '../public/stylesheets/dtfHome.css';
 import { useEffect } from 'react';
-import { Input, InputNumber } from 'antd';
-import Form, { NumberInput, } from '../parts/formItems';
+// import { Input, InputNumber } from 'antd';
+import Form, { Input, NumberInput, } from '../parts/formItems';
 import { NUM_ALLIANCES, TEAMS_PER_ALLIANCE, } from '../utils/utils';
 import Header from '../parts/header';
 

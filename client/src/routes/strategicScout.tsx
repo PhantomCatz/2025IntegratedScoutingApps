@@ -1,12 +1,13 @@
 import '../public/stylesheets/strategicScout.css';
 import { useEffect, useState} from 'react';
-import { Tabs, Input, Form, Button, Flex, Table } from 'antd';
-import TextArea from 'antd/es/input/TextArea';
+import { Table } from 'antd';
+import { Tabs } from '../parts/tabs';
 import Header from '../parts/header';
 import QrCode from '../parts/qrCodeViewer';
 import { isInPlayoffs, getTeamsPlaying, getIndexNumber, getDivisionsList } from '../utils/tbaRequest';
 import { escapeUnicode } from '../utils/utils';
-import { NumberInput, Select } from '../parts/formItems';
+import { getFieldValue, setFieldValue, setFormValues, resetFields } from '../parts/formItems';
+import Form, { NumberInput, Select, Input, TextArea, } from '../parts/formItems';
 
 namespace Fields {
 	export type PreMatch = {
@@ -47,7 +48,6 @@ function StrategicScout(props: any) {
 		console.error("Could not get match event. Check .env");
 	}
 
-	const [form] = Form.useForm();
 	const [tabNum, setTabNum] = useState("1");
 	const [team_number, setTeamNum] = useState(0);
 	const [teamsList, setTeamsList] = useState<string[]>([]);
@@ -76,14 +76,14 @@ function StrategicScout(props: any) {
 
 			fetchLink += `&team=${team_number}`;
 
-      fetch(fetchLink)
-      .then((res) => {
-        const value = res.json();
-        return value;
-      })
-      .then((data) => {
+			fetch(fetchLink)
+				.then((res) => {
+					const value = res.json();
+					return value;
+				})
+				.then((data) => {
 					if(!data?.length) {
-						console.log(`No data for team ${team_number}`);
+						console.error(`No data for team ${team_number}`);
 						setTeamData(null);
 						return;
 					}
@@ -91,7 +91,7 @@ function StrategicScout(props: any) {
 					setTeamData(data);
 				})
 				.catch((err) => {
-					console.log("Error fetching data. Is server on?", err);
+					console.error("Error fetching data. Is server on?", err);
 				});
 		})();
 	}, [team_number]);
@@ -102,11 +102,11 @@ function StrategicScout(props: any) {
 
 	async function updateTeamNumber() {
 		try {
-			const matchLevel = form.getFieldValue('match_level');
-			const matchNumber = form.getFieldValue('match_number');
-			const robotPosition = form.getFieldValue('robot_position');
-			const allianceNumber1 = form.getFieldValue('red_alliance');
-			const allianceNumber2 = form.getFieldValue('blue_alliance');
+			const matchLevel = getFieldValue('match_level');
+			const matchNumber = getFieldValue('match_number');
+			const robotPosition = getFieldValue('robot_position');
+			const allianceNumber1 = getFieldValue('red_alliance');
+			const allianceNumber2 = getFieldValue('blue_alliance');
 
 			const teams : any = await getTeamsPlaying(match_event, matchLevel, matchNumber, allianceNumber1, allianceNumber2);
 
@@ -188,7 +188,7 @@ function StrategicScout(props: any) {
 		}
 	}
 	function calculateMatchLevel() {
-		const matchLevel = form.getFieldValue('match_level');
+		const matchLevel = getFieldValue('match_level');
 
 		const inPlayoffs = isInPlayoffs(matchLevel);
 
@@ -197,43 +197,29 @@ function StrategicScout(props: any) {
 	async function trySubmit(event : any) {
 		await setNewStrategicScout(event);
 
-		const scouter_initials = form.getFieldValue('scouter_initials');
-		const match_number = form.getFieldValue('match_number');
-		const match_level = form.getFieldValue('match_level');
-		const match_event = form.getFieldValue('match_event');
-		const robot_position = form.getFieldValue('robot_position');
+		const scouter_initials = getFieldValue('scouter_initials');
+		const match_number = getFieldValue('match_number');
+		const match_level = getFieldValue('match_level');
+		const match_event = getFieldValue('match_event');
+		const robot_position = getFieldValue('robot_position');
 
-		form.resetFields();
-		form.setFieldValue('scouter_initials', scouter_initials);
-		form.setFieldValue('match_level', match_level);
-		form.setFieldValue('match_event', match_event);
-		form.setFieldValue("match_number", Number(match_number) + 1);
-		form.setFieldValue('robot_position', robot_position);
+		resetFields();
+		setFieldValue('scouter_initials', scouter_initials);
+		setFieldValue('match_level', match_level);
+		setFieldValue('match_event', match_event);
+		setFieldValue("match_number", Number(match_number) + 1);
+		setFieldValue('robot_position', robot_position);
 
 		await calculateMatchLevel();
 		await updateTeamNumber();
 	}
 	async function runFormFinish(event? : any) {
-		if(isLoading) {
-			return;
-		}
-		setIsLoading(true);
-
-		if(event !== undefined) {
-			setLastFormValue(event);
-		} else {
-			event = lastFormValue;
-		}
-
 		try {
 			await trySubmit(event);
 		}
 		catch (err) {
-			console.log(err);
+			console.error(err);
 			window.alert("Error occured, please do not leave this message and notify a Webdev member immediately.");
-		}
-		finally {
-			setIsLoading(false);
 		}
 	}
 	async function updateNumbers() {
@@ -292,36 +278,20 @@ function StrategicScout(props: any) {
 					name={"match_event"}
 					options={matchEvents}
 					onChange={(e? : string) => {
-						console.log(`e=`, e);
 						if(e) {
 							setMatchEvent(e);
 						}
 					}}
 				/>
 
-				<h2>Scouter Initials</h2>
-				<Form.Item<FieldType>
+				<Input
 					name="scouter_initials"
-					rules={[
-						{ required: true, message: 'Please input your initials!' },
-						{
-							pattern: /^[A-Za-z]{1,2}$/,
-							message: 'Please enter only letters (max 2)',
-						},
-					]}
-				>
-					<Input
-						maxLength={2}
-						className="input"
-						onKeyPress={(event) => {
-							const keyCode = event.keyCode || event.which;
-							const keyValue = String.fromCharCode(keyCode);
-							if (!/^[A-Za-z]*$/.test(keyValue)) {
-								event.preventDefault();
-							}
-						}}
-					/>
-				</Form.Item>
+					title="Scouter Initials"
+					maxLength={2}
+					pattern="^[A-Za-z]{1,2}$"
+					message="Please enter only letters (max 2)"
+					align="left"
+				/>
 
 				<Select<FieldType>
 					title={"Match Level"}
@@ -356,7 +326,6 @@ function StrategicScout(props: any) {
 					message={"Enter match #"}
 					onChange={updateNumbers}
 					min={1}
-					form={form}
 					buttons={false}
 					align={"left"}
 				/>
@@ -369,9 +338,7 @@ function StrategicScout(props: any) {
 					onChange={updateNumbers}
 				/>
 
-				<Flex justify='in-between' style={{ paddingBottom : '5%' }}>
-					<Button onClick={() => setTabNum("2")} className='tabButton'>Next</Button>
-				</Flex>
+				<button type="button" onClick={() => setTabNum("2")} className='tabButton'>Next</button>
 
 			</div>
 		);
@@ -411,12 +378,6 @@ function StrategicScout(props: any) {
 				<Table
 					columns={columns}
 					dataSource={dataSource}
-					expandable={{rowExpandable:(record) => true,
-						expandedRowRender:(record) => {
-							return <p>{record.comment}</p>
-						}
-					}}
-					pagination={false}
 				>
 				</Table>;
 		}
@@ -425,30 +386,15 @@ function StrategicScout(props: any) {
 			<div>
 				{prevComments}
 
-				<h2>Comments</h2>
-				<Form.Item<FieldType> name="comments" rules={[{ required: true, message: "Please input some comments!" }]}>
-					<TextArea style={{ verticalAlign: 'center' }} className='strategic-input' />
-				</Form.Item>
-
-				{/*
-				<h2>Team Rating</h2>
-				<Form.Item<FieldType>
-				name="team_rating"
-				rules={[
-				{ required: true, message: 'Please input the team rating' },
-				]}
-				>
-				<Input
-				className="input"
+				<TextArea
+					title="Comments"
+					name="comments"
+					message="Please input some comments!"
 				/>
-				</Form.Item>
-				 */}
 
 				<h2 style={{ display: isLoading ? 'inherit' : 'none' }}>Submitting data...</h2>
-				<Flex justify='in-between' style={{ paddingBottom : '5%' }}>
-					<button type='button' onClick={() => { setTabNum("1"); }} className='tabButton'>Back</button>
-					<button type='submit' className='submitButton'>Submit</button>
-				</Flex>
+				<button type='button' onClick={() => { setTabNum("1"); }} className='tabButton'>Back</button>
+				<button type='submit' className='submitButton'>Submit</button>
 			</div>
 		);
 	}
@@ -471,13 +417,10 @@ function StrategicScout(props: any) {
 
 			<div className="strategicScout">
 				<Form
-					form={form}
 					initialValues={formDefaultValues}
 					onFinish={runFormFinish}
 					onFinishFailed={({values, errorFields, outOfDate}) => {
-						console.log("values=", values);
-						console.log("errorFields=", errorFields);
-						console.log("outOfDate=", outOfDate);
+						// TOOD: Implement
 
 						const errorMessage = errorFields.map((x : any) => x.errors.join(", ")).join("\n");
 						window.alert(errorMessage);

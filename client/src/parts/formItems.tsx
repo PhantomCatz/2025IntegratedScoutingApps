@@ -1,6 +1,5 @@
 import '../public/stylesheets/formItems.css';
 import React, { useState, useRef, useEffect, } from 'react';
-import { Input as AntdInput, Select as AntdSelect, Flex, Button, Radio } from 'antd';
 
 type StringMap<T> = Extract<keyof T, string>;
 type NoInfer<T> = [T][T extends any ? 0 : never];
@@ -52,28 +51,31 @@ type CheckboxType<FieldType> = {
 
 
 function Form(props) {
-  console.log(`props=`, props);
-  const onFinish = props.onFinish ?? (() => {});
+	const onFinish = props.onFinish ?? (() => {});
 
-  function onSubmit(event) {
-    console.log(`event=`, event);
-    const formValues = {};
+	function onSubmit(event) {
+		event.preventDefault();
+		const formValues = {};
 
-    for(const input of event.target) {
-      console.log(`input=`, input);
-      formValues[input.id] = getFieldValue(input.id);
-    }
+		for(const input of event.target) {
+			if(!input.id) {
+				continue;
+			}
+			formValues[input.id] = getFieldValue(input.id);
+		}
 
-    onFinish(formValues);
-  }
+		onFinish(formValues);
+	}
 
-  return (
-  <form
-  onSubmit={onSubmit}
-  >
-    {...props.children}
-  </form>
-  );
+	const children = props.children;
+
+	return (
+		<form
+			onSubmit={onSubmit}
+		>
+			{children}
+		</form>
+	);
 }
 // TODO: implement required fields
 function Input<FieldType>(props: InputType<FieldType>) {
@@ -111,10 +113,12 @@ function Input<FieldType>(props: InputType<FieldType>) {
 					}
 					<input
 						id={name}
+						name={name}
 						ref={input}
 						type="text"
 						pattern={pattern}
 						onChange={onChange}
+						required={required}
 					/>
 					<p
 						className="message"
@@ -126,6 +130,7 @@ function Input<FieldType>(props: InputType<FieldType>) {
 		</>
 	);
 }
+// TODO: check out oninvalid for error message
 function NumberInput<FieldType>(props: NumberInputType<FieldType>) {
 	const title = props.title;
 	const name = props.name;
@@ -141,6 +146,7 @@ function NumberInput<FieldType>(props: NumberInputType<FieldType>) {
 	const onChange = props.onChange ?? (() => {});
 	const align = props.align ?? "center";
 	const buttons = props.buttons ?? true;
+	const defaultValue = props.defaultValue ?? min;
 
 	const input = useRef(null);
 
@@ -159,7 +165,6 @@ function NumberInput<FieldType>(props: NumberInputType<FieldType>) {
 	}
 	async function handleChange(e) {
 		const newVal = e?.target?.value;
-		console.log(`newVal=`, newVal);
 		await onChange(newVal);
 	}
 
@@ -192,12 +197,14 @@ function NumberInput<FieldType>(props: NumberInputType<FieldType>) {
 						}
 						<input
 							id={name}
+							name={name}
 							ref={input}
 							type="number"
-							className=""
 							min={min}
 							max={max}
 							onChange={handleChange}
+							required={required}
+							defaultValue={defaultValue}
 						/>
 						{ buttons &&
 							<button
@@ -209,21 +216,53 @@ function NumberInput<FieldType>(props: NumberInputType<FieldType>) {
 							>+</button>
 						}
 					</div>
+					<p
+						className="message"
+					>
+						{message}
+					</p>
 				</div>
 			}
 		</>
 	);
 }
-function SelectNew<FieldType>(props: SelectType<FieldType>) {
+function Select<FieldType>(props: SelectType<FieldType>) {
 	const title = props.title;
 	const name = props.name;
-	const required = props.required || true;
-	const message = props.message || `Please input ${title}`;
+	const required = props.required ?? true;
+	const message = props.message ?? `Please input ${title}`;
 	const options = props.options;
-	const onChange = props.onChange || (() => {});
-	const align = props.align || "left";
-	const shown = props.shown || true;
-	const multiple = props.multiple ? 'multiple' : undefined;
+	const onChange = props.onChange ?? (() => {});
+	const align = props.align ?? "left";
+	const shown = props.shown ?? true;
+	const multiple = props.multiple;
+	const defaultValue = multiple ?
+		props.defaultValue ? [props.defaultValue] : [] :
+		props.defaultValue ?? "";
+
+	const optionElements = options.map(function(item, index) {
+		return (
+			<option
+				value={item.value}
+				key={index + 1}
+			>
+				{item.label}
+			</option>
+		);
+	});
+	optionElements.unshift(
+		<option
+			value=""
+			key={0}
+			disabled
+			hidden
+		>
+		</option>
+	);
+
+	function handleOnChange(event) {
+		onChange(event.target.value);
+	}
 
 	return (
 		<>
@@ -242,59 +281,20 @@ function SelectNew<FieldType>(props: SelectType<FieldType>) {
 							htmlFor={name}
 						>{title}</label>
 					}
-					<select>
-						{options.map(function(item, index) {
-							return (<option value={item.value}>{item.label}</option>);
-						})}
+					<select
+						id={name}
+						name={name}
+						defaultValue={defaultValue}
+						required={required}
+						multiple={multiple}
+						onChange={handleOnChange}
+						size={multiple ? options.length : undefined}
+					>
+						{optionElements}
 					</select>
 				</div>
 			}
 		</>
-	);
-}
-function Select<FieldType>(props: SelectType<FieldType>) {
-	const title = props.title;
-	const name = props.name;
-	const form = props.form;
-	const shown = props.shown ?? true;
-	const required = (props.required ?? true) && shown;
-	if((props.required ?? true) && !shown) {
-		console.error("Required and not shown for", name)
-	}
-	const message = props.message ?? `Please input ${title}`;
-	const options = props.options;
-	const onChange = props.onChange ?? (() => {});
-	const align = props.align || "left";
-	const multiple = props.multiple ? 'multiple' : undefined;
-
-	return (
-		<div
-			style={{
-				display: shown ? 'inherit' : 'none',
-			}}
-		>
-			{title &&
-				<h2
-					style={{
-						textAlign: align as any,
-					}}
-				>{title}</h2>
-			}
-			<AntdForm.Item<FieldType>
-				name={name as any}
-				rules={[{ required: required, message: message }]}
-			>
-				<AntdSelect
-					options={options}
-					onChange={onChange}
-					className="input"
-					dropdownMatchSelectWidth={false}
-					dropdownStyle={{ maxHeight: 'none' }}
-					mode={multiple}
-					showSearch={false}
-				/>
-			</AntdForm.Item>
-		</div>
 	);
 }
 function Checkbox<FieldType>(props: CheckboxType<NoInfer<FieldType>>) {
@@ -305,6 +305,10 @@ function Checkbox<FieldType>(props: CheckboxType<NoInfer<FieldType>>) {
 	const shown = props.shown ?? true;
 
 	const checkbox = useRef(null);
+
+	function handleOnChange(event) {
+		onChange(event.target.value);
+	}
 
 	return (
 		<>
@@ -319,8 +323,45 @@ function Checkbox<FieldType>(props: CheckboxType<NoInfer<FieldType>>) {
 						>{title}</label>
 					}
 					<input
-						type="checkbox"
+						id={name}
 						name={name}
+						type="checkbox"
+						onChange={handleOnChange}
+					/>
+				</div>
+			}
+		</>
+	);
+}
+function TextArea(props) {
+	const title = props.title;
+	const name = props.name;
+	const onChange = props.onChange ?? (() => {});
+	const align = props.align ?? "left";
+	const shown = props.shown ?? true;
+	const defaultValue = props.defaultValue;
+	const required = props.required ?? true;
+
+	const textbox = useRef(null);
+
+	return (
+		<>
+			{shown &&
+				<div className="input input__textarea">
+					{title &&
+						<label
+							style={{
+								textAlign: align,
+							}}
+							htmlFor={name}
+						>{title}</label>
+					}
+					<textarea
+						id={name}
+						name={name}
+						ref={textbox}
+						defaultValue={defaultValue}
+						required={required}
 					/>
 				</div>
 			}
@@ -329,41 +370,93 @@ function Checkbox<FieldType>(props: CheckboxType<NoInfer<FieldType>>) {
 }
 
 
-function ord(char : string) {
-	return char.charCodeAt(0);
-}
-function toNumber(x : any) : number {
-	if(typeof x === "number") {
-		return x;
-	}
-	x = x || 0;
-	const num = Number(x) || 0;
-	return num;
-}
 function getFieldValue(id) {
 	const element = document.getElementById(id);
-	const tag = element.nodeName;
-  switch(tag) {
-    case "SELECT":
-      return
-    case "INPUT":
-      switch(element.type) {
-        case "checkbox":
-          return element.checked;
-        case "number":
-        case "text":
-          return element.value;
-          break;
-        case "submit":
-        default:
-          return undefined;
-      }
-      break;
-    default:
-      return undefined;
-  }
+	const tag = element?.nodeName;
+	switch(tag) {
+		case "SELECT":
+			if(element.multiple) {
+				const options = [];
+				for(const option of element.selectedOptions) {
+					options.push(option);
+				}
+				return options;
+			} else {
+				return element.value;
+			}
+			break;
+		case "TEXTAREA":
+			return element.value;
+			break;
+		case "INPUT":
+			switch(element.type) {
+				case "checkbox":
+					return element.checked;
+					break;
+				case "number":
+				case "text":
+					return element.value;
+					break;
+				case "submit":
+				default:
+					return undefined;
+			}
+			break;
+		default:
+			return undefined;
+	}
+}
+function setFieldValue(id, newValue) {
+	const element = document.getElementById(id);
 
+	if(!element) {
+		return;
+	}
+
+	const tag = element.nodeName;
+
+	switch(tag) {
+		case "SELECT":
+			if(element.multiple) {
+				for (var i = 0; i < element.options.length; i++) {
+					element.options[i].selected = newValue.indexOf(element.options[i].value) >= 0;
+				}
+			} else {
+				element.value = newValue;
+			}
+			break;
+		case "TEXTAREA":
+			element.value = newValue;
+			break;
+		case "INPUT":
+			switch(element.type) {
+				case "checkbox":
+					element.checked = newValue;
+					break;
+				case "number":
+				case "text":
+					element.value = newValue;
+					break;
+			}
+			break;
+	}
+}
+function setFormValues(values) {
+	for(const [k, v] of Object.entries(values)) {
+		setFieldValue(k, v);
+	}
+}
+function resetFields() {
+	const form = document.querySelector("form");
+
+	if(!form) {
+		console.error(`No form: form=`, form);
+		return;
+	}
+
+	form.reset();
 }
 
-export { Input, NumberInput, Select, SelectNew, Checkbox };
+export { Input, NumberInput, Select, Checkbox, TextArea };
+export { getFieldValue, setFieldValue, setFormValues, resetFields };
 export default Form;

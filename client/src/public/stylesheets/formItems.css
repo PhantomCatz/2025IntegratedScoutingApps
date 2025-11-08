@@ -3,6 +3,9 @@
 	color: var(--font-color);
 	flex-grow: 1;
 	width: 100%;
+	display: flex;
+	flex-direction: column;
+	margin-bottom: 1rem;
 
 	& > div {
 		display: flex;
@@ -10,6 +13,7 @@
 	label {
 		font-size: 1rem;
 		display: block;
+		margin-bottom: auto;
 	}
 	input {
 		background-color: transparent;
@@ -18,26 +22,26 @@
 			outline: 0px;
 		}
 	}
-	/* TODO: remove */
-	/* DEBUG */
-	&:has(input:valid) label {
+	/* DEBUG
+	&:has(:is(input, select, textarea):valid) label {
 		color: green;
 	}
-	&:has(input:invalid) label {
+	&:has(:is(input, select, textarea):user-invalid) label {
 		color: red;
 	}
-	/* END DEBUG */
+	END DEBUG */
 	.message {
-		transition: opacity 0.5s ease-out;
+		transition: max-height 0.1s linear;
+		text-align: center;
 		opacity: 0;
-		height: 0;
+		max-height: 0;
 		overflow: hidden;
 		margin: auto;
 		color: var(--color-failure);
 	}
 	&:has(input:user-invalid) .message {
 		opacity: 1;
-		height: auto;
+		max-height: 4rem;
 	}
 }
 .input__text {
@@ -49,6 +53,7 @@
 		border: 2px solid var(--font-color);
 		border-radius: 1rem;
 		text-align: center;
+		font-size: 1.5rem;
 
 		&:focus {
 			border: 2px solid var(--color-active-text);
@@ -57,7 +62,7 @@
 	}
 }
 .input__number {
-	input[type=number] {
+	 input[type=number] {
 		appearance: textfield;
 		flex-grow: 1;
 		height: 100%;
@@ -73,7 +78,7 @@
 		display: block;
 		width: 100%;
 	}
-	& > div {
+	& > number-input-container, & > div {
 		height: 3rem;
 		border: 2px solid var(--font-color);
 		border-radius: 1rem;
@@ -82,22 +87,23 @@
 			border: 2px solid var(--color-active-text);
 			outline: 1px solid var(--color-active-text);
 		}
-	}
-	.changeButton {
-		width: max(5rem, 5%);
-		height: 100%;
-		font-size: 2rem;
-		padding: 0px;
-		display: block;
-		border: 0px;
-		background-color: transparent;
-		color: var(--font-color);
-	}
-	.changeButton__increment {
-		border-left: 2px solid var(--font-color);
-	}
-	.changeButton__decrement {
-		border-right: 2px solid var(--font-color);
+		& > .changeButton {
+			width: max(5rem, 5%);
+			height: 100%;
+			font-size: 2rem;
+			padding: 0px;
+			display: block;
+			border: 0px;
+			background-color: transparent;
+			color: var(--font-color);
+
+			&.changeButton__increment {
+				border-left: 2px solid var(--font-color);
+			}
+			&.changeButton__decrement {
+				border-right: 2px solid var(--font-color);
+			}
+		}
 	}
 }
 .input__select {
@@ -110,7 +116,16 @@
 		border-radius: 1rem;
 		height: 3rem;
 		text-align: center;
-		font-size: 1rem;
+		font-size: 1.5rem;
+
+		&[multiple] {
+			height: auto;
+			/* overflow: hidden; */
+
+			&:not(:has(:not(option[disabled][hidden]))) {
+				height: 2rem;
+			}
+		}
 	}
 }
 .input__checkbox {
@@ -126,14 +141,14 @@
 		margin: 0px;
 		border-radius: 1rem;
 
-		&:not(:checked) {
-			background-color: var(--color-failure);
+		&:checked {
+			background-color: var(--color-success);
 			&::after {
 				content: 'Yes';
 			}
 		}
-		&:checked {
-			background-color: var(--color-success);
+		&:not(:checked) {
+			background-color: var(--color-failure);
 			&::after {
 				content: 'No';
 			}
@@ -143,6 +158,24 @@
 			vertical-align: bottom;
 			display: inline;
 			font-size: 2.5rem;
+		}
+	}
+}
+.input__textarea {
+	textarea {
+		resize: vertical;
+		width: 100%;
+		border: 2px solid var(--font-color);
+		box-sizing: border-box;
+		border-radius: 1rem;
+		padding: 0.5rem;
+		text-align: center;
+		font-weight: bold;
+		min-height: 4rem;
+		height: 15rem;
+
+		&:focus-visible {
+			outline: none;
 		}
 	}
 }

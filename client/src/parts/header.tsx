@@ -91,19 +91,26 @@ function Header(props: any) {
 
 	return (
 		<header className="header">
-			{backLink &&
-				<a href={backLink}><img className={"backImg"} src={iconSet.back} alt='Go back'/></a>
-			}
+			<header-images>
+				{backLink &&
+					<a href={backLink}><img className={"backImg"} src={iconSet.back} alt='Go back'/></a>
+				}
 
-			<img
-				className={"logoImg"}
-				src={iconSet.icon}
-				onClick={handleLogoClick}
-				onDoubleClick={handleLogoDoubleClick}
-				alt="2637 Logo"
-			/>
+				<img
+					className={"logoImg"}
+					src={iconSet.icon}
+					onClick={handleLogoClick}
+					onDoubleClick={handleLogoDoubleClick}
+					alt="2637 Logo"
+				/>
+
+				{props.settingsPage ?
+					<div className="settingsContainer"><img className={"menuImg"} src={iconSet.menu} onClick={() => { history.go(-1) }} alt='Settings'></img></div>
+					:
+					<a href={"#settings"} className="settingsContainer"><img className={"menuImg"} src={iconSet.menu} alt='' /></a>
+				}
+			</header-images>
 			<h1 className={"pageTitle"}>{name}</h1>
-			<a href={"#settings"}><img className={"menuImg"} src={iconSet.menu} alt=''></img></a>
 		</header>
 	);
 }

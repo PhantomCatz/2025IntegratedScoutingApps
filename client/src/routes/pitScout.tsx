@@ -526,7 +526,7 @@ function PitScout(props: any) {
 								try {
 									image = await readImage(file);
 								} catch (err) {
-									console.log(`File reading error =`, err);
+									console.error(`File reading error =`, err);
 									window.alert("Error in reading file");
 									continue;
 								}
@@ -541,7 +541,7 @@ function PitScout(props: any) {
 							form.setFieldsValue({...formDefaultValues, "scouter_initials": initials});
 						}
 						catch (err) {
-							console.log(err);
+							console.error(err);
 							window.alert("Error occured, please do not leave this message and notify a Webdev member immediately.");
 							window.alert(err);
 						}
@@ -550,9 +550,7 @@ function PitScout(props: any) {
 						}
 					}}
 					onFinishFailed={({values, errorFields, outOfDate}) => {
-						console.log("values=", values);
-						console.log("errorFields=", errorFields);
-						console.log("outOfDate=", outOfDate);
+						// TODO: Implement
 
 						const errorMessage = errorFields.map((x : any) => x.errors.join(", ")).join("\n");
 						window.alert(errorMessage);
