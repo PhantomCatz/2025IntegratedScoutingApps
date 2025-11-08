@@ -1,45 +1,12 @@
-.dtf-input {
-    border: 2px solid var(--font-color) !important;
-    border-radius: 25px;
-    background-color: transparent !important;
-    font-weight: bold;
-    color: var(--font-color) !important;
-    text-align: center !important;
-}
-
-.input_checkbox {
-    border: 2px solid var(--font-color) !important;
-    border-radius: 25px;
-    background-color: red;
-    font-weight: bold;
-    color: var(--font-color) !important;
-    text-align: center !important;
-}
-
-.input_checkbox_filled {
-    border: 2px solid var(--font-color) !important;
-    border-radius: 25px;
-    background-color: #61f761;
-    font-weight: bold;
-    color: var(--font-color) !important;
-    text-align: center !important;
-}
-
-.textbox_input {
-    height: 1000px !important;
-    border: 2px solid var(--font-color) !important;
-    border-radius: 25px;
-    background-color: #A9A9A9;
-    font-weight: bold;
-    color: var(--font-color) !important;
-    text-align: center !important;
-    background: transparent !important;
-}
-
-.summary_text {
-    text-align: center !important;
-}
-
-.errorLabel {
-	font-size: 70px !important;
+.dtfHome {
+	.submit {
+		margin-top: 3rem;
+		display: block;
+		width: 100%;
+		background-color: var(--background-color);
+		height: 3rem;
+		border: 2px solid var(--font-color);
+		border-radius: 1rem;
+		font-size: 1.5rem;
+	}
 }

@@ -1,27 +1,29 @@
-.input_checkbox {
-	width: 100%;
-	border: 2px solid var(--font-color) !important;
-	border-radius: 25px;
-	background-color: red;
-	font-weight: bold;
-	color: var(--font-color) !important;
-	text-align: center !important;
-}
-.inputRow {
-	display: flex !important;
-	& > * {
-		flex-grow: 1;
+.matchScout {
+	.input_checkbox {
+		width: 100%;
+		border: 2px solid var(--font-color) !important;
+		border-radius: 25px;
+		background-color: red;
+		font-weight: bold;
+		color: var(--font-color) !important;
+		text-align: center !important;
 	}
-}
-.fieldTitle {
-	text-align: center;
-	width: 100%;
-}
-.noShowButton {
-	width: 100%;
-	background-color: var(--background-color);
-	color: var(--font-color);
-	border: 2px solid var(--font-color);
-	border-radius: 5px;
-	margin: 5% auto auto;
+	.inputRow {
+		display: flex !important;
+		& > * {
+			flex-grow: 1;
+		}
+	}
+	.fieldTitle {
+		text-align: center;
+		width: 100%;
+	}
+	.noShowButton {
+		width: 100%;
+		background-color: var(--background-color);
+		color: var(--font-color);
+		border: 2px solid var(--font-color);
+		border-radius: 5px;
+		margin: 5% auto auto;
+	}
 }

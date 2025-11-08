@@ -45,28 +45,24 @@ function QrCode(props : any) {
 		for(const [k,v] of Object.entries(qrValue)) {
 			keys.push(k);
 			switch(v as any) {
-			case true:
-				vals.push(1);
-				break;
-			case false:
-				vals.push(0);
-				break;
-			case undefined:
-				console.log(`${k} is undefined`);
-				vals.push(v);
-				break;
-			default:
-				vals.push(v);
-				break;
+				case true:
+					vals.push(1);
+					break;
+				case false:
+					vals.push(0);
+					break;
+				case undefined:
+					console.log(`${k} is undefined`);
+					vals.push(v);
+					break;
+				default:
+					vals.push(v);
+					break;
 			}
 		}
 	}
 
 	const shownValue = escapeUnicode(vals.join(sep).replaceAll("\n", "\\n"));
-	//if (shouldShow) {
-	//	console.log("Current key map: " + keys.join("$"));
-	//	console.log("Current values: " + vals.join("$"));
-	//}
 
 	const valuesToDisplay : {key : any, display : string}[] = [
 		{
@@ -95,42 +91,24 @@ function QrCode(props : any) {
 	}
 
 	return (
-		<div>
-		{shouldShow && (
-			<div>
-				<h1 className={"qrTitle"}>{`Last submitted at ${timestamp}`}</h1>
-				{qrInfo}
-				<div className={"qrCodeHolder"}>
-					<div>
-						<AntQr value={
-							/*Limit: 2324 chars*/
-							shownValue
-						} type={"svg"} />
+		<div className="qrCode">
+			{shouldShow && (
+				<div>
+					<h1 className={"qrTitle"}>{`Last submitted at ${timestamp}`}</h1>
+					{qrInfo}
+					<div className={"qrCodeHolder"}>
+						<div>
+							<AntQr value={
+								/*Limit: 2324 chars*/
+								shownValue
+							} type={"svg"} />
+						</div>
 					</div>
+					<h2>Please take a screenshot of this and show it to WebDev</h2>
 				</div>
-				<h2>Please take a screenshot of this and show it to WebDev</h2>
-			</div>
-		)}
-	</div>);
+			)}
+		</div>);
 }
 
-function escapeUnicode(str: string) : string {
-	return [...(str as any)]
-		.map(
-			c => /^[\x00-\x7F]$/
-				.test(c) ?
-					c :
-					c
-						.split("")
-						.map((a: any) =>
-							 "\\u" + a
-								.charCodeAt()
-								.toString(16)
-								.padStart(4, "0")
-						).join("")
-			)
-		.join("");
-}
 
 export default QrCode;
-export {escapeUnicode, };

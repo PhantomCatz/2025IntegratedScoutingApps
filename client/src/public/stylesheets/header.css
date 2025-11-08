@@ -1,23 +1,23 @@
 .header {
 	vertical-align: top;
 	display: flex;
-}
- .header .menuImg {
-	display: block;
-	width: 3rem;
-	margin-left: auto;
-	margin-right: 0;
-	padding-top: 0.2rem;
-}
-.header .backImg {
-	height: 3rem;
-	margin: auto 1rem auto auto;
-}
-.header .logoImg {
-	width: 4rem;
-	height: 4rem;
-}
-.header .pageTitle {
-	margin: auto;
-	text-align: center;
+
+	.backImg {
+		height: min(5rem, 10vw);
+		margin: auto min(1rem, 5vw) auto auto;
+	}
+	.logoImg {
+		height: min(5rem, 10vw);
+	}
+	.pageTitle {
+		margin: auto;
+		text-align: center;
+	}
+
+	.menuImg {
+		height: min(5rem, 10vw);
+		display: block;
+		margin-left: auto;
+		margin-right: 0;
+	}
 }
