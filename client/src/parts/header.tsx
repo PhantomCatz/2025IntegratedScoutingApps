@@ -111,6 +111,7 @@ function Header(props: any) {
 				}
 			</header-images>
 			<h1 className={"pageTitle"}>{name}</h1>
+			<a href={"#settings"}><img className={"menuImg"} src={iconSet.menu} alt=''></img></a>
 		</header>
 	);
 }
