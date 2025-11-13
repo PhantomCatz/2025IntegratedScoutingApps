@@ -1,7 +1,8 @@
 import '../public/stylesheets/qrcode.css';
 
-import {QRCode as AntQr} from 'antd';
-import {useState, useEffect} from 'react';
+import { QRCode as AntQr } from 'antd';
+import { useState, useEffect } from 'react';
+import { escapeUnicode, } from '../utils/utils';
 
 const sep = "\t";
 const defualtValue = <></>;
