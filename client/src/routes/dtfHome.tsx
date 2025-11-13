@@ -1,11 +1,11 @@
 import '../public/stylesheets/dtfHome.css';
 import { useEffect } from 'react';
-import { Input, Form, InputNumber } from 'antd';
+// import { Input, InputNumber } from 'antd';
+import Form, { Input, NumberInput, } from '../parts/formItems';
 import { NUM_ALLIANCES, TEAMS_PER_ALLIANCE, } from '../utils/utils';
 import Header from '../parts/header';
 
 function DTFHome(props: any) {
-	const [form] = Form.useForm();
 	useEffect(() => { document.title = props.title; return () => { } }, [props.title]);
 
 	const teamInput : any = [];
@@ -18,14 +18,15 @@ function DTFHome(props: any) {
 			const teamNumberId = `team${teamNumber + TEAMS_PER_ALLIANCE * (allianceNumber - 1)}Num`;
 
 			teamNumberInput.push(
-				<div key={teamNumberId}>
-					<h2>Team {teamNumber + TEAMS_PER_ALLIANCE * (allianceNumber - 1)} Number</h2>
-					<Form.Item
-						name={teamNumberId}
-					>
-						<InputNumber min={0} className="input" />
-					</Form.Item>
-				</div>
+				<NumberInput
+					key={teamNumberId}
+					name={teamNumberId}
+					title={`Team ${teamNumber + TEAMS_PER_ALLIANCE * (allianceNumber - 1)} Number`}
+					min={0}
+					buttons={false}
+					align="left"
+					className="input"
+				/>
 			);
 		}
 
@@ -43,9 +44,9 @@ function DTFHome(props: any) {
 			<Header name={"Drive Team Feeder"} back={"#"} />
 
 			<div className="dtfHome">
-				<Form
+				<form
 					form={form}
-					onFinish={async (event) => {
+					onSubmit={async (event) => {
 						const teamNums = [];
 
 						for(let i = 1; i <= NUM_ALLIANCES * TEAMS_PER_ALLIANCE; i++) {
@@ -53,14 +54,12 @@ function DTFHome(props: any) {
 							teamNums.push(number);
 						}
 
-						teamNums.filter((num) => num !== undefined);
-
 						window.location.href = "#dtf/" + teamNums.join(",");
 					}}
 				>
 					{teamInput}
 					<button type="submit" className="submit" >Submit</button>
-				</Form>
+				</form>
 			</div>
 		</>
 	);

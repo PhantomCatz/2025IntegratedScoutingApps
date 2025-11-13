@@ -6,6 +6,7 @@ import Column from 'antd/es/table/Column';
 import ColumnGroup from 'antd/es/table/ColumnGroup';
 import Header from '../parts/header';
 
+
 const DATA_COLUMNS = {
 	"Match Identifier": {
 		"Team Number": "team_number",
@@ -110,7 +111,6 @@ function MatchData(props: any) {
 				fetchLink += `&team1=${teamNumber}`;
 
 				const response = await (await fetch(fetchLink)).json();
-				console.log(`response=`, response);
 
 				const table = [];
 				const data : any[] = response[1];
@@ -143,7 +143,7 @@ function MatchData(props: any) {
 				setMatchData(table);
 			}
 			catch (err) {
-				console.log("Error occured when getting data: ", err);
+				console.error("Error occured when getting data: ", err);
 			}
 			finally {
 				setLoading(false);
@@ -167,8 +167,8 @@ function MatchData(props: any) {
 		let hasValue = null;
 
 		if(value === null || value === undefined || value === "") {
-			console.log(`field=`, field);
-			console.log(`value=`, value);
+			console.error(`field=`, field);
+			console.error(`value=`, value);
 		}
 
 		switch(field) {

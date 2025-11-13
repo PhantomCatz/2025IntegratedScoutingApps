@@ -116,7 +116,7 @@ function StrategicLookup(props: any) {
 				await setItems([initialState()]);
 			}
 		} catch (err) {
-			console.log(err);
+			console.error(err);
 		}
 		setRefresh(!refresh);
 	}

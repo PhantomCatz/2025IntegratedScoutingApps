@@ -76,21 +76,25 @@ function DTFTeams(props: any) {
 				setTeamsMatchData(data);
 			})
 			.catch((err) => {
-				console.log("Error fetching data. Is server on?", err);
+				console.error("Error fetching data. Is server on?", err);
 			});
 
 		fetchLink = SERVER_ADDRESS;
 		fetchLink += "reqType=getTeamStrategic";
 
 		(async () => {
-			const strategicData = {};
-			for(const team of teams) {
-				const res = await fetch(fetchLink + `&team=${team}`);
-				const data = await res.json();
-				strategicData[team] = data;
+			try {
+				const strategicData = {};
+				for(const team of teams) {
+					const res = await fetch(fetchLink + `&team=${team}`);
+					const data = await res.json();
+					strategicData[team] = data;
+				}
+				await preprocessData(strategicData);
+				setTeamsStrategicData(strategicData);
+			} catch(err) {
+				console.error("An error occurred:", err);
 			}
-			await preprocessData(strategicData);
-			setTeamsStrategicData(strategicData);
 		})()
 	}, [teamList]);
 	useEffect(() => {
@@ -185,7 +189,7 @@ function DTFTeams(props: any) {
 				break;
 			// Default: Do nothing
 			default:
-				//console.log("did nothing for", k);
+				//console.error("did nothing for", k);
 				break;
 		}
 		switch(k) {
@@ -340,7 +344,7 @@ function DTFTeams(props: any) {
 			for(const [k, v] of Object.entries(match)) {
 				aggregateData(k, v, data);
 				if(getScore(k, v) === undefined) {
-					console.log("field ", k, " is ", v, " and has no score");
+					console.error("field ", k, " is ", v, " and has no score");
 					continue;
 				}
 				data.total_score += getScore(k, v);
@@ -384,8 +388,7 @@ function DTFTeams(props: any) {
 
 			const strategicData = teamsStragicData[team];
 			// let pitData = await PitTabs(Number(team));
-			console.log(`strategicData=`, strategicData);
-			console.log(`team=`, team);
+
 			let strategicTabs = await StrategicTabs({team: team, data: strategicData});
 
 			const teamTabs = [];
@@ -493,7 +496,6 @@ function DTFTeams(props: any) {
 			</>
 			});
 			 */
-			console.log(`strategicTabs=`, strategicTabs);
 			teamTabs.push({ key: "Strategic", label: "Strategic", children:
 					<>
 						{ strategicTabs ?
@@ -566,10 +568,10 @@ function DTFTeams(props: any) {
 			const match: { key: string; label: string; children: JSX.Element }[] = [];
 
 			if(!teamsMatchData) {
-				console.log("Could not load DTF. No data found");
+				console.error("Could not load DTF. No data found");
 				return (<></>);
 			} else {
-				console.log("Loaded data.");
+				console.error("Loaded data.");
 			}
 
 			const persistentData : any = {};

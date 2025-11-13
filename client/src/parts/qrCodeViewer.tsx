@@ -53,7 +53,7 @@ function QrCode(props : any) {
 					vals.push(0);
 					break;
 				case undefined:
-					console.log(`${k} is undefined`);
+					console.error(`${k} is undefined`);
 					vals.push(v);
 					break;
 				default:

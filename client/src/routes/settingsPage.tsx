@@ -1,7 +1,7 @@
 import '../public/stylesheets/settingsPage.css';
 import { useEffect, useState, useRef} from 'react';
 import Header from '../parts/header';
-import {Input, Form} from 'antd';
+import { Input, Form } from 'antd';
 import { NumberInput } from '../parts/formItems';
 import {useLocalStorage, } from 'react-use';
 import { request } from '../utils/tbaRequest';
@@ -80,7 +80,7 @@ function SettingsPage(props: any) {
 
 	return (
 		<>
-			<Header name={"Settings"} back="#/" />
+			<Header name={"Settings"} back="#/" settingsPage />
 
 			<div className="settingsPage">
 				<h1>Scouter Initials</h1>

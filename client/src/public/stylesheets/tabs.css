@@ -1,0 +1,34 @@
+tabs-container {
+	display: block;
+
+	tabs-nav-container {
+		padding-bottom: 0.5rem;
+		display: table; /* idk... */
+		border-bottom: 1px solid var(--color-hover);
+		scrollbar-gutter: stable;
+		overflow: scroll;
+		margin: 0 auto 1rem;
+		max-width: 100%;
+		width: auto;
+
+		nav-label {
+			font-size: 1rem;
+			cursor: pointer;
+			font-weight: bold;
+			padding-bottom: 0.5rem;
+
+			&[selected] {
+				border-bottom: 4px solid var(--color-active-text);
+			}
+		}
+		nav-label + nav-label {
+			margin-left: 1.5rem;
+		}
+	}
+	tab-page {
+		display: none;
+	}
+	tab-page[activetab] {
+		display: initial;
+	}
+}

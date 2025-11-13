@@ -332,98 +332,95 @@ function PitScout(props: any) {
 					align={"left"}
 				/>
 
-				<Select<FieldType>
-					title={"Drive Train Type"}
-					name={"drive_train_type"}
-					message={"Please input the drive train type"}
-					options={drive_train_options}
-				/>
-				<Select<FieldType>
-					title={"Motor Type"}
-					name={"motor_type"}
-					message={"Please input the motor type"}
-					options={motor_type_options}
-				/>
-				<NumberInput<FieldType>
-					title={"# of Motors"}
-					name={"number_of_motors"}
-					message={"Please input the number of motors"}
-					min={0}
-					form={form}
-					align={"left"}
-				/>
-				<Select<FieldType>
-					title={"Wheel Type"}
-					name={"wheel_type"}
-					message={"Please input the wheel type"}
-					options={wheel_type_options}
-				/>
-				<Select<FieldType>
-					title={"Coral Intake Type"}
-					name={"coral_intake_capability"}
-					message={"Please input the intake type"}
-					options={coral_intake_capability_options}
-				/>
-				<Select<FieldType>
-					title={"Intake Width"}
-					name={"intake_width"}
-					message={"Please input the intake width"}
-					options={intake_width_options}
-				/>
-				<h2>Coral Scoring</h2>
-				<h2>L1</h2>
-				<Form.Item<FieldType> valuePropName="checked" name="coral_scoring_l1">
-					<Checkbox className='input_checkbox' />
-				</Form.Item>
-				<h2>L2</h2>
-				<Form.Item<FieldType> valuePropName="checked" name="coral_scoring_l2">
-					<Checkbox className='input_checkbox' />
-				</Form.Item>
-				<h2>L3</h2>
-				<Form.Item<FieldType> valuePropName="checked" name="coral_scoring_l3">
-					<Checkbox className='input_checkbox' />
-				</Form.Item>
-				<h2>L4</h2>
-				<Form.Item<FieldType> valuePropName="checked" name="coral_scoring_l4">
-					<Checkbox className='input_checkbox' />
-				</Form.Item>
-				<h2>Can Remove Algae</h2>
-				<Form.Item<FieldType> valuePropName="checked" name="can_remove_algae">
-					<Checkbox className='input_checkbox' />
-				</Form.Item>
-				<Select<FieldType>
-					title={"Algae Intake Capability"}
-					name={"algae_intake_capability"}
-					message={"Please input the algae intake capability"}
-					options={algae_intake_capability_options}
-				/>
-				<Select<FieldType>
-					title={"Algae Scoring Capability"}
-					name={"algae_scoring_capability"}
-					message={'Please input the algae scoring capability'}
-					options={algae_scoring_capability_options}
-				/>
-				<Select<FieldType>
-					title={"Coral Score Aiming"}
-					name={"score_aiming_coral"}
-					message={"Please input the coral score aiming"}
-					options={score_aiming_coral_options}
-				/>
-				<Select<FieldType>
-					title={"Algae Score Aiming"}
-					name={"score_aiming_algae"}
-					message={"Please input the algae score aiming"}
-					options={score_aiming_algae_options}
-				/>
-				<h2>Aiming Description</h2>
-				<Form.Item<FieldType>
-					name="aiming_description"
-					rules={[
-						{ required: true, message: 'Please input Aiming Description!' },
-					]}
-				>
-					<textarea className='textbox_input' />
-				</Form.Item>
+        <Select<FieldType>
+          title={"Drive Train Type"}
+          name={"drive_train_type"}
+          message={"Please input the drive train type"}
+          options={drive_train_options}
+        />
+        <Select<FieldType>
+          title={"Motor Type"}
+          name={"motor_type"}
+          message={"Please input the motor type"}
+          options={motor_type_options}
+        />
+        <NumberInput<FieldType>
+          title={"# of Motors"}
+          name={"number_of_motors"}
+          message={"Please input the number of motors"}
+          min={0}
+          form={form}
+          align={"left"}
+        />
+        <Select<FieldType>
+          title={"Wheel Type"}
+          name={"wheel_type"}
+          message={"Please input the wheel type"}
+          options={wheel_type_options}
+        />
+        <Select<FieldType>
+          title={"Coral Intake Type"}
+          name={"coral_intake_capability"}
+          message={"Please input the intake type"}
+          options={coral_intake_capability_options}
+        />
+        <Select<FieldType>
+          title={"Intake Width"}
+          name={"intake_width"}
+          message={"Please input the intake width"}
+          options={intake_width_options}
+        />
+        <h2>Coral Scoring</h2>
+        <h2>L1</h2>
+        <Form.Item<FieldType> valuePropName="checked" name="coral_scoring_l1">
+          <Checkbox className='input_checkbox' />
+        </Form.Item>
+        <h2>L2</h2>
+        <Form.Item<FieldType> valuePropName="checked" name="coral_scoring_l2">
+          <Checkbox className='input_checkbox' />
+        </Form.Item>
+        <h2>L3</h2>
+        <Form.Item<FieldType> valuePropName="checked" name="coral_scoring_l3">
+          <Checkbox className='input_checkbox' />
+        </Form.Item>
+        <h2>L4</h2>
+        <Form.Item<FieldType> valuePropName="checked" name="coral_scoring_l4">
+          <Checkbox className='input_checkbox' />
+        </Form.Item>
+        <h2>Can Remove Algae</h2>
+        <Form.Item<FieldType> valuePropName="checked" name="can_remove_algae">
+          <Checkbox className='input_checkbox' />
+        </Form.Item>
+        <Select<FieldType>
+          title={"Algae Intake Capability"}
+          name={"algae_intake_capability"}
+          message={"Please input the algae intake capability"}
+          options={algae_intake_capability_options}
+        />
+        <Select<FieldType>
+          title={"Algae Scoring Capability"}
+          name={"algae_scoring_capability"}
+          message={'Please input the algae scoring capability'}
+          options={algae_scoring_capability_options}
+        />
+        <Select<FieldType>
+          title={"Coral Score Aiming"}
+          name={"score_aiming_coral"}
+          message={"Please input the coral score aiming"}
+          options={score_aiming_coral_options}
+        />
+        <Select<FieldType>
+          title={"Algae Score Aiming"}
+          name={"score_aiming_algae"}
+          message={"Please input the algae score aiming"}
+          options={score_aiming_algae_options}
+        />
+        <h2>Aiming Description</h2>
+        <Form.Item<FieldType>
+          name="aiming_description"
+        >
+         <TextArea style={{ verticalAlign: 'center' }} className='textbox_input' />
+       </Form.Item>
 
 				<Select<FieldType>
 					title={"Climbing Capability"}
@@ -442,15 +439,16 @@ function PitScout(props: any) {
 					align={"left"}
 				/>
 
-				<NumberInput<FieldType>
-					title={"Team Safety(0-4)"}
-					name={"team_safety"}
-					message={"Please input team safety rating"}
-					min={0}
-					max={4}
-					form={form}
-					align={"left"}
-				/>
+        <NumberInput<FieldType>
+          title={"Team Safety(0-4)"}
+          name={"team_safety"}
+          message={"Please input team safety rating"}
+          min={0}
+          max={4}
+          defaultValue={4}
+          form={form}
+          align={"left"}
+        />
 
 				<NumberInput<FieldType>
 					title={"Team Workmanship(0-4)"}
@@ -478,26 +476,24 @@ function PitScout(props: any) {
 				</Form.Item>
 				<h2 style={{ display: isLoading ? 'inherit' : 'none' }}>Submitting data...</h2>
 
-				<Form.Item<FieldType> name="robot_images">
-					<>
-						<label className="robotImageLabel" htmlFor="robotImageInput">Select Image {`(${robotImageInput?.current?.files?.length ?? 0} images)`}</label>
-						<input
-							ref={robotImageInput}
-							id="robotImageInput"
-							type="file"
-							accept="image/*"
-							multiple
-							onChange={function() {
-								setRefresh(!refresh);
-							}}
-						/>
-					</>
-				</Form.Item>
-				<Input type="submit" value="Submit" className='submit' style={{ marginBottom: '5%' }} />
-			</div>
-		);
-	}
-	return (
+        <Form.Item<FieldType> name="robot_images">
+          <label className="robotImageLabel" htmlFor="robotImageInput">Select Image {`(${robotImageInput?.current?.files?.length ?? 0} images)`}</label>
+          <input
+            ref={robotImageInput}
+            id="robotImageInput"
+            type="file"
+            accept="image/*"
+            multiple
+            onChange={function() {
+              setRefresh(!refresh);
+            }}
+          />
+        </Form.Item>
+        <Input type="submit" value="Submit" className='submit' style={{ marginBottom: '5%' }} />
+      </div>
+    );
+  }
+  return (
 		<>
 			<Header name={"Pit Scout"} back={"#scoutingapp"}/>
 
@@ -530,7 +526,7 @@ function PitScout(props: any) {
 								try {
 									image = await readImage(file);
 								} catch (err) {
-									console.log(`File reading error =`, err);
+									console.error(`File reading error =`, err);
 									window.alert("Error in reading file");
 									continue;
 								}
@@ -545,7 +541,7 @@ function PitScout(props: any) {
 							form.setFieldsValue({...formDefaultValues, "scouter_initials": initials});
 						}
 						catch (err) {
-							console.log(err);
+							console.error(err);
 							window.alert("Error occured, please do not leave this message and notify a Webdev member immediately.");
 							window.alert(err);
 						}
@@ -554,9 +550,7 @@ function PitScout(props: any) {
 						}
 					}}
 					onFinishFailed={({values, errorFields, outOfDate}) => {
-						console.log("values=", values);
-						console.log("errorFields=", errorFields);
-						console.log("outOfDate=", outOfDate);
+						// TODO: Implement
 
 						const errorMessage = errorFields.map((x : any) => x.errors.join(", ")).join("\n");
 						window.alert(errorMessage);
@@ -569,6 +563,5 @@ function PitScout(props: any) {
 		</>
 	);
 }
-
 
 export default PitScout;

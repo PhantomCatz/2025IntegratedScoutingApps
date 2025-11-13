@@ -11,6 +11,12 @@ function isRoundNumberVisible(matchLevel? : string) {
 		true :
 		false;
 }
+function getOpposingAllianceName(allianceName: string) {
+	return allianceName && ({
+		red: blue,
+		blue: red
+	})[allianceName];
+}
 
 function getDivisionsList() {
 	return {
@@ -68,7 +74,7 @@ async function getTeamsNotScouted(eventName : string) {
 
 		return res;
 	} catch(err) {
-		console.log(err);
+		console.error(err);
 		return null;
 	}
 }
@@ -113,7 +119,7 @@ async function getTeamsPlaying(eventName : string,
 		return fullTeams;
 	} catch (err : any) {
 		if(err.message) {
-			console.log("err=", err);
+			console.error("err=", err);
 		}
 
 		const returnVal = await getTeamsPlayingOffline(eventName, matchLevel, matchNumber, allianceNumber1, allianceNumber2);
@@ -152,7 +158,7 @@ async function getTeamsPlayingPlayoffs(eventName : string,
 		return fullTeams;
 	} catch (err : any) {
 		if(err.message) {
-			console.log("err=", err);
+			console.error("err=", err);
 		}
 		try {
 			const response = await request(`event/${eventName}/alliances`);
@@ -177,7 +183,7 @@ async function getTeamsPlayingPlayoffs(eventName : string,
 
 			return res;
 		} catch (err : any) {
-			console.log(`err=`, err);
+			console.error(`err=`, err);
 		}
 
 		const res = await getTeamsPlayingPlayoffsOffline(eventName, matchLevel, matchNumber, allianceNumber1, allianceNumber2);
