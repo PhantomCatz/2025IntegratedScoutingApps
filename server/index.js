@@ -11,9 +11,9 @@ app.use(express.json({
 
 app.use((req, res, next) => {
 	//TODO: should this be removed?
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-  next();
+	res.header('Access-Control-Allow-Origin', '*');
+	res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+	next();
 });
 
 app.listen(PORT, () => {
@@ -30,22 +30,22 @@ app.get("/api", async function(req, res) {
 
 	try {
 		switch(queries.reqType) {
-		case "teamsScouted":
-			result = await getTeamsScouted("pit_data");
-			break;
-		case "getTeam":
-			result = await getTeamInfo(queries);
-			break;
-		case "getTeamPit":
-			result = await getTeamPitInfo(queries);
-			break;
-		case "getTeamStrategic":
-			result = await getTeamStrategicInfo(queries);
-			break;
-		default:
-			console.log("reqType not used when getting:", queries);
-			result = await getTeamInfo(queries);
-			break;
+			case "teamsScouted":
+				result = await getTeamsScouted("pit_data");
+				break;
+			case "getTeam":
+				result = await getTeamInfo(queries);
+				break;
+			case "getTeamPit":
+				result = await getTeamPitInfo(queries);
+				break;
+			case "getTeamStrategic":
+				result = await getTeamStrategicInfo(queries);
+				break;
+			default:
+				console.log("reqType not used when getting:", queries);
+				result = await getTeamInfo(queries);
+				break;
 		}
 	} catch (err) {
 		console.error(`ERROR: `, err);
@@ -71,21 +71,23 @@ app.post("/api", async function(req, res) {
 
 	try {
 		switch(queries.reqType) {
-		case "submitPitData":
-			console.log("submit pit");
-			result = await submitPitData(data);
-			break;
-		case "submitMatchData":
-			console.log("submit match");
-			result = await submitMatchData(data);
-			break;
-		case "submitStrategicData":
-			console.log("submit strategic");
-			result = await submitStrategicData(data);
-			break;
-		default:
-			console.log("reqType not used when submitting:", queries);
-			break;
+			case "submitPitData":
+				console.log("submit pit");
+				result = await submitPitData(data);
+				break;
+			case "submitMatchData":
+				console.log("submit match");
+				result = await submitMatchData(data);
+				break;
+			case "submitStrategicData":
+				console.log("submit strategic");
+				result = await submitStrategicData(data);
+				break;
+			default:
+				console.error("query type not found", queries);
+				await res.status(404);
+				await res.json(null);
+				return res;
 		}
 	} catch (err) {
 		console.log("err=", err);
