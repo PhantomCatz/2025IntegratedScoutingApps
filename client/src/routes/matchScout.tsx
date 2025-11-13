@@ -827,8 +827,8 @@ function MatchScout(props: any) {
 				<Checkbox<FieldType>
 					name="endgame_climb_successful"
 					title="Climp Successful?"
-					onChange={(x : any) => {
-						setClimbSuccessful(x.target.checked);
+					onChange={(event : any) => {
+						setClimbSuccessful(event);
 					}}
 				/>
 

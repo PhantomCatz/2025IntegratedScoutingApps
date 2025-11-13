@@ -1,34 +1,30 @@
 .header {
 	vertical-align: top;
+	display: flex;
+	flex-direction: row;
+	position: relative;
+	z-index: 1;
 
-	header-images {
-		display: flex;
-		height: 0;
-		position: relative;
-		z-index: 1;
+	.backImg {
+		height: max(3rem, min(10vw, 5rem));
+		margin: auto max(1.5rem, min(5vw, 2.5rem)) auto auto;
+	}
+	.logoImg {
+		height: max(3rem, min(10vw, 5rem));
+	}
+	.settingsContainer {
+		display: inline-block;
+		margin-left: auto;
+		margin-right: 0;
 
-		.backImg {
+		.menuImg {
 			height: max(3rem, min(10vw, 5rem));
-			margin: auto max(1.5rem, min(5vw, 2.5rem)) auto auto;
-		}
-		.logoImg {
-			height: max(3rem, min(10vw, 5rem));
-		}
-		.settingsContainer {
-			display: inline-block;
+			display: block;
 			margin-left: auto;
 			margin-right: 0;
-
-			.menuImg {
-				height: max(3rem, min(10vw, 5rem));
-				display: block;
-				margin-left: auto;
-				margin-right: 0;
-				cursor: pointer;
-			}
+			cursor: pointer;
 		}
 	}
-
 	.pageTitle {
 		margin-left: auto;
 		margin-right: auto;
