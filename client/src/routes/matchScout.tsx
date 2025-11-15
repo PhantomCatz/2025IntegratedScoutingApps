@@ -349,6 +349,7 @@ function MatchScout(props: any) {
 			return;
 		}
 
+		//TODO: refactor
 		fetchLink += "reqType=submitMatchData";
 
 		const submitBody = {
@@ -364,7 +365,7 @@ function MatchScout(props: any) {
 				},
 			});
 
-			return !!res.ok;
+			return res.ok;
 		} catch (err) {
 			return false;
 		}
@@ -403,11 +404,9 @@ function MatchScout(props: any) {
 			setDefendedIsVisible(false);
 
 			await updateNumbers();
-		}
-		catch (err) {
+		} catch (err) {
 			console.log(`err=`, err);
-		}
-		finally {
+		} finally {
 			setLoading(false);
 		}
 	}
@@ -487,6 +486,7 @@ function MatchScout(props: any) {
 			}
 			return teamsList[n] ? `: ${teamsList[n]}` : "";
 		}
+		//TODO: refactor
 		const robot_position = [
 			{ label: `R1${getNum(0)}`, value: "R1" },
 			{ label: `R2${getNum(1)}`, value: "R2" },

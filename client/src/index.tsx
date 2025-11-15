@@ -61,6 +61,7 @@ globalThis.fetch = (() => {
 //*/
 
 function App() {
+	//TODO: refactor titles
   return (
     <HashRouter>
       <Routes>
@@ -75,7 +76,7 @@ function App() {
         <Route path="/scoutingapp/lookup/teamdata/:teamNumber" element={<MatchData title="2637 Data Lookup" />} />
         <Route path="/scoutingapp/pit" element={<PitScout title="2637 Pit Scout" />} />
         <Route path="/dtf" element={<DTFHome title="2637 Drive Team Feeder" />} />
-        <Route path="/dtf/:teamParams" element={<DTFTeams title="2637 Drive Team Feeder" />} />
+        <Route path="/dtf/:teamsParamsList" element={<DTFTeams title="2637 Drive Team Feeder" />} />
 
         <Route path="/settings" element={<SettingsPage title="Settings" />} />
       </Routes>

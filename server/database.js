@@ -1,41 +1,38 @@
-import dotenv from 'dotenv';
 import mysql from 'mysql2/promise';
-
-dotenv.config();
 
 const defaultValue = {"err" : "Failed to resolve request."};
 const connectionData = {
-	"user" : process.env.DB_USERNAME,
-	"password" : process.env.DB_PASSWORD,
-	"host" : process.env.DB_HOST,
-	"port" : process.env.DB_PORT,
-	"database" : process.env.DB_DATABASE,
-	"connectionLimit" : 15,
+	"user": process.env.USERNAME,
+	"password": process.env.PASSWORD,
+	"host": process.env.HOST,
+	"port": process.env.PORT,
+	"database": process.env.DATABASE,
+	"connectionLimit": 15,
 };
 
 const NUM_ALLIANCES = 2;
 const TEAMS_PER_ALLIANCE = 3;
 
-if(!process.env.DB_DATABASE || !connectionData?.database) {
+if(!process.env.DATABASE || !connectionData?.database) {
 	console.log("connectionData=", connectionData);
 	console.log("[91mWARNING:[0m Check .env");
 }
 
-console.log("Using Database " + process.env.DB_DATABASE);
+console.log("Using Database " + process.env.DATABASE);
 
 let connPool = {
 	errorConnection: {
 		query: async function(sqlQuery) {
-			console.log(`Did not run query '${sqlQuery}'`)
+			console.log(`Did not run query '${sqlQuery}'`);
 			return {};
 		},
-		destroy: function() {},
+		release: function() {},
 	},
 	getConnection: async function() {
 		try {
-			const pool = mysql.createPool(connectionData);
+			const pool = await mysql.createPool(connectionData);
 
-			const conn = pool.getConnection();
+			const conn = await pool.getConnection();
 
 			connPool = pool;
 
@@ -48,39 +45,39 @@ let connPool = {
 	}
 };
 
-async function requestDatabase(query, substitution, forEach) {
-	let result = [];
+// TODO: refactor lol
+async function requestDatabase(query, substitution, config) {
+	let result = null;
 
 	const sqlQuery = query;
 
 	try {
 		const conn = await connPool.getConnection();
 
-		if(Array.isArray(substitution)) {
+		if(config?.mapSubstitution) {
+			result = [];
+
 			for(const val of substitution) {
 				const [res, fields] = await conn.query(sqlQuery, [val]);
 
 				if(forEach) {
 					await forEach(val, res, fields);
-				} else {
-					result.push(res);
 				}
+				result.push(res);
 			}
 		} else {
 			const [res, fields] = await conn.query(sqlQuery, [substitution]);
 
-			//if(forEach) {
-			//	res.map((x) => forEach(x, fields));
-			//}
+			if(forEach) {
+				res.map((x) => forEach(x, fields));
+			}
 
 			result = res;
 		}
 
-		await conn.destroy();
-
-		return result;
+		await conn.release();
 	} catch(err) {
-		console.log("Failed to resolve request:");
+		console.log(`Failed to resolve request: ${query}`);
 		console.dir(err);
 	}
 	return result;
@@ -164,7 +161,7 @@ async function submitData(data, table) {
 
 		result = res;
 
-		await conn.destroy();
+		await conn.release();
 	} catch(err) {
 		console.log(`Failed to resolve request to ${table}:`);
 		console.dir(err);

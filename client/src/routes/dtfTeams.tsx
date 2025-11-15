@@ -2,7 +2,7 @@ import '../public/stylesheets/dtfTeams.css';
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Checkbox, Flex, Input, Tabs } from "antd";
-import { NUM_ALLIANCES, TEAMS_PER_ALLIANCE, round, } from '../utils/utils';
+import { round, } from '../utils/utils';
 import TextArea from 'antd/es/input/TextArea';
 import Header from '../parts/header';
 import ChartComponent from '../parts/dtfChart';
@@ -10,43 +10,42 @@ import PitTabs from '../parts/pitTabs';
 import StrategicTabs from '../parts/strategicTabs';
 
 function DTFTeams(props: any) {
-	const { teamParams } = useParams();
+	const { teamsParamsList } = useParams();
 	const [loading, setLoading] = useState(false);
 	const [items, setItems] = useState<{ key: string; label: string; children: JSX.Element; }[]>([]);
-	const [teamList, setTeamList] = useState<string[]>([]);
+	const [teamsList, setTeamsList] = useState<string[]>([]);
 	const [teamIndex, setTeamIndex] = useState<any>();
 	const [teamsMatchData, setTeamsMatchData] = useState<any>();
 	const [teamsStragicData, setTeamsStrategicData] = useState<any>();
+	console.log(`teamsList=`, teamsList);
 
 	useEffect(() => {
 		document.title = props.title;
 	}, [props.title]);
 	useEffect(() => {
-		const teams = teamParams?.split(",") || [];
+		const teams: string[] = teamsParamsList?.split(",") ?? [];
+		const teamsList = [];
 
-		const inverse : any = {};
+		const inverse: any = {};
 
 		for(let i = 0; i < teams.length; i++) {
-			const num = teams[i] || 0;
-			if(!num) {
-				continue;
+			const num = Number(teams[i] || 0);
+
+			if(num) {
+				inverse[num] = i + 1;
 			}
 
-			inverse[num] = i + 1;
+			teamsList[i] = num;
 		}
 
-		setTeamList(teams);
+		setTeamsList(teamsList);
 		setTeamIndex(inverse);
-	}, [teamParams]);
+	}, [teamsParamsList]);
 	useEffect(() => {
-		if (!(teamList?.length)) {
+		if (!(teamsList?.length)) {
 			return;
 		}
 		let fetchLink = SERVER_ADDRESS;
-
-		const teams = teamList.map((num) => {
-			return Number(num || 0);
-		});
 
 		if(!fetchLink) {
 			console.error("Could not get fetch link; Check .env");
@@ -56,8 +55,8 @@ function DTFTeams(props: any) {
 		fetchLink += "reqType=getTeam"
 
 		for(let i = 0; i < NUM_ALLIANCES * TEAMS_PER_ALLIANCE; i++) {
-			if(teamList[i]) {
-				fetchLink += `&team${i+1}=${teamList[i]}`;
+			if(teamsList[i]) {
+				fetchLink += `&team${i+1}=${teamsList[i]}`;
 			}
 		}
 
@@ -82,19 +81,26 @@ function DTFTeams(props: any) {
 		fetchLink = SERVER_ADDRESS;
 		fetchLink += "reqType=getTeamStrategic";
 
-		(async () => {
-			const strategicData = {};
-			for(const team of teams) {
+		const strategicData = {};
+		Promise.all(
+			teamsList.map(async (team) => {
+				if(!team) {
+					continue;
+				}
+
 				const res = await fetch(fetchLink + `&team=${team}`);
 				const data = await res.json();
 				strategicData[team] = data;
-			}
-			await preprocessData(strategicData);
-			setTeamsStrategicData(strategicData);
-		})()
-	}, [teamList]);
+
+
+			}))
+			.then(() => {
+				preprocessData(strategicData);
+				setTeamsStrategicData(strategicData);
+			});
+	}, [teamsList]);
 	useEffect(() => {
-		getDTF(teamList);
+		getDTF(teamsList);
 	}, [teamsMatchData, teamsStragicData]);
 
 	async function preprocessData(data) {
@@ -104,8 +110,10 @@ function DTFTeams(props: any) {
 			"Finals": 2,
 		} as const;
 
+
 		for(const teamIndex in data) {
-			(await data[teamIndex]).sort(function(a, b) {
+			//data[teamIndex] is array of matches
+			data[teamIndex].sort(function(a, b) {
 				const matchLevelComp = matchLevelOrder[a.match_level] - matchLevelOrder[b.match_level];
 				if(matchLevelComp !== 0) {
 					return matchLevelComp;
@@ -596,7 +604,7 @@ function DTFTeams(props: any) {
 
 				for(let j = 0; j < TEAMS_PER_ALLIANCE; j++) {
 					const index = i * TEAMS_PER_ALLIANCE + j;
-					const teamNumber = Number(teamList[index]);
+					const teamNumber = Number(teamsList[index]);
 
 					if(!teamNumber) {
 						continue;

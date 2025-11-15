@@ -6,6 +6,8 @@ const constants = {
   TBA_AUTH_KEY: atob("c3NsVlhkQ3NUWnBwTXFoZUJkN01NVlN4RHJJZFV1ZjFreUk0SEZwUjJSenNZaWJkSGhGUHZMeUtsdEtyNVhIeg=="),
   SERVER_ADDRESS: import.meta.env.VITE_SERVER_ADDRESS,
   EVENT_NAME: import.meta.env.VITE_EVENTNAME,
+	NUM_ALLIANCES: 2,
+	TEAMS_PER_ALLIANCE: 3,
 } as const;
 
 for(const [name, value] of Object.entries(constants)) {

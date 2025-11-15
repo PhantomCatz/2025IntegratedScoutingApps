@@ -1,5 +1,6 @@
+import 'dotenv/config';
 import { getTeamInfo, getTeamsScouted, getTeamPitInfo, getTeamStrategicInfo, submitPitData, submitMatchData, submitStrategicData,} from "./database.js";
-import express from "express";
+import express from 'express';
 
 const PORT = process.env.PORT || 3001;
 
