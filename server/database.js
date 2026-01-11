@@ -1,24 +1,24 @@
 import mysql from 'mysql2/promise';
 
-const defaultValue = {"err" : "Failed to resolve request."};
+const defaultValue = { "err" : "Failed to resolve request." };
 const connectionData = {
-	"user" : process.env.DB_USERNAME,
-	"password" : process.env.DB_PASSWORD,
-	"host" : process.env.DB_HOST,
-	"port" : process.env.DB_PORT,
-	"database" : process.env.DB_DATABASE,
-	"connectionLimit" : 15,
+	"user": process.env.USERNAME,
+	"password": process.env.PASSWORD,
+	"host": process.env.HOST,
+	"port": process.env.PORT,
+	"database": process.env.DATABASE,
+	"connectionLimit": 15,
 };
 
 const NUM_ALLIANCES = 2;
 const TEAMS_PER_ALLIANCE = 3;
 
-if(!process.env.DB_DATABASE || !connectionData?.database) {
+if(!process.env.DATABASE || !connectionData?.database) {
 	console.error("connectionData=", connectionData);
 	console.error("[91mWARNING:[0m Check .env");
 }
 
-console.log("Using Database " + process.env.DB_DATABASE);
+console.log("Using Database " + process.env.DATABASE);
 
 let connPool = {
 	errorConnection: {
@@ -73,7 +73,7 @@ async function requestDatabase(query, substitution, forEach) {
 			result = res;
 		}
 
-		await conn.destroy();
+		conn.destroy();
 
 		return result;
 	} catch(err) {
@@ -106,7 +106,7 @@ async function getTeamInfo(queries) {
 		inverse[num] = i;
 	}
 
-	let result = {};
+	const result = {};
 
 	if(!teams?.length) {
 		console.error("Error: No teams queried");
@@ -116,6 +116,7 @@ async function getTeamInfo(queries) {
 	const sqlQuery = "SELECT * FROM match_data WHERE team_number=?";
 
 	// val=team number, res=match data
+	// TODO: refactor await loop
 	await requestDatabase(sqlQuery, teams, function(val, res) {
 		const index = inverse[val];
 		result[index] = res;

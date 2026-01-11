@@ -13,7 +13,6 @@
 	label {
 		font-size: 1rem;
 		display: block;
-		margin-bottom: auto;
 	}
 	input {
 		background-color: transparent;
@@ -22,14 +21,14 @@
 			outline: 0px;
 		}
 	}
-	/* DEBUG
+	/* DEBUG */
 	&:has(:is(input, select, textarea):valid) label {
 		color: green;
 	}
 	&:has(:is(input, select, textarea):user-invalid) label {
 		color: red;
 	}
-	END DEBUG */
+	/* END DEBUG */
 	.message {
 		transition: max-height 0.1s linear;
 		text-align: center;
@@ -164,6 +163,7 @@
 .input__textarea {
 	textarea {
 		resize: vertical;
+		background-color: var(--background-color);
 		width: 100%;
 		border: 2px solid var(--font-color);
 		box-sizing: border-box;

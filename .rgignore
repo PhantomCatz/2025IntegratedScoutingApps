@@ -1,12 +1,10 @@
 # Ignore files when searching
 !Icon
 !.env
+!*.bak
 
 **/public/fonts
 **/public/images
 favicon.ico
 manifest.json
 robots.txt
-
-tbaData.json
-tbaTeams.json

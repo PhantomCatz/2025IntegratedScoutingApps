@@ -7,33 +7,24 @@ import blackMenu from '../public/images/blackMenu.png';
 import '../public/stylesheets/header.css';
 import React, { useEffect } from 'react';
 import {useLocalStorage, } from 'react-use';
-import { getRandomHex, } from "../utils/utils";
+import { parseHexColor } from "../utils/utils";
 
-const DEFAULT_THEME = "light";
+type Props = {
+	name: string;
+	back?: string;
+	settingsPage?: boolean;
+};
 
-function Header(props: any) {
+function Header(props: Props): React.ReactElement {
 	const name = props.name || "No name set";
 	const backLink = props.back;
 
-	const [theme, setTheme] = useLocalStorage<any>('theme', DEFAULT_THEME);
-	const [backgroundColor, setBackgroundColor] = useLocalStorage<any>('backgroundColor', '#ffffff');
-	const [fontColor, setFontColor] = useLocalStorage<any>('fontColor', '#000000');
+	const [backgroundColor, _setBackgroundColor] = useLocalStorage<string>('backgroundColor', '#ffffff');
+	const [fontColor, _setFontColor] = useLocalStorage<string>('fontColor', '#000000');
+	console.log(`backgroundColor=`, backgroundColor);
+	console.log(`fontColor=`, fontColor);
 
-	const colors : any = {
-		light: () => ({
-			'--background-color': ' #ffffff',// #32a7dc
-			'--font-color': '#000000',
-		}),
-		dark: () => ({
-			'--background-color': ' #000000',
-			'--font-color': '#ffffff'
-		}),
-		random: () => ({
-			'--background-color': `#${getRandomHex()}${getRandomHex()}${getRandomHex()}${getRandomHex()}${getRandomHex()}${getRandomHex()}`,
-			'--font-color': `#${getRandomHex()}${getRandomHex()}${getRandomHex()}${getRandomHex()}${getRandomHex()}${getRandomHex()}`,
-		}),
-	};
-	const icons : any = {
+	const icons = {
 		light: {
 			icon: blackLogo,
 			back: blackBack,
@@ -44,50 +35,34 @@ function Header(props: any) {
 			icon: whiteLogo,
 			back: whiteBack,
 			menu: whiteMenu,
-		},
-		random: {
-			icon: whiteLogo,
-			back: whiteBack,
-			menu: whiteMenu,
-		},
+		}
 	};
 
-	function handleLogoClick() {
-		if (theme === 'random') {
-			updateTheme('light');
-		} else if (theme === 'light') {
-			updateTheme('dark');
-		} else if (theme === 'dark') {
-			updateTheme('light');
-		}
-	}
-
-	function handleLogoDoubleClick() {
-		updateTheme('random');
-	}
-
-	function updateTheme(newTheme : string) {
-		if(!colors[newTheme]) {
-			newTheme = DEFAULT_THEME;
-			console.log(`newTheme=`, newTheme);
-		}
-
-		const themeColors = colors[newTheme];
-		const color = themeColors();
-
-		setBackgroundColor(color["--background-color"]);
-		setFontColor(color["--font-color"]);
-
-		setTheme(newTheme);
-	}
-
 	useEffect(() => {
-		const rootElement = document.querySelector(":root") as any;
-		rootElement.style.setProperty('--background-color', backgroundColor);
-		rootElement.style.setProperty('--font-color', fontColor);
-	}, [theme]);
+		const rootElement = document.querySelector(":root") as HTMLHtmlElement;
+		rootElement.style.setProperty('--background-color', backgroundColor ?? "");
+		rootElement.style.setProperty('--font-color', fontColor ?? "");
+	}, [backgroundColor, fontColor]);
 
-	const iconSet = icons[theme] ?? icons[DEFAULT_THEME];
+
+	// eslint-disable-next-line @typescript-eslint/no-magic-numbers
+	const [r, g, b] = parseHexColor(backgroundColor?.substring(1) ?? "").map((c) => c >= 0.0031308 ? 1.055 * (c ** (1 / 2.4)) - 0.055 : 12.92 * c);
+
+	// eslint-disable-next-line @typescript-eslint/no-magic-numbers
+	const l = Math.cbrt(r * 0.4122214708 + g * 0.5363325363 + b * 0.0514459929);
+	// eslint-disable-next-line @typescript-eslint/no-magic-numbers
+	const m = Math.cbrt(r * 0.2119034982 + g * 0.6806995451 + b * 0.1073969566);
+	// eslint-disable-next-line @typescript-eslint/no-magic-numbers
+	const s = Math.cbrt(r * 0.0883024619 + g * 0.2817188376 + b * 0.6299787005);
+	// eslint-disable-next-line @typescript-eslint/no-magic-numbers
+	const lightness = l * 0.2104542553 + m * 0.7936177850 + s * -0.0040720468;
+	// eslint-disable-next-line @typescript-eslint/no-magic-numbers
+	const isLight = lightness >= 0.5;
+
+	console.log(`lightness=`, lightness);
+
+	const theme = isLight ? "light" : "dark";
+	const iconSet = icons[theme];
 
 	return (
 		<header className="header">
@@ -98,8 +73,6 @@ function Header(props: any) {
 			<img
 				className={"logoImg"}
 				src={iconSet.icon}
-				onClick={handleLogoClick}
-				onDoubleClick={handleLogoDoubleClick}
 				alt="2637 Logo"
 			/>
 

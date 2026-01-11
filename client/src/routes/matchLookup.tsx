@@ -1,71 +1,79 @@
 import '../public/stylesheets/matchLookup.css';
 import { useEffect, useState } from 'react';
+import {useLocalStorage, } from 'react-use';
 import Form, { Input, NumberInput } from '../parts/formItems';
+import { getFieldAccessor } from '../parts/formItems';
 import Header from '../parts/header';
-import { getAllTeams, getDivisionsList } from '../utils/tbaRequest';
-import { Select } from '../parts/formItems';
+import { getAllTeams, } from '../utils/tbaRequest.ts';
+import Constants from '../utils/constants';
 
-function MatchLookup(props: any) {
-	const DEFAULT_MATCH_EVENT = EVENT_NAME || "";
+import type * as TbaApi from '../types/tbaApi';
 
-	const [fetchedData, setFetchedData] = useState([]);
-	const [match_event, setMatchEvent] = useState(DEFAULT_MATCH_EVENT);
-	useEffect(() => { document.title = props.title; return () => { } }, [props.title]);
+type Props = {
+	title: string,
+};
+type Fields = {
+	teamNumber: number,
+};
+
+function MatchLookup(props: Props): React.ReactElement {
+	const [teamNumberElements, setTeamNumberElements] = useState<React.ReactElement[] | null>(null);
+	const [_eventKey, _setEventKey] = useLocalStorage<TbaApi.EventKey>("eventKey", Constants.EVENT_KEY);
+	const [isLoading, setIsLoading] = useState(false);
+	const [refresh, setRefresh] = useState(false);
+
+	const accessor = getFieldAccessor<Fields>();
+
+	if(!_eventKey) {
+		throw new Error("Could not get event key");
+	}
+
+	const eventKey = _eventKey;
+
+	useEffect(() => { document.title = props.title; }, [props.title]);
 	useEffect(() => {
-		(async function() {
+		void (async function() {
+			setIsLoading(true);
 			try {
-				const data = await getAllTeams(match_event);
+				const data = await getAllTeams(eventKey);
 
-				const teamNumbers = data.map(function (team: any) {
+				if(!data) {
+					throw new Error("Could not get data");
+				}
+
+				const teamNumbers = data.map(function (team) {
 					return (<h2 key={team}>
 						<a href={`#scoutingapp/lookup/teamdata/${team}`}>{team}</a>
-					</h2>)
+					</h2>);
 				});
 
-				setFetchedData(teamNumbers);
-			}
-			catch (err) {
+				setTeamNumberElements(teamNumbers);
+			} catch (err) {
 				console.error("Error fetching team list: ", err);
 			}
+			setIsLoading(false);
 		})();
-	}, [match_event]);
+	}, [eventKey]);
 
-	const matchEvents = [
-		{ label: `Default (${DEFAULT_MATCH_EVENT})`, value: DEFAULT_MATCH_EVENT },
-	];
-	for(const [eventName, eventId] of Object.entries(getDivisionsList())) {
-		matchEvents.push({
-			label: eventName,
-			value: eventId
-		});
+	if(!isLoading && !teamNumberElements) {
+		// eslint-disable-next-line @typescript-eslint/no-magic-numbers
+		setTimeout(() => {setRefresh(!refresh);}, 1000);
 	}
 
 	return (
 		<>
 			<Header name={"Match Lookup"} back={"#scoutingapp/lookup"} />
 
-			<div className="matchLookup">
-				<Form
-					onFinish={async event => {
-						window.location.href = "#scoutingapp/lookup/teamData/" + event.teamNum;
+			<match-lookup>
+				<Form<Fields>
+					accessor={accessor}
+					onFinish={event => {
+						window.location.href = "#scoutingapp/lookup/teamData/" + event.teamNumber.toString();
 					}}
 				>
-					<Select
-						title={"Match Event"}
-						name={"match_event"}
-						options={matchEvents}
-						required={false}
-						onChange={async (e? : string) => {
-							if(e) {
-								await setMatchEvent(e);
-							} else {
-
-							}
-						}}
-					/>
 					<NumberInput
 						title="Team Number"
-						name="teamNum"
+						name="teamNumber"
 						message="Please input the team number!"
 						min={0}
 					/>
@@ -75,9 +83,9 @@ function MatchLookup(props: any) {
 						className='submitButton'
 					/>
 					<h2>List of Teams</h2>
-					{fetchedData}
+					{teamNumberElements}
 				</Form>
-			</div>
+			</match-lookup>
 		</>
 	);
 }

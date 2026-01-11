@@ -1,12 +1,20 @@
-import React, { useState, useRef, useEffect, } from 'react';
+import React, { useState, useEffect, } from 'react';
 import '../public/stylesheets/tabs.css';
 
-function Tabs(props: any) {
+type Props = {
+	items?: TabItems,
+	onChange?: (key: string) => void,
+	defaultActiveKey?: string,
+	activeKey?: string,
+};
+
+function Tabs(props: Props): React.ReactElement {
 	const items = props.items ?? [];
 	const onChange = props.onChange ?? (() => {});
 
 	const defaultActiveKey = props.defaultActiveKey ??
-		(items?.length ?
+		(items.length ?
+
 			items[0].key :
 			""
 		);
@@ -15,7 +23,7 @@ function Tabs(props: any) {
 
 	const [currentKey, _setCurrentKey] = useState<string>(defaultActiveKey);
 
-	function setCurrentKey(key) {
+	function setCurrentKey(key: string): void {
 		_setCurrentKey(key);
 		onChange(key);
 	}
@@ -26,12 +34,12 @@ function Tabs(props: any) {
 		}
 	}, [activeKey, currentKey]);
 
-	const navigationItems = items.map((item, index) => {
+	const navigationItems = items.map((item) => {
 		return (
 			<nav-label
 				key={item.key}
 				{...(item.key === currentKey ? {selected: true} : {})}
-				onClick={function(event) {
+				onClick={function(_) {
 					setCurrentKey(item.key);
 				}}
 			>
@@ -40,7 +48,7 @@ function Tabs(props: any) {
 		);
 	});
 
-	const tabItems = items.map((item, index) => {
+	const tabItems = items.map((item) => {
 		return (
 			<tab-page
 				key={item.key}
@@ -63,3 +71,6 @@ function Tabs(props: any) {
 }
 
 export { Tabs };
+
+export type TabItem = { label: string, key: string, children: React.ReactElement };
+export type TabItems = { label: string, key: string, children: React.ReactElement }[];

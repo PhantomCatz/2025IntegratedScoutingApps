@@ -7,8 +7,12 @@ import { escapeUnicode, } from '../utils/utils';
 const sep = "\t";
 const defualtValue = <></>;
 
-function QrCode(props : any) {
-	const [qrValue, setQrValue] = useState<string>("");
+type Props = {
+	value: unknown,
+};
+
+function QrCode(props: Props): React.ReactElement {
+	const [qrValue, setQrValue] = useState<unknown>("");
 	const [timestamp, setTimestamp] = useState<Date>(new Date());
 
 	useEffect(() => {
@@ -17,16 +21,13 @@ function QrCode(props : any) {
 		}
 		// Scroll to QR when value
 		setTimeout(() => {
-			try {
-				(window as any).scrollByPages(100);
-				(window as any).scroll(0, 1e8);
-			} catch(err) {
-
-			}
-		}, 100);
+			// eslint-disable-next-line @typescript-eslint/no-magic-numbers
+			window.scroll(0, 1e8);
+			// eslint-disable-next-line @typescript-eslint/no-magic-numbers
+		}, 50);
 	}, [qrValue]);
 
-	let shouldShow = !!qrValue;
+	const shouldShow = Boolean(qrValue);
 
 	const newQrValue = props.value;
 
@@ -45,7 +46,7 @@ function QrCode(props : any) {
 	if(shouldShow) {
 		for(const [k,v] of Object.entries(qrValue)) {
 			keys.push(k);
-			switch(v as any) {
+			switch(v) {
 				case true:
 					vals.push(1);
 					break;
@@ -65,29 +66,30 @@ function QrCode(props : any) {
 
 	const shownValue = escapeUnicode(vals.join(sep).replaceAll("\n", "\\n"));
 
-	const valuesToDisplay : {key : any, display : string}[] = [
+	const valuesToDisplay: { key : string, display : string }[] = [
 		{
-			"key" : "scouter_initials",
-			"display" : "Scouter Initials:",
+			"key": "scouter_initials",
+			"display": "Scouter Initials:",
 		},
 		{
-			"key" : "match_event",
-			"display" : "Match Event:",
+			"key": "match_event",
+			"display": "Match Event:",
 		},
 		{
-			"key" : "match_number",
-			"display" : "Match Number:",
+			"key": "match_number",
+			"display": "Match Number:",
 		},
 		{
-			"key" : "team_number",
-			"display" : "Team Number:",
+			"key": "team_number",
+			"display": "Team Number:",
 		},
 	];
 
-	const qrInfo : any[] = [];
+	const qrInfo: React.ReactElement[] = [];
 	for(const value of valuesToDisplay) {
-		if(qrValue[value.key]) {
-			qrInfo.push(<p className={"qrIdentifier"} key={value.key}>{value.display} {qrValue[value.key]}</p>);
+		const item = qrValue[value.key];
+		if(item) {
+			qrInfo.push(<p className={"qrIdentifier"} key={value.key}>{value.display} {item}</p>);
 		}
 	}
 
@@ -110,6 +112,5 @@ function QrCode(props : any) {
 			)}
 		</div>);
 }
-
 
 export default QrCode;
