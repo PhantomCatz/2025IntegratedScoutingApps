@@ -186,6 +186,7 @@ function DTFTeams(props: Props): React.ReactElement {
 			"Finals": 2,
 		} as const;
 
+
 		for(const teamIndex in data) {
 			data[teamIndex].sort(function(a, b) {
 				const matchLevelComp = matchLevelOrder[a.comp_level] - matchLevelOrder[b.comp_level];
@@ -228,7 +229,7 @@ function DTFTeams(props: Props): React.ReactElement {
 			// Summative values
 			case "overall_robot_died":
 				if(data[k] === undefined) {
-					data[k] = 0
+					data[k] = 0;
 				}
 				assertNumber(v);
 				data[k] += v;

@@ -281,6 +281,7 @@ function MatchScout(props: Props): React.ReactElement {
 			return false;
 		}
 
+		//TODO: refactor
 		fetchLink += "reqType=submitMatchData";
 
 		const submitBody = {
@@ -334,11 +335,9 @@ function MatchScout(props: Props): React.ReactElement {
 			setDefendedIsVisible(false);
 
 			await updateNumbers();
-		}
-		catch (err) {
-			console.error(`err=`, err);
-		}
-		finally {
+		} catch (err) {
+			console.log(`err=`, err);
+		} finally {
 			setLoading(false);
 		}
 	}

@@ -1,8 +1,6 @@
-import { getTeamInfo, getTeamsScouted, getTeamPitInfo, getTeamStrategicInfo, submitPitData, submitMatchData, submitStrategicData, } from "./database.js";
-import dotenv from 'dotenv';
-import express from "express";
-
-dotenv.config();
+import 'dotenv/config';
+import { getTeamInfo, getTeamsScouted, getTeamPitInfo, getTeamStrategicInfo, submitPitData, submitMatchData, submitStrategicData,} from "./database.js";
+import express from 'express';
 
 const PORT = process.env.PORT || 3001;
 
@@ -13,7 +11,7 @@ app.use(express.json({
 }));
 
 app.use((req, res, next) => {
-	//TODO: remove?
+	//TODO: should this be removed?
 	res.header('Access-Control-Allow-Origin', '*');
 	res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
 	next();
@@ -86,8 +84,10 @@ app.post("/api", async function(req, res) {
 				result = await submitStrategicData(data);
 				break;
 			default:
-				console.log("reqType not used when submitting:", queries);
-				break;
+				console.error("query type not found", queries);
+				await res.status(404);
+				await res.json(null);
+				return res;
 		}
 	} catch (err) {
 		console.error("err=", err);

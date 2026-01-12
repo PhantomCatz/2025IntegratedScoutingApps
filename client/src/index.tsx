@@ -62,6 +62,7 @@ return originalFetch(link, options);
 //*/
 
 function App(): React.ReactElement {
+	//TODO: refactor titles
 	return (
 		<HashRouter>
 			<Routes>
@@ -91,7 +92,7 @@ root.render(
 <App />
 </React.StrictMode>
 );
- */
+*/
 
 window.addEventListener("error", (event) => {
 	window.alert(event.message);

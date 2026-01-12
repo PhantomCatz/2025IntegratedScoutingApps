@@ -26,13 +26,13 @@ let connPool = {
 			console.error(`Did not run query '${sqlQuery}'`)
 			return {};
 		},
-		destroy: function() {},
+		release: function() {},
 	},
 	getConnection: async function() {
 		try {
 			const pool = mysql.createPool(connectionData);
 
-			const conn = pool.getConnection();
+			const conn = await pool.getConnection();
 
 			connPool = pool;
 
@@ -45,15 +45,18 @@ let connPool = {
 	}
 };
 
-async function requestDatabase(query, substitution, forEach) {
-	let result = [];
+// TODO: refactor lol
+async function requestDatabase(query, substitution, config) {
+	let result = null;
 
 	const sqlQuery = query;
 
 	try {
 		const conn = await connPool.getConnection();
 
-		if(Array.isArray(substitution)) {
+		if(config?.mapSubstitution) {
+			result = [];
+
 			for(const val of substitution) {
 				const [res, fields] = await conn.query(sqlQuery, [val]);
 
@@ -66,16 +69,14 @@ async function requestDatabase(query, substitution, forEach) {
 		} else {
 			const [res, fields] = await conn.query(sqlQuery, [substitution]);
 
-			//if(forEach) {
-			//	res.map((x) => forEach(x, fields));
-			//}
+			if(forEach) {
+				res.map((x) => forEach(x, fields));
+			}
 
 			result = res;
 		}
 
-		conn.destroy();
-
-		return result;
+		await conn.release();
 	} catch(err) {
 		console.error("Failed to resolve request:");
 		console.dir(err);
@@ -162,7 +163,7 @@ async function submitData(data, table) {
 
 		result = res;
 
-		await conn.destroy();
+		await conn.release();
 	} catch(err) {
 		console.error(`Failed to resolve request to ${table}:`);
 		console.dir(err);
