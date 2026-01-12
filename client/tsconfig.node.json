@@ -1,8 +1,9 @@
 {
+	"composite": true,
 	"compilerOptions": {
 		"tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo",
-		"target": "ES2022",
-		"lib": ["ES2023"],
+		"target": "ESNext",
+		"lib": ["ES2024"],
 		"module": "ESNext",
 		"skipLibCheck": true,
 

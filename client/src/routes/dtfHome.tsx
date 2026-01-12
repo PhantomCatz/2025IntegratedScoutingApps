@@ -1,31 +1,35 @@
 import '../public/stylesheets/dtfHome.css';
-import { useEffect } from 'react';
-import { Input, Form, InputNumber } from 'antd';
-import { NUM_ALLIANCES, TEAMS_PER_ALLIANCE, } from '../utils/utils';
 import Header from '../parts/header';
+import { useEffect } from 'react';
+import Form, { NumberInput, } from '../parts/formItems';
+import { getFieldAccessor } from '../parts/formItems';
+import Constants from '../utils/constants';
 
-function DTFHome(props: any) {
-	const [form] = Form.useForm();
+import type { All, Props, } from '../types/dtfHome';
+
+function DTFHome(props: Props): React.ReactElement {
 	useEffect(() => { document.title = props.title; return () => { } }, [props.title]);
 
-	const teamInput : any = [];
+	const accessor = getFieldAccessor<All>();
 
-	for(let allianceNumber = 1; allianceNumber <= NUM_ALLIANCES; allianceNumber++) {
+	const teamInput: React.ReactElement[] = [];
+
+	for(let allianceNumber = 1; allianceNumber <= Constants.NUM_ALLIANCES; allianceNumber++) {
 		const allianceId = `alliance${allianceNumber}`;
 		const teamNumberInput = [];
 
-		for(let teamNumber = 1; teamNumber <= TEAMS_PER_ALLIANCE; teamNumber++) {
-			const teamNumberId = `team${teamNumber + TEAMS_PER_ALLIANCE * (allianceNumber - 1)}Num`;
+		for(let teamNumber = 1; teamNumber <= Constants.TEAMS_PER_ALLIANCE; teamNumber++) {
+			const teamNumberId = `team${teamNumber + Constants.TEAMS_PER_ALLIANCE * (allianceNumber - 1)}Num`;
 
 			teamNumberInput.push(
-				<div key={teamNumberId}>
-					<h2>Team {teamNumber + TEAMS_PER_ALLIANCE * (allianceNumber - 1)} Number</h2>
-					<Form.Item
-						name={teamNumberId}
-					>
-						<InputNumber min={0} className="input" />
-					</Form.Item>
-				</div>
+				<NumberInput<All>
+					key={teamNumberId}
+					name={`teamNumber${teamNumberId}` as keyof All}
+					title={`Team ${teamNumber + Constants.TEAMS_PER_ALLIANCE * (allianceNumber - 1)} Number`}
+					min={0}
+					buttons={false}
+					align="left"
+				/>
 			);
 		}
 
@@ -42,26 +46,24 @@ function DTFHome(props: any) {
 		<>
 			<Header name={"Drive Team Feeder"} back={"#"} />
 
-			<div className="dtfHome">
-				<Form
-					form={form}
-					onFinish={async (event) => {
-						const teamNums = [];
+			<dtf-home>
+				<Form<All>
+					onFinish={(event: All) => {
+						const teamNums: number[] = [];
 
-						for(let i = 1; i <= NUM_ALLIANCES * TEAMS_PER_ALLIANCE; i++) {
-							const number = event[`team${i}Num`];
+						for(let i = 1; i <= Constants.NUM_ALLIANCES * Constants.TEAMS_PER_ALLIANCE; i++) {
+							const number = event[`teamNumber${i}` as keyof All];
 							teamNums.push(number);
 						}
 
-						teamNums.filter((num) => num !== undefined);
-
 						window.location.href = "#dtf/" + teamNums.join(",");
 					}}
+					accessor={accessor}
 				>
 					{teamInput}
-					<button type="submit" className="submit" >Submit</button>
+					<button type="submit" className="submitButton" >Submit</button>
 				</Form>
-			</div>
+			</dtf-home>
 		</>
 	);
 }

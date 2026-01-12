@@ -1,5 +1,8 @@
-import { getTeamInfo, getTeamsScouted, getTeamPitInfo, getTeamStrategicInfo, submitPitData, submitMatchData, submitStrategicData,} from "./database.js";
+import { getTeamInfo, getTeamsScouted, getTeamPitInfo, getTeamStrategicInfo, submitPitData, submitMatchData, submitStrategicData, } from "./database.js";
+import dotenv from 'dotenv';
 import express from "express";
+
+dotenv.config();
 
 const PORT = process.env.PORT || 3001;
 
@@ -10,10 +13,10 @@ app.use(express.json({
 }));
 
 app.use((req, res, next) => {
-	//TODO: should this be removed?
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-  next();
+	//TODO: remove?
+	res.header('Access-Control-Allow-Origin', '*');
+	res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+	next();
 });
 
 app.listen(PORT, () => {
@@ -24,28 +27,27 @@ app.listen(PORT, () => {
 app.get("/api", async function(req, res) {
 	const queryString = req.url.split("?")[1];
 	const queries = Object.fromEntries(new URLSearchParams(queryString));
-	console.log(`queries=`, queries);
 
 	let result = undefined;
 
 	try {
 		switch(queries.reqType) {
-		case "teamsScouted":
-			result = await getTeamsScouted("pit_data");
-			break;
-		case "getTeam":
-			result = await getTeamInfo(queries);
-			break;
-		case "getTeamPit":
-			result = await getTeamPitInfo(queries);
-			break;
-		case "getTeamStrategic":
-			result = await getTeamStrategicInfo(queries);
-			break;
-		default:
-			console.log("reqType not used when getting:", queries);
-			result = await getTeamInfo(queries);
-			break;
+			case "teamsScouted":
+				result = await getTeamsScouted("pit_data");
+				break;
+			case "getTeam":
+				result = await getTeamInfo(queries);
+				break;
+			case "getTeamPit":
+				result = await getTeamPitInfo(queries);
+				break;
+			case "getTeamStrategic":
+				result = await getTeamStrategicInfo(queries);
+				break;
+			default:
+				console.error("reqType not used when getting:", queries);
+				result = await getTeamInfo(queries);
+				break;
 		}
 	} catch (err) {
 		console.error(`ERROR: `, err);
@@ -55,7 +57,7 @@ app.get("/api", async function(req, res) {
 		console.error(`ERROR: could not resolve request`, err);
 	}
 
-	await res.json(result);
+	res.json(result);
 	return res;
 });
 
@@ -71,36 +73,36 @@ app.post("/api", async function(req, res) {
 
 	try {
 		switch(queries.reqType) {
-		case "submitPitData":
-			console.log("submit pit");
-			result = await submitPitData(data);
-			break;
-		case "submitMatchData":
-			console.log("submit match");
-			result = await submitMatchData(data);
-			break;
-		case "submitStrategicData":
-			console.log("submit strategic");
-			result = await submitStrategicData(data);
-			break;
-		default:
-			console.log("reqType not used when submitting:", queries);
-			break;
+			case "submitPitData":
+				console.log("submit pit");
+				result = await submitPitData(data);
+				break;
+			case "submitMatchData":
+				console.log("submit match");
+				result = await submitMatchData(data);
+				break;
+			case "submitStrategicData":
+				console.log("submit strategic");
+				result = await submitStrategicData(data);
+				break;
+			default:
+				console.log("reqType not used when submitting:", queries);
+				break;
 		}
 	} catch (err) {
-		console.log("err=", err);
+		console.error("err=", err);
 		result = null;
 	}
 
 	if(result) {
-		await res.status(200);
-		await res.json({});
+		res.status(200);
+		res.json({});
 		return res;
 	}
 
-	console.log("Could not submit data.", queries);
-	await res.status(500);
-	await res.json(result);
+	console.error("Could not submit data.", queries);
+	res.status(500);
+	res.json(result);
 	return res;
 });
 

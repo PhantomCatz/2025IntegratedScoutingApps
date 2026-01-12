@@ -1,4 +1,4 @@
-.scoutingAppRouter {
+scouting-app-router {
 	.mainButton {
 		font-size: 18pt;
 		height: 4rem;
@@ -9,5 +9,12 @@
 		display: flex;
 		justify-content: center;
 		margin-top: 2rem;
+
+		&:hover {
+			background-color: var(--color-hover);
+		}
+		&:active {
+			background-color: var(--color-active);
+		}
 	}
 }

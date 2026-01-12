@@ -1,50 +1,87 @@
-import tbaData from "./tbaData.json";
-import tbaTeams from "./tbaTeams.json";
+import Constants from "./constants";
 
-function isInPlayoffs(matchLevel? : string) {
-	return matchLevel !== "Qualifications" && matchLevel ?
+import * as TbaApi from '../types/tbaApi';
+import { RequestTypes, ResultTypes, } from '../types/tbaRequest';
+import * as TbaRequest from '../types/tbaRequest';
+import * as LocalStorage from '../types/localStorage';
+
+function isInPlayoffs(compLevel: TbaApi.Comp_Level | null): boolean {
+	return compLevel ?
 		true :
 		false;
 }
-function isRoundNumberVisible(matchLevel? : string) {
-	return matchLevel === "Playoffs" && matchLevel ?
+function isRoundNumberVisible(matchLevel: string): boolean {
+	return matchLevel === "Playoffs" ?
 		true :
 		false;
 }
+function getOpposingAllianceColor(allianceName: TbaApi.AllianceColor): TbaApi.AllianceColor {
+	const alliances = {
+		red: "blue",
+		blue: "red"
+	} as const;
 
-function getDivisionsList() {
-	return {
-		"Archimedes": "2025arc",
-		"Curie": "2025cur",
-		"Daly": "2025dal",
-		"Galileo": "2025gal",
-		"Hopper": "2025hop",
-		"Johnson": "2025joh",
-		"Milstein": "2025mil",
-		"Newton": "2025new",
-		"Einstein": "2025cmptx",
-	};
+	return alliances[allianceName];
 }
 
-async function getAllTeams(matchEvent : string) {
+function teamKeysToNumbers(teamKeys: TbaApi.TeamKey[]): number[] {
+	//eslint-disable-next-line @typescript-eslint/no-magic-numbers
+	return teamKeys.map((team) => Number(team.substring(3)));
+}
+function teamsPlayingToTeamsList(teamsPlaying: ResultTypes.TeamsInMatch): number[] {
+	return teamsPlaying.blue.concat(teamsPlaying.red);
+}
+function parseRobotPosition(robotPosition: TbaRequest.RobotPosition): [TbaApi.AllianceColor, number] {
+	const allianceColors: { [colorString: string]: TbaApi.AllianceColor } = {
+		"R": "red",
+		"B": "blue",
+	} as const;
+
+	const colorString = robotPosition[0];
+	const allianceColor = allianceColors[colorString];
+
+	const positionNumber = Number(robotPosition.substring(1));
+
+	return [allianceColor, positionNumber];
+}
+
+// abstracting this was too hard...
+async function getAllTeams(eventKey: TbaApi.EventKey): Promise<ResultTypes.AllTeams | null> {
 	try {
-		const response = await request('event/' + matchEvent + '/teams');
-		const teams = await response.json();
+		const response = await request('event/' + eventKey + '/teams/simple');
+		const teams: RequestTypes.Event_Teams_Simple  = await response.json() as RequestTypes.Event_Teams_Simple;
 
-		const numbers = teams.map((x : any) => x.team_number);
+		const numbers = teams.map((x) => x.team_number);
 
-		numbers.sort((a : any, b : any) => a - b);
+		numbers.sort((a, b) => a - b);
+
+		const tbaTeams = localStorage.getItem("tbaTeams") ?? "null";
+
+		const data = (JSON.parse(tbaTeams) as LocalStorage.TbaTeams | null) ?? {};
+
+		data[eventKey] = numbers;
+
+		localStorage.setItem("tbaTeams", JSON.stringify(data));
 
 		return numbers;
-	} catch(err) {
-		const response = await getAllTeamsOffline(matchEvent);
+	} catch(_) {
+		const tbaTeams = localStorage.getItem("tbaTeams");
 
-		return response;
+		if(tbaTeams === null) {
+			return null;
+		}
+		const data = JSON.parse(tbaTeams) as LocalStorage.TbaTeams | null;
+
+		if(!data) {
+			return null;
+		}
+
+		return data[eventKey] ?? null;
 	}
 }
-async function getTeamsNotScouted(eventName : string) {
+async function getTeamsNotScouted(eventKey: TbaApi.EventKey): Promise<ResultTypes.TeamsNotScouted | null> {
 	try {
-		let fetchLink = SERVER_ADDRESS;
+		let fetchLink = Constants.SERVER_ADDRESS;
 
 		if(!fetchLink) {
 			console.error("Could not get fetch link. Check .env");
@@ -53,258 +90,197 @@ async function getTeamsNotScouted(eventName : string) {
 
 		fetchLink += "reqType=teamsScouted";
 
-		let teamsScouted : any = await(await fetch(fetchLink)).json();
+		const response = await fetch(fetchLink);
+		const teamsScouted: ResultTypes.TeamsNotScouted = await response.json() as ResultTypes.TeamsNotScouted;
 
-		const allTeams = await getAllTeams(eventName);
+		const allTeams = await getAllTeams(eventKey);
 
-		const all : any = new Set(allTeams);
+		const all = new Set(allTeams);
 		const scouted = new Set(teamsScouted);
 
 		const diff = all.difference(scouted);
 
-		const res : any[] = [];
+		const res: number[] = [];
 
-		diff.forEach((x : any) => res.push(x));
-
-		return res;
-	} catch(err) {
-		console.log(err);
-		return null;
-	}
-}
-async function getTeamsPlaying(eventName : string,
-							   matchLevel : string,
-							   matchNumber : number,
-							   allianceNumber1 : string,
-							   allianceNumber2 : string) : Promise<string[]> {
-	matchNumber = Number(matchNumber);
-
-	if(isInPlayoffs(matchLevel)) {
-		const res =  await getTeamsPlayingPlayoffs(eventName, matchLevel, matchNumber, allianceNumber1, allianceNumber2);
-
-		return res;
-	}
-
-
-	try {
-		if (!matchLevel ||
-			!matchNumber
-		    ) {
-			throw new Error();
-		}
-
-		const matchId = getMatchId(eventName, matchLevel, matchNumber);
-
-		const response = await request('match/' + matchId);
-
-		const data = await response.json();
-		if(data.Error) {
-			throw new Error(`Received error ${data.Error}`);
-		}
-
-		const fullTeams : string[] = [];
-		for(const color of ["red", "blue"]) {
-			if(!data?.alliances[color]?.team_keys?.forEach) {
-				return [];
-			}
-			data.alliances[color].team_keys.forEach((team : any) => fullTeams.push(team.substring(3)));
-		}
-
-		return fullTeams;
-	} catch (err : any) {
-		if(err.message) {
-			console.log("err=", err);
-		}
-
-		const returnVal = await getTeamsPlayingOffline(eventName, matchLevel, matchNumber, allianceNumber1, allianceNumber2);
-		return returnVal;
-	}
-}
-async function getTeamsPlayingPlayoffs(eventName : string,
-									   matchLevel : string,
-									   matchNumber : number,
-									   allianceNumber1 : string,
-									   allianceNumber2 : string) {
-	try {
-		if (!matchLevel ||
-			!matchNumber
-		    ) {
-			throw new Error();
-		}
-
-		const matchId = getMatchId(eventName, matchLevel, matchNumber);
-
-		const response = await request('match/' + matchId);
-
-		const data = await response.json();
-		if(data.Error) {
-			throw new Error(`Received error ${data.Error}`);
-		}
-
-		const fullTeams : string[] = [];
-		for(const color of ["red", "blue"]) {
-			if(!data?.alliances[color]?.team_keys?.forEach) {
-				return [];
-			}
-			data.alliances[color].team_keys.forEach((team : any) => fullTeams.push(team.substring(3)));
-		}
-
-		return fullTeams;
-	} catch (err : any) {
-		if(err.message) {
-			console.log("err=", err);
-		}
-		try {
-			const response = await request(`event/${eventName}/alliances`);
-
-			const data = await response.json();
-			if(data.Error) {
-				throw new Error(`Received error ${data.Error}`);
-			}
-
-			const alliances : any = {};
-
-			data.forEach((x : any) => {
-				const teams = x.picks.slice(0,3).map((team : any) => team.substring(3));
-
-				alliances[x.name] = teams;
-			});
-
-			const alliance1 = alliances[allianceNumber1];
-			const alliance2 = alliances[allianceNumber2];
-
-			const res : any = alliance1.concat(alliance2);
-
-			return res;
-		} catch (err : any) {
-			console.log(`err=`, err);
-		}
-
-		const res = await getTeamsPlayingPlayoffsOffline(eventName, matchLevel, matchNumber, allianceNumber1, allianceNumber2);
-
-		return res;
-	}
-}
-
-async function getTeamsPlayingPlayoffsOffline(eventName : string,
-											  matchLevel : string,
-											  matchNumber : number,
-											  allianceNumber1 : string,
-											  allianceNumber2 : string) {
-	try {
-		const alliance1 = tbaData[allianceNumber1];
-		const alliance2 = tbaData[allianceNumber2];
-
-		const res : any = alliance1.concat(alliance2);
+		diff.forEach((x) => res.push(x));
 
 		return res;
 	} catch (err) {
-		const res : any = [];
+		console.error(`An error occurred while trying to get teams not scouted: ${err}`);
+		return null;
+	}
+}
+async function getTeamsInMatch(eventKey: TbaApi.EventKey,
+	compLevel: TbaApi.Comp_Level,
+	matchNumber: number,
+	blueAllianceNumber: number,
+	redAllianceNumber: number): Promise<ResultTypes.TeamsInMatch | null> {
+	async function normalFetch(): Promise<ResultTypes.TeamsInMatch | null> {
+		const matchId = getMatchId(eventKey, compLevel, matchNumber);
 
-		return res;
+		const response = await request('match/' + matchId);
+
+		const match: RequestTypes.Match = await response.json() as RequestTypes.Match;
+
+		const result: ResultTypes.TeamsInMatch = { blue: [], red: []};
+		for(const color of ["red", "blue"] as TbaApi.AllianceColor[]) {
+			match.alliances[color].team_keys.forEach((team) => result[color].push(Number(team.substring(3))));
+		}
+		const tbaData = localStorage.getItem("tbaData") ?? "null";
+
+		const data = (JSON.parse(tbaData) as LocalStorage.TbaData | null) ?? { [eventKey]: {}};
+
+		data[eventKey][matchId] = match;
+
+		localStorage.setItem("tbaData", JSON.stringify(data));
+
+		return result;
+	}
+	function fromLocalStorage(): ResultTypes.TeamsInMatch | null {
+		const tbaData = localStorage.getItem("tbaData");
+
+		if(tbaData === null) {
+			return null;
+		}
+		const data = JSON.parse(tbaData) as LocalStorage.TbaData | null;
+
+		if(!data) {
+			return null;
+		}
+		const matchId = getMatchId(eventKey, compLevel, matchNumber);
+
+		const alliances = data[eventKey][matchId].alliances;
+
+		const result = {
+			blue: teamKeysToNumbers(alliances.blue.team_keys),
+			red: teamKeysToNumbers(alliances.red.team_keys),
+		}
+
+		return result;
+	}
+	function fromEliminationAllianceNumbers(): ResultTypes.TeamsInMatch | null {
+		const playoffAlliances = localStorage.getItem("tbaPlayoffAlliances");
+
+		if(playoffAlliances === null) {
+			return null;
+		}
+		const data = JSON.parse(playoffAlliances) as LocalStorage.PlayoffAlliances | null;
+
+		if(!data || !data[eventKey]) {
+			return null;
+		}
+
+		const result = {
+			//eslint-disable-next-line @typescript-eslint/no-magic-numbers
+			blue: teamKeysToNumbers(data[eventKey][blueAllianceNumber].picks.slice(0,3)),
+			//eslint-disable-next-line @typescript-eslint/no-magic-numbers
+			red: teamKeysToNumbers(data[eventKey][redAllianceNumber].picks.slice(0,3)),
+		}
+
+		return result;
+	}
+
+	// idk...
+	try {
+		const result = await normalFetch();
+
+		if(!result) {
+			throw new Error();
+		}
+
+		return result;
+	} catch (_) {
+		try {
+			const result = fromLocalStorage();
+
+			if(!result) {
+				throw new Error();
+			}
+
+			return result;
+		} catch (_) {
+			try {
+				const result = fromEliminationAllianceNumbers();
+
+				if(!result) {
+					throw new Error();
+				}
+
+				return result;
+			} catch (_) {
+				return null;
+			}
+		}
 	}
 }
 
-function getMatchId(eventName : string,
-					matchLevel : string,
-					matchNumber : number) : string {
-	const roundIsVisible = isRoundNumberVisible(matchLevel);
-	matchLevel = getMatchLevel(matchLevel);
-
-	const matchId = roundIsVisible ?
-		`${eventName}_${matchLevel}${matchNumber}m1` :
-		matchLevel === "f" ?
-			`${eventName}_${matchLevel}1m${matchNumber}` :
-			`${eventName}_${matchLevel}${matchNumber}`;
+function getMatchId(eventKey: TbaApi.EventKey,
+	compLevel: TbaApi.Comp_Level,
+	matchNumber: number): TbaApi.MatchKey {
+	const roundIsVisible = isRoundNumberVisible(compLevel);
+	// TODO: make proper match id
+	const matchId: TbaApi.MatchKey = roundIsVisible ?
+		`${eventKey}_${compLevel}${matchNumber}m1` :
+		compLevel === "f" ?
+		`${eventKey}_${compLevel}1m${matchNumber}` :
+		`${eventKey}_${compLevel}${matchNumber}`;
 	return matchId;
 }
-function getAllianceOffset(color : string) {
-	switch(color) {
-	case "red":
-		return 0;
-	case "blue":
-		return 3;
-	default:
-		throw new Error("Invalid alliance color");
-	}
-}
-function getIndexNumber(robotPosition : string) {
-	let res = 0;
-
-	const data = getRobotPosition(robotPosition);
-
-	const allianceColor = data[0] as string;
-	res += getAllianceOffset(allianceColor);
-
-	const robotOffset = data[1] as number;
-	res += robotOffset;
-
-	return res;
-}
-function getMatchLevel(name : any) {
-	const levels : {[matchLevel : string] : string} = {
-      "Qualifications": "qm",
-      "Playoffs": "sf",
-      "Finals": "f",
+function getMatchLevel(name: string): TbaApi.Comp_Level {
+	const levels: {[matchLevel: string]: TbaApi.Comp_Level} = {
+		"Qualifications": "qm",
+		"Playoffs": "sf",
+		"Finals": "f",
 	};
 
 	return levels[name];
 }
-function getRobotPosition(name : any) {
-	const positions : {[position : string] : (string | number)[]} = {
-      "R1": ["red", 0],
-      "R2": ["red", 1],
-      "R3": ["red", 2],
-      "B1": ["blue", 0],
-      "B2": ["blue", 1],
-      "B3": ["blue", 2],
-	};
 
-	return positions[name]
-}
-
-function request(query : string) {
-	const response = fetch('https://www.thebluealliance.com/api/v3/' + query, {
+async function request(query: string): Promise<Response> {
+	const response = await fetch('https://www.thebluealliance.com/api/v3/' + query, {
 		method: "GET",
 		headers: {
-			'X-TBA-Auth-Key': TBA_AUTH_KEY as string,
+			'X-TBA-Auth-Key': Constants.TBA_AUTH_KEY,
 		}
 	});
-	return response;
+
+	if(response.ok) {
+		return response;
+	}
+	throw new Error(`Could not fetch to ${query}:\nResponse code: ${response.status}\nError message: ${await response.text()}`);
 }
 
-async function getAllTeamsOffline(eventName : string) {
-	const res = [...tbaTeams][eventName as any];
+function getAllianceTags(eventKey: TbaApi.EventKey): { label: string, value: string }[] {
+	function fromLocalStorage(): { label: string, value: string }[] | null {
+		const playoffAlliances = localStorage.getItem("tbaPlayoffAlliances");
 
-	return res;
-}
-async function getTeamsPlayingOffline(eventName : string,
-									  matchLevel : string,
-									  matchNumber : number,
-									  allianceNumber1 : string,
-									  allianceNumber2 : string) {
-	const matchId = getMatchId(eventName, matchLevel, matchNumber);
-	const teams = tbaData[eventName][matchId];
+		if(playoffAlliances === null) {
+			return null;
+		}
+		const data = JSON.parse(playoffAlliances) as LocalStorage.PlayoffAlliances | null;
 
-	return teams;
-}
-function getAllianceTags(eventName : string) {
+		if(!data || !data[eventKey]) {
+			return null;
+		}
+
+		const allianceTeamNumbers = data[eventKey].map((alliance) => {
+			//eslint-disable-next-line @typescript-eslint/no-magic-numbers
+			return teamKeysToNumbers(alliance.picks.slice(0,3)).map(x => x.toString());
+		});
+
+		const result = allianceTeamNumbers.map((teams, index) => ({ label: teams.join(', '), value: index.toString() }));
+
+		return result;
+	}
 	try {
-		const match : any = tbaData[eventName as any];
+		const result = fromLocalStorage();
 
-		const alliances = Object.entries(match)
-			.filter((x : any) => !x[0].startsWith(eventName))
-			.map((x : any) => x[0]);
-
-		const res =  alliances.map((x : any) => ({ label: x, value : x }));
-
-		if(!res?.length) {
+		if(!result) {
 			throw new Error();
 		}
 
-		return res;
-	} catch (err : any) {
-
+		return result;
+	} catch (_) {
 		const names = [
 			"Alliance 1",
 			"Alliance 2",
@@ -314,23 +290,25 @@ function getAllianceTags(eventName : string) {
 			"Alliance 6",
 			"Alliance 7",
 			"Alliance 8",
-		];
+		] as const;
 
-		const res = names.map((x : any) => ({ label: x, value : x }));
+		const result = names.map((x, index) => ({ label: x, value: index.toString() }));
 
-		return res;
+		return result;
 	}
 }
 
 export {
+	teamsPlayingToTeamsList,
 	isInPlayoffs,
+	isRoundNumberVisible,
+	parseRobotPosition,
+	getOpposingAllianceColor,
 	getAllTeams,
 	getTeamsNotScouted,
-	isRoundNumberVisible,
-	getTeamsPlaying,
-	getIndexNumber,
-	getAllianceOffset,
-	getDivisionsList,
-	getAllianceTags,
+	getTeamsInMatch,
+	getMatchId,
+	getMatchLevel,
 	request,
+	getAllianceTags,
 };

@@ -1,16 +1,26 @@
-import { Input, InputNumber, Tabs, } from 'antd';
+import { Input, TextArea, } from './formItems';
 import '../public/stylesheets/strategicTabs.css';
 
-async function StrategicTabs(props) {
+import type { TabItems } from './tabs';
+import type * as Database from '../types/database';
+
+type Props = {
+	team: number;
+	data: Database.StrategicEntry[] | null;
+};
+
+function StrategicTabs(props: Props): TabItems {
 	const team = props.team;
 	const data = props.data;
 	if (!team) {
-		return null;
+		return [];
 	}
 
-	let index = 2;
+	const matches: TabItems = [];
 
-	const matches : { key: string; label: string; children: JSX.Element; }[] = [];
+	if(!data) {
+		return matches;
+	}
 
 	for (const strategicInfo of data) {
 		strategicInfo.comments = strategicInfo.comments.replaceAll("\\n", "\n");
@@ -19,23 +29,40 @@ async function StrategicTabs(props) {
 			key: `strategicData${strategicInfo.id}`,
 			label: `${strategicInfo.scouter_initials.toUpperCase()}:${strategicInfo.team_number}`,
 			children: (
-				<div className="strategicTabs">
-					<h2>Match Event</h2>
-					<Input className="input" disabled value={strategicInfo.match_event} />
-					<h2>Scouter Initials</h2>
-					<Input className="input" disabled value={strategicInfo.scouter_initials} />
-					<h2>Match Level</h2>
-					<Input className="input" disabled value={strategicInfo.match_level} />
-					<h2>Match #</h2>
-					<Input className="input" disabled value={strategicInfo.match_number} />
-					<h2>Robot Position</h2>
-					<Input className="input" disabled value={strategicInfo.robot_position} />
-					<h2>Comments</h2>
-					<textarea className="strategicInput" disabled value={strategicInfo.comments} style={{marginBottom: '5%'}} />
-				</div>
+				<strategic-tab>
+					<Input
+						title="Match Event"
+						disabled
+						defaultValue={strategicInfo.match_event}
+					/>
+					<Input
+						title="Scouter Initials"
+						disabled
+						defaultValue={strategicInfo.scouter_initials}
+					/>
+					<Input
+						title="Match Level"
+						disabled
+						defaultValue={strategicInfo.comp_level}
+					/>
+					<Input
+						title="Match #"
+						disabled
+						defaultValue={strategicInfo.match_number.toString()}
+					/>
+					<Input
+						title="Robot Position"
+						disabled
+						defaultValue={strategicInfo.robot_position}
+					/>
+					<TextArea
+						title="Comments"
+						disabled
+						defaultValue={strategicInfo.comments}
+					/>
+				</strategic-tab>
 			)
 		});
-		index++;
 	}
 
 	return matches;

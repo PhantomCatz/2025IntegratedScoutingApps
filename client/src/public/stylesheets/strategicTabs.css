@@ -1,16 +1,2 @@
-.strategicTabs {
-	.strategicInput {
-		height: 10lh;
-		display: block;
-		width: 100% !important;
-		box-sizing: border-box;
-		border: 2px solid var(--font-color);
-		border-radius: 1rem;
-		padding: 0.5rem;
-		/* font-weight: bold; */
-
-		font-size: 14px;
-		line-height: 1.4;
-		text-align: center;
-	}
+strategic-tab {
 }

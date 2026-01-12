@@ -1,46 +1,9 @@
-.strategicScout {
-	.ant-input {
-		height: 30px;
-		min-height: 30px;
-		background-color: transparent;
-	}
-
-	.ant-tabs-tab {
-		font-weight: bold !important;
-		color: var(--font-color) !important;
-	}
-
-	.strategic-input {
-		width: 100%;
-		height: 200px !important;
-		border: 2px solid var(--font-color) !important;
-		border-radius: 5px;
-		background-color: var(--background-color);
-		font-weight: bold;
-		color: var(--font-color) !important;
-		text-align: center !important;
-		background: transparent !important;
-	}
-
-	.ant-form-item-explain-error {
-		font-weight: bold !important;
-		color: red !important;
-		text-align: center !important;
-	}
-
+strategic-scout {
 	.canvas {
 		height: 300px;
 		width: 300px;
 		border: 2px solid black;
 		margin-left: 535px;
 		margin-right: 535px;
-	}
-
-	h2.center {
-		text-align: center;
-	}
-
-	.numberinput > div{
-		width: 100%;
 	}
 }

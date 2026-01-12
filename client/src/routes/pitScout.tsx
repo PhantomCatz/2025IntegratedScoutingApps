@@ -1,144 +1,98 @@
 import '../public/stylesheets/pitScout.css';
-import { Checkbox, Form, Input, } from 'antd';
-import { useRef } from 'react';
-import React, { useState, useEffect } from 'react';
-import TextArea from 'antd/es/input/TextArea';
+import { useLocalStorage, } from 'react-use';
+import { useState, useEffect, useRef } from 'react';
 import Header from '../parts/header';
 import QrCode from '../parts/qrCodeViewer';
-import { getTeamsNotScouted, } from '../utils/tbaRequest';
+import { getTeamsNotScouted, } from '../utils/tbaRequest.ts';
 import { readImage, escapeUnicode } from '../utils/utils';
-import { NumberInput, Select } from '../parts/formItems';
+import Form, { NumberInput, Select, Input, Checkbox, TextArea } from '../parts/formItems';
+import { getFieldAccessor } from '../parts/formItems';
+import Constants from '../utils/constants';
 
-namespace Fields {
-	export type Pit = {
-		scouter_initials: string;
-		team_number: number;
-		drive_train_type: string;
-		robot_weight: number;
-		motor_type: string;
-		number_of_motors: number;
-		wheel_type: string;
-		intake_width: string;
-		coral_intake_capability: string;
-		coral_scoring_l1: boolean;
-		coral_scoring_l2: boolean;
-		coral_scoring_l3: boolean;
-		coral_scoring_l4: boolean;
-		can_remove_algae: boolean;
-		algae_intake_capability: string;
-		algae_scoring_capability: string;
-		score_aiming_coral: string,
-		score_aiming_algae: string,
-		aiming_description: string,
-		climbing_capability: string;
-		pit_organization: number;
-		team_safety: number;
-		team_workmanship: number;
-		gracious_professionalism: number;
-		robot_images: string;
-		comments: string;
-	};
-}
+import type * as TbaApi from '../types/tbaApi';
+import type * as PitScoutTypes from '../types/pitScout';
+
+type Props = {
+	title: string,
+};
 
 const formDefaultValues = {
-	"match_event": null,
 	"team_number": 0,
-	"scouter_initials": null,
+	"scouter_initials": "",
 	"robot_weight": 0,
-	"drive_train_type": null,
-	"motor_type": null,
+	"drive_train_type": "",
+	"motor_type": "",
 	"number_of_motors": 0,
-	"wheel_type": null,
-	"coral_intake_capability": null,
-	"intake_width": null,
+	"wheel_type": "",
+	"coral_intake_capability": "",
+	"intake_width": "",
 	"coral_scoring_l1": false,
 	"coral_scoring_l2": false,
 	"coral_scoring_l3": false,
 	"coral_scoring_l4": false,
 	"can_remove_algae": false,
-	"algae_intake_capability": null,
-	"algae_scoring_capability": null,
-	"score_aiming_coral": null,
-	"score_aiming_algae": null,
-	"aiming_description": null,
-	"climbing_capability": null,
-	"pit_organization": 0,
-	"team_safety": 0,
-	"team_workmanship": 0,
-	"gracious_professionalism": 0,
-	"comments": null,
-}
+	"algae_intake_capability": "",
+	"algae_scoring_capability": "",
+	"score_aiming_coral": "",
+	"score_aiming_algae": "",
+	"aiming_description": "",
+	"climbing_capability": "",
+	"pit_organization": 4,
+	"team_safety": 4,
+	"team_workmanship": 4,
+	"gracious_professionalism": 4,
+	"comments": "",
+} as const;
 
 const IMAGE_DELIMITER = "$";
 
-function PitScout(props: any) {
-	const match_event = EVENT_NAME || "";
-	const [form] = Form.useForm();
-	const [formValue, setFormValue] = useState(formDefaultValues);
+function PitScout(props: Props): React.ReactElement {
+	const [_eventKey, _setEventKey] = useLocalStorage<TbaApi.EventKey>('eventKey', Constants.EVENT_KEY);
 	const [isLoading, setLoading] = useState(false);
 	const [qrValue, setQrValue] = useState<any>();
 	const [robotImageURI, setRobotImageURI] = useState<string[]>([]);
-	const robotImageInput = useRef(null);
+	const robotImageInput = useRef<HTMLInputElement>(null);
 	const [refresh, setRefresh] = useState(false);
+
+	if(!_eventKey) {
+		throw new Error("Could not get event key");
+	}
+	const eventKey = _eventKey;
+
+	const accessor = getFieldAccessor<PitScoutTypes.Pit>();
 
 	useEffect(() => {
 		document.title = props.title;
 	}, [props.title]);
 	useEffect(() => {
-		const updateFields = [
-			"team_number",
-			"robot_weight",
-			"number_of_motors",
-			"pit_organization",
-			"team_safety",
-			"team_workmanship",
-			"gracious_professionalism",
-		];
-		for(const field of updateFields) {
-			const element = document.getElementById(field);
-			if (element === null) {
-				continue;
-			}
-
-			element.ariaValueNow = (formValue as any)[field].toString();
-			form.setFieldValue(field, (formValue as any)[field]);
-		}
-	}, [formValue, form]);
-	useEffect(() => {
-		(async function() {
-			if(!match_event) {
-				return;
-			}
-
+		void (async function() {
 			const initialMessage = "Teams not scouted:";
 			let message = initialMessage;
 
 			try {
-				const teamsNotScouted = await getTeamsNotScouted(match_event);
+				const teamsNotScouted = await getTeamsNotScouted(eventKey);
 
-				if(teamsNotScouted === null || teamsNotScouted === undefined) {
+				if(teamsNotScouted === null) {
 					throw new Error("Could not access teams");
 				}
 
-				teamsNotScouted.sort(function (a : any, b : any) { return parseInt(a) - parseInt(b); });
+				teamsNotScouted.sort((a, b) => a - b);
 
-				for (const team of teamsNotScouted) {
-					message += "\n" + team;
-				}
+				message += teamsNotScouted.join("\n");
 
 				if(message === initialMessage) {
 					window.alert("All teams have been scouted.");
 				} else {
 					window.alert(message);
 				}
-			} catch (err : any) {
-				console.error("Error in fetching teams: ", err.message);
+			} catch (err) {
+				console.error("Error in fetching teams: ", (err)?.message);
 			}})();
-	}, [match_event]);
+	}, [eventKey]);
 
-	async function submitData(event: any) {
-		const body : any = {
-			"match_event": match_event,
+	function submitData(event: PitScoutTypes.Pit): void {
+		const body: PitScoutTypes.SubmitBody = {
+			"match_event": eventKey,
 			"team_number": event.team_number,
 			"scouter_initials": event.scouter_initials.toLowerCase(),
 			"robot_weight": event.robot_weight,
@@ -166,18 +120,17 @@ function PitScout(props: any) {
 			"comments": event.comments,
 		};
 		Object.entries(body)
-			.forEach((k) => {
-				const field = k[0];
-				const val = k[1];
+			.forEach((item) => {
+				const [field, value] = item;
 
-				const newVal = typeof val === "string" ?
-					escapeUnicode(val) :
-					val;
+				const newVal = typeof value === "string" ?
+					escapeUnicode(value) :
+					value;
 
 				body[field] = newVal;
 			});
 
-		tryFetch(body)
+		void tryFetch(body)
 			.then((successful) => {
 				if(successful) {
 					window.alert("Submit successful.");
@@ -188,12 +141,12 @@ function PitScout(props: any) {
 
 		setQrValue(body);
 	}
-	async function tryFetch(body : any) {
-		let fetchLink = SERVER_ADDRESS;
+	async function tryFetch(body: PitScoutTypes.SubmitBody): Promise<boolean> {
+		let fetchLink = Constants.SERVER_ADDRESS;
 
 		if(!fetchLink) {
 			console.error("Could not get fetch link; Check .env");
-			return;
+			return false;
 		}
 
 		fetchLink += "reqType=submitPitData";
@@ -214,13 +167,15 @@ function PitScout(props: any) {
 				},
 			});
 
-			return !!res.ok;
+			return res.ok;
 		} catch (err) {
+			console.error(`Failed to submit data:`, err);
+
 			return false;
 		}
 	}
-	function Pit() {
-		type FieldType = Fields.Pit;
+	function Pit(): React.ReactElement {
+		type FieldType = PitScoutTypes.Pit;
 		const drive_train_options = [
 			{ label: "Tank", value: "Tank" },
 			{ label: "Swerve", value: "Swerve" },
@@ -287,37 +242,22 @@ function PitScout(props: any) {
 			{ label: "Neither", value: "Neither" },
 		];
 		return (
-			<div>
-				<h2>Scouter Initials</h2>
-				<Form.Item<FieldType>
+			<>
+				<Input<FieldType>
+					title="Scouter Initials"
 					name="scouter_initials"
-					rules={[
-						{ required: true, message: 'Please input your initials!' },
-						{
-							pattern: /^[A-Za-z]{1,2}$/,
-							message: 'Please enter only letters (max 2)',
-						},
-					]}
-				>
-					<Input
-						maxLength={2}
-						className="input"
-						onKeyPress={(event) => {
-							const keyCode = event.keyCode || event.which;
-							const keyValue = String.fromCharCode(keyCode);
-							if (!/^[A-Za-z]+$/.test(keyValue)) {
-								event.preventDefault();
-							}
-						}}
-					/>
-				</Form.Item>
+					pattern="^[a-zA-Z]{1,2}$"
+					message="Please input your initials (1-2 letters only)"
+					align="left"
+					required
+				/>
+
 				<NumberInput<FieldType>
 					title={"Team #"}
 					name={"team_number"}
 					message={"Please input the team number"}
 					min={1}
 					max={99999}
-					form={form}
 					buttons={false}
 					align={"left"}
 				/>
@@ -328,7 +268,6 @@ function PitScout(props: any) {
 					message={"Please input the robot weight in lbs"}
 					min={0}
 					max={1000}
-					form={form}
 					align={"left"}
 				/>
 
@@ -349,7 +288,6 @@ function PitScout(props: any) {
 					name={"number_of_motors"}
 					message={"Please input the number of motors"}
 					min={0}
-					form={form}
 					align={"left"}
 				/>
 				<Select<FieldType>
@@ -371,26 +309,22 @@ function PitScout(props: any) {
 					options={intake_width_options}
 				/>
 				<h2>Coral Scoring</h2>
-				<h2>L1</h2>
-				<Form.Item<FieldType> valuePropName="checked" name="coral_scoring_l1">
-					<Checkbox className='input_checkbox' />
-				</Form.Item>
-				<h2>L2</h2>
-				<Form.Item<FieldType> valuePropName="checked" name="coral_scoring_l2">
-					<Checkbox className='input_checkbox' />
-				</Form.Item>
-				<h2>L3</h2>
-				<Form.Item<FieldType> valuePropName="checked" name="coral_scoring_l3">
-					<Checkbox className='input_checkbox' />
-				</Form.Item>
-				<h2>L4</h2>
-				<Form.Item<FieldType> valuePropName="checked" name="coral_scoring_l4">
-					<Checkbox className='input_checkbox' />
-				</Form.Item>
-				<h2>Can Remove Algae</h2>
-				<Form.Item<FieldType> valuePropName="checked" name="can_remove_algae">
-					<Checkbox className='input_checkbox' />
-				</Form.Item>
+				<Checkbox<FieldType>
+					name="coral_scoring_l1"
+					title="L1"
+				/>
+				<Checkbox<FieldType>
+					name="coral_scoring_l2"
+					title="L2"
+				/>
+				<Checkbox<FieldType>
+					name="coral_scoring_l3"
+					title="L3"
+				/>
+				<Checkbox<FieldType>
+					name="coral_scoring_l4"
+					title="L4"
+				/>
 				<Select<FieldType>
 					title={"Algae Intake Capability"}
 					name={"algae_intake_capability"}
@@ -415,15 +349,10 @@ function PitScout(props: any) {
 					message={"Please input the algae score aiming"}
 					options={score_aiming_algae_options}
 				/>
-				<h2>Aiming Description</h2>
-				<Form.Item<FieldType>
+				<TextArea<FieldType>
 					name="aiming_description"
-					rules={[
-						{ required: true, message: 'Please input Aiming Description!' },
-					]}
-				>
-					<textarea className='textbox_input' />
-				</Form.Item>
+					title="Aiming Description"
+				/>
 
 				<Select<FieldType>
 					title={"Climbing Capability"}
@@ -438,7 +367,6 @@ function PitScout(props: any) {
 					message={"Please input pit organization rating"}
 					min={0}
 					max={4}
-					form={form}
 					align={"left"}
 				/>
 
@@ -448,7 +376,6 @@ function PitScout(props: any) {
 					message={"Please input team safety rating"}
 					min={0}
 					max={4}
-					form={form}
 					align={"left"}
 				/>
 
@@ -458,7 +385,6 @@ function PitScout(props: any) {
 					message={"Please input team workmanship rating"}
 					min={0}
 					max={4}
-					form={form}
 					align={"left"}
 				/>
 
@@ -468,42 +394,37 @@ function PitScout(props: any) {
 					message={"Please input GP rating"}
 					min={0}
 					max={4}
-					form={form}
 					align={"left"}
 				/>
 
-				<h2>Comments</h2>
-				<Form.Item<FieldType> name="comments">
-					<TextArea style={{ verticalAlign: 'center' }} className='textbox_input' />
-				</Form.Item>
+				<TextArea<FieldType>
+					name="comments"
+					title="Comments"
+				/>
 				<h2 style={{ display: isLoading ? 'inherit' : 'none' }}>Submitting data...</h2>
 
-				<Form.Item<FieldType> name="robot_images">
-					<>
-						<label className="robotImageLabel" htmlFor="robotImageInput">Select Image {`(${robotImageInput?.current?.files?.length ?? 0} images)`}</label>
-						<input
-							ref={robotImageInput}
-							id="robotImageInput"
-							type="file"
-							accept="image/*"
-							multiple
-							onChange={function() {
-								setRefresh(!refresh);
-							}}
-						/>
-					</>
-				</Form.Item>
-				<Input type="submit" value="Submit" className='submit' style={{ marginBottom: '5%' }} />
-			</div>
+				<label className="robotImageLabel" htmlFor="robotImageInput">Select Image {`(${robotImageInput?.current?.files?.length ?? 0} images)`}</label>
+				<input
+					ref={robotImageInput}
+					id="robotImageInput"
+					type="file"
+					accept="image/*"
+					multiple
+					onChange={function() {
+						setRefresh(!refresh);
+					}}
+				/>
+				<input type="submit" value="Submit" className='submit' />
+			</>
 		);
 	}
 	return (
 		<>
 			<Header name={"Pit Scout"} back={"#scoutingapp"}/>
 
-			<div className="pitScout">
-				<Form
-					form={form}
+			<pit-scout>
+				<Form<PitScoutTypes.Pit>
+					accessor={accessor}
 					initialValues={formDefaultValues}
 					onFinish={async (event) => {
 						if(isLoading) {
@@ -512,40 +433,39 @@ function PitScout(props: any) {
 						try {
 							setLoading(true);
 
-							await submitData(event);
+							submitData(event);
 
-							const initials = form.getFieldValue("scouter_initials");
+							const initials = accessor.getFieldValue("scouter_initials");
 
-							form.resetFields();
-							setFormValue({...formDefaultValues});
+							accessor.resetFields();
 
+							if(robotImageInput.current) {
+								const fileList: FileList = robotImageInput.current.files ?? new FileList();
 
-							const fileList = robotImageInput?.current?.files ?? [];
-
-							const parsedFiles: string[] = [];
-
-							for(const file of fileList) {
-								let image = "";
+								const promises: Promise<string>[] = [];
 
 								try {
-									image = await readImage(file);
+									// cannot map over FileList
+									for (const file of fileList) {
+										const image = readImage(file);
+										promises.push(image);
+									}
 								} catch (err) {
-									console.log(`File reading error =`, err);
+									console.error(`File reading error =`, err);
 									window.alert("Error in reading file");
-									continue;
+									return;
 								}
 
-								parsedFiles.push(image);
+								const parsedFiles: string[] = await Promise.all(promises);
+
+								setRobotImageURI(parsedFiles)
+								robotImageInput.current.value = "";
 							}
 
-							setRobotImageURI(parsedFiles)
-							robotImageInput.current.value = null;
-
-
-							form.setFieldsValue({...formDefaultValues, "scouter_initials": initials});
+							accessor.setFormValues({...formDefaultValues, "scouter_initials": initials});
 						}
 						catch (err) {
-							console.log(err);
+							console.error(err);
 							window.alert("Error occured, please do not leave this message and notify a Webdev member immediately.");
 							window.alert(err);
 						}
@@ -554,21 +474,18 @@ function PitScout(props: any) {
 						}
 					}}
 					onFinishFailed={({values, errorFields, outOfDate}) => {
-						console.log("values=", values);
-						console.log("errorFields=", errorFields);
-						console.log("outOfDate=", outOfDate);
+						// TODO: Implement
 
-						const errorMessage = errorFields.map((x : any) => x.errors.join(", ")).join("\n");
+						const errorMessage = errorFields.map((x) => x.errors.join(", ")).join("\n");
 						window.alert(errorMessage);
 					}}
 				>
 					{Pit()}
 				</Form>
 				<QrCode value={qrValue} />
-			</div>
+			</pit-scout>
 		</>
 	);
 }
-
 
 export default PitScout;
