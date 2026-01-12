@@ -1,131 +1,140 @@
 import '../public/stylesheets/pitLookup.css';
 import { useEffect, useState } from 'react';
-import { InputNumber, Tabs, } from 'antd';
+import { useLocalStorage, } from 'react-use';
 import Header from '../parts/header';
-import { getAllTeams, getDivisionsList } from '../utils/tbaRequest';
+import { getAllTeams, } from '../utils/tbaRequest.ts';
 import PitTabs from '../parts/pitTabs';
-import { Select } from '../parts/formItems';
+import { NumberInput } from '../parts/formItems';
+import { Tabs, } from '../parts/tabs';
+import Constants from '../utils/constants';
 
-function PitLookup(props: any) {
-	const DEFAULT_MATCH_EVENT = EVENT_NAME || "";
+import type * as TbaApi from '../types/tbaApi';
+import type { TabItem, TabItems } from '../parts/tabs';
+import type * as Database from '../types/database';
 
-	const [shouldRetryLoading, setShouldRetryLoading] = useState(false);
-	const [fetchedData, setFetchedData] = useState<any>(null);
+type Props = {
+	title: string;
+};
+
+function PitLookup(props: Props): React.ReactElement {
+	const [isLoading, setIsLoading] = useState(false);
+	const [refresh, setRefresh] = useState(false);
+	const [teamNumberElements, setTeamNumberElements] = useState<React.ReactElement[] | null>(null);
 	const [teamNumber, setTeamNumber] = useState(0);
-	const [tabNum, setTabNum] = useState("1");
-	const [items, setItems] = useState([initialState()]);
-	const [match_event, setMatchEvent] = useState(DEFAULT_MATCH_EVENT);
+	const [tabNumber, setTabNumber] = useState("1");
+	const [tabItems, setTabItems] = useState([initialTab()]);
+	const [_eventKey, _setEventKey] = useLocalStorage<TbaApi.EventKey>('eventKey', Constants.EVENT_KEY);
+
+	if(!_eventKey) {
+		throw new Error("Could not get event key");
+	}
+
+	const eventKey = _eventKey;
 
 	useEffect(() => { document.title = props.title }, [props.title]);
 	useEffect(() => {
-		(async function() {
+		void (async function() {
+			setIsLoading(true);
 			try {
-				const data = await getAllTeams(match_event);
+				const data = await getAllTeams(eventKey);
 
 				if(!data) {
 					throw new Error("Could not get data");
 				}
 
-				const teamNumbers = data.map(function (team: any) {
+				const teamNumbers = data.map(function (team) {
 					return (<h2 key={team}>
-						<a onClick={async () => {setTeamNumber(team); await setTabs(team)}}>{team}</a>
+						<a
+							onClick={() => {setTeamNumber(team)}}
+							style={{
+								cursor: "pointer"
+							}}
+						>{team}</a>
 					</h2>);
 				});
 
-				setFetchedData(teamNumbers);
-			}
-			catch (err) {
+				setTeamNumberElements(teamNumbers);
+			} catch (err) {
 				console.error("Error fetching team list: ", err);
 			}
+			setIsLoading(false);
 		})();
-	}, [match_event]);
+	}, [eventKey]);
 	useEffect(() => {
-		const prev : any = [];
+		const res: TabItems = [initialTab()].concat(tabItems.slice(1));
 
-		for(let i = 1; i < items.length; i++) {
-			prev.push(items);
-		}
+		setTabItems(res);
+	}, [teamNumberElements]);
+	useEffect(() => {
+		void (async () => {
+			if(!teamNumber) {
+				return;
+			}
 
-		const res = [initialState(), ...prev];
+			let fetchLink = Constants.SERVER_ADDRESS;
 
-		setItems(res);
-	}, [fetchedData]);
+			if(!fetchLink) {
+				console.error("Could not get fetch link; check .env");
+				return;
+			}
+			fetchLink += "reqType=getTeamPit";
 
-	function initialState() {
+			const res = await fetch(fetchLink + `&team=${teamNumber}`);
+			const data = await res.json() as Database.PitEntry[];
+
+			createTabs(teamNumber, data);
+		})();
+	}, [teamNumber]);
+
+	function initialTab(): TabItem {
 		return {
 			key: '1',
 			label: 'Team',
 			children: Lookup(),
 		};
 	}
-	function Lookup() {
-		if(!fetchedData) {
-			setTimeout(() => {setShouldRetryLoading(true);}, 50);
+	function Lookup(): React.ReactElement {
+		if(!isLoading && !teamNumberElements) {
+			// eslint-disable-next-line @typescript-eslint/no-magic-numbers
+			setTimeout(() => {setRefresh(!refresh);}, 1000);
 		}
 		return (
 			<>
-				<h2>Team Number</h2>
-				<InputNumber min={0} max={99999} className="input" id='teamNumber' />
+				<NumberInput
+					name="teamNumber"
+					title="Team Number"
+					min={0}
+					max={99999}
+				/>
 				<div className={"centered"}>
-					<button className={"submitButton"} onMouseDown={async function(event) {
-						const input : any = document.querySelector("#teamNumber");
-						await setTabs(input.ariaValueNow);
+					<button className={"submitButton"} onMouseDown={function(_) {
+						const input = document.querySelector("#teamNumber") as HTMLInputElement;
+						createTabs(Number(input.value), null);
 					}}>Submit</button>
 				</div>
 				<h2>List of Teams</h2>
-				{fetchedData}
+				{teamNumberElements}
 			</>
 		);
 	}
 
-	async function setTabs(team_number : number, inCallback? : boolean) {
+	function createTabs(teamNumber: number, data: Database.PitEntry[] | null): void {
 		try {
-			const tabs = await PitTabs(team_number, inCallback);
+			const tabs = PitTabs({teamNumber: teamNumber, data: data});
 
-			if(tabs !== null) {
-				setItems([initialState(), ...tabs]);
-			} else {
-				setItems([initialState()]);
-			}
+			setTabItems([initialTab(), ...tabs]);
 		} catch (err) {
-			console.log(err);
+			console.error(err);
 		}
-	}
-
-	// Hack to circumvent bug
-	if(shouldRetryLoading) {
-		setShouldRetryLoading(false);
-		setTabs(teamNumber, true);
-	}
-
-	const matchEvents = [
-		{ label: `Default (${DEFAULT_MATCH_EVENT})`, value: DEFAULT_MATCH_EVENT },
-	];
-	for(const [eventName, eventId] of Object.entries(getDivisionsList())) {
-		matchEvents.push({
-			label: eventName,
-			value: eventId
-		});
 	}
 
 	return (
 		<>
 			<Header name={"Pit Lookup"} back={"#scoutingapp/lookup"} />
 
-			<div className="pitLookup">
-				<Select
-					title={"Match Event"}
-					name={"match_event"}
-					options={matchEvents}
-					required={false}
-					onChange={async (e? : string) => {
-						if(e) {
-							await setMatchEvent(e);
-						}
-					}}
-				/>
-				<Tabs defaultActiveKey="1" activeKey={tabNum} items={items} centered className='tabs' onChange={async (key) => { setTabNum(key); }} />
-			</div>
+			<pit-lookup>
+				<Tabs defaultActiveKey="1" activeKey={tabNumber} items={tabItems} onChange={setTabNumber} />
+			</pit-lookup>
 		</>
 	);
 };

@@ -1,35 +1,13 @@
-.textbox_input {
-	min-width: 100%;
-	min-height: 250px !important;
-	border: 2px solid var(--font-color);
-	border-radius: 25px;
-	background-color: #32A7DC;
-	font-weight: bold;
-	color: var(--font-color);
-	text-align: center;
-	background: transparent;
-}
-.ant-input-number .ant-input-number-input::placeholder {
-	color: var(--font-color) !important;
-	font-weight: bold !important;
-	opacity: 1.0 !important;
-}
-#robotImageInput {
-	display: none;
-}
-.robotImageLabel {
-	display: block;
-	border: 2px solid var(--font-color);
-	border-radius: 5px;
-	height: 100px;
-	width: 100%;
-	text-align: center;
-}
-.input_checkbox {
-    width: 100%;
-	height: 3rem;
-    border: 2px solid var(--font-color);
-    border-radius: 25px;
-    background-color: red;
-    font-weight: bold;
+pit-scout {
+	#robotImageInput {
+		display: none;
+	}
+	.robotImageLabel {
+		display: block;
+		border: 2px solid var(--font-color);
+		border-radius: 5px;
+		height: 100px;
+		width: 100%;
+		text-align: center;
+	}
 }

@@ -1,48 +1,32 @@
-import { Input, InputNumber, Tabs, } from 'antd';
-import TextArea from 'antd/es/input/TextArea';
+import { Input, TextArea, Checkbox } from './formItems';
 import '../public/stylesheets/pitLookup.css';
+
+import type { TabItems } from './tabs';
+import type * as Database from '../types/database';
 
 const IMAGE_DELIMITER = "$";
 
-async function PitTabs(team_number: number, inCallback? : boolean) {
-	const window = {
-		alert : function(...args : any[]) {
-			if(!!inCallback) {
-				return;
-			}
-			globalThis.window.alert(...args);
-		}
-	};
-	if (!team_number) {
-		return null;
+type Props = {
+	teamNumber: number
+	data: Database.PitEntry[] | null;
+};
+
+function PitTabs(props: Props): TabItems {
+	const teamNumber = props.teamNumber;
+	const data = props.data;
+
+	const pitEntries: TabItems = [];
+
+	if (!teamNumber || !data) {
+		return pitEntries;
 	}
 
-	let fetchLink = SERVER_ADDRESS;
+	const matches: TabItems = [];
 
-	if(!fetchLink) {
-		console.error("Could not get fetch link. Check .env");
-		return null;
-	}
-
-	fetchLink += "reqType=getTeamPit";
-
-	fetchLink += `&team=${team_number}`;
-
-	const response = await(await fetch(fetchLink)).json();
-
-	if(!response?.length) {
-		window.alert(`Team ${team_number} has not been pit scouted.`);
-		return null;
-	}
-
-	let index = 2;
-
-	const matches : { key: string; label: string; children: JSX.Element; }[] = [];
-
-	for (const pitInfo of response) {
+	for (const pitInfo of data) {
 		pitInfo.comments = pitInfo.comments.replaceAll("\\n", "\n");
 
-		const images = (pitInfo.robotImageURI?.split(IMAGE_DELIMITER) || []).filter((x : string) => x !== "");
+		const images = pitInfo.robotImageURI.split(IMAGE_DELIMITER).filter((x: string) => x !== "");
 
 		const pictures = [];
 
@@ -69,60 +53,59 @@ async function PitTabs(team_number: number, inCallback? : boolean) {
 			children: (
 				<div className="pitTabs">
 					<h2>Match Event</h2>
-					<Input className="input" disabled value={pitInfo.match_event} />
+					<Input disabled defaultValue={pitInfo.match_event} />
 					<h2>Scouter Initials</h2>
-					<Input className="input" disabled value={pitInfo.scouter_initials} />
+					<Input disabled defaultValue={pitInfo.scouter_initials} />
 					<h2>Robot Weight</h2>
-					<Input className="input" disabled value={pitInfo.robot_weight} />
+					<Input disabled defaultValue={pitInfo.robot_weight.toString()} />
 					<h2>Drive Train Type</h2>
-					<Input className="input" disabled value={pitInfo.drive_train_type} />
+					<Input disabled defaultValue={pitInfo.drive_train_type} />
 					<h2>Motor Type</h2>
-					<Input className="input" disabled value={pitInfo.motor_type} />
+					<Input disabled defaultValue={pitInfo.motor_type} />
 					<h2># of Motors</h2>
-					<Input className="input" disabled value={pitInfo.number_of_motors} />
+					<Input disabled defaultValue={pitInfo.number_of_motors.toString()} />
 					<h2>Wheel Type</h2>
-					<Input className="input" disabled value={pitInfo.wheel_type} />
+					<Input disabled defaultValue={pitInfo.wheel_type} />
 					<h2>Coral Intake Capability</h2>
-					<Input className="input" disabled value={pitInfo.coral_intake_capability} />
+					<Input disabled defaultValue={pitInfo.coral_intake_capability} />
 					<h2>Coral Scoring L1</h2>
-					<div className={`booleanValue booleanValue__${!!pitInfo.coral_scoring_l1}`} >&nbsp;</div>
+					<Checkbox disabled defaultValue={Boolean(pitInfo.coral_scoring_l1)}/>
 					<h2>Coral Scoring L2</h2>
-					<div className={`booleanValue booleanValue__${!!pitInfo.coral_scoring_l2}`} >&nbsp;</div>
+					<Checkbox disabled defaultValue={Boolean(pitInfo.coral_scoring_l2)}/>
 					<h2>Coral Scoring L3</h2>
-					<div className={`booleanValue booleanValue__${!!pitInfo.coral_scoring_l3}`} >&nbsp;</div>
+					<Checkbox disabled defaultValue={Boolean(pitInfo.coral_scoring_l3)}/>
 					<h2>Coral Scoring L4</h2>
-					<div className={`booleanValue booleanValue__${!!pitInfo.coral_scoring_l4}`} >&nbsp;</div>
+					<Checkbox disabled defaultValue={Boolean(pitInfo.coral_scoring_l4)}/>
 					<h2>Can Remove Algae</h2>
-					<div className={`booleanValue booleanValue__${!!pitInfo.can_remove_algae}`} >&nbsp;</div>
+					<Checkbox disabled defaultValue={Boolean(pitInfo.can_remove_algae)} />
 					<h2>Algae Intake Capability</h2>
-					<Input className="input" disabled value={pitInfo.algae_intake_capability} />
+					<Input disabled defaultValue={pitInfo.algae_intake_capability} />
 					<h2>Algae Scoring Capability</h2>
-					<Input className="input" disabled value={pitInfo.algae_scoring_capability} />
+					<Input disabled defaultValue={pitInfo.algae_scoring_capability} />
 					<h2>Score Aiming Coral</h2>
-					<Input className="input" disabled value={pitInfo.score_aiming_coral} />
+					<Input disabled defaultValue={pitInfo.score_aiming_coral} />
 					<h2>Score Aiming Algae</h2>
-					<Input className="input" disabled value={pitInfo.score_aiming_algae} />
+					<Input disabled defaultValue={pitInfo.score_aiming_algae} />
 					<h2>Aiming Description</h2>
-					<TextArea className="pit-comments" disabled value={pitInfo.aiming_description}/>
+					<TextArea disabled defaultValue={pitInfo.aiming_description}/>
 					<h2>Climbing Capability</h2>
-					<Input className="input" disabled value={pitInfo.climbing_capability} />
+					<Input disabled defaultValue={pitInfo.climbing_capability} />
 					<h2>Pit Organization</h2>
-					<Input className="input" disabled value={pitInfo.pit_organization} />
+					<Input disabled defaultValue={pitInfo.pit_organization.toString()} />
 					<h2>Team Safety</h2>
-					<Input className="input" disabled value={pitInfo.team_safety} />
+					<Input disabled defaultValue={pitInfo.team_safety.toString()} />
 					<h2>Team Workmanship</h2>
-					<Input className="input" disabled value={pitInfo.team_workmanship} />
+					<Input disabled defaultValue={pitInfo.team_workmanship.toString()} />
 					<h2>Gracious Professionalism</h2>
-					<Input className="input" disabled value={pitInfo.gracious_professionalism} />
+					<Input disabled defaultValue={pitInfo.gracious_professionalism.toString()} />
 					<h2>Comments</h2>
-					<TextArea className="pit-comments" disabled value={pitInfo.comments} style={{marginBottom: '5%'}} />
+					<TextArea disabled defaultValue={pitInfo.comments} />
 
 					<h2>Pit Pictures</h2>
 					{pictures}
 				</div>
 			)
 		});
-		index++;
 	}
 	matches.sort((a, b) => parseInt(a.key) - parseInt(b.key));
 

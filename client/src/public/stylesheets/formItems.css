@@ -1,42 +1,181 @@
 .input {
-	width: 100% !important;
-	height: 3rem !important;
-	border: 2px solid var(--font-color) !important;
-	border-radius: 20px !important;
-	background-color: transparent !important;
-	font-weight: bold !important;
-	color: var(--font-color) !important;
-	text-align: center !important;
-}
-.input .ant-input-group-addon {
-	padding: 0px !important;
-}
-.input .ant-input-wrapper > * {
-	border: 0px !important;
-}
-.numberInput > div {
-	width: 100%;
-}
-.numberInput > h2 {
+	font-weight: bold;
+	color: var(--font-color);
 	flex-grow: 1;
-	font-size: 1rem;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	margin-bottom: 1rem;
+
+	& > div {
+		display: flex;
+	}
+	label {
+		font-size: 1rem;
+		display: block;
+	}
+	input {
+		background-color: transparent;
+
+		&:focus {
+			outline: 0px;
+		}
+	}
+	/* DEBUG */
+	&:has(:is(input, select, textarea):valid) label {
+		color: green;
+	}
+	&:has(:is(input, select, textarea):user-invalid) label {
+		color: red;
+	}
+	/* END DEBUG */
+	.message {
+		transition: max-height 0.1s linear;
+		text-align: center;
+		opacity: 0;
+		max-height: 0;
+		overflow: hidden;
+		margin: auto;
+		color: var(--color-failure);
+	}
+	&:has(input:user-invalid) .message {
+		opacity: 1;
+		max-height: 4rem;
+	}
 }
-.input * {
-	color: var(--font-color) !important;
-	font-weight: bold !important;
+.input__text {
+	input[type=text] {
+		width: 100%;
+		box-sizing: border-box;
+		height: 3rem;
+		display: block;
+		border: 2px solid var(--font-color);
+		border-radius: 1rem;
+		text-align: center;
+		font-size: 1.5rem;
+
+		&:focus {
+			border: 2px solid var(--color-active-text);
+			outline: 1px solid var(--color-active-text);
+		}
+	}
 }
-.input input {
-	width: 100% !important;
+.input__number {
+	 input[type=number] {
+		appearance: textfield;
+		flex-grow: 1;
+		height: 100%;
+		padding: 0px;
+		border: 0px;
+		text-align: center;
+		display: block;
+		width: 100%;
+		box-sizing: border-box;
+		font-size: 2rem;
+	}
+	br {
+		display: block;
+		width: 100%;
+	}
+	& > number-input-container, & > div {
+		height: 3rem;
+		border: 2px solid var(--font-color);
+		border-radius: 1rem;
+
+		&:has(input:focus) {
+			border: 2px solid var(--color-active-text);
+			outline: 1px solid var(--color-active-text);
+		}
+		& > .changeButton {
+			width: max(5rem, 5%);
+			height: 100%;
+			font-size: 2rem;
+			padding: 0px;
+			display: block;
+			border: 0px;
+			background-color: transparent;
+			color: var(--font-color);
+
+			&.changeButton__increment {
+				border-left: 2px solid var(--font-color);
+			}
+			&.changeButton__decrement {
+				border-right: 2px solid var(--font-color);
+			}
+		}
+	}
 }
-.changeButton {
-	background-color: transparent !important;
-	color: var(--font-color) !important;
-	border: 0px !important;
-	border-radius: 0px !important;
+.input__select {
+	select {
+		display: block;
+		width: 100%;
+		background-color: var(--background-color);
+		border: 2px solid var(--font-color);
+		appearance: none;
+		border-radius: 1rem;
+		height: 3rem;
+		text-align: center;
+		font-size: 1.5rem;
+
+		&[multiple] {
+			height: auto;
+			/* overflow: hidden; */
+
+			&:not(:has(:not(option[disabled][hidden]))) {
+				height: 2rem;
+			}
+		}
+	}
 }
-.changeButton__increment {
-	border-left: 2px solid var(--font-color) !important;
+.input__checkbox {
+	input[type=checkbox] {
+		appearance: none;
+		height: 3rem;
+		padding: 0px;
+		border: 2px solid var(--font-color);
+		text-align: center;
+		display: block;
+		width: 100%;
+		box-sizing: border-box;
+		margin: 0px;
+		border-radius: 1rem;
+
+		&:checked {
+			background-color: var(--color-success);
+			&::after {
+				content: 'Yes';
+			}
+		}
+		&:not(:checked) {
+			background-color: var(--color-failure);
+			&::after {
+				content: 'No';
+			}
+		}
+		&::after {
+			text-align: center;
+			vertical-align: bottom;
+			display: inline;
+			font-size: 2.5rem;
+		}
+	}
 }
-.changeButton__decrement {
-	border-right: 2px solid var(--font-color) !important;
+.input__textarea {
+	textarea {
+		resize: vertical;
+		background-color: var(--background-color);
+		width: 100%;
+		border: 2px solid var(--font-color);
+		box-sizing: border-box;
+		border-radius: 1rem;
+		padding: 0.5rem;
+		text-align: center;
+		font-weight: bold;
+		min-height: 4rem;
+		height: 15rem;
+
+		&:focus-visible {
+			outline: none;
+		}
+	}
 }

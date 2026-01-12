@@ -1,23 +1,33 @@
 .header {
 	vertical-align: top;
 	display: flex;
+	flex-direction: row;
+	position: relative;
+	z-index: 1;
 
 	.backImg {
-		height: min(5rem, 10vw);
-		margin: auto min(1rem, 5vw) auto auto;
+		height: max(3rem, min(10vw, 5rem));
+		margin: auto max(1.5rem, min(5vw, 2.5rem)) auto auto;
 	}
 	.logoImg {
-		height: min(5rem, 10vw);
+		height: max(3rem, min(10vw, 5rem));
 	}
-	.pageTitle {
-		margin: auto;
-		text-align: center;
-	}
-
-	.menuImg {
-		height: min(5rem, 10vw);
-		display: block;
+	.settingsContainer {
+		display: inline-block;
 		margin-left: auto;
 		margin-right: 0;
+
+		.menuImg {
+			height: max(3rem, min(10vw, 5rem));
+			display: block;
+			margin-left: auto;
+			margin-right: 0;
+			cursor: pointer;
+		}
+	}
+	.pageTitle {
+		margin-left: auto;
+		margin-right: auto;
+		text-align: center;
 	}
 }

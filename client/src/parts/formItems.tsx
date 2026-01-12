@@ -1,269 +1,613 @@
 import '../public/stylesheets/formItems.css';
-import React, { useState, useRef, useEffect, } from 'react';
-import { Input, Form, Select as AntdSelect, Checkbox, Flex, Button, Radio } from 'antd';
+import { useRef, useEffect } from 'react';
+import * as Utils from '../utils/utils';
 
-type StringMap<T> = Extract<keyof T, string>;
-type NoInfer<T> = [T][T extends any ? 0 : never];
+import { assertInstanceOf, assertBoolean, assertNumber, assertString  } from '../types/utilityTypes';
+import type { StringMap } from '../types/utilityTypes';
 
 type AlignOptions = "left" | "center" | "right";
 
-type NumberInputType<FieldType> = {
-	title: any;
-	name: StringMap<FieldType>;
-	form: any;
-	required?: boolean;
-	message?: string;
-	min?: number;
-	max?: number;
-	onIncrease?: (e?: number) => void;
-	onDecrease?: (e?: number) => void;
-	onChange?: (e? : number) => void;
-	align?: AlignOptions;
-	shown?: boolean;
-	buttons?: boolean;
-};
-type SelectType<FieldType> = {
-	title: any;
-	name: StringMap<FieldType>;
-	required?: boolean;
-	message?: string;
-	options: any[];
-	onChange?: () => void;
-	align?: AlignOptions;
-	shown?: boolean;
-	multiple?: boolean;
-}
+type Disableable<T> = Partial<T> & { disabled: true } | T & { disabled?: false };
 
-function NumberInput<FieldType>(props: NumberInputType<NoInfer<FieldType>>) {
+type FormType<FieldType> = {
+	onFinish?: (values: FieldType) => void,
+	onFinishFailed?: ( values: FieldType, errorFields: { [key: string]: string } ) => void,
+	accessor: FormAccessorType<FieldType>,
+	children?: React.ReactNode,
+	initialValues?: Partial<FieldType>,
+};
+type InputType<FieldType> = Disableable<{
+	title: string | React.ReactElement,
+	name: StringMap<FieldType>,
+	required?: boolean,
+	message?: string,
+	onChange?: (val: string) => void,
+	onInput?: React.InputEventHandler,
+	align?: AlignOptions,
+	shown?: boolean,
+	pattern?: string,
+	disabled?: boolean,
+	defaultValue?: string,
+	minLength?: number,
+	maxLength?: number,
+}>;
+type NumberInputType<FieldType> = Disableable<{
+	title: string | React.ReactElement,
+	name: StringMap<FieldType>,
+	required?: boolean,
+	message?: string,
+	min?: number,
+	max?: number,
+	disabled?: boolean,
+	onChange?: (val: number) => void,
+	align?: AlignOptions,
+	shown?: boolean,
+	buttons?: boolean,
+	defaultValue?: number,
+}>;
+type SelectType<FieldType> = Disableable<{
+	title: string | React.ReactElement,
+	name: StringMap<FieldType>,
+	required?: boolean,
+	message?: string,
+	options: { label: string, value: string}[],
+	onChange?: (val: string) => void,
+	align?: AlignOptions,
+	shown?: boolean,
+	multiple?: boolean,
+	defaultValue?: string,
+}>;
+type CheckboxType<FieldType> = Disableable<{
+	title: string | React.ReactElement,
+	name: StringMap<FieldType>,
+	onChange?: (val: boolean) => void,
+	align?: AlignOptions,
+	shown?: boolean,
+	defaultValue?: boolean,
+}>;
+type TextAreaType<FieldType> = Disableable<{
+	title: string | React.ReactElement,
+	name: StringMap<FieldType>,
+	required?: boolean,
+	message?: string,
+	disabled?: boolean
+	onChange?: (val: string) => void,
+	align?: AlignOptions,
+	shown?: boolean,
+	defaultValue?: string,
+}>;
+type FormAccessorType<FieldType> = {
+	getFieldValue<K extends string & keyof FieldType>(id: K): FieldType[K],
+	setFieldValue<K extends string & keyof FieldType>(id: K, newValue: FieldType[K]): void,
+	setFormValues(values: Partial<FieldType>): void,
+	resetFields(): void,
+};
+
+
+function Form<FieldType>(props: FormType<NoInfer<FieldType>>): React.ReactElement {
+	const onFinish = props.onFinish ?? (() => {});
+	const accessor = props.accessor;
+	const initialValues = props.initialValues;
+
+	function onSubmit(event: React.FormEvent<HTMLFormElement>): void {
+		event.preventDefault();
+		// :eyes:
+		const formValues: FieldType = {} as FieldType;
+
+		const target = event.target;
+
+		assertInstanceOf(target, HTMLFormElement);
+
+		for(const input of target) {
+			const id = input.id;
+			if(!id) {
+				continue;
+			}
+
+			const key = id as string & keyof FieldType;
+
+			formValues[key] = accessor.getFieldValue(key);
+		}
+
+		onFinish(formValues);
+	}
+
+	const children = props.children;
+
+	useEffect(() => {
+		if(!initialValues) {
+			return;
+		}
+
+		const DELAY = 50;
+
+		setTimeout(() => {
+			accessor.setFormValues(initialValues);
+		}, DELAY);
+	}, []);
+
+	return (
+		<form
+			onSubmit={onSubmit}
+		>
+			{children}
+		</form>
+	);
+}
+// TODO: implement required fields
+function Input<FieldType>(props: InputType<NoInfer<FieldType>>): React.ReactElement {
 	const title = props.title;
 	const name = props.name;
-	const form = props.form;
 	const shown = props.shown ?? true;
 	const required = (props.required ?? true) && shown;
 	if((props.required ?? true) && !shown) {
 		console.error("Required and not shown for", name)
 	}
-	const message = props.message ?? `Please input ${title}`;
+	const message = props.message ?? "";
+	const onChange = props.onChange ?? (() => {});
+	const align = props.align ?? "center";
+	const pattern = props.pattern;
+	const disabled = props.disabled;
+	const defaultValue = props.defaultValue;
+
+	const input = useRef(null);
+
+	function handleChange(e: React.ChangeEvent): void {
+		const target = e.target;
+
+		assertInstanceOf(target, HTMLInputElement);
+
+		const newVal = target.value;
+
+		onChange(newVal);
+	}
+
+	return (
+		<>
+			<div
+				className="input input__text"
+				style={{
+					textAlign: align,
+					display: shown ? 'inherit' : 'none',
+				}}
+			>
+				{title &&
+					<label
+						style={{
+							textAlign: align,
+						}}
+						htmlFor={name}
+					>{title}</label>
+				}
+				<input
+					id={name}
+					name={name}
+					ref={input}
+					type="text"
+					pattern={pattern}
+					onChange={handleChange}
+					required={required}
+					disabled={disabled}
+					defaultValue={defaultValue}
+				/>
+				<p
+					className="message"
+				>
+					{message}
+				</p>
+			</div>
+		</>
+	);
+}
+// TODO: check out oninvalid for error message
+function NumberInput<FieldType>(props: NumberInputType<FieldType>): React.ReactElement {
+	const title = props.title;
+	const name = props.name;
+	const shown = props.shown ?? true;
+	const required = (props.required ?? true) && shown;
+	if((props.required ?? true) && !shown) {
+		console.error("Required and not shown for", name)
+	}
+	const message = props.message;
+
 	const min = props.min ?? 0;
 	const max = props.max ?? Infinity;
-	const onIncrease = props.onIncrease ?? (() => {});
-	const onDecrease = props.onDecrease ?? (() => {});
 	const onChange = props.onChange ?? (() => {});
 	const align = props.align ?? "center";
 	const buttons = props.buttons ?? true;
+	const defaultValue = props.defaultValue ?? min;
 
-	const updateValue = (f : ((event : any) => void)) => {
-		const oldVal = form.getFieldValue(name);
+	const input = useRef<HTMLInputElement>(null);
 
-		const newVal = f(oldVal);
-
-		form.setFieldValue(name, newVal);
-	};
-
-	const [value, setValue] = useState<number>(min);
-	const [prevValue, setPrevValue] = useState<number>(min);
-
-	useEffect(() => {
-		if(prevValue < value) {
-			onIncrease(value);
-		} else if(prevValue > value) {
-			onDecrease(value);
+	function updateInputValue(delta: number): void {
+		if(!input.current) {
+			return;
 		}
 
-		form.setFieldValue(name, value);
-
-		onChange(value);
-		setPrevValue(value);
-	}, [value]);
-
-	const handleChange : ((event: any) => void) = (() => {
-		let id : any = null;
-
-		return function(event : any) {
-			window.clearTimeout(id);
-
-			id = setTimeout(async () => {
-				const newValue : string = event.nativeEvent.target.value;
-				const num : number = toNumber(newValue);
-
-				if(!num) {
-					return;
-				}
-
-				let updatedNumber = 0;
-
-				await updateValue((prevForm : any) => {
-					const newVal : string = num.toString();
-
-					const newNumber : number = Math.max(Math.min(toNumber(newVal), max), min);
-
-					updatedNumber = newNumber;
-
-					return updatedNumber;
-				});
-
-				setValue(updatedNumber);
-
-			}, 50);
+		const parsedValue = Utils.toNumber(input.current.value) + delta;
+		let newValue: number;
+		if(parsedValue > max) {
+			newValue = max;
+		} else if(parsedValue < min) {
+			newValue = min;
+		} else {
+			newValue = parsedValue;
 		}
-	})();
+
+		input.current.value = newValue.toString();
+
+		// if we didn't have to clamp it
+		if(parsedValue === newValue) {
+			// :eyes:
+			handleChange({target: input.current} as unknown as React.ChangeEvent);
+		}
+	}
+	function handleChange(e: React.ChangeEvent): void {
+		const target = e.target;
+
+		assertInstanceOf(target, HTMLInputElement);
+
+		const newVal = Utils.toNumber(target.value);
+
+		onChange(newVal);
+	}
 
 	return (
-		<Flex
-			vertical
-			align='flex-start'
-			style={{
-				display: shown ? 'inherit' : 'none',
-			}}
-			className={"numberInput"}
-		>
-			{title &&
-				<h2
-					style={{
-						textAlign: align as any,
-						width: "100%",
-					}}
-				>{title}</h2>
-			}
-			<Form.Item<FieldType>
-				name={name as any}
-				rules={[
-					{
-						required: required,
-						message: message,
-					},
-					() => ({
-						async validator(rule : any, value, callback) {
-							if(required) {
-								if(value < min) {
-									return Promise.reject(`${title} must be at least ${min}`);
-								}
-								if(value > max) {
-									return Promise.reject(`${title} must be at most ${max}`);
-								}
-							}
-
-							return Promise.resolve();
-						}
-					})
-				]}
+		<>
+			<div
+				className="input input__number"
+				style={{
+					textAlign: align,
+					display: shown ? 'inherit' : 'none',
+				}}
 			>
-				<Input
-					id={name}
-					type={"text"}
-					inputMode={"numeric"}
-					className={"input"}
-					onKeyDown={(e) => {
-						const key = e.keyCode;
-						const acceptedKeys = [37, 38, 39, 40, 224];
-						if((key >= 32 && !acceptedKeys.includes(key)) && ( key < ord("0") || key > ord("9"))) {
-							console.log("prevented", key);
-							e.nativeEvent.preventDefault();
-						}
-					}}
-					onWheel={(e) => {
-						(e.target as HTMLElement).blur();
-					}}
-					onKeyUp={handleChange}
-					{...(buttons ? {
-						addonBefore: (
-							<Button
-								className={"changeButton changeButton__decrement"}
-								onMouseDown={async (form: any) => {
-									let updatedNumber = 0;
+				{title &&
+					<label
+						style={{
+							textAlign: align,
+						}}
+						htmlFor={name}
+					>{title}</label>
+				}
+				<div>
+					{ buttons &&
+						<button
+							type="button"
+							className="changeButton changeButton__decrement"
+							onClick={ () => {
 
-									await updateValue((prevVal: any) => {
-										const val = toNumber(prevVal) - 1;
+								updateInputValue(-1);
+							}}
+						>-</button>
+					}
+					<input
+						id={name}
+						name={name}
+						ref={input}
+						type="number"
+						min={min}
+						max={max}
+						onChange={handleChange}
+						required={required}
+						defaultValue={defaultValue}
+					/>
+					{ buttons &&
+						<button
+							type="button"
+							className="changeButton changeButton__increment"
+							onClick={ () => {
 
-										updatedNumber= Math.max(val, min);
-
-										return updatedNumber;
-									});
-
-									await setValue(updatedNumber);
-								}}
-							>-</Button>
-						),
-						addonAfter: (
-							<Button
-								className={"changeButton changeButton__increment"}
-								onMouseDown={async () => {
-									let updatedNumber = 0;
-
-									await updateValue((prevVal : any) => {
-										const val = toNumber(prevVal) + 1;
-
-										updatedNumber = Math.min(val, max);
-
-										return updatedNumber;
-									});
-
-									await setValue(updatedNumber);
-								}}
-							>+</Button>
-						),
-					} : {})}
-				/>
-			</Form.Item>
-		</Flex>
+								updateInputValue(1);
+							}}
+						>+</button>
+					}
+				</div>
+				<p
+					className="message"
+				>
+					{message}
+				</p>
+			</div>
+		</>
 	);
 }
-function Select<FieldType>(props: SelectType<FieldType>) {
+function Select<FieldType>(props: SelectType<FieldType>): React.ReactElement {
 	const title = props.title;
 	const name = props.name;
-	const form = props.form;
-	const shown = props.shown ?? true;
-	const required = (props.required ?? true) && shown;
-	if((props.required ?? true) && !shown) {
-		console.error("Required and not shown for", name)
-	}
-	const message = props.message ?? `Please input ${title}`;
+	const required = props.required ?? true;
+	// TODO: remove?
+	// const message = props.message ?? `Please input ${title}`;
 	const options = props.options;
 	const onChange = props.onChange ?? (() => {});
-	const align = props.align || "left";
-	const multiple = props.multiple ? 'multiple' : undefined;
+	const align = props.align ?? "left";
+	const shown = props.shown ?? true;
+	const multiple = props.multiple;
+	const defaultValue = props.defaultValue;
+
+	const optionElements = options.map(function(item: { label: string, value: string }, index) {
+		return (
+			<option
+				value={item.value}
+				key={
+					index + 1}
+			>
+				{item.label}
+			</option>
+		);
+	});
+	optionElements.unshift(
+		<option
+			value=""
+			key={0}
+			disabled
+			hidden
+		>
+		</option>
+	);
+
+	function handleChange(event: React.ChangeEvent): void {
+		const target = event.target;
+
+		assertInstanceOf(target, HTMLSelectElement);
+
+		onChange(target.value);
+	}
 
 	return (
-		<div
-			style={{
-				display: shown ? 'inherit' : 'none',
-			}}
-		>
-			{title &&
-				<h2
-					style={{
-						textAlign: align as any,
-					}}
-				>{title}</h2>
-			}
-			<Form.Item<FieldType>
-				name={name as any}
-				rules={[{ required: required, message: message }]}
+		<>
+			<div
+				className="input input__select"
+				style={{
+					textAlign: align,
+					display: shown ? 'inherit' : 'none',
+				}}
 			>
-				<AntdSelect
-					options={options}
-					onChange={onChange}
-					className="input"
-					dropdownMatchSelectWidth={false}
-					dropdownStyle={{ maxHeight: 'none' }}
-					mode={multiple}
-					showSearch={false}
+				{title &&
+					<label
+						style={{
+							textAlign: align,
+						}}
+						htmlFor={name}
+					>{title}</label>
+				}
+				<select
+					id={name}
+					name={name}
+					defaultValue={defaultValue}
+					required={required}
+					multiple={multiple}
+					onChange={handleChange}
+					size={multiple ? options.length : undefined}
+				>
+					{optionElements}
+				</select>
+			</div>
+		</>
+	);
+}
+function Checkbox<FieldType>(props: CheckboxType<NoInfer<FieldType>>): React.ReactElement {
+	const title = props.title;
+	const name = props.name;
+	const onChange = props.onChange ?? (() => {});
+	const align = props.align ?? "left";
+	const shown = props.shown ?? true;
+	const disabled = props.disabled;
+	const defaultValue = props.defaultValue;
+
+	const checkbox = useRef<HTMLInputElement>(null);
+
+	function handleChange(event: React.ChangeEvent): void {
+		const target = event.target;
+
+		assertInstanceOf(target, HTMLInputElement);
+
+		onChange(target.checked);
+	}
+
+	return (
+		<>
+			<div
+				className="input input__checkbox"
+				style={{
+					display: shown ? 'inherit' : 'none',
+				}}
+			>
+				{title &&
+					<label
+						style={{
+							textAlign: align,
+						}}
+						htmlFor={name}
+					>{title}</label>
+				}
+				<input
+					ref={checkbox}
+					id={name}
+					name={name}
+					type="checkbox"
+					onChange={handleChange}
+					checked={defaultValue}
+					disabled={disabled}
 				/>
-			</Form.Item>
-		</div>
+			</div>
+		</>
+	);
+}
+function TextArea<FieldType>(props: TextAreaType<NoInfer<FieldType>>): React.ReactElement {
+	const title = props.title;
+	const name = props.name;
+	const shown = props.shown ?? true;
+	const required = (props.required ?? true) && shown;
+	const disabled = props.required;
+	const onChange = props.onChange ?? (() => {});
+	const align = props.align ?? "left";
+	const defaultValue = props.defaultValue;
+
+	const textbox = useRef(null);
+
+	function handleChange(event: React.ChangeEvent): void {
+		const target = event.target;
+
+		assertInstanceOf(target, HTMLTextAreaElement);
+
+		onChange(target.value);
+	}
+
+	return (
+		<>
+			<div
+				className="input input__textarea"
+				style={{
+					display: shown ? 'inherit' : 'none',
+				}}
+			>
+				{title &&
+					<label
+						style={{
+							textAlign: align,
+						}}
+						htmlFor={name}
+					>{title}</label>
+				}
+				<textarea
+					id={name}
+					name={name}
+					ref={textbox}
+					onChange={handleChange}
+					defaultValue={defaultValue}
+					required={required}
+					disabled={disabled}
+				/>
+			</div>
+		</>
 	);
 }
 
-function ord(char : string) {
-	return char.charCodeAt(0);
-}
-function toNumber(x : any) : number {
-	if(typeof x === "number") {
-		return x;
+// This was the best solution I had that could infer the key type qaq
+function getFieldAccessor<FieldType>(): FormAccessorType<FieldType> {
+	const accessor =  {
+		getFieldValue<K extends string & keyof FieldType>(id: K): FieldType[K] {
+			type ResultType = FieldType[K];
+
+			const element = document.getElementById(id);
+
+			if(!element) {
+				throw new Error(`Could not find element ${id}`);
+			}
+
+			const tag = element.nodeName;
+
+			switch(tag) {
+				case "SELECT":
+					assertInstanceOf(element, HTMLSelectElement);
+					if(element.multiple) {
+						const options: string[] = [];
+						for(const option of element.selectedOptions) {
+							options.push(option.value);
+						}
+						return options as ResultType;
+					} else {
+						return element.value as ResultType;
+					}
+				case "TEXTAREA":
+					assertInstanceOf(element, HTMLTextAreaElement);
+					return element.value as ResultType;
+				case "INPUT":
+					assertInstanceOf(element, HTMLInputElement);
+					switch(element.type) {
+						case "checkbox":
+							return element.checked as ResultType;
+						case "number":
+						case "text":
+							return element.value as ResultType;
+						case "submit":
+						default:
+							throw new Error(`Could not use submit type ${element.type}`);
+					}
+				default:
+					throw new Error(`Could not use element tag ${tag}`);
+			}
+		},
+		setFieldValue<K extends string & keyof FieldType>(id: K, newValue: FieldType[K]): void {
+			const element = document.getElementById(id);
+
+			if(!element) {
+				throw new Error(`Could not find element ${id}`);
+			}
+
+			const tag = element.nodeName;
+
+			// TODO: remove debugging statement
+			try {
+				switch(tag) {
+					case "SELECT":
+						assertInstanceOf(element, HTMLSelectElement);
+						if(element.multiple) {
+							for (let i = 0; i < element.options.length; i++) {
+
+								element.options[i].selected = (newValue as unknown[]).indexOf(element.options[i].value) >= 0;
+							}
+						} else {
+							assertString(newValue);
+							element.value = newValue;
+						}
+						break;
+					case "TEXTAREA":
+						assertInstanceOf(element, HTMLTextAreaElement);
+						assertString(newValue);
+						element.value = newValue;
+						break;
+					case "INPUT":
+						assertInstanceOf(element, HTMLInputElement);
+						switch(element.type) {
+							case "checkbox":
+								assertBoolean(newValue);
+								element.checked = newValue;
+								break;
+							case "number":
+								assertNumber(newValue);
+								element.value = newValue.toString();
+								break;
+							case "text":
+								assertString(newValue);
+								element.value = newValue;
+								break;
+							default:
+								throw new Error(`Could not use submit type ${element.type}`);
+						}
+						break;
+					default:
+						throw new Error(`Could not use element tag ${tag}`);
+				}
+			} catch (err) {
+				console.error(`err=`, err);
+				console.error(`id=`, id);
+				console.error(`newValue=`, newValue);
+				console.error(`tag=`, tag);
+			}
+		},
+		setFormValues(values: Partial<FieldType>): void {
+			for(const [k, v] of Object.entries(values)) {
+				type Key = string & keyof FieldType;
+
+				accessor.setFieldValue(k as Key, v as FieldType[Key]);
+			}
+		},
+		resetFields(): void {
+			const form = document.querySelector("form");
+
+			if(!form) {
+				console.error(`No form: form=`, form);
+				return;
+			}
+
+			form.reset();
+		}
 	}
-	x = x || 0;
-	const num = Number(x) || 0;
-	return num;
+
+	return accessor;
 }
 
-export { NumberInput, Select, };
+export { Input, NumberInput, Select, Checkbox, TextArea };
+export { getFieldAccessor, };
+export default Form;

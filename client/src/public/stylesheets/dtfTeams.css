@@ -1,4 +1,4 @@
-.dtfTeams {
+dtf-teams {
 	.dtf-input, .input_checkbox, input_checkbox_filled, .textbox_input {
 		border: 2px solid var(--font-color);
 		border-radius: 1rem;

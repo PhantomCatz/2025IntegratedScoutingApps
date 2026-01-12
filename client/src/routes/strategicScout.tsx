@@ -1,67 +1,57 @@
 import '../public/stylesheets/strategicScout.css';
 import { useEffect, useState} from 'react';
-import { Tabs, Input, Form, Button, Flex, Table } from 'antd';
-import TextArea from 'antd/es/input/TextArea';
+import { useLocalStorage, } from 'react-use';
+import { Table } from 'antd';
+import { Tabs } from '../parts/tabs';
 import Header from '../parts/header';
 import QrCode from '../parts/qrCodeViewer';
-import { isInPlayoffs, getTeamsPlaying, getIndexNumber, getDivisionsList } from '../utils/tbaRequest';
+import { isInPlayoffs, getTeamsInMatch, getAllianceTags, parseRobotPosition } from '../utils/tbaRequest.ts';
 import { escapeUnicode } from '../utils/utils';
-import { NumberInput, Select } from '../parts/formItems';
+import { getFieldAccessor } from '../parts/formItems';
+import Form, { NumberInput, Select, Input, TextArea, } from '../parts/formItems';
+import Constants from '../utils/constants';
 
-namespace Fields {
-	export type PreMatch = {
-		match_event: string;
-		scouter_initials: string;
-		match_level: string;
-		match_number: number;
-		robot_position: string;
-		red_alliance: string;
-		blue_alliance: string;
-		penalties: number;
-	};
-
-	export type Comment = {
-		comments: string;
-		team_rating: string;
-	};
-}
+import type * as TbaApi from '../types/tbaApi';
+import type * as StrategicScoutTypes from '../types/strategicScout';
+import type * as Database from '../types/database';
+import type * as ResultTypes from '../types/resultTypes';
 
 const formDefaultValues = {
-	"match_event": null,
-	"team_number": 0,
-	"scouter_initials": null,
-	"match_level": null,
+	"scouter_initials": "",
+	"match_level": "",
 	"match_number": 0,
-	"robot_position": null,
-	"team_rating": null,
-	"comments": null,
-	"red_alliance": [],
-	"blue_alliance": [],
+	"robot_position": "",
+	"comments": "",
+	"red_alliance": null,
+	"blue_alliance": null,
 	"penalties": 0,
-}
+} as const;
 
-function StrategicScout(props: any) {
-	const DEFAULT_MATCH_EVENT = EVENT_NAME || "";
+type Props = {
+	title: string,
+};
 
-	if(DEFAULT_MATCH_EVENT === "") {
-		console.error("Could not get match event. Check .env");
+function StrategicScout(props: Props): React.ReactElement {
+	const [tabNum, setTabNum] = useState("1");
+	const [team_number, setTeamNumber] = useState(0);
+	const [teamsInMatch, setTeamsInMatch] = useState<ResultTypes.TeamsInMatch | null>(null);
+	const [qrValue, setQrValue] = useState<unknown>();
+	const [teamData, setTeamData] = useState<Database.StrategicEntry[] | null>(null);
+	const [inPlayoffs, setInPlayoffs] = useState(false);
+	const [_eventKey, _setEventKey] = useLocalStorage<TbaApi.EventKey>('eventKey', Constants.EVENT_KEY);
+
+	if(!_eventKey) {
+		throw new Error("Could not get event key");
 	}
 
-	const [form] = Form.useForm();
-	const [tabNum, setTabNum] = useState("1");
-	const [team_number, setTeamNum] = useState(0);
-	const [teamsList, setTeamsList] = useState<string[]>([]);
-	const [qrValue, setQrValue] = useState<any>();
-	const [lastFormValue, setLastFormValue] = useState<any>(null);
-	const [teamData, setTeamData] = useState<any>(null);
-	const [inPlayoffs, setInPlayoffs] = useState(false);
-	const [isLoading, setIsLoading] = useState(false);
-	const [match_event, setMatchEvent] = useState<string>(DEFAULT_MATCH_EVENT);
+	const eventKey = _eventKey;
+
+	const accessor = getFieldAccessor<StrategicScoutTypes.All>();
 
 	useEffect(() => { document.title = props.title; return () => { } }, [props.title]);
 	useEffect(() => {
-		(async function() {
-			let fetchLink = SERVER_ADDRESS;
+		void (async function() {
+			let fetchLink = Constants.SERVER_ADDRESS;
 
 			if(!team_number) {
 				return;
@@ -76,81 +66,74 @@ function StrategicScout(props: any) {
 
 			fetchLink += `&team=${team_number}`;
 
-			fetch(fetchLink)
-				.then((res) => {
-					const value = res.json();
-					return value;
-				})
-				.then((data) => {
-					console.log(`data=`, data);
+			try {
+				const request = await fetch(fetchLink);
+				const data = await request.json() as Database.StrategicEntry[] | null;
+				if(!data?.length) {
+					console.error(`No data for team ${team_number}`);
+					setTeamData(null);
+					return;
+				}
 
-					if(!data?.length) {
-						console.log(`No data for team ${team_number}`);
-						setTeamData(null);
-						return;
-					}
-
-					setTeamData(data);
-				})
-				.catch((err) => {
-					console.log("Error fetching data. Is server on?", err);
-				});
+				setTeamData(data);
+			} catch (err) {
+					console.error("Error fetching data. Is server on?", err);
+				}
 		})();
 	}, [team_number]);
 
-	useEffect(() => {
-		updateNumbers();
-	}, [match_event]);
-
-	async function updateTeamNumber() {
+	async function updateTeamNumber(): Promise<void> {
 		try {
-			const matchLevel = form.getFieldValue('match_level');
-			const matchNumber = form.getFieldValue('match_number');
-			const robotPosition = form.getFieldValue('robot_position');
-			const allianceNumber1 = form.getFieldValue('red_alliance');
-			const allianceNumber2 = form.getFieldValue('blue_alliance');
+			const compLevel = accessor.getFieldValue('comp_level');
+			const matchNumber = accessor.getFieldValue('match_number');
+			const robotPosition = accessor.getFieldValue('robot_position');
+			const blueAllianceNumber = accessor.getFieldValue('blue_alliance');
+			const redAllianceNumber = accessor.getFieldValue('red_alliance');
 
-			const teams : any = await getTeamsPlaying(match_event, matchLevel, matchNumber, allianceNumber1, allianceNumber2);
+			// :eyes:
+			const teamsInMatch = await getTeamsInMatch(eventKey, compLevel, matchNumber, blueAllianceNumber, redAllianceNumber);
 
-			setTeamsList(teams || []);
-
-			if(robotPosition) {
-				const index = getIndexNumber(robotPosition);
-				const teamNumber = Number(teams[index]);
-
-				await setTeamNum(teamNumber || 0);
-			} else {
-				setTeamNum(0);
+			if(!teamsInMatch) {
+				console.error("Failed to get teams playing: teams is empty");
+				return;
 			}
 
+			setTeamsInMatch(teamsInMatch);
+
+			const [color, index] = parseRobotPosition(robotPosition);
+			const teamNumber = teamsInMatch[color][index];
+
+			setTeamNumber(teamNumber);
 		} catch (err) {
 			console.error("Failed to request TBA data when updating team number", err);
 		}
 	}
-	async function setNewStrategicScout(event: any) {
-		const body : any = {
-			"match_event": match_event,
+	function setNewStrategicScout(event: StrategicScoutTypes.All): void {
+		const body: StrategicScoutTypes.SubmitBody = {
+			"match_event": eventKey,
 			"team_number": team_number,
 			"scouter_initials": event.scouter_initials.toLowerCase(),
-			"match_level": event.match_level,
+			"comp_level": event.comp_level,
 			"match_number": event.match_number,
 			"robot_position": event.robot_position,
+			"blue_alliance": event.blue_alliance,
+			"red_alliance": event.red_alliance,
 			// "team_rating": event.team_rating,
 			"comments": event.comments,
 		};
 		Object.entries(body)
-			.forEach((k) => {
-				const field = k[0];
-				const val = k[1];
+			.forEach((entry) => {
+				const [field, value] = entry;
 
-				const newVal = typeof val === "string" ?
-					escapeUnicode(val) :
-					val;
+				const newVal = typeof value === "string" ?
+					escapeUnicode(value) :
+					value;
 
-				body[field] = newVal;
+				// :eyes:
+				body[field as keyof Database.StrategicEntry] = newVal;
 			});
 
-		tryFetch(body)
+		void tryFetch(body)
 			.then((successful) => {
 				if(successful) {
 					window.alert("Submit successful.");
@@ -161,12 +144,12 @@ function StrategicScout(props: any) {
 
 		setQrValue(body);
 	}
-	async function tryFetch(body : any) {
-		let fetchLink = SERVER_ADDRESS;
+	async function tryFetch(body: StrategicScoutTypes.SubmitBody): Promise<boolean> {
+		let fetchLink = Constants.SERVER_ADDRESS;
 
 		if(!fetchLink) {
 			console.error("Could not get fetch link; Check .env");
-			return;
+			return false;
 		}
 
 		fetchLink += "reqType=submitStrategicData";
@@ -184,169 +167,128 @@ function StrategicScout(props: any) {
 				},
 			});
 
-			return !!res.ok;
-		} catch (err) {
+			return res.ok;
+		} catch (_) {
 			return false;
 		}
 	}
-	function calculateMatchLevel() {
-		const matchLevel = form.getFieldValue('match_level');
+	function calculateMatchLevel(): void {
+		const matchLevel = accessor.getFieldValue('comp_level');
 
 		const inPlayoffs = isInPlayoffs(matchLevel);
 
 		setInPlayoffs(inPlayoffs);
 	}
-	async function trySubmit(event : any) {
-		await setNewStrategicScout(event);
+	async function trySubmit(event: StrategicScoutTypes.All): Promise<void> {
+		setNewStrategicScout(event);
 
-		const scouter_initials = form.getFieldValue('scouter_initials');
-		const match_number = form.getFieldValue('match_number');
-		const match_level = form.getFieldValue('match_level');
-		const match_event = form.getFieldValue('match_event');
-		const robot_position = form.getFieldValue('robot_position');
+		const scouter_initials = accessor.getFieldValue('scouter_initials');
+		const match_number = accessor.getFieldValue('match_number');
+		const comp_level = accessor.getFieldValue('comp_level');
+		const match_event = accessor.getFieldValue('match_event');
+		const robot_position = accessor.getFieldValue('robot_position');
 
-		form.resetFields();
-		form.setFieldValue('scouter_initials', scouter_initials);
-		form.setFieldValue('match_level', match_level);
-		form.setFieldValue('match_event', match_event);
-		form.setFieldValue("match_number", Number(match_number) + 1);
-		form.setFieldValue('robot_position', robot_position);
+		accessor.resetFields();
 
-		await calculateMatchLevel();
+		accessor.setFieldValue('scouter_initials', scouter_initials);
+		accessor.setFieldValue('comp_level', comp_level);
+		accessor.setFieldValue('match_event', match_event);
+		accessor.setFieldValue("match_number", match_number + 1);
+		accessor.setFieldValue('robot_position', robot_position);
+
+		calculateMatchLevel();
 		await updateTeamNumber();
 	}
-	async function runFormFinish(event? : any) {
-		if(isLoading) {
-			return;
-		}
-		setIsLoading(true);
-
-		if(event !== undefined) {
-			setLastFormValue(event);
-		} else {
-			event = lastFormValue;
-		}
-
+	async function runFormFinish(event: StrategicScoutTypes.All): Promise<void> {
 		try {
 			await trySubmit(event);
-		}
-		catch (err) {
-			console.log(err);
+		} catch (err) {
+			console.error(err);
 			window.alert("Error occured, please do not leave this message and notify a Webdev member immediately.");
 		}
-		finally {
-			setIsLoading(false);
-		}
 	}
-	async function updateNumbers() {
-		await calculateMatchLevel();
+	async function updateNumbers(): Promise<void> {
+		calculateMatchLevel();
 		await updateTeamNumber();
 	}
 
-	function preMatch() {
-		type FieldType = Fields.PreMatch;
-		const matchEvents = [
-			{ label: `Default (${DEFAULT_MATCH_EVENT})`, value: DEFAULT_MATCH_EVENT },
-		];
-		for(const [eventName, eventId] of Object.entries(getDivisionsList())) {
-			matchEvents.push({
-				label: eventName,
-				value: eventId
-			});
-		}
-		const rounds = [
-			{ label: "Qualifications", value: "Qualifications" },
-			{ label: "Playoffs", value: "Playoffs" },
-			{ label: "Finals", value: "Finals" },
+	function preMatch(): React.ReactElement {
+		type FieldType = StrategicScoutTypes.PreMatch;
+
+		const compLevelOptions: { label: string, value: TbaApi.Comp_Level }[] = [
+			{ label: "Qualifications", value: "qm" },
+			{ label: "Playoffs", value: "sf" },
+			{ label: "Finals", value: "f" },
 		];
 
-		function getNum(n : number) {
-			if(!teamsList) {
-				return "";
+		function getRobotPositionOptions(): { label: string, value: string }[] {
+			if(teamsInMatch?.blue) {
+				const blueTeams = teamsInMatch.blue.map((team, index) => {
+					const positionNumber = index + 1;
+					return {
+						label: `B${positionNumber}: ${team}`,
+						value: `B${positionNumber}`,
+					};
+				});
+
+				const redTeams = teamsInMatch.red.map((team, index) => {
+					const positionNumber = index + 1;
+					return {
+						label: `R${positionNumber}: ${team}`,
+						value: `R${positionNumber}`,
+					};
+				});
+
+				return blueTeams.concat(redTeams);
+			} else {
+				return [
+					{ label: "R1", value: "R1" },
+					{ label: "R2", value: "R2" },
+					{ label: "R3", value: 'R3' },
+					{ label: "B1", value: "B1" },
+					{ label: "B2", value: "B2" },
+					{ label: "B3", value: 'B3' },
+				];
 			}
-			return teamsList[n] ? `: ${teamsList[n]}` : "";
 		}
-		const robot_position = [
-			{ label: `R1${getNum(0)}`, value: "R1" },
-			{ label: `R2${getNum(1)}`, value: "R2" },
-			{ label: `R3${getNum(2)}`, value: 'R3' },
-			{ label: `B1${getNum(3)}`, value: "B1" },
-			{ label: `B2${getNum(4)}`, value: "B2" },
-			{ label: `B3${getNum(5)}`, value: 'B3' },
-		];
-		const playoff_alliances = [
-			{ label: "Alliance 1", value: "Alliance 1" },
-			{ label: "Alliance 2", value: "Alliance 2" },
-			{ label: "Alliance 3", value: "Alliance 3" },
-			{ label: "Alliance 4", value: "Alliance 4" },
-			{ label: "Alliance 5", value: "Alliance 5" },
-			{ label: "Alliance 6", value: "Alliance 6" },
-			{ label: "Alliance 7", value: "Alliance 7" },
-			{ label: "Alliance 8", value: "Alliance 8" },
-		];
+		const robot_position = getRobotPositionOptions();
+		const playoff_alliances = getAllianceTags(eventKey);
 
 		return (
-			<div>
+			<>
 				<h2>Team: {team_number}</h2>
 
-				<Select<FieldType>
-					title={"Match Event"}
-					name={"match_event"}
-					options={matchEvents}
-					onChange={(e? : string) => {
-						console.log(`e=`, e);
-						if(e) {
-							setMatchEvent(e);
-						}
-					}}
-				/>
-
-				<h2>Scouter Initials</h2>
-				<Form.Item<FieldType>
+				<Input<FieldType>
 					name="scouter_initials"
-					rules={[
-						{ required: true, message: 'Please input your initials!' },
-						{
-							pattern: /^[A-Za-z]{1,2}$/,
-							message: 'Please enter only letters (max 2)',
-						},
-					]}
-				>
-					<Input
-						maxLength={2}
-						className="input"
-						onKeyPress={(event) => {
-							const keyCode = event.keyCode || event.which;
-							const keyValue = String.fromCharCode(keyCode);
-							if (!/^[A-Za-z]*$/.test(keyValue)) {
-								event.preventDefault();
-							}
-						}}
-					/>
-				</Form.Item>
+					title="Scouter Initials"
+					maxLength={2}
+					pattern="^[A-Za-z]{1,2}$"
+					message="Please enter only letters (max 2)"
+					align="left"
+				/>
 
 				<Select<FieldType>
 					title={"Match Level"}
-					name={"match_level"}
-					options={rounds}
+					name={"comp_level"}
+					options={compLevelOptions}
 					onChange={updateNumbers}
 				/>
 
 				<div className={"playoff-alliances"} style={{ display: inPlayoffs ? 'inherit' : 'none' }}>
 					<Select<FieldType>
-						title={"Red Alliance"}
-						name={"red_alliance"}
+						title={"Blue Alliance"}
+						name={"blue_alliance"}
 						required={inPlayoffs}
-						message={"Enter the red alliance"}
+						message={"Enter the blue alliance"}
 						options={playoff_alliances}
 						onChange={updateNumbers}
 					/>
 
 					<Select<FieldType>
-						title={"Blue Alliance"}
-						name={"blue_alliance"}
+						title={"Red Alliance"}
+						name={"red_alliance"}
 						required={inPlayoffs}
-						message={"Enter the blue alliance"}
+						message={"Enter the red alliance"}
 						options={playoff_alliances}
 						onChange={updateNumbers}
 					/>
@@ -358,7 +300,6 @@ function StrategicScout(props: any) {
 					message={"Enter match #"}
 					onChange={updateNumbers}
 					min={1}
-					form={form}
 					buttons={false}
 					align={"left"}
 				/>
@@ -371,30 +312,26 @@ function StrategicScout(props: any) {
 					onChange={updateNumbers}
 				/>
 
-				<Flex justify='in-between' style={{ paddingBottom : '5%' }}>
-					<Button onClick={() => setTabNum("2")} className='tabButton'>Next</Button>
-				</Flex>
+				<button type="button" onClick={() => { setTabNum("2"); }} className='tabButton'>Next</button>
 
-			</div>
+			</>
 		);
 	}
 
-	function comment() {
-		let prevComments = null;
-		type FieldType = Fields.Comment;
+	function comment(): React.ReactElement {
+		let prevComments;
+		type FieldType = StrategicScoutTypes.Comment;
 
-		if(!teamData) {
-			prevComments =  <p>This team has not been scouted yet.</p>;
-		} else {
+		if(teamData) {
 			const columns = [
 				{
-					"title" : 'Scouter Initials',
-					"dataIndex" : 'scouter_initials',
+					"title": 'Scouter Initials',
+					"dataIndex": 'scouter_initials',
 					"width": '70vw',
 				}, {
-					"title" : 'Match #',
-					"dataIndex" : 'match_number',
-					"width" : '10vw',
+					"title": 'Match #',
+					"dataIndex": 'match_number',
+					"width": '10vw',
 				},
 			];
 
@@ -403,9 +340,9 @@ function StrategicScout(props: any) {
 			for (const match of teamData) {
 				dataSource.push({
 					"key": `${match.id}`,
-					"scouter_initials" : `Scouter Initials: ${match.scouter_initials}`,
-					"match_number" : match.match_number,
-					"comment" : match.comments,
+					"scouter_initials": `Scouter Initials: ${match.scouter_initials}`,
+					"match_number": match.match_number,
+					"comment": match.comments,
 				});
 			}
 
@@ -413,44 +350,24 @@ function StrategicScout(props: any) {
 				<Table
 					columns={columns}
 					dataSource={dataSource}
-					expandable={{rowExpandable:(record) => true,
-						expandedRowRender:(record) => {
-							return <p>{record.comment}</p>
-						}
-					}}
-					pagination={false}
 				>
 				</Table>;
+		} else {
+			prevComments = <p>This team has not been scouted yet.</p>;
 		}
 
 		return (
 			<div>
 				{prevComments}
 
-				<h2>Comments</h2>
-				<Form.Item<FieldType> name="comments" rules={[{ required: true, message: "Please input some comments!" }]}>
-					<TextArea style={{ verticalAlign: 'center' }} className='strategic-input' />
-				</Form.Item>
-
-				{/*
-				<h2>Team Rating</h2>
-				<Form.Item<FieldType>
-				name="team_rating"
-				rules={[
-				{ required: true, message: 'Please input the team rating' },
-				]}
-				>
-				<Input
-				className="input"
+				<TextArea<FieldType>
+					title="Comments"
+					name="comments"
+					message="Please input some comments!"
 				/>
-				</Form.Item>
-				 */}
 
-				<h2 style={{ display: isLoading ? 'inherit' : 'none' }}>Submitting data...</h2>
-				<Flex justify='in-between' style={{ paddingBottom : '5%' }}>
-					<button type='button' onClick={() => { setTabNum("1"); }} className='tabButton'>Back</button>
-					<button type='submit' className='submitButton'>Submit</button>
-				</Flex>
+				<button type='button' onClick={() => { setTabNum("1"); }} className='tabButton'>Back</button>
+				<button type='submit' className='submitButton'>Submit</button>
 			</div>
 		);
 	}
@@ -471,24 +388,21 @@ function StrategicScout(props: any) {
 		<>
 			<Header name={"Strategic Scout"} back="#scoutingapp/" />
 
-			<div className="strategicScout">
-				<Form
-					form={form}
+			<strategic-scout>
+				<Form<StrategicScoutTypes.All>
 					initialValues={formDefaultValues}
 					onFinish={runFormFinish}
 					onFinishFailed={({values, errorFields, outOfDate}) => {
-						console.log("values=", values);
-						console.log("errorFields=", errorFields);
-						console.log("outOfDate=", outOfDate);
+						// TOOD: Implement
 
-						const errorMessage = errorFields.map((x : any) => x.errors.join(", ")).join("\n");
+						const errorMessage = errorFields.map((x: any) => x.errors.join(", ")).join("\n");
 						window.alert(errorMessage);
 					}}
 				>
 					<Tabs defaultActiveKey="1" activeKey={tabNum} items={items} centered className='tabs' onChange={async (key) => { setTabNum(key); }} />
 				</Form>
 				<QrCode value={qrValue} />
-			</div>
+			</strategic-scout>
 		</>
 	);
 }

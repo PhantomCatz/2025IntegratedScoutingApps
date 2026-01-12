@@ -25,7 +25,6 @@ app.listen(PORT, () => {
 app.get("/api", async function(req, res) {
 	const queryString = req.url.split("?")[1];
 	const queries = Object.fromEntries(new URLSearchParams(queryString));
-	console.log(`queries=`, queries);
 
 	let result = undefined;
 
@@ -44,7 +43,7 @@ app.get("/api", async function(req, res) {
 				result = await getTeamStrategicInfo(queries);
 				break;
 			default:
-				console.log("reqType not used when getting:", queries);
+				console.error("reqType not used when getting:", queries);
 				result = await getTeamInfo(queries);
 				break;
 		}
@@ -56,7 +55,7 @@ app.get("/api", async function(req, res) {
 		console.error(`ERROR: could not resolve request`, err);
 	}
 
-	await res.json(result);
+	res.json(result);
 	return res;
 });
 
@@ -91,19 +90,19 @@ app.post("/api", async function(req, res) {
 				return res;
 		}
 	} catch (err) {
-		console.log("err=", err);
+		console.error("err=", err);
 		result = null;
 	}
 
 	if(result) {
-		await res.status(200);
-		await res.json({});
+		res.status(200);
+		res.json({});
 		return res;
 	}
 
-	console.log("Could not submit data.", queries);
-	await res.status(500);
-	await res.json(result);
+	console.error("Could not submit data.", queries);
+	res.status(500);
+	res.json(result);
 	return res;
 });
 

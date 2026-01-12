@@ -1,4 +1,4 @@
-.homeRouter {
+home-router {
 	.homeButton {
 		font-size: 18pt;
 		height: 6rem;
@@ -9,5 +9,10 @@
 		display: flex;
 		justify-content: center;
 		margin-top: 2rem;
+
+		&:hover {
+			background-color: var(--color-hover);
+			transition: background-color 0.1s linear;
+		}
 	}
 }

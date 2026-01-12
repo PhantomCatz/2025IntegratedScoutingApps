@@ -6,6 +6,7 @@ import Column from 'antd/es/table/Column';
 import ColumnGroup from 'antd/es/table/ColumnGroup';
 import Header from '../parts/header';
 
+
 const DATA_COLUMNS = {
 	"Match Identifier": {
 		"Team Number": "team_number",
@@ -57,7 +58,7 @@ const DATA_COLUMNS = {
 	},
 };
 
-const HIDABLE_FIELDS : any = {
+const HIDABLE_FIELDS = {
 	"robot_appeared": false,
 
 	//"teleop_coral_scored_l4": false,
@@ -85,7 +86,7 @@ const HIDABLE_FIELDS : any = {
 	"auton_algae_scored_processor": false,
 };
 
-const FIXED_FIELDS : any = {
+const FIXED_FIELDS = {
 	"match_number": true,
 };
 
@@ -110,17 +111,16 @@ function MatchData(props: any) {
 				fetchLink += `&team1=${teamNumber}`;
 
 				const response = await (await fetch(fetchLink)).json();
-				console.log(`response=`, response);
 
 				const table = [];
-				const data : any[] = response[1];
+				const data: any[] = response[1];
 				if(!data) {
 					window.alert("Could not get data");
 					return;
 				}
 
 				for (const match of data) {
-					const row : any = {};
+					const row: any = {};
 
 					for (const field in match) {
 						const [result, location, hasValue] = getCellValue(field, match[field], match);
@@ -143,7 +143,7 @@ function MatchData(props: any) {
 				setMatchData(table);
 			}
 			catch (err) {
-				console.log("Error occured when getting data: ", err);
+				console.error("Error occured when getting data: ", err);
 			}
 			finally {
 				setLoading(false);
@@ -157,18 +157,18 @@ function MatchData(props: any) {
 		fixFields();
 	}, [matchData]);
 
-	const fixedFields : number[] = [];
+	const fixedFields: number[] = [];
 
 	let titleCount = 0;
 
-	function getCellValue(field : any, value : any, data : any) : any {
+	function getCellValue(field: any, value: any, data: any): any {
 		let result = null;
 		let location = null;
 		let hasValue = null;
 
 		if(value === null || value === undefined || value === "") {
-			console.log(`field=`, field);
-			console.log(`value=`, value);
+			console.error(`field=`, field);
+			console.error(`value=`, value);
 		}
 
 		switch(field) {
@@ -196,7 +196,7 @@ function MatchData(props: any) {
 			case "overall_robot_died":
 			case "overall_defended_others":
 			case "overall_was_defended":
-				result = (<div className={`booleanValue booleanValue__${!!value}`} key={`field`}>&nbsp;</div>);
+				result = (<div className={`booleanValue booleanValue__${Boolean(value)}`} key={`field`}>&nbsp;</div>);
 				location = field;
 				// Negate certain values
 				hasValue = ["robot_appeared"].includes(field) != value;
@@ -208,7 +208,7 @@ function MatchData(props: any) {
 					{text}
 				</p>);
 				location = field;
-				hasValue = !!value;
+				hasValue = Boolean(value);
 				break;
 			case "team_number":
 			case "match_event":
@@ -234,7 +234,7 @@ function MatchData(props: any) {
 			case "overall_minor_penalties":
 				result = (value || "").toString();
 				location = field;
-				hasValue = !!value;
+				hasValue = Boolean(value);
 				break;
 			case "id":
 			case "auton_coral_missed_l4":
@@ -286,7 +286,7 @@ function MatchData(props: any) {
 	function fixFields() {
 		for(const num of fixedFields) {
 			document.querySelectorAll(`.matchDataTable table tr > :nth-child(${num + 1}):not([scope=colgroup])`)
-				.forEach((x : any) => {
+				.forEach((x: any) => {
 					x.classList.add("cell__fixed");
 				});
 		}
@@ -296,7 +296,7 @@ function MatchData(props: any) {
 		<>
 			<Header name={`Data for ${teamNumber}`} back="#scoutingapp/lookup/match" />
 
-			<div className="matchData">
+			<match-data>
 				<h2 style={{ whiteSpace: 'pre-line' }}>{loading ? "Loading..." : ""}</h2>
 				<Table
 					dataSource={matchData}
@@ -308,7 +308,7 @@ function MatchData(props: any) {
 					}
 
 				</Table>
-			</div>
+			</match-data>
 		</>
 	);
 }

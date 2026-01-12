@@ -1,6 +1,7 @@
 # Ignore files when searching
 !Icon
 !.env
+!*.bak
 
 **/public/fonts
 **/public/images

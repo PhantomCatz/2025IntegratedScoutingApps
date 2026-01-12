@@ -1,6 +1,6 @@
 import mysql from 'mysql2/promise';
 
-const defaultValue = {"err" : "Failed to resolve request."};
+const defaultValue = { "err" : "Failed to resolve request." };
 const connectionData = {
 	"user": process.env.USERNAME,
 	"password": process.env.PASSWORD,
@@ -14,8 +14,8 @@ const NUM_ALLIANCES = 2;
 const TEAMS_PER_ALLIANCE = 3;
 
 if(!process.env.DATABASE || !connectionData?.database) {
-	console.log("connectionData=", connectionData);
-	console.log("[91mWARNING:[0m Check .env");
+	console.error("connectionData=", connectionData);
+	console.error("[91mWARNING:[0m Check .env");
 }
 
 console.log("Using Database " + process.env.DATABASE);
@@ -23,14 +23,14 @@ console.log("Using Database " + process.env.DATABASE);
 let connPool = {
 	errorConnection: {
 		query: async function(sqlQuery) {
-			console.log(`Did not run query '${sqlQuery}'`);
+			console.error(`Did not run query '${sqlQuery}'`)
 			return {};
 		},
 		release: function() {},
 	},
 	getConnection: async function() {
 		try {
-			const pool = await mysql.createPool(connectionData);
+			const pool = mysql.createPool(connectionData);
 
 			const conn = await pool.getConnection();
 
@@ -38,7 +38,7 @@ let connPool = {
 
 			return conn;
 		} catch (err) {
-			console.log("Error in creating connection pool:", err);
+			console.error("Error in creating connection pool:", err);
 
 			return connPool.errorConnection;
 		}
@@ -62,8 +62,9 @@ async function requestDatabase(query, substitution, config) {
 
 				if(forEach) {
 					await forEach(val, res, fields);
+				} else {
+					result.push(res);
 				}
-				result.push(res);
 			}
 		} else {
 			const [res, fields] = await conn.query(sqlQuery, [substitution]);
@@ -77,7 +78,7 @@ async function requestDatabase(query, substitution, config) {
 
 		await conn.release();
 	} catch(err) {
-		console.log(`Failed to resolve request: ${query}`);
+		console.error("Failed to resolve request:");
 		console.dir(err);
 	}
 	return result;
@@ -106,16 +107,17 @@ async function getTeamInfo(queries) {
 		inverse[num] = i;
 	}
 
-	let result = {};
+	const result = {};
 
 	if(!teams?.length) {
-		console.log("Error: No teams queried");
+		console.error("Error: No teams queried");
 		return result;
 	}
 
 	const sqlQuery = "SELECT * FROM match_data WHERE team_number=?";
 
 	// val=team number, res=match data
+	// TODO: refactor await loop
 	await requestDatabase(sqlQuery, teams, function(val, res) {
 		const index = inverse[val];
 		result[index] = res;
@@ -127,7 +129,7 @@ async function getTeamInfoSpecific(databaseName, queries) {
 	const team = queries.team;
 
 	if(!team) {
-		console.log("Error: bad team input: ", team);
+		console.error("Error: bad team input: ", team);
 		return {};
 	}
 
@@ -163,7 +165,7 @@ async function submitData(data, table) {
 
 		await conn.release();
 	} catch(err) {
-		console.log(`Failed to resolve request to ${table}:`);
+		console.error(`Failed to resolve request to ${table}:`);
 		console.dir(err);
 	}
 	return result;

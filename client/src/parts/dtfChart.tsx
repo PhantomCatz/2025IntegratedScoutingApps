@@ -1,17 +1,24 @@
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import Chart from 'chart.js/auto';
 import { splitString, } from '../utils/utils';
+import { assertNumber, } from '../types/utilityTypes';
 
-function DTFChartComponent(props : any) {
-	const autonAlgaeCanvas = useRef(null);
-	const teleopAlgaeCanvas = useRef(null);
-	const autonCoralCanvas = useRef(null);
-	const teleopCoralCanvas = useRef(null);
+import type *  as Database from '../types/database';
+import type { TooltipItem, ChartDataset } from 'chart.js/auto';
 
-	const teamNumber = props.teamNumber;
-	const index = props.index;
-	const teamMatches = props.teamMatches; // [{<field>:<value>},...] for field, value in match database
-	const teamStrategic = props.teamStrategic; // [{<field>:<value>},...] for field, value in match database
+type Props = {
+	teamMatches: Database.MatchEntry[],
+	teamStrategic: Database.StrategicEntry[],
+};
+
+function DTFChartComponent(props: Props): React.ReactElement {
+	const autonAlgaeCanvas = useRef<HTMLCanvasElement>(null);
+	const teleopAlgaeCanvas = useRef<HTMLCanvasElement>(null);
+	const autonCoralCanvas = useRef<HTMLCanvasElement>(null);
+	const teleopCoralCanvas = useRef<HTMLCanvasElement>(null);
+
+	const teamMatches = props.teamMatches;
+	const teamStrategic = props.teamStrategic;
 
 	useEffect(() => {
 		if(!(autonAlgaeCanvas.current &&
@@ -22,21 +29,21 @@ function DTFChartComponent(props : any) {
 			return;
 		}
 		const matchNumbers = teamMatches.map(function(row) {
-			const match_level = row.match_level;
+			const comp_level = row.comp_level;
 			const match_number = row.match_number;
 
-			return match_level[0] + match_number;
+			return comp_level[0].toUpperCase() + match_number.toString();
 		});
 
-		function commentCallback(message, items) {
+		function commentCallback(message: string[], items: TooltipItem<'line'>[]): void {
 			const dataPoint = items[0];
 			const match = teamMatches[dataPoint.dataIndex];
 			const match_number = match.match_number;
-			const match_level = match.match_level;
+			const comp_level = match.comp_level;
 
-			const currentTeamMatches = teamMatches.filter((row) => row.match_number === match_number && row.match_level === match_level);
-			const currentStrategicMatches = teamStrategic.filter((row) => row.match_number === match_number && row.match_level === match_level);
-			const comments = [];
+			const currentTeamMatches = teamMatches.filter((row) => row.match_number === match_number && row.comp_level === comp_level);
+			const currentStrategicMatches = teamStrategic.filter((row) => row.match_number === match_number && row.comp_level === comp_level);
+
 			for(const match of currentTeamMatches) {
 				message.push("MS: " + match.overall_comments);
 			}
@@ -133,16 +140,34 @@ function DTFChartComponent(props : any) {
 	);
 }
 
-function createChart(canvas, teamMatches, matchNumbers, config, tooltipCallback) {
-	const values = [];
-	const averages = [];
+type ChartConfig = {
+	[name: string]: {
+		values: {
+			[item_name: string]: string
+		},
+		calculateAverage?: boolean,
+	}
+};
+
+function createChart(canvas: HTMLCanvasElement,
+	teamMatches: Database.MatchEntry[],
+	matchNumbers: string[],
+	config: ChartConfig,
+	tooltipCallback?: (message: string[], items: TooltipItem<'line'>[]) => void): void {
+	const values: ChartDataset<'line'>[] = [];
+	const averages: ChartDataset<'line'>[] = [];
 	for(const [dataLine, lineOptions] of Object.entries(config)) {
 		const doAverage = lineOptions.calculateAverage;
 		let average = 0;
+
 		const data = teamMatches.map(function(row) {
 			let value = 0;
-			for(const [name, item] of Object.entries(lineOptions.values)) {
-				value += row[item];
+			for(const [_, item] of Object.entries(lineOptions.values)) {
+				// :eyes:
+				const itemValue = row[item as keyof typeof row];
+
+				assertNumber(itemValue);
+				value += itemValue;
 			}
 
 			if(doAverage) {
@@ -163,30 +188,24 @@ function createChart(canvas, teamMatches, matchNumbers, config, tooltipCallback)
 			}
 			averages.push({
 				label: `Average ${dataLine}`,
-				data: Array(teamMatches.length).fill(average),
+				data: Array<number>(teamMatches.length).fill(average),
 				pointRadius: 0,
 			});
 		}
 	}
 
-	function tooltip(items) {
-		let message = [];
+	function tooltip(items: TooltipItem<'line'>[]): string {
+		const message = [];
 		for(const dataPoint of items) {
 			const match = teamMatches[dataPoint.dataIndex];
 
-			const entry = config[dataPoint.dataset.label]?.values;
-			if(!entry) {
-				continue;
-			}
-			const names = Object.entries(entry);
-
+			// :eyes:
+			const entry = config[dataPoint.dataset.label as string].values;
 
 			message.push(`${dataPoint.dataset.label}:`);
-			message.push(`${names[0][0]}: ${match[names[0][1]]}`);
 
-
-			for(let i = 1; i < names.length; i++) {
-				message.push(`${names[i][0]}: ${match[names[i][1]]}`);
+			for(const [itemName, dataKey] of Object.entries(entry)) {
+				message.push(`${itemName}: ${match[dataKey as keyof typeof match]}`);
 			}
 
 			if(tooltipCallback) {
@@ -201,7 +220,7 @@ function createChart(canvas, teamMatches, matchNumbers, config, tooltipCallback)
 		return wrappedLines.join(lineSep);
 	}
 
-	const chart = new Chart(canvas, {
+	new Chart(canvas, {
 		type: 'line',
 		data: {
 			labels: matchNumbers,
