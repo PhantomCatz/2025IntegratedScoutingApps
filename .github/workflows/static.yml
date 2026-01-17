@@ -42,7 +42,7 @@ jobs:
           npm run build
         env:
           VITE_TBA_AUTH_KEY: ${{ secrets.VITE_TBA_AUTH_KEY }}
-          VITE_EVENTNAME: ${{ vars.VITE_EVENTNAME }}
+          VITE_EVENT_KEY: ${{ vars.VITE_EVENT_KEY }}
           VITE_SERVER_ADDRESS: ${{ vars.VITE_SERVER_ADDRESS }}
       - name: Setup Pages
         uses: actions/configure-pages@v5
