@@ -49,7 +49,7 @@ const IMAGE_DELIMITER = "$";
 function PitScout(props: Props): React.ReactElement {
 	const [_eventKey, _setEventKey] = useLocalStorage<TbaApi.EventKey>('eventKey', Constants.EVENT_KEY);
 	const [isLoading, setLoading] = useState(false);
-	const [qrValue, setQrValue] = useState<any>();
+	const [qrValue, setQrValue] = useState<unknown>();
 	const [robotImageURI, setRobotImageURI] = useState<string[]>([]);
 	const robotImageInput = useRef<HTMLInputElement>(null);
 	const [refresh, setRefresh] = useState(false);
@@ -86,7 +86,7 @@ function PitScout(props: Props): React.ReactElement {
 					window.alert(message);
 				}
 			} catch (err) {
-				console.error("Error in fetching teams: ", (err)?.message);
+				console.error("Error in fetching teams: ", err);
 			}})();
 	}, [eventKey]);
 
@@ -127,7 +127,10 @@ function PitScout(props: Props): React.ReactElement {
 					escapeUnicode(value) :
 					value;
 
-				body[field] = newVal;
+				// :eyes: :eyes: :eyes:
+				const access = field as keyof typeof body;
+				// :eyes: :eyes: :eyes:
+				body[access] = newVal as unknown as never;
 			});
 
 		void tryFetch(body)
@@ -403,7 +406,7 @@ function PitScout(props: Props): React.ReactElement {
 				/>
 				<h2 style={{ display: isLoading ? 'inherit' : 'none' }}>Submitting data...</h2>
 
-				<label className="robotImageLabel" htmlFor="robotImageInput">Select Image {`(${robotImageInput?.current?.files?.length ?? 0} images)`}</label>
+				<label className="robotImageLabel" htmlFor="robotImageInput">Select Image {`(${robotImageInput.current?.files?.length ?? 0} images)`}</label>
 				<input
 					ref={robotImageInput}
 					id="robotImageInput"
@@ -473,10 +476,8 @@ function PitScout(props: Props): React.ReactElement {
 							setLoading(false);
 						}
 					}}
-					onFinishFailed={({values, errorFields, outOfDate}) => {
-						// TODO: Implement
-
-						const errorMessage = errorFields.map((x) => x.errors.join(", ")).join("\n");
+					onFinishFailed={(_values, errorFields) => {
+						const errorMessage = Object.entries(errorFields).map((x) => x[0]).join("\n");
 						window.alert(errorMessage);
 					}}
 				>

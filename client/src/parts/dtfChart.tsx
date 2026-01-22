@@ -1,10 +1,10 @@
 import { useEffect, useRef } from 'react';
 import Chart from 'chart.js/auto';
 import { splitString, } from '../utils/utils';
-import { assertNumber, } from '../types/utilityTypes';
 
 import type *  as Database from '../types/database';
 import type { TooltipItem, ChartDataset } from 'chart.js/auto';
+import { assertNumber, } from '../types/assertions';
 
 type Props = {
 	teamMatches: Database.MatchEntry[],
@@ -199,8 +199,11 @@ function createChart(canvas: HTMLCanvasElement,
 		for(const dataPoint of items) {
 			const match = teamMatches[dataPoint.dataIndex];
 
-			// :eyes:
-			const entry = config[dataPoint.dataset.label as string].values;
+			if(!dataPoint.dataset.label) {
+				continue;
+			}
+
+			const entry = config[dataPoint.dataset.label].values;
 
 			message.push(`${dataPoint.dataset.label}:`);
 

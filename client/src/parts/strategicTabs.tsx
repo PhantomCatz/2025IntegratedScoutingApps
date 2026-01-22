@@ -5,16 +5,11 @@ import type { TabItems } from './tabs';
 import type * as Database from '../types/database';
 
 type Props = {
-	team: number;
 	data: Database.StrategicEntry[] | null;
 };
 
 function StrategicTabs(props: Props): TabItems {
-	const team = props.team;
 	const data = props.data;
-	if (!team) {
-		return [];
-	}
 
 	const matches: TabItems = [];
 

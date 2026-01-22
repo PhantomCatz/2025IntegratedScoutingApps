@@ -6,6 +6,7 @@ import Column from 'antd/es/table/Column';
 import ColumnGroup from 'antd/es/table/ColumnGroup';
 import Header from '../parts/header';
 
+import Constants from '../utils/constants';
 
 const DATA_COLUMNS = {
 	"Match Identifier": {
@@ -90,7 +91,11 @@ const FIXED_FIELDS = {
 	"match_number": true,
 };
 
-function MatchData(props: any) {
+type Props = {
+	title: string
+};
+
+function MatchData(props: Props): React.ReactElement {
 	const { teamNumber } = useParams();
 	const [loading, setLoading] = useState(true);
 	const [matchData, setMatchData] = useState<{ [x: string]: any; }[]>([]);
@@ -98,9 +103,9 @@ function MatchData(props: any) {
 
 	useEffect(() => { document.title = props.title }, [props.title]);
 	useEffect(() => {
-		async function fetchData(teamNumber: number) {
+		async function fetchData(teamNumber: number): Promise<void> {
 			try {
-				let fetchLink = SERVER_ADDRESS;
+				let fetchLink = Constants.SERVER_ADDRESS;
 
 				if(!fetchLink) {
 					console.error("Could not get fetch link. Check .env");
@@ -286,7 +291,7 @@ function MatchData(props: any) {
 	function fixFields() {
 		for(const num of fixedFields) {
 			document.querySelectorAll(`.matchDataTable table tr > :nth-child(${num + 1}):not([scope=colgroup])`)
-				.forEach((x: any) => {
+				.forEach((x) => {
 					x.classList.add("cell__fixed");
 				});
 		}

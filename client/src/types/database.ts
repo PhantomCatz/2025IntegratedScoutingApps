@@ -1,7 +1,7 @@
 import * as TbaApi from './tbaApi';
 import * as TbaRequest from './tbaRequest';
 
-type Tinyint = 0 | 1;
+export type Tinyint = 0 | 1;
 
 export type MatchEntry = {
     id:                              number;

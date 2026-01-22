@@ -12,7 +12,7 @@ import Constants from '../utils/constants';
 import type { TabItems, TabItem } from '../parts/tabs';
 import type * as Database from '../types/database';
 import type * as TbaApi from '../types/tbaApi';
-import { assertNumber, assertBoolean, assertString } from '../types/utilityTypes';
+import { assertNumber, assertBoolean, assertString, assertNonNull } from '../types/assertions';
 
 type Props = {
 	title: string;
@@ -22,70 +22,70 @@ type MatchData = {
 };
 type AggregateData = {
 	// Auton
-	//"auton_leave_starting_line"?: event.auton_leave_starting_line,
-	"auton_coral_scored_l4"?: number,
-	"auton_coral_l4_total"?: number,
-	//"auton_coral_missed_l4"?: number,
-	"auton_coral_scored_l3"?: number,
-	"auton_coral_l3_total"?: number,
-	//"auton_coral_missed_l3"?: number,
-	"auton_coral_scored_l2"?: number,
-	"auton_coral_l2_total"?: number,
-	//"auton_coral_missed_l2"?: number,
-	"auton_coral_scored_l1"?: number,
-	"auton_coral_l1_total"?: number,
-	//"auton_coral_missed_l1"?: number,
-	"auton_algae_scored_net"?: number,
-	"auton_algae_missed_net"?: number,
-	"auton_algae_net_total"?: number,
-	"auton_algae_scored_processor"?: number,
+	"auton_leave_starting_line": boolean,
+	"auton_coral_scored_l4": number,
+	"auton_coral_l4_total": number,
+	//"auton_coral_missed_l4": number,
+	"auton_coral_scored_l3": number,
+	"auton_coral_l3_total": number,
+	//"auton_coral_missed_l3": number,
+	"auton_coral_scored_l2": number,
+	"auton_coral_l2_total": number,
+	//"auton_coral_missed_l2": number,
+	"auton_coral_scored_l1": number,
+	"auton_coral_l1_total": number,
+	//"auton_coral_missed_l1": number,
+	"auton_algae_scored_net": number,
+	"auton_algae_missed_net": number,
+	"auton_algae_net_total": number,
+	"auton_algae_scored_processor": number,
 
 	// Teleop
-	"teleop_coral_scored_l4"?: number,
-	"teleop_coral_l4_total"?: number,
-	//"teleop_coral_missed_l4"?: number,
-	"teleop_coral_scored_l3"?: number,
-	"teleop_coral_l3_total"?: number,
-	//"teleop_coral_missed_l3"?: number,
-	"teleop_coral_scored_l2"?: number,
-	"teleop_coral_l2_total"?: number,
-	//"teleop_coral_missed_l2"?: number,
-	"teleop_coral_scored_l1"?: number,
-	"teleop_coral_l1_total"?: number,
-	//"teleop_coral_missed_l1"?: number,
-	"teleop_algae_scored_net"?: number,
-	"teleop_algae_missed_net"?: number,
-	"teleop_algae_net_total"?: number,
-	"teleop_algae_scored_processor"?: number,
+	"teleop_coral_scored_l4": number,
+	"teleop_coral_l4_total": number,
+	//"teleop_coral_missed_l4": number,
+	"teleop_coral_scored_l3": number,
+	"teleop_coral_l3_total": number,
+	//"teleop_coral_missed_l3": number,
+	"teleop_coral_scored_l2": number,
+	"teleop_coral_l2_total": number,
+	//"teleop_coral_missed_l2": number,
+	"teleop_coral_scored_l1": number,
+	"teleop_coral_l1_total": number,
+	//"teleop_coral_missed_l1": number,
+	"teleop_algae_scored_net": number,
+	"teleop_algae_missed_net": number,
+	"teleop_algae_net_total": number,
+	"teleop_algae_scored_processor": number,
 
 	// Endgame
-	"endgame_coral_intake_capability"?: string,
-	//"endgame_coral_station"?: event.endgame_coral_station
-	"endgame_algae_intake_capability"?: string,
+	"endgame_coral_intake_capability": string,
+	//"endgame_coral_station": event.endgame_coral_station
+	"endgame_algae_intake_capability": string,
 
-	// "endgame_climb_successful"?: event.endgame_climb_successful,
-	"endgame_climb_type"?: string,
+	// "endgame_climb_successful": event.endgame_climb_successful,
+	"endgame_climb_type": string,
 
-	"endgame_climb_time"?: number,
+	"endgame_climb_time": number,
 	// Overall
-	"overall_robot_died"?: number,
-	"overall_defended_others"?: number,
-	"overall_was_defended"?: number,
-	// "overall_defended"?: [],
-	// "overall_defended_by"?: [],
-	"overall_pushing"?: number,
-	"overall_counter_defense"?: number,
-	"overall_driver_skill"?: number,
-	"overall_major_penalties"?: number,
-	"overall_minor_penalties"?: number,
-	// "overall_penalties_incurred"?: string,
-	"overall_comments"?: string,
+	"overall_robot_died": number,
+	"overall_defended_others": number,
+	"overall_was_defended": number,
+	// "overall_defended": [],
+	// "overall_defended_by": [],
+	"overall_pushing": number,
+	"overall_counter_defense": number,
+	"overall_driver_skill": number,
+	"overall_major_penalties": number,
+	"overall_minor_penalties": number,
+	// "overall_penalties_incurred": string,
+	"overall_comments": string,
 
-	"robot_played"?: boolean,
+	"robot_played": boolean,
 
-	"total_score"?: number,
-	"average_score"?: number,
-	"match_count"?: number,
+	"total_score": number,
+	"average_score": number,
+	"match_count": number,
 };
 
 function DTFTeams(props: Props): React.ReactElement {
@@ -93,9 +93,9 @@ function DTFTeams(props: Props): React.ReactElement {
 	const [loading, setLoading] = useState(false);
 	const [items, setItems] = useState<{ key: string, label: string, children: React.ReactElement }[]>([]);
 	const [teamList, setTeamList] = useState<string[]>([]);
-	const [teamIndex, setTeamIndex] = useState<{ [team: string]: number }>();
-	const [teamsMatchData, setTeamsMatchData] = useState<{[index: number]: Database.MatchEntry[]}>();
-	const [teamsStrategicData, setTeamsStrategicData] = useState<{[index: number]: Database.StrategicEntry[]}>();
+	const [teamIndex, setTeamIndex] = useState<{ [team: string]: number } | null>(null);
+	const [teamsMatchData, setTeamsMatchData] = useState<{[index: number]: Database.MatchEntry[] | undefined} | null>(null);
+	const [teamsStrategicData, setTeamsStrategicData] = useState<{[index: string]: Database.StrategicEntry[]} | null>(null);
 
 	useEffect(() => {
 		document.title = props.title;
@@ -170,7 +170,7 @@ function DTFTeams(props: Props): React.ReactElement {
 		})()
 	}, [teamList]);
 	useEffect(() => {
-		void getDTF(teamList);
+		getDTF(teamList);
 	}, [teamsMatchData, teamsStrategicData]);
 
 	function preprocessData(data: { [teamIndex: string]: { comp_level: TbaApi.Comp_Level, match_number: number}[]}): void {
@@ -218,19 +218,15 @@ function DTFTeams(props: Props): React.ReactElement {
 			case "teleop_algae_scored_processor":
 			case "endgame_climb_time":
 			case "overall_driver_skill":
-				if(data[k] === undefined) {
-					data[k] = 0;
-				}
+				assertNumber(data[k])
+				assertNumber(v);
 				if(l) {
-					assertNumber(v);
 					data[k] += v/l;
 				}
 				break;
 			// Summative values
 			case "overall_robot_died":
-				if(data[k] === undefined) {
-					data[k] = 0;
-				}
+				assertNumber(data[k])
 				assertNumber(v);
 				data[k] += v;
 				break;
@@ -302,12 +298,12 @@ function DTFTeams(props: Props): React.ReactElement {
 			case "teleop_algae_scored_net":
 			case "teleop_algae_missed_net":
 			case "endgame_climb_successful": {
+				// :eyes:
 				const total_field = k.replace("_missed","").replace("_scored","") + ("_total") as keyof AggregateData;
-				if(data[total_field] === undefined) {
-					data[total_field] = 0;
-				}
+
 				assertNumber(data[total_field]);
 				assertNumber(v);
+
 				if(l) {
 					data[total_field] += v/l;
 				}
@@ -317,7 +313,7 @@ function DTFTeams(props: Props): React.ReactElement {
 				break;
 		}
 	}
-	function getScore(k: keyof AggregateData, v: AggregateData[keyof AggregateData]): number {
+	function getScore(k: string, v: AggregateData[keyof AggregateData]): number {
 		const map = {
 			"auton_coral_scored_l4": 7,
 			"auton_coral_scored_l3": 6,
@@ -348,15 +344,76 @@ function DTFTeams(props: Props): React.ReactElement {
 			}
 		} else if(k === "auton_leave_starting_line" && v) {
 			return 3;
-		} else {
-			return 0;
 		}
+		return 0;
 	}
 	function mergeTeamData(matches: Database.MatchEntry[]): AggregateData {
-		const data: AggregateData = { };
-		if(!matches) {
-			return data;
-		}
+		const data: AggregateData = {
+			"auton_leave_starting_line": false,
+			"auton_coral_scored_l4": 0,
+			"auton_coral_l4_total": 0,
+			//"auton_coral_missed_l4": 0,
+			"auton_coral_scored_l3": 0,
+			"auton_coral_l3_total": 0,
+			//"auton_coral_missed_l3": 0,
+			"auton_coral_scored_l2": 0,
+			"auton_coral_l2_total": 0,
+			//"auton_coral_missed_l2": 0,
+			"auton_coral_scored_l1": 0,
+			"auton_coral_l1_total": 0,
+			//"auton_coral_missed_l1": 0,
+			"auton_algae_scored_net": 0,
+			"auton_algae_missed_net": 0,
+			"auton_algae_net_total": 0,
+			"auton_algae_scored_processor": 0,
+
+			// Teleop
+			"teleop_coral_scored_l4": 0,
+			"teleop_coral_l4_total": 0,
+			//"teleop_coral_missed_l4": 0,
+			"teleop_coral_scored_l3": 0,
+			"teleop_coral_l3_total": 0,
+			//"teleop_coral_missed_l3": 0,
+			"teleop_coral_scored_l2": 0,
+			"teleop_coral_l2_total": 0,
+			//"teleop_coral_missed_l2": 0,
+			"teleop_coral_scored_l1": 0,
+			"teleop_coral_l1_total": 0,
+			//"teleop_coral_missed_l1": 0,
+			"teleop_algae_scored_net": 0,
+			"teleop_algae_missed_net": 0,
+			"teleop_algae_net_total": 0,
+			"teleop_algae_scored_processor": 0,
+
+			// Endgame
+			"endgame_coral_intake_capability": "",
+			//"endgame_coral_station": event.endgame_coral_station
+			"endgame_algae_intake_capability": "",
+
+			// "endgame_climb_successful": event.endgame_climb_successful,
+			"endgame_climb_type": "",
+
+			"endgame_climb_time": 0,
+			// Overall
+			"overall_robot_died": 0,
+			"overall_defended_others": 0,
+			"overall_was_defended": 0,
+			// "overall_defended": [],
+			// "overall_defended_by": [],
+			"overall_pushing": 0,
+			"overall_counter_defense": 0,
+			"overall_driver_skill": 0,
+			"overall_major_penalties": 0,
+			"overall_minor_penalties": 0,
+			// "overall_penalties_incurred": string,
+			"overall_comments": "",
+
+			"robot_played": false,
+
+			"total_score": 0,
+			"average_score": 0,
+			"match_count": 0,
+		};
 		data.match_count = matches.filter((x) => x.robot_appeared).length;
 		const l = matches.length;
 
@@ -369,10 +426,6 @@ function DTFTeams(props: Props): React.ReactElement {
 			}
 			for(const [k, v] of Object.entries(match)) {
 				aggregateData(k, v, data);
-				if(getScore(k, v) === undefined) {
-					console.error("field ", k, " is ", v, " and has no score");
-					continue;
-				}
 				data.total_score += getScore(k, v);
 			}
 		}
@@ -382,15 +435,20 @@ function DTFTeams(props: Props): React.ReactElement {
 
 		for(const [k, v] of Object.entries(data)) {
 			if(typeof v === "number") {
-				data[k] = Math.round(v);
+				// :eyes: :eyes: :eyes:
+				data[k as keyof typeof data] = Math.round(v) as never;
 			}
 		}
 		return data;
 	}
 
-	async function getAllianceTab(teams: string[], persistentData: { [team: string]: AggregateData }, index: number): Promise<TabItems> {
+	function getAllianceTab(teams: string[], persistentData: { [team: string]: AggregateData }, index: number): TabItems {
 		const tabs: TabItems = [];
 		const alliancePersistentData: AggregateData[] = [];
+
+		if(!teamIndex || !teamsMatchData || !teamsStrategicData) {
+			return tabs;
+		}
 
 		let teamCount = (index - 1) * Constants.TEAMS_PER_ALLIANCE;
 		for (const team of teams) {
@@ -401,24 +459,18 @@ function DTFTeams(props: Props): React.ReactElement {
 
 			const dataIndex = teamIndex[team];
 			const teamMatches = teamsMatchData[dataIndex];
-
-			const data = mergeTeamData(teamMatches);
-			persistentData[team] = data;
-			alliancePersistentData.push(data);
-
-			let hasData = true;
-			if(!teamMatches?.length) {
-				hasData = false;
-			}
+			const teamTabs: TabItems = [];
 
 			const strategicData = teamsStrategicData[team];
 			// let pitData = await PitTabs(Number(team));
 
-			const strategicTabs: TabItems = StrategicTabs({team: team, data: strategicData});
+			const strategicTabs: TabItems = StrategicTabs({ data: strategicData });
 
-			const teamTabs: TabItems = [];
+			if(teamMatches && teamMatches.length) {
+				const data = mergeTeamData(teamMatches);
+				persistentData[team] = data;
+				alliancePersistentData.push(data);
 
-			if(hasData) {
 				teamTabs.push({ key: "Charts", label: "Charts", children:
 						<>
 							<ChartComponent teamMatches={teamMatches} teamStrategic={strategicData}/>
@@ -430,28 +482,28 @@ function DTFTeams(props: Props): React.ReactElement {
 							<div style={{display: 'flex',}}>
 								<div style={{flexGrow: 1, }}>
 									<h2>L1 avg</h2>
-									<Input className="dtf-input" disabled value={`${data.auton_coral_scored_l1}/${data.auton_coral_l1_total}`} />
+									<Input disabled defaultValue={`${data.auton_coral_scored_l1}/${data.auton_coral_l1_total}`} />
 								</div>
 								<div style={{flexGrow: 1, }}>
 									<h2>L2 avg</h2>
-									<Input className="dtf-input" disabled value={`${data.auton_coral_scored_l2}/${data.auton_coral_l2_total}`} />
+									<Input disabled defaultValue={`${data.auton_coral_scored_l2}/${data.auton_coral_l2_total}`} />
 								</div>
 							</div>
 							<div style={{display: 'flex',}}>
 								<div style={{flexGrow: 1, }}>
 									<h2>L3 avg</h2>
-									<Input className="dtf-input" disabled value={`${data.auton_coral_scored_l3}/${data.auton_coral_l3_total}`} />
+									<Input disabled defaultValue={`${data.auton_coral_scored_l3}/${data.auton_coral_l3_total}`} />
 								</div>
 								<div style={{flexGrow: 1, }}>
 									<h2>L4 avg</h2>
-									<Input className="dtf-input" disabled value={`${data.auton_coral_scored_l4}/${data.auton_coral_l4_total}`} />
+									<Input disabled defaultValue={`${data.auton_coral_scored_l4}/${data.auton_coral_l4_total}`} />
 								</div>
 							</div>
 
 							<h2>Avg Algae Processed</h2>
-							<Input className="input" disabled value={data.auton_algae_scored_processor} />
+							<Input disabled defaultValue={data.auton_algae_scored_processor.toString()} />
 							<h2>Avg Algae Net</h2>
-							<Input className="input" disabled value={`${data.auton_algae_scored_net}/${data.auton_algae_net_total}`}  />
+							<Input disabled defaultValue={`${data.auton_algae_scored_net}/${data.auton_algae_net_total}`} />
 						</>
 				});
 
@@ -460,48 +512,48 @@ function DTFTeams(props: Props): React.ReactElement {
 							<div style={{display: 'flex',}}>
 								<div style={{flexGrow: 1, }}>
 									<h2>L1 avg</h2>
-									<Input className="dtf-input" disabled value={`${data.teleop_coral_scored_l1}/${data.teleop_coral_l1_total}`} />
+									<Input disabled defaultValue={`${data.teleop_coral_scored_l1}/${data.teleop_coral_l1_total}`} />
 								</div>
 								<div style={{flexGrow: 1, }}>
 									<h2>L2 avg</h2>
-									<Input className="dtf-input" disabled value={`${data.teleop_coral_scored_l2}/${data.teleop_coral_l2_total}`} />
+									<Input disabled defaultValue={`${data.teleop_coral_scored_l2}/${data.teleop_coral_l2_total}`} />
 								</div>
 							</div>
 							<div style={{display: 'flex',}}>
 								<div style={{flexGrow: 1, }}>
 									<h2>L3 avg</h2>
-									<Input className="dtf-input" disabled value={`${data.teleop_coral_scored_l3}/${data.teleop_coral_l3_total}`} />
+									<Input disabled defaultValue={`${data.teleop_coral_scored_l3}/${data.teleop_coral_l3_total}`} />
 								</div>
 								<div style={{flexGrow: 1, }}>
 									<h2>L4 avg</h2>
-									<Input className="dtf-input" disabled value={`${data.teleop_coral_scored_l4}/${data.teleop_coral_l4_total}`} />
+									<Input disabled defaultValue={`${data.teleop_coral_scored_l4}/${data.teleop_coral_l4_total}`} />
 								</div>
 							</div>
 							<h2>Avg Algae Processed</h2>
-							<Input className="input" disabled value={data.teleop_algae_scored_processor} />
+							<Input disabled defaultValue={data.teleop_algae_scored_processor.toString()} />
 							<h2>Avg Algae Net</h2>
-							<Input className="input" disabled value={`${data.teleop_algae_scored_net}/${data.teleop_algae_net_total}`}  />
+							<Input disabled defaultValue={`${data.teleop_algae_scored_net}/${data.teleop_algae_net_total}`} />
 							<h2>Climb Type</h2>
-							<Input className="input" disabled value={data.endgame_climb_type} />
+							<Input disabled defaultValue={data.endgame_climb_type} />
 							<h2>Avg Climb Success</h2>
-							<Input className="input" disabled value={data.endgame_climb_successful_total} />
+							<Input disabled defaultValue={data.endgame_climb_successful_total} />
 							<h2>Avg Climb Time</h2>
-							<Input className="input" disabled value={data.endgame_climb_time} />
+							<Input disabled defaultValue={data.endgame_climb_time.toString()} />
 						</>
 				});
 
 				teamTabs.push({ key: "OA", label: "OA", children:
 						<>
 							<h2>Matches Played</h2>
-							<Input className="input" disabled value={`${data.match_count}/${teamMatches.length}`}  />
+							<Input disabled defaultValue={`${data.match_count}/${teamMatches.length}`} />
 							<h2>Robot Died (counter: matches)</h2>
-							<Input className="input" disabled value={data.overall_robot_died}  />
+							<Input disabled defaultValue={data.overall_robot_died.toString()} />
 							<h2>Intake Algae Type</h2>
-							<Input className="input" disabled value={data.endgame_algae_intake_capability}  />
+							<Input disabled defaultValue={data.endgame_algae_intake_capability} />
 							<h2>Intake Coral Type</h2>
-							<Input className="input" disabled value={data.endgame_coral_intake_capability}  />
+							<Input disabled defaultValue={data.endgame_coral_intake_capability} />
 							<h2>Robot Comments</h2>
-							<TextArea disabled className="textbox_input" value={data.overall_comments} style={{marginBottom: '5%'}}/>
+							<TextArea disabled defaultValue={data.overall_comments} />
 						</>
 				});
 			} else {
@@ -522,8 +574,8 @@ function DTFTeams(props: Props): React.ReactElement {
 			 */
 			teamTabs.push({ key: "Strategic", label: "Strategic", children:
 					<>
-						{ strategicTabs ?
-							<Tabs items={strategicTabs} centered className="tabs" />
+						{ strategicTabs.length ?
+							<Tabs items={strategicTabs} />
 							: <p className={"errorLabel"}>No Strategic Data</p>
 						}
 					</>
@@ -531,7 +583,7 @@ function DTFTeams(props: Props): React.ReactElement {
 
 			tabs.push({ key: `${team}|${teamCount}`, label: team, children:
 					<>
-						<Tabs items={teamTabs} centered className={"tabs"} />
+						<Tabs items={teamTabs} />
 					</>
 			});
 		}
@@ -555,32 +607,32 @@ function DTFTeams(props: Props): React.ReactElement {
 			averageScores.push(
 				<div key={`${teamNumber}AverageScoreSkill`}>
 					<h2>Team {teamNumber} Avg Score</h2>
-					<Input className="input" disabled value={team.average_score} />
+					<Input disabled defaultValue={team.average_score.toString()} />
 				</div>
 			);
 			driverSkills.push(
-				<Flex vertical align='center' key={`${teamNumber}DriverSkill`}>
+				<div style={{ display: 'flex', flexDirection: 'column' }} key={`${teamNumber}DriverSkill`}>
 					<h2 className='summary_text'>{teamNumber}</h2>
-					<Input className="dtf-input" disabled value={team.overall_driver_skill} />
-				</Flex>
+					<Input disabled defaultValue={team.overall_driver_skill.toString()} />
+				</div>
 			);
 		}
 
 		tabs.push({ key: "Summary", label: "Summary", children:
 				<>
 					<h2>Average Alliance Score</h2>
-					<Input className="input" disabled value={totalAverage} />
+					<Input disabled defaultValue={totalAverage.toString()} />
 					{averageScores}
 					<h2>Driver Skill</h2>
-					<Flex justify='in-between'>
+					<div style={{ display: 'flex', justifyContent: 'space-between' }}>
 						{driverSkills}
-					</Flex>
+					</div>
 				</>
 		});
 
 		return tabs;
 	}
-	async function getDTF(teams: string[]): Promise<void> {
+	function getDTF(teams: string[]): void {
 		setLoading(true);
 
 		if(!teamsMatchData || !teamsStrategicData) {
@@ -589,24 +641,20 @@ function DTFTeams(props: Props): React.ReactElement {
 		}
 
 		try {
-			const persistentData = {};
-			const tabPromises: Promise<TabItem>[] = [];
+			const persistentData: { [teamNumber: number]: AggregateData } = {};
+			const allianceTabs = [];
 
 			for(let i = 1; i <= Constants.NUM_ALLIANCES; i++) {
-				tabPromises.push((async () => {
 					const alliance = teams.slice((i - 1) * Constants.TEAMS_PER_ALLIANCE, i * Constants.TEAMS_PER_ALLIANCE);
 
-					const allianceTab = await getAllianceTab(alliance, persistentData, i);
+					const allianceTab = getAllianceTab(alliance, persistentData, i);
 
-					return { key: `Alliance${i}`, label: `Alliance ${i}`, children:
+					allianceTabs.push({ key: `Alliance${i}`, label: `Alliance ${i}`, children:
 							<>
 								<Tabs items={allianceTab} />
 							</>
-					};
-				})());
+					});
 			}
-
-			const allianceTabs = await Promise.all(tabPromises);
 
 			const allianceAverageScores: React.ReactElement[] = [];
 			const averageScores: React.ReactElement[] = [];
@@ -628,7 +676,7 @@ function DTFTeams(props: Props): React.ReactElement {
 					averageScoresGroup.push(
 						<div key={`${i}|${j}`}>
 							<h2>Team {teamNumber} Average Score</h2>
-							<Input className="input" disabled value={data.average_score} />
+							<Input disabled defaultValue={data.average_score.toString()} />
 						</div>
 					);
 
@@ -669,7 +717,7 @@ function DTFTeams(props: Props): React.ReactElement {
 
 			<dtf-teams>
 				<h2 style={{ display: loading ? 'inherit' : 'none' }}>Loading data...</h2>
-				<Tabs defaultActiveKey="1" items={items} className='tabs' />
+				<Tabs defaultActiveKey="1" items={items} />
 			</dtf-teams>
 		</>
 	);
