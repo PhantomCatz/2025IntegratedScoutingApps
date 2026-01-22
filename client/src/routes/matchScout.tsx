@@ -3,9 +3,8 @@ import { useEffect, useState } from 'react';
 import { useLocalStorage, } from 'react-use';
 import Header from '../parts/header';
 import QrCode from '../parts/qrCodeViewer';
-import { isInPlayoffs, getTeamsInMatch, getAllianceTags,
-	getOpposingAllianceColor, parseRobotPosition } from '../utils/tbaRequest.ts';
-import { escapeUnicode } from "../utils/utils";
+import { isInPlayoffs, getTeamsInMatch, getAllianceTags, getOpposingAllianceColor, parseRobotPosition } from '../utils/tbaRequest.ts';
+import { escapeUnicode, toTinyInt } from "../utils/utils";
 import Form, { NumberInput, Select, Checkbox, Input, TextArea } from '../parts/formItems';
 import { getFieldAccessor, } from '../parts/formItems';
 import { Tabs, } from "../parts/tabs";
@@ -24,8 +23,8 @@ type Props = {
 const formDefaultValues: MatchScoutTypes.All = {
 	// Pre-match
 	"scouter_initials": "",
-	//"match_level": "",
-	//"match_number": 0,
+	"comp_level": "qm",
+	"match_number": 0,
 	"robot_position": "B1",
 	// Auton
 	"auton_leave_starting_line": false,
@@ -74,10 +73,12 @@ const formDefaultValues: MatchScoutTypes.All = {
 	"overall_comments": "",
 
 	// Playoffs
-	"red_alliance": 0,
-	"blue_alliance": 0,
+	"red_alliance": "0",
+	"blue_alliance": "0",
+
+	"team_override": null,
 } as const;
-const noShowValues: MatchScoutTypes.All = {
+const noShowValues: Partial<MatchScoutTypes.All> = {
 	// Pre-match
 	//"match_event": "",
 	//"team_number": 0,
@@ -202,7 +203,7 @@ function MatchScout(props: Props): React.ReactElement {
 			"match_number": event.match_number,
 			"robot_position": event.robot_position,
 			// Auton
-			"auton_leave_starting_line": event.auton_leave_starting_line,
+			"auton_leave_starting_line": toTinyInt(event.auton_leave_starting_line),
 			"auton_coral_scored_l4": event.auton_coral_scored_l4,
 			"auton_coral_missed_l4": event.auton_coral_missed_l4,
 			"auton_coral_scored_l3": event.auton_coral_scored_l3,
@@ -229,13 +230,13 @@ function MatchScout(props: Props): React.ReactElement {
 			// Endgame
 			"endgame_coral_intake_capability": event.endgame_coral_intake_capability,
 			"endgame_algae_intake_capability": event.endgame_algae_intake_capability,
-			"endgame_climb_successful": event.endgame_climb_successful,
+			"endgame_climb_successful": toTinyInt(event.endgame_climb_successful),
 			"endgame_climb_type": event.endgame_climb_type,
 			"endgame_climb_time": event.endgame_climb_time,
 			// Overall
-			"overall_robot_died": event.overall_robot_died,
-			"overall_defended_others": event.overall_defended_others,
-			"overall_was_defended": event.overall_was_defended,
+			"overall_robot_died": toTinyInt(event.overall_robot_died),
+			"overall_defended_others": toTinyInt(event.overall_defended_others),
+			"overall_was_defended": toTinyInt(event.overall_was_defended),
 			"overall_defended": event.overall_defended.sort().join(","),
 			"overall_defended_by": event.overall_defended_by.sort().join(","),
 			"overall_pushing": event.overall_pushing,
@@ -246,7 +247,7 @@ function MatchScout(props: Props): React.ReactElement {
 			"overall_minor_penalties": event.overall_minor_penalties,
 			"overall_penalties_incurred": event.overall_penalties_incurred,
 			"overall_comments": event.overall_comments,
-			"robot_appeared": robot_appeared,
+			"robot_appeared": toTinyInt(robot_appeared),
 		};
 		Object.entries(body)
 			.forEach((k) => {
@@ -256,9 +257,10 @@ function MatchScout(props: Props): React.ReactElement {
 					escapeUnicode(val) :
 					val;
 
-				// TODO: fix
+				// :eyes: :eyes: :eyes:
 				const access = field as keyof typeof body;
-				body[access] = newVal;
+				// :eyes: :eyes: :eyes:
+				body[access] = newVal as unknown as never;
 			});
 
 		// Do not block
@@ -347,10 +349,9 @@ function MatchScout(props: Props): React.ReactElement {
 			const compLevel = accessor.getFieldValue('comp_level');
 			const matchNumber = accessor.getFieldValue('match_number');
 			const robotPosition = accessor.getFieldValue('robot_position');
-			const blueAllianceNumber = accessor.getFieldValue('blue_alliance');
-			const redAllianceNumber = accessor.getFieldValue('red_alliance');
+			const blueAllianceNumber = Number(accessor.getFieldValue('blue_alliance'));
+			const redAllianceNumber = Number(accessor.getFieldValue('red_alliance'));
 
-			// :eyes:
 			const teamsInMatch = await getTeamsInMatch(eventKey, compLevel, matchNumber, blueAllianceNumber, redAllianceNumber);
 
 			if(!teamsInMatch) {
@@ -933,9 +934,8 @@ function MatchScout(props: Props): React.ReactElement {
 				<Form<MatchScoutTypes.All>
 					initialValues={formDefaultValues}
 					onFinish={trySubmit}
-					onFinishFailed={(values, errorFields) => {
-						// TODO: Implement
-						const errorMessage = errorFields.map((x) => x.errors.join(", ")).join("\n");
+					onFinishFailed={(_values, errorFields) => {
+						const errorMessage = Object.entries(errorFields).map((x) => x[0]).join("\n");
 						window.alert(errorMessage);
 					}}
 					accessor={accessor}

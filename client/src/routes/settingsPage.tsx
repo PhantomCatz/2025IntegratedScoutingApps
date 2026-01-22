@@ -20,6 +20,10 @@ const DEFAULT_SETTINGS = {
 	tbaPlayoffAlliances: {},
 	updateTimes: {},
 } as const;
+type FieldType = {
+	scouter_initials: string,
+	event_key: TbaApi.EventKey,
+}
 
 function SettingsPage(): React.ReactElement {
 	const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -96,27 +100,32 @@ function SettingsPage(): React.ReactElement {
 			<Header name={"Settings"} back="#/" settingsPage />
 
 			<settings-page>
-				<Input
+				<Input<FieldType>
 					title="Scouter Initials"
 					name="scouter_initials"
 					maxLength={2}
 					onChange={setScouterInitial}
 					pattern="^[A-Za-z]{2}$"
-					onInput={(event) => {
-						const keyValue = event.key;
-						if (!/^[A-Za-z]{2}$/.test(keyValue)) {
-							event.preventDefault();
-						}
-					}}
+					// onInput={(event) => {
+					// 	const keyValue = event.key;
+					// 	if (!/^[A-Za-z]{2}$/.test(keyValue)) {
+					// 		event.preventDefault();
+					// 	}
+					// }}
 					defaultValue={scouterInitial}
 				/>
 
-				<Input
+				<Input<FieldType>
 					title="Event Key"
 					name="event_key"
 					pattern="^\d{4}[a-z]+$"
 					onChange={(value) => {
-						setEventCode(value);
+						if(!eventKey || !/^\d{4}[a-z]+$/.test(eventKey)) {
+							window.alert("Please input a valid event code!");
+							return;
+						}
+
+						setEventCode(value as TbaApi.EventKey);
 					}}
 					defaultValue={eventKey}
 				/>
@@ -129,10 +138,11 @@ function SettingsPage(): React.ReactElement {
 
 						setIsLoading(true);
 
-						if(!eventKey || !/^\d{4}[a-z]+$/.test(eventKey)) {
-							window.alert("Please input a valid event code!");
+						if(!eventKey) {
+							window.alert("Please input the event key!");
 							return;
 						}
+
 						try {
 							await Promise.all([
 								updateData(eventKey),

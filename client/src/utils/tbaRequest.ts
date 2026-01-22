@@ -1,14 +1,14 @@
 import Constants from "./constants";
 
-import * as TbaApi from '../types/tbaApi';
-import { RequestTypes, ResultTypes, } from '../types/tbaRequest';
-import * as TbaRequest from '../types/tbaRequest';
-import * as LocalStorage from '../types/localStorage';
+import type * as TbaApi from '../types/tbaApi';
+import type { RequestTypes, ResultTypes, } from '../types/tbaRequest';
+import type * as TbaRequest from '../types/tbaRequest';
+import type * as LocalStorage from '../types/localStorage';
 
-function isInPlayoffs(compLevel: TbaApi.Comp_Level | null): boolean {
-	return compLevel ?
-		true :
-		false;
+function isInPlayoffs(compLevel: TbaApi.Comp_Level): boolean {
+	return compLevel === "qm" ?
+		false :
+		true;
 }
 function isRoundNumberVisible(matchLevel: string): boolean {
 	return matchLevel === "Playoffs" ?
@@ -124,6 +124,7 @@ async function getTeamsInMatch(eventKey: TbaApi.EventKey,
 
 		const result: ResultTypes.TeamsInMatch = { blue: [], red: []};
 		for(const color of ["red", "blue"] as TbaApi.AllianceColor[]) {
+			// eslint-disable-next-line @typescript-eslint/no-magic-numbers
 			match.alliances[color].team_keys.forEach((team) => result[color].push(Number(team.substring(3))));
 		}
 		const tbaData = localStorage.getItem("tbaData") ?? "null";

@@ -2,6 +2,7 @@ import '../public/stylesheets/strategicLookup.css';
 import { useEffect, useState } from 'react';
 import { useLocalStorage, } from 'react-use';
 import { NumberInput, } from '../parts/formItems';
+import { getFieldAccessor, } from '../parts/formItems';
 import { Tabs } from '../parts/tabs';
 import Header from '../parts/header';
 import { getAllTeams, } from '../utils/tbaRequest.ts';
@@ -14,6 +15,9 @@ import type { TabItem, TabItems } from '../parts/tabs';
 
 type Props = {
 	title: string,
+};
+type Fields = {
+	teamNumber: number,
 };
 
 function StrategicLookup(props: Props): React.ReactElement {
@@ -30,6 +34,8 @@ function StrategicLookup(props: Props): React.ReactElement {
 	}
 
 	const eventKey = _eventKey;
+
+	const accessor = getFieldAccessor<Fields>();
 
 	useEffect(() => { document.title = props.title }, [props.title]);
 	useEffect(() => {
@@ -82,18 +88,13 @@ function StrategicLookup(props: Props): React.ReactElement {
 			const res = await fetch(fetchLink + `&team=${teamNumber}`);
 			const data = await res.json() as Database.StrategicEntry[];
 
-			createTabs(teamNumber, data);
+			createTabs(data);
 		})();
 	}, [teamNumber]);
 
-	function createTabs(teamNumber: number, data: Database.StrategicEntry[] | null): void {
+	function createTabs(data: Database.StrategicEntry[]): void {
 		try {
-			if(!data) {
-				setTabItems([initialTab()]);
-				return;
-			}
-
-			const tabs = StrategicTabs({team: teamNumber, data: data});
+			const tabs = StrategicTabs({ data: data });
 
 			setTabItems([initialTab(), ...tabs]);
 		} catch (err) {
@@ -125,8 +126,7 @@ function StrategicLookup(props: Props): React.ReactElement {
 				/>
 				<div className={"centered"}>
 					<button className={"submitButton"} onClick={function(_) {
-						const input = document.querySelector("#teamNumber") as HTMLInputElement;
-						createTabs(Number(input.value), null);
+						setTeamNumber(accessor.getFieldValue('teamNumber'));
 					}}>Submit</button>
 				</div>
 				<h2>List of Teams</h2>

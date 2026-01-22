@@ -2,8 +2,8 @@ import '../public/stylesheets/formItems.css';
 import { useRef, useEffect } from 'react';
 import * as Utils from '../utils/utils';
 
-import { assertInstanceOf, assertBoolean, assertNumber, assertString  } from '../types/utilityTypes';
 import type { StringMap } from '../types/utilityTypes';
+import { assertInstanceOf, assertBoolean, assertNumber, assertString  } from '../types/assertions';
 
 type AlignOptions = "left" | "center" | "right";
 
@@ -83,7 +83,7 @@ type FormAccessorType<FieldType> = {
 	resetFields(): void,
 };
 
-
+// TODO: implement onFinishFailed
 function Form<FieldType>(props: FormType<NoInfer<FieldType>>): React.ReactElement {
 	const onFinish = props.onFinish ?? (() => {});
 	const accessor = props.accessor;
@@ -235,6 +235,7 @@ function NumberInput<FieldType>(props: NumberInputType<FieldType>): React.ReactE
 		}
 
 		input.current.value = newValue.toString();
+		console.log(`input.current.value=`, input.current.value);
 
 		// if we didn't have to clamp it
 		if(parsedValue === newValue) {
@@ -317,7 +318,7 @@ function Select<FieldType>(props: SelectType<FieldType>): React.ReactElement {
 	const required = props.required ?? true;
 	// TODO: remove?
 	// const message = props.message ?? `Please input ${title}`;
-	const options = props.options;
+	const options = props.options ?? [];
 	const onChange = props.onChange ?? (() => {});
 	const align = props.align ?? "left";
 	const shown = props.shown ?? true;

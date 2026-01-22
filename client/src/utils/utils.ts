@@ -59,13 +59,15 @@ function escapeUnicode(str: string): string {
 function ord(char: string): number {
 	return char.charCodeAt(0);
 }
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function toNumber(x: any): number {
+function toNumber(x: unknown): number {
 	if(typeof x === "number") {
 		return x;
 	}
 	const num = Number(x || 0) || 0;
 	return num;
+}
+function toTinyInt(x: unknown): 0 | 1 {
+	return x ? 1 : 0;
 }
 
 export {
@@ -78,4 +80,5 @@ export {
 	escapeUnicode,
 	ord,
 	toNumber,
+	toTinyInt,
 };

@@ -20,10 +20,10 @@ const formDefaultValues = {
 	"scouter_initials": "",
 	"match_level": "",
 	"match_number": 0,
-	"robot_position": "",
+	"robot_position": undefined,
 	"comments": "",
-	"red_alliance": null,
-	"blue_alliance": null,
+	"red_alliance": undefined,
+	"blue_alliance": undefined,
 	"penalties": 0,
 } as const;
 
@@ -87,10 +87,9 @@ function StrategicScout(props: Props): React.ReactElement {
 			const compLevel = accessor.getFieldValue('comp_level');
 			const matchNumber = accessor.getFieldValue('match_number');
 			const robotPosition = accessor.getFieldValue('robot_position');
-			const blueAllianceNumber = accessor.getFieldValue('blue_alliance');
-			const redAllianceNumber = accessor.getFieldValue('red_alliance');
+			const blueAllianceNumber = Number(accessor.getFieldValue('blue_alliance'));
+			const redAllianceNumber = Number(accessor.getFieldValue('red_alliance'));
 
-			// :eyes:
 			const teamsInMatch = await getTeamsInMatch(eventKey, compLevel, matchNumber, blueAllianceNumber, redAllianceNumber);
 
 			if(!teamsInMatch) {
@@ -129,8 +128,10 @@ function StrategicScout(props: Props): React.ReactElement {
 					escapeUnicode(value) :
 					value;
 
-				// :eyes:
-				body[field as keyof Database.StrategicEntry] = newVal;
+				// :eyes: :eyes: :eyes:
+				const access = field as keyof typeof body;
+				// :eyes: :eyes: :eyes:
+				body[access] = newVal as unknown as never;
 			});
 
 		void tryFetch(body)
@@ -390,16 +391,17 @@ function StrategicScout(props: Props): React.ReactElement {
 
 			<strategic-scout>
 				<Form<StrategicScoutTypes.All>
+					accessor={accessor}
 					initialValues={formDefaultValues}
 					onFinish={runFormFinish}
-					onFinishFailed={({values, errorFields, outOfDate}) => {
+					onFinishFailed={(_values, errorFields) => {
 						// TOOD: Implement
 
-						const errorMessage = errorFields.map((x: any) => x.errors.join(", ")).join("\n");
+						const errorMessage = Object.entries(errorFields).map((x) => x[0]).join("\n");
 						window.alert(errorMessage);
 					}}
 				>
-					<Tabs defaultActiveKey="1" activeKey={tabNum} items={items} centered className='tabs' onChange={async (key) => { setTabNum(key); }} />
+					<Tabs defaultActiveKey="1" activeKey={tabNum} items={items} onChange={(key) => { setTabNum(key); }} />
 				</Form>
 				<QrCode value={qrValue} />
 			</strategic-scout>
